@@ -1,0 +1,102 @@
+:root {
+    --font-body-family: 'Quicksand', sans-serif;
+    --font-body-weight: 400;
+    --font-headings-family: 'Quicksand', sans-serif;
+    --font-headings-weight: 600;
+    --color-foreground: #383838;
+    --color-background: #FFFFFF;
+    --color-background-body: #f2f6f3;
+    --color-primary: #016735;
+    --color-secondary: #ff3c02;
+    --color-link: #ff9d02;
+    --color-accent: #FFE711;
+    --color-neutral-50: #EBEBEB;
+    --color-neutral-100: #BFBFBF;
+    --color-neutral-200: #999999;
+    --color-neutral-300: #666666;
+    --color-neutral-400: #464646;
+    --color-label: var(--color-neutral-200);
+    --color-price: #ff3c02;
+    --color-price-compare: #929292;
+    --color-sale-bg: #ee1926;
+    --color-sale: #ffffff;
+    --color-addtocart: #FFFFFF;
+    --color-addtocart-bg: #ff3c02;
+    --color-coupon-primary: #ff3c02;
+    --color-coupon-secondary: #016735;
+    --color-error: #EE1926;
+    --color-success: #2BAD14;
+    --color-warning: #F2BC1B;
+    --color-header: var(--color-foreground);
+    --color-header-bg: var(--color-background);
+    --header-height: 8.4rem;
+    --logo-width: 14.4rem;
+    --color-cart-bubble: #FFFFFF;
+    --color-cart-bubble-bg: #EE1926;
+    --color-search: var(--color-primary);
+    --color-sub-header-bg: #016735;
+    --color-sub-header: #ffffff;
+    --color-sub-header-link: #ff9d02;
+    --font-size-body: 1.4rem;
+    --font-size-h1: 4.8rem;
+    --font-size-h2: 4rem;
+    --font-size-h3: 3.2rem;
+    --font-size-h4: 2.8rem;
+    --font-size-h5: 2rem;
+    --font-size-h6: 1.6rem;
+    --rounded: 0.8rem;
+    --rounded-lg: calc(var(--rounded) * 1.5);
+    --rounded-sm: calc(var(--rounded) / 2);
+    --rounded-xs: calc(var(--rounded) / 4);
+    --rounded-full: 9999px;
+    --rounded-button: 9999px;
+    --rounded-input: 0.4rem;
+    --spacing-0-5: 0.2rem;
+    --spacing-1: 0.4rem;
+    --spacing-1-5: 0.6rem;
+    --spacing-2: 0.8rem;
+    --spacing-2-5: 1rem;
+    --spacing-3: 1.2rem;
+    --spacing-3-5: 1.4rem;
+    --spacing-4: 1.6rem;
+    --spacing-4-5: 1.8rem;
+    --spacing-5: 2rem;
+    --spacing-5-5: 2.2rem;
+    --spacing-6: 2.4rem;
+    --spacing-6-5: 2.6rem;
+    --spacing-7: 2.8rem;
+    --spacing-7-5: 3rem;
+    --spacing-8: 3.2rem;
+    --spacing-8-5: 3.4rem;
+    --spacing-9: 3.6rem;
+    --spacing-9-5: 3.8rem;
+    --spacing-10: 4rem;
+    --spacing-11: 4.4rem;
+    --spacing-12: 4.8rem;
+    --spacing-14: 5.6rem;
+    --spacing-16: 6.4rem;
+    --spacing-18: 7.2rem;
+    --spacing-20: 8rem;
+    --spacing-24: 9.6rem;
+    --container-padding: var(--spacing-3);
+    --grid-gutter: var(--spacing-2);
+    --shadow-l: 0px 2rem 4.8rem 0px rgba(51, 51, 51, 0.20);
+    --navigation-width: 40rem;
+    --swatch-xanh-duong: #232fff;
+    --swatch-hong: #fe77f1;
+    --swatch-den: #000000;
+    --swatch-trang: #FFFFFF;
+}
+
+.text-h1 {
+    font-size: var(--font-size-h1);
+    font-weight: var(--font-headings-weight);
+    font-family: var(--font-headings-family);
+}
+
+.text-h4 {
+    font-size: var(--font-size-h4);
+    font-weight: var(--font-headings-weight);
+    font-family: var(--font-headings-family);
+}
+

@@ -1,0 +1,75 @@
+@import url("./views/css/Global.css");
+html {
+      font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol, "Noto Color Emoji";
+}
+
+body {
+  margin: 0;
+  font-family: 'Quicksand', sans-serif !important;
+  /* font-family: 'Nunito Sans', 'Poppins', sans-serif !important; */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+a {
+  text-decoration: none;
+}
+li {
+  list-style: none;
+}
+
+.form-checkbox_lg {
+  width: 20px;
+  height: 20px;
+}
+
+.form-checkbox_md, .form-radio_md {
+  width: 16px;
+  height: 16px;
+}
+
+.pagination button:focus,
+.pagination button:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+button:disabled {
+  border: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.text-decoration-none {
+  text-decoration: none;
+}
+
+.text-hover:hover {
+  color: rgb(255, 123, 0) !important;
+  opacity: 0.8;
+  cursor: pointer;
+}
+.active {
+  color: white !important;
+  background-color: red !important;
+}
+
+.text-active {
+  color: rgb(255, 94, 0) !important;
+}
+
+.fs-7 {
+  font-size: 14px !important;
+}
+
+.fs-8 {
+  font-size: 12px !important;
+}

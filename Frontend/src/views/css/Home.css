@@ -1,0 +1,40 @@
+
+.carousel:hover .carousel-control-prev-icon,
+.carousel:hover .carousel-control-next-icon {
+  opacity: 1 !important;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  opacity: 0 !important;
+  transition: opacity 0.3s ease;
+}
+
+.section-police-title {
+  font-size: 14px;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fs-body {
+  font-size: 14px;
+}
+
+.heading-bar::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 10px;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  border-top: 2px solid #016735;
+  border-bottom: 2px solid #016735;
+  opacity: 0.1;
+}
