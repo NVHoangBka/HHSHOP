@@ -26,6 +26,10 @@ class ProductService {
     return this.productModel.getProductsByType(type);
   }
 
+  getProductById(id) {
+    return this.productModel.getProductById(id);
+  }
+
   filterProducts(criteria) {
     let products = this.getAllProducts();
     if (criteria.titlePath) {

@@ -1,10 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 
 const ProductDetail = ({ addToCart, productController }) => {
   const { id } = useParams();
-  const product = productController.getProductById(id);
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
 
+
+  useEffect(() => {
+    async function loadProduct() {
+      const data = await productController.getProductById(id);
+      setProduct(data);
+      setLoading(false);
+    }
+    loadProduct();
+  }, [id, productController]);
+
+  if (loading) return <div>Đang tải sản phẩm...</div>;
   if (!product) {
     return <div className="container mt-4"><h2>Sản phẩm không tồn tại</h2></div>;
   }

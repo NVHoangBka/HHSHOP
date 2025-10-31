@@ -5,6 +5,7 @@ import ProductController from '../../controllers/ProductController';
 import TitleController from '../../controllers/TitleController';
 
 const productController = new ProductController();
+const titleController = new TitleController();
 
 const Product = ({ path, addToCart }) => {
     const params = useParams();
@@ -13,6 +14,7 @@ const Product = ({ path, addToCart }) => {
     const [titlePathCover, setTitlePathConver] = useState();
     const [activeTab, setActiveTab] = useState(path|| 'all');
     const [title, setTitle] = useState();
+    const [titlesLoaded, setTitlesLoaded] = useState(false);
 
     // state cho phân trang
     const [currentPage, setCurrentPage] = useState(1);
@@ -26,15 +28,24 @@ const Product = ({ path, addToCart }) => {
         color: [],
     });
 
+    // TẢI DANH MỤC TRƯỚC
+    useEffect(() => {
+        async function loadTitles() {
+        await titleController.getAllTitles(); // TẢI VÀO BỘ NHỚ
+        setTitlesLoaded(true);
+        }
+        loadTitles();
+    }, []);
+
    // === 1. CẬP NHẬT TITLE + activeTab ===
     useEffect(() => {
         if (titlePath !== 'all') {
             setActiveTab(titlePath);
-            const titleObj = TitleController.getTitlesByPath(titlePath)[0];
+            const titleObj = titleController.getTitlesByPath(titlePath)[0];
             const titleName = titleObj?.name || titlePath;
             // Nếu có subcategory thì hiển thị song song
             if (subTitlePath) {
-                const subTitleObj = TitleController.getSubTitlesByPath(titlePath, subTitlePath);
+                const subTitleObj = titleController.getSubTitlesByPath(titlePath, subTitlePath);
                 const subTitleName = subTitleObj?.name || subTitlePath;
                 setTitlePathConver(`${titleName} / ${subTitleName}`);
                 setTitle(subTitleName);

@@ -5,25 +5,17 @@ class TitleService {
     this.titleModel = new TitleModel();
   }
 
-  getAllTitles() {
-    return this.titleModel.getAllTitles();
+  async getAllTitles() {
+    return await this.titleModel.getAllTitles();
+  }
+  
+  async getTitleById(id) {
+    return await this.titleModel.getTitleById(id);
   }
 
-  getTitleById(id) {
-    return this.titleModel.getTitleById(id);
-  }
-
-  getTitlesByType(type) {
-    return this.titleModel.getTitlesByType(type);
-  }
-
-  getTitlesByPath(path) {
-    return this.titleModel.getTitlesByPath(path);
-  }
-
-  getSubTitlesByPath(path, value) {
-    return this.titleModel.getSubTitlesByPath(path, value);
-  }
+  async getTitlesByType(type) { return await this.titleModel.getTitlesByType(type); }
+  async getTitlesByPath(path) { return await this.titleModel.getTitlesByPath(path); }
+  async getSubTitlesByPath(path, value) { return await this.titleModel.getSubTitlesByPath(path, value); }
 }
 
 export default TitleService;

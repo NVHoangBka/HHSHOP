@@ -5,9 +5,9 @@ class TitleController {
     this.titleService = new TitleService();
   }
 
-  getAllTitles() {
+  async getAllTitles() {
     try {
-      const titles = this.titleService.getAllTitles();
+      const titles = await this.titleService.getAllTitles();
       if (!titles || !Array.isArray(titles)) {
         throw new Error('Danh sách tiêu đề không hợp lệ');
       }
@@ -31,44 +31,9 @@ class TitleController {
     }
   }
 
-  getTitlesByType(type) {
-    try {
-      const titles = this.titleService.getTitlesByType(type);
-      if (!titles || !Array.isArray(titles)) {
-        throw new Error('Danh sách tiêu đề theo loại không hợp lệ');
-      }
-      return titles;
-    } catch (error) {
-      console.error('Lỗi khi lấy tiêu đề theo loại:', error);
-      return [];
-    }
-  }
-
-  getTitlesByPath(path) {
-    try {
-      const titles = this.titleService.getTitlesByPath(path);
-      if (!titles || !Array.isArray(titles)) {
-        throw new Error('Danh sách tiêu đề theo path không hợp lệ');
-      }
-      return titles;
-    } catch (error) {
-      console.error('Lỗi khi lấy tiêu đề theo path:', error);
-      return [];
-    }
-  }
-
-  getSubTitlesByPath(path, value) {
-    try {
-      const subTitle = this.titleService.getSubTitlesByPath(path, value);
-      if (!subTitle) {
-        throw new Error('SubTitle không tồn tại');
-      }
-      return subTitle;
-    } catch (error) {
-      console.error('Lỗi khi lấy subTitle theo path:', error);
-      return null;
-    }
-  }
+  async getTitlesByType(type) { return await this.titleService.getTitlesByType(type); }
+  async getTitlesByPath(path) { return await this.titleService.getTitlesByPath(path); }
+  async getSubTitlesByPath(path, value) { return await this.titleService.getSubTitlesByPath(path, value); }
 }
 
 export default TitleController;

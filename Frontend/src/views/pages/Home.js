@@ -20,8 +20,9 @@ const Home = ({ addToCart }) => {
     const fetchData = async () => {
       try {
         const flashSale = await productController.getProductsByTag('flashsale');
-        const banners = await bannerController.getAllBanners();
+        const banners = await bannerController.getBannersAll();
         const titles = await titleController.getTitlesByType('h1');
+
         setFlashSaleProducts(flashSale);
         setBannerHome(banners);
         setTitlesHome(titles);
@@ -32,20 +33,23 @@ const Home = ({ addToCart }) => {
     fetchData();
   }, []);
 
+
   return (
     <>
       <Slider />
       <div className="home bg-success-subtle py-4">
         <div className="container">
           <div className="section-banner-group row">
-            {bannerHome.map((banner, index) => (
-              <div key={index} className="banner-item col-4">
-                <img
-                  src={banner.image}
-                  alt="Banner 1"
-                  className="w-100 rounded-4"
-                />
-              </div>
+            {bannerHome
+              .filter(banner => banner.showHome === true)
+              .map((banner, index) => (
+                <div key={index} className="banner-item col-4">
+                  <img
+                    src={banner.image}
+                    alt="Banner 1"
+                    className="w-100 rounded-4"
+                  />
+                </div>
             ))}
           </div>
           <div className="section-flashsale mt-5 bg-danger rounded-4 pb-3">

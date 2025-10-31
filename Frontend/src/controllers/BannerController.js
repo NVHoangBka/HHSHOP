@@ -5,9 +5,9 @@ class BannerController {
     this.bannerService = new BannerService();
   }
 
-  getAllBanners() {
+  async getBannersAll() {
     try {
-      const banners = this.bannerService.getAllBanners();
+      const banners = await this.bannerService.getBannersAll();
       if (!banners || !Array.isArray(banners)) {
         throw new Error('Danh sách banner không hợp lệ');
       }
@@ -18,31 +18,6 @@ class BannerController {
     }
   }
 
-  getBannersByType(type) {
-    try {
-      const banners = this.bannerService.getBannersByType(type);
-      if (!banners || !Array.isArray(banners)) {
-        throw new Error('Danh sách banner theo loại không hợp lệ');
-      }
-      return banners;
-    } catch (error) {
-      console.error('Lỗi khi lấy banner theo loại:', error);
-      return [];
-    }
-  }
-
-  getBannerById(id) {
-    try {
-      const banner = this.bannerService.getBannerById(id);
-      if (!banner) {
-        throw new Error('Banner không tồn tại');
-      }
-      return banner;
-    } catch (error) {
-      console.error('Lỗi khi lấy banner theo ID:', error);
-      return null;
-    }
-  }
 }
 
 export default BannerController;

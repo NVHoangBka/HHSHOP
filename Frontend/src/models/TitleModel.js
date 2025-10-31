@@ -1,4 +1,4 @@
-import { titles } from '../data/titles.js';
+import api from '../services/api';
 
 export class Title {
   constructor(data) {
@@ -13,37 +13,49 @@ export class Title {
 
 export class TitleModel {
   constructor() {
-    this.titles = titles.map(data => new Title(data)) || []; 
+    this.titles = [];
+  }
+
+  async load() {
+    if (this.loaded) return;
+    try {
+      const res = await api.get('/titles');
+      this.titles = res.data.titles.map(t => new Title(t));
+      this.loaded = true;
+    } catch (error) {
+      console.error('Lỗi load titles:', error);
+    }
   }
 
   // Lấy tất cả tiêu đề
-  getAllTitles() {
+  async getAllTitles() {
+    await this.load();
     return [...this.titles];
   }
 
   // Lấy tiêu đề theo ID
   getTitleById(id) {
-    return this.titles.find((title) => title.id === parseInt(id)) || null;
+    return this.titles.find(t => t.id === id) || null;
   }
 
   // Lấy tiêu đề theo type
-  getTitlesByType(type) {
-    return this.titles.filter((title) => title.type === type);
+  async getTitlesByType(type) {
+    await this.load();
+    return this.titles.filter(t => t.type === type);
   }
 
   // Lấy tiêu đề theo path
-  getTitlesByPath(path) {
-    return this.titles.filter((title) => title.path === path);
+  async getTitlesByPath(path) {
+    await this.load();
+    return this.titles.filter(t => t.path === path);
   }
-
   // Lấy subTitle theo path và value
-  getSubTitlesByPath(path, value) {
-    const title = this.titles.find((title) => title.path === path);
-    if (title) {
-      return title.subTitles.find((sub) => sub.value === value) || null;
-    }
-    return null;
+  async getSubTitlesByPath(path, value) {
+    await this.load();
+    const title = this.titles.find(t => t.path === path);
+    return title?.subTitles.find(s => s.value === value) || null;
   }
+  
 }
 
-export default TitleModel; // Xuất instance mặc định
+export default TitleModel;

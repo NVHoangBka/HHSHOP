@@ -1,15 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import TitleController from '../../controllers/TitleController';
 
 const titleController = new TitleController();
 
 const Menu = ({ isOpen, menuRef, setIsMenuOpen }) => {
+  const [titles, setTitles] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadTitles() {
+      const data = await titleController.getAllTitles();
+      setTitles(data);
+      setLoading(false);
+    }
+    loadTitles();
+  }, []);
+
   const handleItemClick = () => {
     setIsMenuOpen(false);
   };
 
-  const titles = titleController.getAllTitles();
+  if (loading) return <div>Đang tải menu...</div>;
 
   return (
     <nav ref={menuRef} className={`menu ${isOpen ? 'active' : ''}`}>

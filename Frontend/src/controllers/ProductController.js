@@ -24,6 +24,11 @@ class ProductController {
   getProductsByType(type) {
     return this.productService.getProductsByType(type);
   }
+
+  getProductById(id) {
+    return this.productService.getProductById(id);
+  }
+  
 }
 
 export default ProductController;

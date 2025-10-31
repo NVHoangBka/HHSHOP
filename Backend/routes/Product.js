@@ -8,5 +8,7 @@ router.get('/title/:title', ProductController.getByTitle);
 router.get('/subtitle/:subtitle', ProductController.getBySubTitle);
 router.get('/tag/:tag', ProductController.getByTag);
 router.get('/type/:type', ProductController.getByType);
+router.get('/:id', ProductController.getById);
+router.post('/seed', ProductController.seed);
 
 module.exports = router;
