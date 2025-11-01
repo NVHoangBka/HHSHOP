@@ -6,23 +6,18 @@ const Address = require('../models/Address');
 
 
 class AuthController {
+  // === ĐĂNG KÝ ===
   static async register(req, res) {
     try {
       const { email, password, firstName, lastName, phoneNumber, address } = req.body;
+
+      // Kiểm tra email
       const existingEmail = await User.findOne({ email });
       if (existingEmail) {
         return res.status(400).json({ success: false, message: 'Email đã tồn tại' });
       }
 
-      if (phoneNumber) {
-        const existingPhone = await User.findOne({ phoneNumber });
-        if (existingPhone) {
-          return res.status(400).json({ success: false, message: 'Số điện thoại đã tồn tại' });
-        }
-      }
-
       const hashedPassword = await bcrypt.hash(password, 10);
-      const refreshToken = jwt.sign({ email }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
       const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
 
       const newUser = await User.create({
@@ -36,7 +31,9 @@ class AuthController {
       });
 
       const accessToken = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      const refreshToken = jwt.sign({ email }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
 
+      // LƯU REFRESH TOKEN ĐÃ MÃ HÓA VÀO CSDL
       res.status(201).json({ 
         success: true, 
         message: 'Đăng ký thành công', 
@@ -49,6 +46,7 @@ class AuthController {
     }
   }
 
+  // === ĐĂNG NHẬP ===
   static async login(req, res) {
     try {
       const { email, password } = req.body;
@@ -81,6 +79,7 @@ class AuthController {
     }
   }
 
+  // === REFRESH TOKEN ===
   static async refreshToken(req, res) {
     try {
       const { refreshToken } = req.body;
@@ -111,6 +110,7 @@ class AuthController {
     }
   }
 
+  // === LẤY USER HIỆN TẠI ===
   static async getCurrentUser(req, res) {
     try {
       // req.user được gán bởi middleware `auth`
@@ -137,6 +137,7 @@ class AuthController {
     }
   }
 
+  // === ĐĂNG XUẤT ===
   static async logout(req, res) {
     try {
       const userId = req.user.id;
@@ -151,6 +152,7 @@ class AuthController {
     }
   }
 
+  // === LẤY TẤT CẢ USER (ADMIN) ===
   static async getUsers(req, res) {
     try {
       const users = await User.find({}, { password: 0, refreshToken: 0 });
@@ -161,6 +163,7 @@ class AuthController {
     }
   }
 
+  // === LẤY ĐƠN HÀNG ===
   static async getOrders(req, res) {
     try {
       const userId = req.user.id;
@@ -175,6 +178,7 @@ class AuthController {
     }
   }
 
+  // === LẤY ĐỊA CHỈ ===
   static async getAddresses(req, res) {
     try {
       if (!req.user || !req.user.id) {

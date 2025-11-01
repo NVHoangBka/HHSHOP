@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const authController = require('../controllers/AuthController')
-const auth = require('../middleware/auth');
+const AuthController = require('../controllers/AuthController')
+const { protect } = require('../middleware/auth');
 
-router.post('/register', authController.register);
-router.post('/login', authController.login);
-router.post('/refresh-token', authController.refreshToken);
-router.post('/logout', auth, authController.logout);
-router.get('/me', auth, authController.getCurrentUser);
+router.post('/register', AuthController.register);
+router.post('/login', AuthController.login);
+router.post('/refresh-token', AuthController.refreshToken);
+router.get('/me', protect, AuthController.getCurrentUser);
+router.post('/logout', protect, AuthController.logout);
+router.get('/users', protect, AuthController.getUsers);
 
 module.exports = router;

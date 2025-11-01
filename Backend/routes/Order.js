@@ -2,9 +2,10 @@
 const express = require('express');
 const router = express.Router();
 const AuthController = require('../controllers/AuthController');
-const auth = require('../middleware/auth');
+const { protect } = require('../middleware/auth');
 
+router.use(protect);
 // GET: LẤY DANH SÁCH ĐƠN HÀNG CỦA USER
-router.get('/', auth, AuthController.getOrders);
+router.get('/', protect, AuthController.getOrders);
 
 module.exports = router;

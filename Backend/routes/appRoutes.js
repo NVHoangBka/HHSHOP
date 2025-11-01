@@ -2,18 +2,20 @@
 const express = require('express');
 const router = express.Router();
 
-const auth = require('./Auth');
-const address = require('./Address');
-const order = require('./Order');
-const product = require('./Product');
-const title = require('./Title');
-const banner = require('./Banner');
+const authRouter = require('./Auth');
+const addressRouter = require('./Address');
+const orderRouter = require('./Order');
+const productRouter = require('./Product');
+const titleRouter = require('./Title');
+const bannerRouter = require('./Banner');
+const cartRouter = require('./Cart');
 
-router.use('/auth', auth);
-router.use('/addresses', address);
-router.use('/orders', order);
-router.use('/products', product); 
-router.use('/titles', title);
-router.use('/banners', banner);
+router.use('/auth', authRouter);
+router.use('/addresses', addressRouter);
+router.use('/orders', orderRouter);
+router.use('/products', productRouter); 
+router.use('/titles', titleRouter);
+router.use('/banners', bannerRouter);
+router.use('/cart', cartRouter);
 
 module.exports = router;

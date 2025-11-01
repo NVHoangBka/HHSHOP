@@ -2,9 +2,9 @@
 const express = require('express');
 const router = express.Router();
 const AuthController = require('../controllers/AuthController');
-const auth = require('../middleware/auth');
+const { protect } = require('../middleware/auth');
 
 // SỬA: DÙNG '/' VÀ TRUYỀN HÀM (KHÔNG GỌI NGAY)
-router.get('/', auth, AuthController.getAddresses);
+router.get('/', protect, AuthController.getAddresses);
 
 module.exports = router;
