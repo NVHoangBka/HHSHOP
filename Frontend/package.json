@@ -17,6 +17,8 @@
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.4",
     "react-scripts": "5.0.1",
+    "vietnam-provinces": "^0.0.4",
+    "vn-provinces": "^1.0.4",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
