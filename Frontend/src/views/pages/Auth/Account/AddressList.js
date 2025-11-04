@@ -1,11 +1,69 @@
-import React, { useState } from "react";
-import countries from "../../../../data/countries";
+import React, { useEffect, useState } from "react";
+import countries from "i18n-iso-countries";
+import { getCities } from "countries-cities";
+import vietnamData from "../../../../data/vietnam.json";
+
+// Đăng ký tiếng Việt
+countries.registerLocale(require("i18n-iso-countries/langs/vi.json"));
+
 
 const AddressList = () => {
   const [show, setShow] = useState(false);
+  const [country, setCountry] = useState("");
+  const [province, setProvince] = useState("");
+  const [district, setDistrict] = useState("");
+  const [ward, setWard] = useState("");
+  const [city, setCity] = useState("");
+
+  const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+  const [cities, setCities] = useState([]);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  // Load tỉnh VN hoặc thành phố thế giới
+  useEffect(() => {
+    if (country === "VN") {
+      setProvinces(vietnamData);
+      setCities([]);
+    } else {
+      const cityList = getCities(country) || [];
+      setCities(cityList.sort());
+      setProvinces([]);
+    }
+    // Reset
+    setCountry("VN");
+    setProvince("");
+    setDistrict("");
+    setWard("");
+    setCity("");
+  }, [country]);
+
+  // Load huyện
+  useEffect(() => {
+    if (province) {
+      const prov = vietnamData.find(p => p.name === province);
+      setDistricts(prov?.districts || []);
+    } else {
+      setDistricts([]);
+    }
+    setDistrict("");
+    setWard("");
+  }, [province]);
+
+  // Load xã
+  useEffect(() => {
+    if (district && province) {
+      const prov = vietnamData.find(p => p.name === province);
+      const dist = prov?.districts.find(d => d.name === district);
+      setWards(dist?.wards || []);
+    } else {
+      setWards([]);
+    }
+    setWard("");
+  }, [district, province]);
 
   return (
     <div className=" rounded-lg px-3 mb-6">
@@ -38,132 +96,156 @@ const AddressList = () => {
               </div>
             </div>
             <div className="modal-body">
-              <form
-                method="post"
-                action="/account/addresses"
-                id="customer_address"
-                accept-charset="UTF-8"
-              >
+              <form>
                 <input name="FormType" type="hidden" value="customer_address" />
                 <input name="utf8" type="hidden" value="true" />
                 <div className="pop_bottom">
                   <div className="form_address">
-                    <div class="field">
-                      <fieldset class="form-group">
+                    <div className="field">
+                      <fieldset className="form-group">
                         <label>Họ tên</label>
                         <input
                           required=""
                           type="text"
                           name="FullName"
-                          class="form-control"
-                          value=""
+                          className="form-control"
                         />
                       </fieldset>
-                      <p class="error-msg"></p>
+                      <p className="error-msg"></p>
                     </div>
-                    <div class="field">
-                      <fieldset class="form-group">
+                    <div className="field">
+                      <fieldset className="form-group">
                         <label>Số điện thoại</label>
                         <input
                           required=""
                           type="number"
-                          class="form-control"
+                          className="form-control"
                           id="Phone"
                           pattern="\d+"
                           name="Phone"
-                          maxlength="12"
-                          value=""
+                          maxLength="12"
                         />
                       </fieldset>
                     </div>
-                    <div class="field">
+                    <div className="field">
                       <label>Công ty</label>
-                      <fieldset class="form-group">
+                      <fieldset className="form-group">
                         <input
                           type="text"
-                          class="form-control"
+                          className="form-control"
                           name="Company"
-                          value=""
                         />
                       </fieldset>
                     </div>
-                    <div class="field">
-                      <fieldset class="form-group">
+                    <div className="field">
+                      <fieldset className="form-group">
                         <label>Địa chỉ</label>
                         <input
                           required=""
                           type="text"
-                          class="form-control"
+                          className="form-control"
                           name="Address1"
-                          value=""
                         />
                       </fieldset>
                     </div>
-                    <div class="field">
-                      <fieldset class="form-group select-field">
+                    <div className="field">
+                      <fieldset className="form-group select-field">
                         <label>Quốc gia</label>
                         <select
                           name="Country"
-                          class="form-control"
-                          id="mySelect1"
-                          defaultValue="VN"
+                          className="form-control"
+                          id="country"
+                          value={country}
+                          onChange={(e) => setCountry(e.target.value)}
                         >
-                          {countries.map((country) => (
-                            <option key={country.code} value={country.code}>
-                              {country.name}
-                            </option>
+                          {Object.entries(countries.getNames("vi")).map(([code, name]) => (
+                            <option key={code} value={code}>{name}</option>
                           ))}
                         </select>
                       </fieldset>
                     </div>
-                    <div class="group-country row w-100">
-                      <fieldset class="form-group select-field col">
-                        <label>Tỉnh thành</label>
+                    {/* Việt Nam: Tỉnh → Huyện → Xã */}
+                    {country === "VN" && (
+                      <div className="group-country row w-100">                         
+                        <fieldset className="form-group select-field col">
+                          <label>Tỉnh thành</label>
+                          <select
+                            name="Province"
+                            className="form-control add has-content"
+                            id="province"
+                            value={province}
+                            onChange={(e) => setProvince(e.target.value)}
+                          >
+                            <option>Chọn Tỉnh/TP</option>
+                            {provinces.map(p => (
+                              <option key={p.code} value={p.name}>
+                                {p.name_with_type || p.name}
+                              </option>
+                            ))}
+                          </select>
+                        </fieldset>
+                        <fieldset className="form-group select-field col">
+                          <label>Quận/Huyện</label>
+                          <select
+                            name="District"
+                            className="form-control add has-content"
+                            id="district"
+                            value={district}
+                            onChange={(e) => setDistrict(e.target.value)}
+                            disabled={!province}
+                          >
+                            <option value="">Chọn Quận/Huyện</option>
+                            {districts.map(d => (
+                              <option key={d.code} value={d.name}>
+                                {d.name_with_type || d.name}
+                              </option>
+                            ))}
+                          </select>
+                        </fieldset>
+                        <fieldset className="form-group select-field col">
+                          <label>Phường xã</label>
+                          <select
+                            name="Ward"
+                            className="form-control add has-content"
+                            id="ward"
+                            value={ward}
+                            onChange={(e) => setWard(e.target.value)}
+                            disabled={!district}
+                          >
+                            <option value="">Chọn Phường/Xã</option>
+                            {wards.map(w => (
+                              <option key={w.code} value={w.name}>
+                                {w.name_with_type || w.name}
+                              </option>
+                            ))}
+                          </select>
+                        </fieldset>
+                      </div>
+                    )}
+
+                    {/* Thế giới: Thành phố */}
+                    {country !== "VN" && cities.length > 0 && (
+                      <div className="group-country row w-100">
+                        <label className="form-label">Thành phố *</label>
                         <select
-                          name="Province"
-                          value=""
-                          class="form-control add has-content"
-                          id="mySelect2"
-                          data-address-type="province"
-                          data-address-zone="billing"
-                          data-select2-id="select2-data-billingProvince"
-                        ></select>
-                      </fieldset>
-                      <fieldset class="form-group select-field col">
-                        <label>Quận huyện</label>
-                        <select
-                          name="District"
-                          class="form-control add has-content"
-                          value=""
-                          id="mySelect3"
-                          data-address-type="district"
-                          data-address-zone="billing"
-                          data-select2-id="select2-data-billingDistrict"
-                          disabled="disabled"
-                        ></select>
-                      </fieldset>
-                      <fieldset class="form-group select-field col">
-                        <label>Phường xã</label>
-                        <select
-                          name="Ward"
-                          class="form-control add has-content"
-                          value=""
-                          id="mySelect4"
-                          data-address-type="ward"
-                          data-address-zone="billing"
-                          data-select2-id="select2-data-billingWard"
-                          disabled="disabled"
-                        ></select>
-                      </fieldset>
-                    </div>
-                    <div class="field">
-                      <fieldset class="form-group">
+                          className="form-select"
+                          value={city}
+                          onChange={(e) => setCity(e.target.value)}
+                        >
+                          <option value="">Chọn thành phố</option>
+                          {cities.map(c => (
+                            <option key={c}>{c}</option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+                    <div className="field">
+                      <fieldset className="form-group">
                         <label>Mã Zip</label>
                         <input
                           type="text"
-                          class="form-control"
+                          className="form-control"
                           name="Zip"
-                          value=""
                         />
                       </fieldset>
                     </div>
@@ -175,7 +257,6 @@ const AddressList = () => {
               <button
                 className="btn btn-lg btn-dark-address btn-outline article-readmore btn-close"
                 type="button"
-                onclick="Bizweb.CustomerAddress.toggleNewForm(); return false;"
               >
                 <span>Hủy</span>
               </button>
@@ -222,6 +303,8 @@ const AddressList = () => {
                 <button
                   className="btn-edit-addr btn btn-edit p-1 fw-semibold text-primary border-0"
                   type="button"
+                  data-bs-toggle="modal"
+                  data-bs-target="#edit_address_38391829"
                   data-form="edit_address_38391829"
                   aria-controls="edit_address_38391829"
                 >
@@ -230,7 +313,7 @@ const AddressList = () => {
                 <button
                   className="hidden btn btn-dark-address btn-edit-addr btn-delete text-danger"
                   type="button"
-                  onclick="Bizweb.CustomerAddress.destroy(38391829);return false"
+                  
                 >
                   <span>Xóa</span>
                 </button>
@@ -251,7 +334,7 @@ const AddressList = () => {
             method="post"
             action="/account/addresses/38391829"
             id="customer_address"
-            accept-charset="UTF-8"
+            acceptCharset="UTF-8"
           >
             <input name="FormType" type="hidden" value="customer_address" />
             <input name="utf8" type="hidden" value="true" />
@@ -264,8 +347,7 @@ const AddressList = () => {
                       name="FullName"
                       className="form-control has-content"
                       required=""
-                      value=" nguyen hoang"
-                      autocapitalize="words"
+                      autoCapitalize="words"
                     />
                     <label>Họ tên</label>
                   </fieldset>
@@ -279,8 +361,7 @@ const AddressList = () => {
                       className="form-control"
                       id="Phone"
                       name="Phone"
-                      maxlength="12"
-                      value="+84385427179"
+                      maxLength="12"
                     />
                     <label>Số điện thoại</label>
                   </fieldset>
@@ -291,7 +372,6 @@ const AddressList = () => {
                       type="text"
                       className="form-control"
                       name="Company"
-                      value=""
                     />
                     <label>Công ty</label>
                   </fieldset>
@@ -302,7 +382,6 @@ const AddressList = () => {
                       type="text"
                       className="form-control"
                       name="Address1"
-                      value=""
                     />
                     <label>Địa chỉ</label>
                   </fieldset>
@@ -312,60 +391,92 @@ const AddressList = () => {
                     <label>Quốc gia</label>
                     <select
                       name="Country"
-                      class="form-control"
-                      id="mySelect1"
-                      defaultValue="VN"
+                      className="form-control"
+                      id="country"
+                      value={country}
+                      onChange={(e) => setCountry(e.target.value)}
                     >
-                      {countries.map((country) => (
-                        <option key={country.code} value={country.code}>
-                          {country.name}
-                        </option>
+                      {Object.entries(countries.getNames("vi")).map(([code, name]) => (
+                        <option key={code} value={code}>{name}</option>
                       ))}
                     </select>
                   </fieldset>
                 </div>
-                <div className="group-country">
-                  <fieldset className="form-group select-field not-vn">
-                    <label>Tỉnh thành</label>
-                    <select
-                      name="Province"
-                      value="Hà Nội"
-                      data-default="Hà Nội"
-                      className="form-control add province myselect has-content"
-                      id="mySelect3_38391829"
-                      data-address-type="province"
-                      data-address-zone="38391829"
-                      data-select2-id="select2-data-billingProvince"
-                    ></select>
-                  </fieldset>
-                  <fieldset className="form-group select-field not-vn">
-                    <label>Quận huyện</label>
-                    <select
-                      name="District"
-                      className="form-control add district myselect has-content"
-                      data-default="Thị xã Sơn Tây"
-                      value="Thị xã Sơn Tây"
-                      id="mySelect4_38391829"
-                      data-address-type="district"
-                      data-address-zone="38391829"
-                      data-select2-id="select2-data-billingDistrict"
-                    ></select>
-                  </fieldset>
-                  <fieldset className="form-group select-field not-vn">
-                    <label>Phường xã</label>
-                    <select
-                      name="Ward"
-                      className="form-control add ward myselect has-content"
-                      data-default="Phường Lê Lợi"
-                      value="Phường Lê Lợi"
-                      id="mySelect5_38391829"
-                      data-address-type="ward"
-                      data-address-zone="38391829"
-                      data-select2-id="select2-data-billingWard"
-                    ></select>
-                  </fieldset>
-                </div>
+                {/* Việt Nam: Tỉnh → Huyện → Xã */}
+                {country === "VN" && (
+                  <div className="group-country row w-100">                         
+                    <fieldset className="form-group select-field col">
+                      <label>Tỉnh thành</label>
+                      <select
+                        name="Province"
+                        className="form-control add has-content"
+                        id="province"
+                        value={province}
+                        onChange={(e) => setProvince(e.target.value)}
+                      >
+                        <option>Chọn Tỉnh/TP</option>
+                        {provinces.map(p => (
+                          <option key={p.code} value={p.name}>
+                            {p.name_with_type || p.name}
+                          </option>
+                        ))}
+                      </select>
+                    </fieldset>
+                    <fieldset className="form-group select-field col">
+                      <label>Quận/Huyện</label>
+                      <select
+                        name="District"
+                        className="form-control add has-content"
+                        id="district"
+                        value={district}
+                        onChange={(e) => setDistrict(e.target.value)}
+                        disabled={!province}
+                      >
+                        <option value="">Chọn Quận/Huyện</option>
+                        {districts.map(d => (
+                          <option key={d.code} value={d.name}>
+                            {d.name_with_type || d.name}
+                          </option>
+                        ))}
+                      </select>
+                    </fieldset>
+                    <fieldset className="form-group select-field col">
+                      <label>Phường xã</label>
+                      <select
+                        name="Ward"
+                        className="form-control add has-content"
+                        id="ward"
+                        value={ward}
+                        onChange={(e) => setWard(e.target.value)}
+                        disabled={!district}
+                      >
+                        <option value="">Chọn Phường/Xã</option>
+                        {wards.map(w => (
+                          <option key={w.code} value={w.name}>
+                            {w.name_with_type || w.name}
+                          </option>
+                        ))}
+                      </select>
+                    </fieldset>
+                  </div>
+                )}
 
+                {/* Thế giới: Thành phố */}
+                {country !== "VN" && cities.length > 0 && (
+                  <div className="group-country row w-100">
+                    <label className="form-label">Thành phố *</label>
+                    <select
+                      className="form-select"
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                    >
+                      <option value="">Chọn thành phố</option>
+                      {cities.map(c => (
+                        <option key={c}>{c}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}          
                 <div className="field">
                   <fieldset className="form-group">
                     <label>Mã Zip</label>
@@ -373,7 +484,6 @@ const AddressList = () => {
                       type="text"
                       className="form-control"
                       name="Zip"
-                      value=""
                     />
                   </fieldset>
                 </div>
