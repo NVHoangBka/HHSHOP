@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import countries from "i18n-iso-countries";
-import { getCities } from "countries-cities";
 import vietnamData from "../../../../data/vietnam.json";
 
 // Đăng ký tiếng Việt
 countries.registerLocale(require("i18n-iso-countries/langs/vi.json"));
 
-const AddressList = ({authController}) => {
+const AddressList = ({ authController }) => {
   const modalRef = useRef(null);
   const [addresses, setAddresses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,113 +16,103 @@ const AddressList = ({authController}) => {
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [addressLine, setAddressLine] = useState("");
-  const [error, setError] = useState('');
-  const [country, setCountry] = useState("");
-  const [province, setProvince] = useState("");
+  const [error, setError] = useState("");
+  const [city, setCity] = useState("");
   const [district, setDistrict] = useState("");
   const [ward, setWard] = useState("");
-  const [city, setCity] = useState("");
   const [isDefault, setIsDefault] = useState(false);
 
-  const [provinces, setProvinces] = useState([]);
+  const [citys, setCitys] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
-  const [cities, setCities] = useState([]);
-
 
   useEffect(() => {
-      const fetchAddresses = async () =>  {
-        setLoading(true);
-        setError('');
-        try {
-          const result = await authController.getAddressAll();
-          if (result.success) {
-            setAddresses(result.addresses);
-          } else {
-            throw new Error(result.message);
-          }
-        } catch (error) {
-          console.error('AddressesList  error:', error);
-          setError(error.message || 'Không thể tải danh sách đơn hàng.');
-        } finally {
-          setLoading(false);
+    const fetchAddresses = async () => {
+      setLoading(true);
+      setError("");
+      try {
+        const result = await authController.getAddressAll();
+        if (result.success) {
+          setAddresses(result.addresses);
+        } else {
+          throw new Error(result.message);
         }
+      } catch (error) {
+        console.error("AddressesList  error:", error);
+        setError(error.message || "Không thể tải danh sách đơn hàng.");
+      } finally {
+        setLoading(false);
       }
-      fetchAddresses();
-    }, [authController]);
+    };
+    fetchAddresses();
+  }, [authController]);
 
   // Load tỉnh VN hoặc thành phố thế giới
   useEffect(() => {
     // ---- 1. Reset mọi field con ----
-    setProvince("");
+    setCity("");
     setDistrict("");
     setWard("");
-    setCity("");
 
     // ---- 2. Reset danh sách ----
+    setCitys([]);
     setDistricts([]);
     setWards([]);
+  }, []);
 
-    if (country === "VN") {
-      setProvinces(vietnamData);
-      setCities([]);
-      setDistricts([]);
-      setWards([]);
-    } else if (country) {
-      const cityList = getCities(country) || [];
-      setCities(cityList.sort());
-      setProvinces([]);
-      setDistricts([]);
-      setWards([]);
-    } else {
-      setProvinces([]);
-      setCities([]);
-      setDistricts([]);
-      setWards([]);
-    }
-  }, [country]);
+  // Load tỉnh
+  useEffect(() => {
+    setCitys(vietnamData);
+    setDistrict("");
+    setWard("");
+  }, [city]);
 
   // Load huyện
   useEffect(() => {
-    if (province && country === "VN") {
-      const prov = vietnamData.find((p) => p.name === province);
-      setDistricts(prov?.districts || []);
+    if (city) {
+      const citys = vietnamData.find((p) => p.name === city);
+      setDistricts(citys?.districts || []);
     } else {
       setDistricts([]);
     }
     setDistrict("");
     setWard("");
-  }, [province, country]);
+  }, [city]);
 
   // Load xã
   useEffect(() => {
-    if (district && province && country === "VN") {
-      const prov = vietnamData.find((p) => p.name === province);
-      const dist = prov?.districts.find((d) => d.name === district);
+    if (district && city) {
+      const citys = vietnamData.find((p) => p.name === city);
+      const dist = citys?.districts.find((d) => d.name === district);
       setWards(dist?.wards || []);
     } else {
       setWards([]);
     }
     setWard("");
-  }, [district, province, country]);
+  }, [district, city]);
 
   // Reset form
   const resetForm = () => {
-    setIsEdit(false); setEditId("");
-    setFullName(""); setPhone(""); setAddressLine("");
-    setCountry("VN"); setProvince(""); setDistrict(""); setWard(""); setCity("");
+    setIsEdit(false);
+    setEditId("");
+    setFullName("");
+    setPhone("");
+    setAddressLine("");
+    setCity("");
+    setDistrict("");
+    setWard("");
     setIsDefault(false);
   };
 
   // Open edit
   const openEdit = (addr) => {
+    console.log(addr);
     setIsEdit(true);
     setEditId(addr._id);
     setFullName(addr.recipientName);
     setPhone(addr.phoneNumber);
     setAddressLine(addr.addressLine);
-    setCountry(addr.city && !addr.ward ? "US" : "VN");
-    setProvince(addr.city);
+    setCity(addr.city);
     setDistrict(addr.district);
     setWard(addr.ward);
     setIsDefault(addr.isDefault);
@@ -136,10 +125,10 @@ const AddressList = ({authController}) => {
       recipientName: fullName,
       phoneNumber: phone,
       addressLine,
-      ward, 
-      district, 
-      city: province,
-      isDefault
+      ward,
+      district,
+      city,
+      isDefault,
     };
 
     try {
@@ -148,7 +137,7 @@ const AddressList = ({authController}) => {
         result = await authController.updateAddress(editId, data);
       } else {
         result = await authController.addAddress(data);
-      } 
+      }
       if (result.success) {
         // Refresh address list
         const addressesList = await authController.getAddressAll();
@@ -160,8 +149,8 @@ const AddressList = ({authController}) => {
         throw new Error(result.message);
       }
     } catch (error) {
-      console.error('Address submit error:', error);
-      setError(error.message || 'Không thể lưu địa chỉ.');
+      console.error("Address submit error:", error);
+      setError(error.message || "Không thể lưu địa chỉ.");
     }
   };
 
@@ -177,8 +166,8 @@ const AddressList = ({authController}) => {
         throw new Error(result.message);
       }
     } catch (error) {
-      console.error('Address delete error:', error);
-      setError(error.message || 'Không thể xóa địa chỉ.');
+      console.error("Address delete error:", error);
+      setError(error.message || "Không thể xóa địa chỉ.");
     }
   };
 
@@ -195,7 +184,12 @@ const AddressList = ({authController}) => {
           <i className="bi bi-plus-lg me-1"></i>Thêm địa chỉ
         </button>
       </div>
-      <div className="modal fade" id="addressModal" tabIndex="-1" ref={modalRef}>
+      <div
+        className="modal fade"
+        id="addressModal"
+        tabIndex="-1"
+        ref={modalRef}
+      >
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header justify-content-between">
@@ -219,8 +213,8 @@ const AddressList = ({authController}) => {
                           required
                           type="text"
                           className="form-control"
-                          value={fullName} 
-                          onChange={e => setFullName(e.target.value)}
+                          value={fullName}
+                          onChange={(e) => setFullName(e.target.value)}
                         />
                       </fieldset>
                       <p className="error-msg"></p>
@@ -234,8 +228,8 @@ const AddressList = ({authController}) => {
                           id="Phone"
                           pattern="\d+"
                           maxLength="12"
-                          value={phone} 
-                          onChange={e => setPhone(e.target.value)} 
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
                           required
                         />
                       </fieldset>
@@ -246,97 +240,61 @@ const AddressList = ({authController}) => {
                         <input
                           type="text"
                           className="form-control"
-                          value={addressLine} onChange={e => setAddressLine(e.target.value)} required
+                          value={addressLine}
+                          onChange={(e) => setAddressLine(e.target.value)}
+                          required
                         />
                       </fieldset>
                     </div>
-                    <div className="field mb-3">
-                      <fieldset className="form-group select-field">
-                        <label>Quốc gia</label>
+                    <div className="group-country row w-100 mb-3">
+                      <fieldset className="form-group select-field col">
+                        <label>Tỉnh thành</label>
                         <select
                           className="form-control"
-                          value={country}
-                          onChange={(e) => setCountry(e.target.value)}
-                        >
-                          {Object.entries(countries.getNames("vi")).map(
-                            ([id, name]) => (
-                              <option key={id} value={id}>
-                                {name}
-                              </option>
-                            )
-                          )}
-                        </select>
-                      </fieldset>
-                    </div>
-                    {/* Việt Nam: Tỉnh → Huyện → Xã */}
-                    {country === "VN" && (
-                      <div className="group-country row w-100 mb-3">
-                        <fieldset className="form-group select-field col">
-                          <label>Tỉnh thành</label>
-                          <select
-                            className="form-control add has-content"
-                            value={province}
-                            onChange={(e) => setProvince(e.target.value)}
-                          >
-                            <option value="">Chọn Tỉnh/Thành phố</option>
-                            {provinces.map((p) => (
-                              <option key={p.id} value={p.name}>
-                                {p.name}
-                              </option>
-                            ))}
-                          </select>
-                        </fieldset>
-                        <fieldset className="form-group select-field col">
-                          <label>Quận/Huyện</label>
-                          <select
-                            className="form-control add has-content"
-                            value={district}
-                            onChange={(e) => setDistrict(e.target.value)}
-                            disabled={isEdit ? false : !province}
-                          >
-                            <option value="">Chọn Quận/Huyện</option>
-                            {districts.map((d) => (
-                              <option key={d.id} value={d.name}>
-                                {d.name}
-                              </option>
-                            ))}
-                          </select>
-                        </fieldset>
-                        <fieldset className="form-group select-field col">
-                          <label>Phường xã</label>
-                          <select
-                            className="form-control add has-content"
-                            value={ward}
-                            onChange={(e) => setWard(e.target.value)}
-                            disabled={isEdit? false : !district}
-                          >
-                            <option value="">Chọn Phường/Xã</option>
-                            {wards.map((w) => (
-                              <option key={w.id} value={w.name}>
-                                {w.name}
-                              </option>
-                            ))}
-                          </select>
-                        </fieldset>
-                      </div>
-                    )}
-
-                    {/* Thế giới: Thành phố */}
-                    {country !== "VN" && (
-                      <div className="group-country w-100 mb-3">
-                        <label className="form-label">Thành phố *</label>
-                        <select
-                          className="form-select"
                           value={city}
                           onChange={(e) => setCity(e.target.value)}
                         >
-                          <option value="">Chọn thành phố</option>
-                          {cities.map((id) => (
-                            <option key={id}>{id}</option>
+                          <option>Chọn Tỉnh/Thành phố</option>
+                          {citys.map((p) => (
+                            <option key={p.id} value={p.name}>
+                              {p.name}
+                            </option>
                           ))}
                         </select>
-                      </div>
-                    )}
+                      </fieldset>
+                      <fieldset className="form-group select-field col">
+                        <label>Quận/Huyện</label>
+                        <select
+                          className="form-control"
+                          value={district}
+                          onChange={(e) => setDistrict(e.target.value)}
+                          // disabled={isEdit ? false : !province}
+                        >
+                          <option value="">Chọn Quận/Huyện</option>
+                          {districts.map((d) => (
+                            <option key={d.id} value={d.name}>
+                              {d.name}
+                            </option>
+                          ))}
+                        </select>
+                      </fieldset>
+                      <fieldset className="form-group select-field col">
+                        <label>Phường xã</label>
+                        <select
+                          className="form-control"
+                          value={ward}
+                          onChange={(e) => setWard(e.target.value)}
+                          // disabled={isEdit ? false : !district}
+                        >
+                          <option value="">Chọn Phường/Xã</option>
+                          {wards.map((w) => (
+                            <option key={w.id} value={w.name}>
+                              {w.name}
+                            </option>
+                          ))}
+                        </select>
+                      </fieldset>
+                    </div>
                   </div>
                 </div>
               </form>
@@ -363,17 +321,23 @@ const AddressList = ({authController}) => {
       </div>
 
       {/* Danh sách */}
-      <div className="row total_address mt-4 fs-7">
-        <div id="view_address"
+      <div className="row total_address mt-3 fs-7">
+        <div
+          id="view_address"
           className="customer_address col-xs-12 col-lg-12 col-md-12 col-xl-12"
         >
-          {loading ? <p>Đang tải...</p> : addresses.length === 0 ? (        
+          {loading ? (
+            <p>Đang tải...</p>
+          ) : addresses.length === 0 ? (
             <div className="fs-7 text-center">
-              Chưa có địa chỉ nào. Vui lòng thêm địa chỉ. 
+              Chưa có địa chỉ nào. Vui lòng thêm địa chỉ.
             </div>
           ) : (
             addresses.map((address, index) => (
-              <div key={index} className="address_info d-flex justify-content-between">
+              <div
+                key={index}
+                className="address_info d-flex justify-content-between py-3 border-bottom"
+              >
                 <div className="address-group">
                   <div className="address form-signup">
                     <p>
@@ -391,9 +355,13 @@ const AddressList = ({authController}) => {
                     </p>
                   </div>
                   <div>
-                    <span className="border py-1 px-2 text-danger border-danger">
-                      {address.isDefault ? "Mặc định" : ""}
-                    </span>
+                    {address.isDefault ? (
+                      <span className="border py-1 px-2 text-danger border-danger">
+                        Mặc định
+                      </span>
+                    ) : (
+                      ""
+                    )}
                   </div>
                 </div>
                 <div id="tool_address" className="btn-address">
@@ -417,7 +385,7 @@ const AddressList = ({authController}) => {
                   </div>
                 </div>
               </div>
-            )) 
+            ))
           )}
         </div>
       </div>
