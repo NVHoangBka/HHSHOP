@@ -138,6 +138,55 @@ class AuthService {
       return 0;
     }
   }
+
+  async getAddressAll(userId) {
+    try {
+      const response = await api.get('/addresses');
+      return response.data.addresses;
+    } catch (error) {
+      console.error('Lỗi lấy số địa chỉ:', error.response?.data || error.message);
+      return 0;
+    }
+  }
+
+  async addAddress(address) {
+    try {
+      const response = await api.post('/addresses', address, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
+      });
+      return response.data.address;
+    }
+    catch (error) {
+      console.error('Lỗi thêm địa chỉ:', error.response?.data || error.message);
+      throw new Error('Không thể thêm địa chỉ.');
+    }
+  }
+
+  async updateAddress(addressId, address) {
+    try {
+      const response = await api.put(`/addresses/${addressId}`, address, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
+      });
+      return response.data.address;
+    }
+    catch (error) {
+      console.error('Lỗi cập nhật địa chỉ:', error.response?.data || error.message);
+      throw new Error('Không thể cập nhật địa chỉ.');
+    }
+  }
+
+  async deleteAddress(addressId) {
+    try {
+      await api.delete(`/addresses/${addressId}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
+      });
+      return true;
+    }
+    catch (error) {
+      console.error('Lỗi xóa địa chỉ:', error.response?.data || error.message);
+      throw new Error('Không thể xóa địa chỉ.');
+    }
+  }
 }
 
 export default AuthService;

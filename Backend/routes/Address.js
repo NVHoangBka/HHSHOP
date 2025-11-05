@@ -1,10 +1,11 @@
-// backend/routes/Address.js
 const express = require('express');
 const router = express.Router();
 const AuthController = require('../controllers/AuthController');
 const { protect } = require('../middleware/auth');
 
-// SỬA: DÙNG '/' VÀ TRUYỀN HÀM (KHÔNG GỌI NGAY)
-router.get('/', protect, AuthController.getAddresses);
+router.get('/', protect, AuthController.getAddressAll);
+router.post('/', protect, AuthController.addAddress);
+router.put('/:addressId', protect, AuthController.updateAddress);
+router.delete('/:addressId', protect, AuthController.deleteAddress);
 
 module.exports = router;

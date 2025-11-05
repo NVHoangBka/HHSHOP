@@ -179,7 +179,7 @@ class AuthController {
   }
 
   // === LẤY ĐỊA CHỈ ===
-  static async getAddresses(req, res) {
+  static async getAddressAll(req, res) {
     try {
       if (!req.user || !req.user.id) {
         return res.status(401).json({ success: false, message: 'Không có quyền truy cập' });
@@ -190,6 +190,79 @@ class AuthController {
       res.json({ success: true, addresses });
     } catch (error) {
       console.error('Lỗi lấy địa chỉ:', error);
+      res.status(500).json({ success: false, message: 'Lỗi hệ thống' });
+    }
+  }
+
+  static async addAddress(req, res) {
+    try {
+      const userId = req.user.id;
+      const { recipientName, phoneNumber, addressLine, ward, district, city, isDefault } = req.body;
+
+      // Nếu là mặc định → bỏ mặc định cũ
+      if (isDefault) {
+        await Address.updateMany({ userId }, { isDefault: false });
+      }
+      const newAddress = await Address.create({
+        userId,
+        recipientName,
+        phoneNumber,
+        addressLine,
+        ward,
+        district,
+        city,
+        isDefault: isDefault || false
+      });
+      res.status(201).json({ success: true, address: newAddress });
+    } catch (error) {
+      console.error('Lỗi thêm địa chỉ:', error);
+      res.status(500).json({ success: false, message: 'Lỗi hệ thống' });
+    }
+  }
+
+  static async updateAddress(req, res) {
+    try {
+      const userId = req.user.id;
+      const addressId = req.params.id;
+      const { recipientName, phoneNumber, addressLine, ward, district, city, isDefault } = req.body;
+      // Nếu là mặc định → bỏ mặc định cũ
+      if (isDefault) {
+        await Address.updateMany({ userId }, { isDefault: false });
+      } 
+      const updatedAddress = await Address.findOneAndUpdate(
+        { _id: addressId, userId },
+        {
+          recipientName,
+          phoneNumber,
+          addressLine,
+          ward,
+          district,
+          city,
+          isDefault: isDefault || false
+        },
+        { new: true }
+      );
+      if (!updatedAddress) {
+        return res.status(404).json({ success: false, message: 'Địa chỉ không tồn tại' });
+      }
+      res.json({ success: true, address: updatedAddress });
+    } catch (error) {
+      console.error('Lỗi cập nhật địa chỉ:', error);
+      res.status(500).json({ success: false, message: 'Lỗi hệ thống' });
+    }
+  }
+
+  static async deleteAddress(req, res) {
+    try {
+      const userId = req.user.id;
+      const addressId = req.params.id;
+      const deletedAddress = await Address.findOneAndDelete({ _id: addressId, userId });
+      if (!deletedAddress) {
+        return res.status(404).json({ success: false, message: 'Địa chỉ không tồn tại' });
+      }
+      res.json({ success: true, message: 'Xóa địa chỉ thành công' });
+    } catch (error) {
+      console.error('Lỗi xóa địa chỉ:', error);
       res.status(500).json({ success: false, message: 'Lỗi hệ thống' });
     }
   }

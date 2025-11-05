@@ -56,6 +56,42 @@ class AuthController {
       return { success: false, message: error.message };
     }
   }
+
+  async getAddressAll(userId) {
+    try {
+      const addresses = await this.authService.getAddressAll(userId);
+      return { success: true, addresses };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  }
+
+  async addAddress(userId, addressData) {
+    try {
+      const newAddress = await this.authService.addAddress(userId, addressData);
+      return { success: true, address: newAddress };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  }
+
+  async updateAddress(userId, addressId, addressData) {
+    try {
+      const updatedAddress = await this.authService.updateAddress(userId, addressId, addressData);
+      return { success: true, address: updatedAddress };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  }
+
+  async deleteAddress(userId, addressId) {
+    try {
+      await this.authService.deleteAddress(userId, addressId);
+      return { success: true };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  } 
 }
 
 export default AuthController;
