@@ -178,6 +178,32 @@ class AuthController {
     }
   }
 
+  // === ĐỔI MẬT KHẨU ===
+  static async changePassword(req, res) {
+    try {
+      const userId = req.user.id;
+      const { oldPassword, newPassword } = req.body;
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ success: false, message: 'Người dùng không tồn tại' });
+      }
+      const isMatch = await bcrypt.compare(oldPassword, user.password);
+      if (!isMatch) {
+        return res.status(400).json({ success: false, message: 'Mật khẩu cũ không đúng' });
+      }
+      const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+      // user.password = hashedNewPassword;
+      await User.updateOne(
+        { _id: userId },
+        { $set: { password: hashedNewPassword } }
+      );
+      res.json({ success: true, message: 'Đổi mật khẩu thành công' });
+    } catch (error) {
+      console.error('Change password error:', error);
+      res.status(500).json({ success: false, message: 'Lỗi hệ thống' });
+    }
+  }
+
   // === LẤY ĐỊA CHỈ ===
   static async getAddressAll(req, res) {
     try {
@@ -222,8 +248,8 @@ class AuthController {
 
   static async updateAddress(req, res) {
     try {
-      const userId = req.user.id;
-      const addressId = req.params.id;
+      const userId = req.user._id;
+      const addressId = req.params.addressId;
       const { recipientName, phoneNumber, addressLine, ward, district, city, isDefault } = req.body;
       // Nếu là mặc định → bỏ mặc định cũ
       if (isDefault) {
@@ -254,8 +280,8 @@ class AuthController {
 
   static async deleteAddress(req, res) {
     try {
-      const userId = req.user.id;
-      const addressId = req.params.id;
+      const userId = req.user._id;
+      const addressId = req.params.addressId;
       const deletedAddress = await Address.findOneAndDelete({ _id: addressId, userId });
       if (!deletedAddress) {
         return res.status(404).json({ success: false, message: 'Địa chỉ không tồn tại' });

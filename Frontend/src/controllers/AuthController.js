@@ -48,6 +48,15 @@ class AuthController {
     }
   }
 
+  async changePassword(oldPassword, newPassword) {
+    try {
+      const result = await this.authService.changePassword(oldPassword, newPassword);
+      return result; // { success, message }
+    } catch (error) {
+      return { success: false, message: 'Đổi mật khẩu thất bại' };
+    }
+  }
+
   async getAddressCount(userId) {
     try {
       const count = await this.authService.getAddressCount(userId);

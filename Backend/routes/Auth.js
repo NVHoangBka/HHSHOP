@@ -9,5 +9,6 @@ router.post('/refresh-token', AuthController.refreshToken);
 router.get('/me', protect, AuthController.getCurrentUser);
 router.post('/logout', protect, AuthController.logout);
 router.get('/users', protect, AuthController.getUsers);
+router.post('/change-password', protect, AuthController.changePassword);
 
 module.exports = router;

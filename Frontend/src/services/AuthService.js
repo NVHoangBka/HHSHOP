@@ -129,6 +129,19 @@ class AuthService {
     }
   }
 
+  async changePassword(oldPassword, newPassword) {
+    try {
+      const response = await api.post('/auth/change-password',
+        { oldPassword, newPassword },
+        { headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` } }
+      );
+      return { success: true, message: response.data.message };
+    } catch (error) {
+      console.error('Change password error:', error);
+      return { success: false, message: error.response?.data?.message || 'Đổi mật khẩu thất bại' };
+    }
+  }
+
   async getAddressCount() {
     try {
       const response = await api.get('/addresses');
@@ -139,7 +152,7 @@ class AuthService {
     }
   }
 
-  async getAddressAll(userId) {
+  async getAddressAll() {
     try {
       const response = await api.get('/addresses');
       return response.data.addresses;

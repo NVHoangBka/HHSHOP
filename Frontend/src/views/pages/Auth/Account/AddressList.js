@@ -9,6 +9,7 @@ const AddressList = ({ authController }) => {
   const modalRef = useRef(null);
   const [addresses, setAddresses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   // Form state
   const [isEdit, setIsEdit] = useState(false);
@@ -16,7 +17,6 @@ const AddressList = ({ authController }) => {
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [addressLine, setAddressLine] = useState("");
-  const [error, setError] = useState("");
   const [city, setCity] = useState("");
   const [district, setDistrict] = useState("");
   const [ward, setWard] = useState("");
@@ -26,6 +26,7 @@ const AddressList = ({ authController }) => {
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
 
+// === FETCH ADDRESSES ===
   useEffect(() => {
     const fetchAddresses = async () => {
       setLoading(true);
@@ -47,24 +48,9 @@ const AddressList = ({ authController }) => {
     fetchAddresses();
   }, [authController]);
 
-  // Load tỉnh VN hoặc thành phố thế giới
-  useEffect(() => {
-    // ---- 1. Reset mọi field con ----
-    setCity("");
-    setDistrict("");
-    setWard("");
-
-    // ---- 2. Reset danh sách ----
-    setCitys([]);
-    setDistricts([]);
-    setWards([]);
-  }, []);
-
   // Load tỉnh
   useEffect(() => {
     setCitys(vietnamData);
-    setDistrict("");
-    setWard("");
   }, [city]);
 
   // Load huyện
@@ -106,15 +92,19 @@ const AddressList = ({ authController }) => {
 
   // Open edit
   const openEdit = (addr) => {
-    console.log(addr);
     setIsEdit(true);
     setEditId(addr._id);
     setFullName(addr.recipientName);
     setPhone(addr.phoneNumber);
     setAddressLine(addr.addressLine);
     setCity(addr.city);
-    setDistrict(addr.district);
-    setWard(addr.ward);
+    setTimeout(() => {
+      setDistrict(addr.district || "");
+      
+      setTimeout(() => {
+        setWard(addr.ward || "");
+      }, 50);
+    }, 50);
     setIsDefault(addr.isDefault);
   };
 
@@ -185,7 +175,7 @@ const AddressList = ({ authController }) => {
         </button>
       </div>
       <div
-        className="modal fade"
+        className="modal fade modal-lg"
         id="addressModal"
         tabIndex="-1"
         ref={modalRef}
@@ -295,6 +285,12 @@ const AddressList = ({ authController }) => {
                         </select>
                       </fieldset>
                     </div>
+                    <div className="col-12">
+                      <div className="form-check">
+                        <input type="checkbox" className="form-check-input" checked={isDefault} onChange={e => setIsDefault(e.target.checked)} />
+                        <label className="form-check-label">Đặt làm mặc định</label>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </form>
@@ -367,7 +363,7 @@ const AddressList = ({ authController }) => {
                 <div id="tool_address" className="btn-address">
                   <div className="btn-row d-flex">
                     <button
-                      className="btn-edit-addr btn btn-edit p-1 fw-semibold text-primary border-0"
+                      className="btn-edit-addr btn btn-edit p-1 fw-semibold text-success border-0"
                       type="button"
                       data-bs-toggle="modal"
                       data-bs-target="#addressModal"

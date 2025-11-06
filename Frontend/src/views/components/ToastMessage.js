@@ -19,7 +19,6 @@ const ToastMessage = ({
 
       const handleHidden = () => {
         onClose();
-        toastRef.current.removeEventListener("hidden.bs.toast", handleHidden);
       };
 
       toastRef.current.addEventListener("hidden.bs.toast", handleHidden);
