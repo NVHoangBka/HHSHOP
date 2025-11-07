@@ -1,4 +1,4 @@
-import AuthService from '../services/AuthService.js';
+import AuthService from "../services/AuthService.js";
 
 class AuthController {
   constructor() {
@@ -10,7 +10,7 @@ class AuthController {
       const result = await this.authService.register(newUser);
       return result; // { success, user, message, status }
     } catch (error) {
-      return { success: false, message: 'Đăng ký thất bại', status: 500 };
+      return { success: false, message: "Đăng ký thất bại", status: 500 };
     }
   }
 
@@ -19,7 +19,7 @@ class AuthController {
       const result = await this.authService.login(email, password);
       return result; // { success, user, message, status }
     } catch (error) {
-      return { success: false, message: 'Đăng nhập thất bại', status: 500 };
+      return { success: false, message: "Đăng nhập thất bại", status: 500 };
     }
   }
 
@@ -28,7 +28,7 @@ class AuthController {
       const result = await this.authService.logout();
       return result; // { success, message }
     } catch (error) {
-      return { success: false, message: 'Đăng xuất thất bại' };
+      return { success: false, message: "Đăng xuất thất bại" };
     }
   }
 
@@ -48,12 +48,33 @@ class AuthController {
     }
   }
 
-  async changePassword(oldPassword, newPassword) {
+  async recoverPassword(email) {
     try {
-      const result = await this.authService.changePassword(oldPassword, newPassword);
+      const result = await this.authService.recoverPassword(email);
       return result; // { success, message }
     } catch (error) {
-      return { success: false, message: 'Đổi mật khẩu thất bại' };
+      return { success: false, message: "Yêu cầu đặt lại mật khẩu thất bại" };
+    }
+  }
+
+  async resetPassword(token, newPassword) {
+    try {
+      const result = await this.authService.resetPassword(token, newPassword);
+      return result; // { success, message }
+    } catch (error) {
+      return { success: false, message: "Đặt lại mật khẩu thất bại" };
+    }
+  }
+
+  async changePassword(oldPassword, newPassword) {
+    try {
+      const result = await this.authService.changePassword(
+        oldPassword,
+        newPassword
+      );
+      return result; // { success, message }
+    } catch (error) {
+      return { success: false, message: "Đổi mật khẩu thất bại" };
     }
   }
 
@@ -86,7 +107,11 @@ class AuthController {
 
   async updateAddress(userId, addressId, addressData) {
     try {
-      const updatedAddress = await this.authService.updateAddress(userId, addressId, addressData);
+      const updatedAddress = await this.authService.updateAddress(
+        userId,
+        addressId,
+        addressData
+      );
       return { success: true, address: updatedAddress };
     } catch (error) {
       return { success: false, message: error.message };
@@ -100,7 +125,7 @@ class AuthController {
     } catch (error) {
       return { success: false, message: error.message };
     }
-  } 
+  }
 }
 
 export default AuthController;

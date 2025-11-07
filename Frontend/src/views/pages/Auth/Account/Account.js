@@ -39,7 +39,9 @@ const Account = ({ onLogin, authController }) => {
     setError("");
     try {
       await authController.logout();
-      navigate("/account/login");
+      setTimeout(() => {
+        window.location.href = "/account/login";
+      }, 1000);
     } catch (err) {
       setError("Đăng xuất thất bại");
     } finally {

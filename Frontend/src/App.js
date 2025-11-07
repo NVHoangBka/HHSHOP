@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
-import Header from './views/components/Header';
-import CartController from './controllers/CartController';
-import Footer from './views/components/Footer';
-import AppRouter from './routers/AppRouter';
-import ToastMessage from './views/components/ToastMessage';
-import AuthController from './controllers/AuthController';
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router } from "react-router-dom";
+import Header from "./views/components/Header";
+import CartController from "./controllers/CartController";
+import Footer from "./views/components/Footer";
+import AppRouter from "./routers/AppRouter";
+import ToastMessage from "./views/components/ToastMessage";
+import AuthController from "./controllers/AuthController";
 
 const App = () => {
   const cartController = new CartController();
   const authController = new AuthController();
   const [cartItems, setCartItems] = useState(cartController.getCartItems());
   const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [toastType, setToastType] = useState('info');
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("info");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
@@ -21,7 +21,10 @@ const App = () => {
       const user = await authController.getCurrentUser();
       setIsAuthenticated(!!user);
       const storedCart = cartController.getCartItems();
-      if (storedCart.length > 0 && JSON.stringify(storedCart) !== JSON.stringify(cartItems)) {
+      if (
+        storedCart.length > 0 &&
+        JSON.stringify(storedCart) !== JSON.stringify(cartItems)
+      ) {
         setCartItems(storedCart);
       }
     }
@@ -33,11 +36,11 @@ const App = () => {
       const updatedCart = cartController.addToCart(product);
       setCartItems([...updatedCart]);
       setToastMessage(`Đã thêm "${product.name}" vào giỏ hàng`);
-      setToastType('success');
+      setToastType("success");
       setShowToast(true);
     } catch (error) {
       setToastMessage(error.message);
-      setToastType('danger');
+      setToastType("danger");
       setShowToast(true);
     }
   };
@@ -48,7 +51,7 @@ const App = () => {
       setCartItems([...updatedCart]);
     } catch (error) {
       setToastMessage(error.message);
-      setToastType('danger');
+      setToastType("danger");
       setShowToast(true);
     }
   };
@@ -57,46 +60,60 @@ const App = () => {
     const result = await authController.login(email, password);
     if (result.success) {
       setIsAuthenticated(true);
-      setToastMessage('Đăng nhập thành công');
-      setToastType('success');
+      setToastMessage("Đăng nhập thành công");
+      setToastType("success");
       setShowToast(true);
       return true;
     } else {
       setIsAuthenticated(false);
       setToastMessage(result.message);
-      setToastType('danger');
+      setToastType("danger");
       setShowToast(true);
       return false;
     }
   };
 
-  const onRegister = async (email, password, firstName, lastName, phoneNumber, address) => {
-    const result = await authController.register({ email, password, firstName, lastName, phoneNumber, address: [address] });
+  const onRegister = async (
+    email,
+    password,
+    firstName,
+    lastName,
+    phoneNumber,
+    address
+  ) => {
+    const result = await authController.register({
+      email,
+      password,
+      firstName,
+      lastName,
+      phoneNumber,
+      address: [address],
+    });
     if (result.success) {
       setIsAuthenticated(true);
-      setToastMessage('Đăng ký thành công');
-      setToastType('success');
+      setToastMessage("Đăng ký thành công");
+      setToastType("success");
       setShowToast(true);
       return true;
     } else {
       setIsAuthenticated(false);
       setToastMessage(result.message);
-      setToastType('danger');
+      setToastType("danger");
       setShowToast(true);
       return false;
     }
-  }
+  };
 
   const onLogout = async () => {
     const result = await authController.logout();
     if (result.success) {
       setIsAuthenticated(false);
-      setToastMessage('Đã đăng xuất');
-      setToastType('success');
+      setToastMessage("Đã đăng xuất");
+      setToastType("success");
       setShowToast(true);
     } else {
       setToastMessage(result.message);
-      setToastType('danger');
+      setToastType("danger");
       setShowToast(true);
     }
   };
@@ -121,7 +138,7 @@ const App = () => {
           addToCart={addToCart}
           removeFromCart={removeFromCart}
           onLogin={onLogin}
-          onRegister= {onRegister}
+          onRegister={onRegister}
           onCartChange={onCartChange}
           authController={authController}
         />

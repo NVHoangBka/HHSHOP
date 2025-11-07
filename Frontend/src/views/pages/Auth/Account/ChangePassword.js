@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import ToastMessage from "../../../components/ToastMessage";
 
 const ChangePassword = ({authController}) => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [formData, setFormData] = useState({
     oldPassword: "",
     newPassword: "",
@@ -59,7 +59,9 @@ const ChangePassword = ({authController}) => {
         setToastMessage("Đổi mật khẩu thành công! Đang đăng xuất...");
         setToastType("success");
         await authController.logout();
-        navigate("/account/login");
+        setTimeout(() => {
+          window.location.href = "/account/login";
+        }, 1000);
       } else {
         setErrors({ oldPassword: result.message || "Mật khẩu cũ không đúng" });
       }
