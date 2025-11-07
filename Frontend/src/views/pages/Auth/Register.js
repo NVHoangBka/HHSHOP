@@ -48,7 +48,7 @@ const Register = ({ onLogin, onRegister, authController }) => {
         firstName,
         lastName,
         phoneNumber,
-        address: [address],
+        address,
       };
       const registerResult = await onRegister(newUser);
       if (registerResult.success) {

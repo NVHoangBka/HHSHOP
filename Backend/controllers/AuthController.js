@@ -9,26 +9,49 @@ class AuthController {
   // === ĐĂNG KÝ ===
   static async register(req, res) {
     try {
+      // BƯỚC 1: Kiểm tra env (bắt buộc)
+      if (!process.env.JWT_SECRET || !process.env.JWT_REFRESH_SECRET) {
+        return res.status(500).json({
+          success: false,
+          message: "Server thiếu cấu hình JWT",
+        });
+      }
+
       const { email, password, firstName, lastName, phoneNumber, address } =
         req.body;
 
-      // Kiểm tra email
-      const existingEmail = await User.findOne({ email });
-      if (existingEmail) {
-        return res
-          .status(400)
-          .json({ success: false, message: "Email đã tồn tại" });
+      // BƯỚC 2: Validate cơ bản
+      if (!email || !password) {
+        return res.status(400).json({
+          success: false,
+          message: "Email và password là bắt buộc",
+        });
       }
 
-      const hashedPassword = await bcrypt.hash(password, 10);
-      const refreshToken = jwt.sign({ email }, process.env.JWT_REFRESH_SECRET, {
-        expiresIn: "7d",
-      });
+      // BƯỚC 3: Kiểm tra email trùng
+      const existingUser = await User.findOne({ email: email.toLowerCase() });
+      if (existingUser) {
+        return res.status(400).json({
+          success: false,
+          message: "Email đã tồn tại",
+        });
+      }
 
-      const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+      // BƯỚC 4: Tạo refreshToken TRƯỚC
+      const refreshToken = jwt.sign(
+        { email: email.toLowerCase() },
+        process.env.JWT_REFRESH_SECRET,
+        { expiresIn: "7d" }
+      );
 
+      // BƯỚC 5: Hash password + refreshToken
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+      const hashedRefreshToken = await bcrypt.hash(refreshToken, salt);
+
+      // BƯỚC 6: Tạo user – ĐẢM BẢO CÓ await!!!
       const newUser = await User.create({
-        email,
+        email: email.toLowerCase(),
         password: hashedPassword,
         firstName,
         lastName,
@@ -37,22 +60,28 @@ class AuthController {
         refreshToken: hashedRefreshToken,
       });
 
+      // BƯỚC 7: Tạo accessToken DỰA TRÊN _id THẬT
       const accessToken = jwt.sign(
         { id: newUser._id },
         process.env.JWT_SECRET,
         { expiresIn: "1h" }
       );
 
-      // LƯU REFRESH TOKEN ĐÃ MÃ HÓA VÀO CSDL
-      res.status(201).json({
+      // BƯỚC 8: Thành công!
+      return res.status(201).json({
         success: true,
-        message: "Đăng ký thành công",
+        message: "Đăng ký thành công!",
         userId: newUser._id,
         accessToken,
         refreshToken,
       });
     } catch (error) {
-      res.status(500).json({ success: false, message: "Lỗi hệ thống" });
+      console.error("LỖI ĐĂNG KÝ CHI TIẾT:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Lỗi server",
+        error: error.message,
+      });
     }
   }
 

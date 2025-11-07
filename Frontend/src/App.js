@@ -73,27 +73,14 @@ const App = () => {
     }
   };
 
-  const onRegister = async (
-    email,
-    password,
-    firstName,
-    lastName,
-    phoneNumber,
-    address
-  ) => {
-    const result = await authController.register({
-      email,
-      password,
-      firstName,
-      lastName,
-      phoneNumber,
-      address: [address],
-    });
+  const onRegister = async (newUser) => {
+    const result = await authController.register(newUser);
     if (result.success) {
       setIsAuthenticated(true);
       setToastMessage("Đăng ký thành công");
       setToastType("success");
       setShowToast(true);
+      navigator("/account/info");
       return true;
     } else {
       setIsAuthenticated(false);
