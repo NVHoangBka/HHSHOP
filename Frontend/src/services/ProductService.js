@@ -1,5 +1,5 @@
 // src/services/ProductService.js
-import ProductModel from '../models/ProductModel';
+import ProductModel from "../models/ProductModel";
 
 class ProductService {
   constructor() {

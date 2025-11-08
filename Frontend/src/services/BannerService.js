@@ -1,4 +1,4 @@
-import BannerModel from '../models/BannerModel.js';
+import BannerModel from "../models/BannerModel.js";
 
 class BannerService {
   constructor() {
@@ -8,7 +8,6 @@ class BannerService {
   getBannersAll() {
     return this.bannerModel.getBannersAll();
   }
-
 }
 
 export default BannerService;

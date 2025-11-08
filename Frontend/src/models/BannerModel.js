@@ -1,5 +1,5 @@
 // src/models/BannerModel.js
-import api from '../services/api';
+import api from "../services/api";
 
 class Banner {
   constructor(data) {
@@ -15,16 +15,13 @@ class Banner {
 class BannerModel {
   async getBannersAll() {
     try {
-      const res = await api.get('/banners');
-      return res.data.banners.map(b => new Banner(b));
+      const res = await api.get("/banners");
+      return res.data.banners.map((b) => new Banner(b));
     } catch (error) {
-      console.error('Lỗi tải banner:', error);
+      console.error("Lỗi tải banner:", error);
       return [];
     }
   }
-  
 }
-
-
 
 export default BannerModel;

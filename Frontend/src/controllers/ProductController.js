@@ -1,4 +1,4 @@
-import ProductService from '../services/ProductService';
+import ProductService from "../services/ProductService";
 
 class ProductController {
   constructor() {
@@ -28,7 +28,6 @@ class ProductController {
   getProductById(id) {
     return this.productService.getProductById(id);
   }
-  
 }
 
 export default ProductController;

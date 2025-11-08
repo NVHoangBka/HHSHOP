@@ -1,5 +1,5 @@
 // backend/controllers/ProductController.js
-const Product = require('../models/Products');
+const Product = require("../models/Products");
 
 class ProductController {
   static async getAll(req, res) {
@@ -7,7 +7,7 @@ class ProductController {
       const products = await Product.find();
       res.json({ success: true, products });
     } catch (error) {
-      res.status(500).json({ success: false, message: 'Lỗi hệ thống' });
+      res.status(500).json({ success: false, message: "Lỗi hệ thống" });
     }
   }
 
@@ -17,7 +17,7 @@ class ProductController {
       const products = await Product.find({ titles: title });
       res.json({ success: true, products });
     } catch (error) {
-      res.status(500).json({ success: false, message: 'Lỗi hệ thống' });
+      res.status(500).json({ success: false, message: "Lỗi hệ thống" });
     }
   }
 
@@ -27,7 +27,7 @@ class ProductController {
       const products = await Product.find({ subTitles: subtitle });
       res.json({ success: true, products });
     } catch (error) {
-      res.status(500).json({ success: false, message: 'Lỗi hệ thống' });
+      res.status(500).json({ success: false, message: "Lỗi hệ thống" });
     }
   }
 
@@ -37,7 +37,7 @@ class ProductController {
       const products = await Product.find({ tag });
       res.json({ success: true, products });
     } catch (error) {
-      res.status(500).json({ success: false, message: 'Lỗi hệ thống' });
+      res.status(500).json({ success: false, message: "Lỗi hệ thống" });
     }
   }
 
@@ -47,7 +47,7 @@ class ProductController {
       const products = await Product.find({ types: type });
       res.json({ success: true, products });
     } catch (error) {
-      res.status(500).json({ success: false, message: 'Lỗi hệ thống' });
+      res.status(500).json({ success: false, message: "Lỗi hệ thống" });
     }
   }
 
@@ -55,19 +55,22 @@ class ProductController {
     const { id } = req.params;
     try {
       const product = await Product.findById(id);
-      if (!product) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+      if (!product)
+        return res
+          .status(404)
+          .json({ success: false, message: "Không tìm thấy" });
       res.json({ success: true, product });
     } catch (error) {
-      res.status(500).json({ success: false, message: 'Lỗi hệ thống' });
+      res.status(500).json({ success: false, message: "Lỗi hệ thống" });
     }
   }
 
   static async seed(req, res) {
     try {
       await Product.deleteMany({});
-      const { products } = require('../data/products.js');
+      const { products } = require("../data/products.js");
       await Product.insertMany(products);
-      res.json({ success: true, message: 'Đã seed dữ liệu!' });
+      res.json({ success: true, message: "Đã seed dữ liệu!" });
     } catch (error) {
       res.status(500).json({ success: false, message: error.message });
     }

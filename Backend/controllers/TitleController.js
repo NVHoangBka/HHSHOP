@@ -1,5 +1,5 @@
 // backend/controllers/TitleController.js
-const Title = require('../models/Title');
+const Title = require("../models/Title");
 
 class TitleController {
   static async getAll(req, res) {
@@ -11,7 +11,7 @@ class TitleController {
       const titles = await Title.find(query).sort({ createdAt: 1 });
       res.json({ success: true, titles });
     } catch (error) {
-      res.status(500).json({ success: false, message: 'Lỗi hệ thống' });
+      res.status(500).json({ success: false, message: "Lỗi hệ thống" });
     }
   }
 }

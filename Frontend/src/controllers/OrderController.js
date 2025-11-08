@@ -1,8 +1,8 @@
-import AuthService from '../services/AuthService';
+import AuthService from "../services/AuthService";
 
 class OrderController {
   constructor() {
-      this.authService = new AuthService();
+    this.authService = new AuthService();
   }
   async getAddressCount(userId) {
     try {

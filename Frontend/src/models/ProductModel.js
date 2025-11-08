@@ -1,5 +1,5 @@
 // src/models/ProductModel.js
-import api from '../services/api';
+import api from "../services/api";
 
 class Product {
   constructor(data) {
@@ -22,10 +22,10 @@ class Product {
 class ProductModel {
   async getAllProducts() {
     try {
-      const res = await api.get('/products');
-      return res.data.products.map(p => new Product(p));
+      const res = await api.get("/products");
+      return res.data.products.map((p) => new Product(p));
     } catch (error) {
-      console.error('Lỗi tải sản phẩm:', error);
+      console.error("Lỗi tải sản phẩm:", error);
       return [];
     }
   }
@@ -33,9 +33,9 @@ class ProductModel {
   async getProductsByTitle(titlePath) {
     try {
       const res = await api.get(`/products/title/${titlePath}`);
-      return res.data.products.map(p => new Product(p));
+      return res.data.products.map((p) => new Product(p));
     } catch (error) {
-      console.error('Lỗi lọc theo title:', error);
+      console.error("Lỗi lọc theo title:", error);
       return [];
     }
   }
@@ -43,9 +43,9 @@ class ProductModel {
   async getProductsBySubTitle(subTitlePath) {
     try {
       const res = await api.get(`/products/subtitle/${subTitlePath}`);
-      return res.data.products.map(p => new Product(p));
+      return res.data.products.map((p) => new Product(p));
     } catch (error) {
-      console.error('Lỗi lọc theo subtitle:', error);
+      console.error("Lỗi lọc theo subtitle:", error);
       return [];
     }
   }
@@ -53,9 +53,9 @@ class ProductModel {
   async getProductsByTag(tag) {
     try {
       const res = await api.get(`/products/tag/${tag}`);
-      return res.data.products.map(p => new Product(p));
+      return res.data.products.map((p) => new Product(p));
     } catch (error) {
-      console.error('Lỗi lọc theo tag:', error);
+      console.error("Lỗi lọc theo tag:", error);
       return [];
     }
   }
@@ -63,9 +63,9 @@ class ProductModel {
   async getProductsByType(type) {
     try {
       const res = await api.get(`/products/type/${type}`);
-      return res.data.products.map(p => new Product(p));
+      return res.data.products.map((p) => new Product(p));
     } catch (error) {
-      console.error('Lỗi lọc theo type:', error);
+      console.error("Lỗi lọc theo type:", error);
       return [];
     }
   }
@@ -75,7 +75,7 @@ class ProductModel {
       const res = await api.get(`/products/${id}`);
       return new Product(res.data.product);
     } catch (error) {
-      console.error('Lỗi lấy chi tiết sản phẩm:', error);
+      console.error("Lỗi lấy chi tiết sản phẩm:", error);
       return null;
     }
   }

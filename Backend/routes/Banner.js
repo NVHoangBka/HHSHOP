@@ -1,8 +1,8 @@
 // backend/routes/Banner.js
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const BannerController = require('../controllers/BannerController');
+const BannerController = require("../controllers/BannerController");
 
-router.get('/', BannerController.getAll);
+router.get("/", BannerController.getAll);
 
 module.exports = router;

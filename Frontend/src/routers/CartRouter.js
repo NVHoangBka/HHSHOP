@@ -1,7 +1,7 @@
-import React from 'react';
-import { Route, Navigate } from 'react-router-dom';
-import Cart from '../views/components/Cart';
-import CartController from '../controllers/CartController';
+import React from "react";
+import { Route, Navigate } from "react-router-dom";
+import Cart from "../views/components/Cart";
+import CartController from "../controllers/CartController";
 
 const cartController = new CartController();
 
@@ -15,10 +15,10 @@ const CartRouter = ({ isAuthenticated, cartItems, removeFromCart }) => {
       path="/cart"
       element={
         <ProtectedRoute>
-          <Cart 
-            cartItems={cartItems} 
-            removeFromCart={removeFromCart} 
-            cartController={cartController} 
+          <Cart
+            cartItems={cartItems}
+            removeFromCart={removeFromCart}
+            cartController={cartController}
           />
         </ProtectedRoute>
       }

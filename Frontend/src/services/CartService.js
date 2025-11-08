@@ -1,8 +1,10 @@
-import CartModel from '../models/CartModel.js';
+import CartModel from "../models/CartModel.js";
 
 class CartService {
   constructor() {
-    this.cartModel = new CartModel(JSON.parse(localStorage.getItem('cart')) || []);
+    this.cartModel = new CartModel(
+      JSON.parse(localStorage.getItem("cart")) || []
+    );
   }
 
   addToCart(product) {
@@ -34,7 +36,9 @@ class CartService {
   }
 
   getTotalQuantity() {
-    return this.cartModel.getItems().reduce((sum, item) => sum + item.quantity, 0);
+    return this.cartModel
+      .getItems()
+      .reduce((sum, item) => sum + item.quantity, 0);
   }
 
   getTotalPrice() {
@@ -42,7 +46,7 @@ class CartService {
   }
 
   saveCart(items) {
-    localStorage.setItem('cart', JSON.stringify(items));
+    localStorage.setItem("cart", JSON.stringify(items));
     this.cartModel = new CartModel(items); // Cập nhật model
   }
 }

@@ -1,4 +1,4 @@
-import BannerService from '../services/BannerService.js';
+import BannerService from "../services/BannerService.js";
 
 class BannerController {
   constructor() {
@@ -9,15 +9,14 @@ class BannerController {
     try {
       const banners = await this.bannerService.getBannersAll();
       if (!banners || !Array.isArray(banners)) {
-        throw new Error('Danh sách banner không hợp lệ');
+        throw new Error("Danh sách banner không hợp lệ");
       }
       return banners;
     } catch (error) {
-      console.error('Lỗi khi lấy danh sách banner:', error);
+      console.error("Lỗi khi lấy danh sách banner:", error);
       return [];
     }
   }
-
 }
 
 export default BannerController;
