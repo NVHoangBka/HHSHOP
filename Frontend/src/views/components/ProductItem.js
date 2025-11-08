@@ -1,12 +1,17 @@
-import React from 'react';
+import React from "react";
 
 const ProductItem = ({ product, addToCart }) => {
   if (!product) {
-    return <div className="product-item p-3 border mx-2">Sản phẩm không tồn tại</div>;
+    return (
+      <div className="product-item p-3 border mx-2">Sản phẩm không tồn tại</div>
+    );
   }
 
   const formatPrice = (price) => {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(price);
   };
 
   const renderStars = (rating = 0) => {
@@ -16,7 +21,9 @@ const ProductItem = ({ product, addToCart }) => {
       stars.push(
         <i
           key={i}
-          className={`bi ${i <= Math.floor(rating) ? 'bi-star-fill' : 'bi-star'} text-warning`}
+          className={`bi ${
+            i <= Math.floor(rating) ? "bi-star-fill" : "bi-star"
+          } text-warning`}
         ></i>
       );
     }
@@ -30,7 +37,9 @@ const ProductItem = ({ product, addToCart }) => {
         className="img-fluid rounded-start w-100"
         alt={product.name}
       />
-      <p className="mt-3 line-clamp-2 fs-body fw-semibold hover fixed-two-lines">{product.name}</p>
+      <p className="mt-3 line-clamp-2 fs-body fw-semibold hover fixed-two-lines">
+        {product.name}
+      </p>
       <div className="more d-flex justify-content-between mx-1">
         <div className="price">
           <p className="price-current m-0 text-danger fw-bold">

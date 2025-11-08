@@ -8,7 +8,7 @@ const ToastMessage = ({
   onClose,
   message,
   title = "Thông báo",
-  type = "info", 
+  type = "info",
 }) => {
   const toastRef = useRef(null);
 
@@ -30,10 +30,14 @@ const ToastMessage = ({
       case "success":
         return <i className="bi bi-check-circle-fill text-white me-2 fs-5"></i>;
       case "error":
-        return <i className="bi bi-exclamation-circle-fill text-danger me-2 fs-5"></i>;
+        return (
+          <i className="bi bi-exclamation-circle-fill text-danger me-2 fs-5"></i>
+        );
       case "info":
       default:
-        return <i className="bi bi-info-circle-fill text-primary me-2 fs-5"></i>;
+        return (
+          <i className="bi bi-info-circle-fill text-primary me-2 fs-5"></i>
+        );
     }
   };
 
@@ -48,7 +52,9 @@ const ToastMessage = ({
     >
       <div className="d-flex align-items-start">
         <div className="toast-body d-flex p-0">
-          <div className={`toast-icon d-flex align-items-center justify-content-center rounded-start-2 px-1 bg-${type}`}>
+          <div
+            className={`toast-icon d-flex align-items-center justify-content-center rounded-start-2 px-1 bg-${type}`}
+          >
             {getIcon()}
           </div>
           <div className="toast-content px-3 py-2">

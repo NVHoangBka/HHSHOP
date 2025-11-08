@@ -5,7 +5,11 @@ import "./component.css";
 function Slider() {
   return (
     <>
-      <div id="carouselExample" className="carousel slide" data-bs-ride="carousel">
+      <div
+        id="carouselExample"
+        className="carousel slide"
+        data-bs-ride="carousel"
+      >
         <div className="carousel-inner">
           <div className="carousel-item active">
             <img src={sliderImg1} className="d-block w-100" alt="Slide 1" />
