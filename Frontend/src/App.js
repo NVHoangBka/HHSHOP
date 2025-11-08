@@ -1,23 +1,35 @@
-import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router } from "react-router-dom";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "./views/components/Header";
-import CartController from "./controllers/CartController";
 import Footer from "./views/components/Footer";
 import AppRouter from "./routers/AppRouter";
 import ToastMessage from "./views/components/ToastMessage";
+import CartController from "./controllers/CartController";
 import AuthController from "./controllers/AuthController";
 
 const App = () => {
-  const cartController = new CartController();
-  const authController = new AuthController();
+  const navigate = useNavigate();
+  const cartController = useRef(new CartController()).current;
+  const authController = useRef(new AuthController()).current;
   const [cartItems, setCartItems] = useState(cartController.getCartItems());
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastType, setToastType] = useState("info");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [toast, setToast] = useState({
+    show: false,
+    message: "",
+    type: "info",
+  });
+
+  // Toast helper với auto hide
+  const showToast = useCallback((message, type = "info", duration = 3000) => {
+    setToast({ show: true, message, type });
+    const timer = setTimeout(() => {
+      setToast((prev) => ({ ...prev, show: false }));
+    }, duration);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
-    async function checkAuth() {
+    const checkAuth = async () => {
       const user = await authController.getCurrentUser();
       setIsAuthenticated(!!user);
       const storedCart = cartController.getCartItems();
@@ -27,21 +39,17 @@ const App = () => {
       ) {
         setCartItems(storedCart);
       }
-    }
+    };
     checkAuth();
-  }, [cartItems, authController]);
+  }, [cartItems, authController, cartController]);
 
   const addToCart = (product) => {
     try {
       const updatedCart = cartController.addToCart(product);
       setCartItems([...updatedCart]);
-      setToastMessage(`Đã thêm "${product.name}" vào giỏ hàng`);
-      setToastType("success");
-      setShowToast(true);
+      showToast(`Đã thêm "${product.name}" vào giỏ hàng`, "success");
     } catch (error) {
-      setToastMessage(error.message);
-      setToastType("danger");
-      setShowToast(true);
+      showToast(error.message, "danger");
     }
   };
 
@@ -50,9 +58,7 @@ const App = () => {
       const updatedCart = cartController.removeFromCart(productId);
       setCartItems([...updatedCart]);
     } catch (error) {
-      setToastMessage(error.message);
-      setToastType("danger");
-      setShowToast(true);
+      showToast(error.message, "danger");
     }
   };
 
@@ -60,15 +66,11 @@ const App = () => {
     const result = await authController.login(email, password);
     if (result.success) {
       setIsAuthenticated(true);
-      setToastMessage("Đăng nhập thành công");
-      setToastType("success");
-      setShowToast(true);
+      showToast("Đăng nhập thành công", "success");
       return true;
     } else {
       setIsAuthenticated(false);
-      setToastMessage(result.message);
-      setToastType("danger");
-      setShowToast(true);
+      showToast(result.message, "danger");
       return false;
     }
   };
@@ -77,16 +79,12 @@ const App = () => {
     const result = await authController.register(newUser);
     if (result.success) {
       setIsAuthenticated(true);
-      setToastMessage("Đăng ký thành công");
-      setToastType("success");
-      setShowToast(true);
-      navigator("/account/info");
+      showToast("Đăng ký thành công", "success");
+      navigate("/account/info");
       return true;
     } else {
       setIsAuthenticated(false);
-      setToastMessage(result.message);
-      setToastType("danger");
-      setShowToast(true);
+      showToast(result.message, "danger");
       return false;
     }
   };
@@ -95,13 +93,9 @@ const App = () => {
     const result = await authController.logout();
     if (result.success) {
       setIsAuthenticated(false);
-      setToastMessage("Đã đăng xuất");
-      setToastType("success");
-      setShowToast(true);
+      showToast("Đăng xuất thành công", "success");
     } else {
-      setToastMessage(result.message);
-      setToastType("danger");
-      setShowToast(true);
+      showToast(result.message, "danger");
     }
   };
 
@@ -117,6 +111,7 @@ const App = () => {
         onLogout={onLogout}
         cartItems={cartItems}
         onCartChange={onCartChange}
+        authController={authController}
       />
       <div className="">
         <AppRouter
@@ -133,10 +128,10 @@ const App = () => {
       <Footer />
       <div className="toast-container position-fixed bottom-0 top-0 end-0">
         <ToastMessage
-          show={showToast}
-          message={toastMessage}
-          type={toastType}
-          onClose={() => setShowToast(false)}
+          show={toast.show}
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast((prev) => ({ ...prev, show: false }))}
         />
       </div>
     </>

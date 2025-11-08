@@ -32,7 +32,7 @@ const Account = ({ onLogin, authController }) => {
       }
     }
     fetchUser();
-  }, [authController, navigate]);
+  }, [authController, navigate, addressCount]);
 
   const handleLogout = async () => {
     setLogoutLoading(true);

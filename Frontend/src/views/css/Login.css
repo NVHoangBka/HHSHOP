@@ -11,16 +11,6 @@
   border: none;
 }
 
-/* .btn-primary {
-  background-color: #198754;
-  border: none;
-  transition: background-color 0.3s ease;
-}
-
-.btn-primary:hover {
-  background-color: #198754;
-} */
-
 .btn-submit {
   background-color: #198754 !important;
   color: white !important;

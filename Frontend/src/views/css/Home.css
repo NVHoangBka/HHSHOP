@@ -22,10 +22,6 @@
   text-overflow: ellipsis;
 }
 
-.fs-body {
-  font-size: 14px;
-}
-
 .heading-bar::before {
   content: "";
   position: absolute;

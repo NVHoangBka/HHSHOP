@@ -4,9 +4,11 @@ import TitleController from "../../controllers/TitleController";
 
 const titleController = new TitleController();
 
-const Menu = ({ isOpen, menuRef, setIsMenuOpen }) => {
+const Menu = ({ isOpen, menuRef, onClose, user }) => {
   const [titles, setTitles] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const fullName = user ? `${user.firstName} ${user.lastName}` : null;
 
   useEffect(() => {
     async function loadTitles() {
@@ -18,7 +20,7 @@ const Menu = ({ isOpen, menuRef, setIsMenuOpen }) => {
   }, []);
 
   const handleItemClick = () => {
-    setIsMenuOpen(false);
+    onClose(false);
   };
 
   if (loading) return <div>Đang tải menu...</div>;
@@ -34,14 +36,20 @@ const Menu = ({ isOpen, menuRef, setIsMenuOpen }) => {
             <div className="header-icon align-content-center me-2">
               <i className="bi bi-person fs-3 border px-1"></i>
             </div>
-            <div className="lh-sm">
-              <p className="mb-1 fs-6">Tài khoản</p>
-              <span className="fw-bold fs-6">Đăng nhập</span>
-            </div>
+            {user ? (
+              <div className="lh-sm d-flex align-items-center ms-1">
+                <p className="fw-bold fs-6 m-0">{fullName}</p>
+              </div>
+            ) : (
+              <div className="lh-sm">
+                <p className="mb-1 fs-6">Tài khoản</p>
+                <span className="fw-bold fs-6">Đăng nhập</span>
+              </div>
+            )}
           </Link>
           <button
             className="btn border rounded-circle px-1 py-0 h-50"
-            onClick={() => setIsMenuOpen(false)}
+            onClick={() => onClose(false)}
           >
             <i className="bi bi-x fs-4"></i>
           </button>

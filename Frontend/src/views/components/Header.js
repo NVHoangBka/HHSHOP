@@ -1,37 +1,99 @@
-import React, { useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import AuthController from '../../controllers/AuthController';
-import Menu from './Menu';
-import Search from './Search';
-import Cart from './Cart';
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Menu from "./Menu";
+import Search from "./Search";
+import Cart from "./Cart";
 
-const Header = ({ cartController, isAuthenticated, onLogout, cartItems, onCartChange }) => {
+const Header = ({
+  cartController,
+  isAuthenticated,
+  cartItems,
+  onCartChange,
+  authController,
+}) => {
   const navigate = useNavigate();
-  const authController = new AuthController();
-  const user = authController.getCurrentUser();
 
-  const handleClickHome = () => navigate('/');
-  const handleClickLogin = () => {
+  const menuRef = useRef(null);
+  const searchRef = useRef(null);
+  const cartRef = useRef(null);
+
+  const [currentUser, setCurrentUser] = useState(null);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const [localCartItems, setLocalCartItems] = useState(cartItems || []);
+
+  // Dùng props cartItems trực tiếp → không cần local state (tránh lệch)
+  const totalQuantity = localCartItems.reduce(
+    (sum, item) => sum + (item.quantity || 0),
+    0
+  );
+
+  // Lấy user khi mount hoặc authController thay đổi
+  useEffect(() => {
+    const fetchUser = async () => {
+      const user = await authController.getCurrentUser();
+      setCurrentUser(user);
+    };
+    fetchUser();
+  }, [authController]);
+
+  // Click outside để đóng menu/search/cart
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setIsMenuOpen(false);
+      }
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setIsSearchOpen(false);
+      }
+      if (cartRef.current && !cartRef.current.contains(e.target)) {
+        setIsCartOpen(false);
+      }
+    };
+
+    if (isMenuOpen || isSearchOpen || isCartOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isMenuOpen, isSearchOpen, isCartOpen]);
+
+  // Handler
+  const goHome = () => navigate("/");
+  const goToAccount = () => {
     if (isAuthenticated) {
-      navigate('/account/info')
+      navigate("/account/info");
     } else {
-
-      navigate('/account/login')
-    } 
+      navigate("/account/login");
+    }
   };
 
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-  const menuRef = useRef(null);
+  const toggleMenu = () => {
+    setIsMenuOpen((v) => !v);
+    setIsSearchOpen(false);
+    setIsCartOpen(false);
+  };
 
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const toggleSearch = () => setIsSearchOpen(!isSearchOpen);
+  const toggleSearch = () => {
+    setIsSearchOpen((v) => !v);
+    setIsMenuOpen(false);
+    setIsCartOpen(false);
+  };
 
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const toggleCart = () => setIsCartOpen(!isCartOpen);
+  const toggleCart = () => {
+    setIsCartOpen((v) => !v);
+    setIsMenuOpen(false);
+    setIsSearchOpen(false);
+  };
 
-  const [localCartItems, setLocalCartItems] = useState(cartItems || []); // Sử dụng state cục bộ để đồng bộ
-  const totalQuantity = localCartItems.reduce((sum, item) => sum + (item.quantity || 0), 0);
+  const handleCartUpdate = useCallback(
+    (updatedCart) => {
+      onCartChange(updatedCart);
+    },
+    [onCartChange]
+  );
 
   // Cập nhật localCartItems khi cartItems từ props thay đổi
   React.useEffect(() => {
@@ -42,77 +104,120 @@ const Header = ({ cartController, isAuthenticated, onLogout, cartItems, onCartCh
     <header className="header">
       <div className="header-top">
         <div className="container d-flex justify-content-between align-items-center">
-          <div className="header-top-left d-flex align-items-center" onClick={toggleMenu}>
-            <button className="btn btn-outline-secondary border rounded-circle">
+          {/* Left: Menu */}
+          <div
+            className="header-top-left d-flex align-items-center"
+            ref={menuRef}
+          >
+            <button
+              className="btn btn-outline-secondary border rounded-circle"
+              onClick={toggleMenu}
+            >
               <i className="bi bi-list fs-5"></i>
             </button>
             <span className="header-top-left-text ms-1">Danh mục sản phẩm</span>
           </div>
-          <Menu isOpen={isMenuOpen} menuRef={menuRef} setIsMenuOpen={setIsMenuOpen} />
-          {isMenuOpen && (
-            <div className="modal-backdrop fade show" onClick={() => setIsMenuOpen(false)}></div>
-          )}
-          <div className="header-top-center text-center" onClick={handleClickHome} style={{ background: 'transparent' }}>
-            <img src="https://www.canva.com/design/DAGwwkhPGJ4/TrjwaRAGmJSgLHZRKbYLGg/view" alt="logo" className="header-logo h-75 w-50" />
+          {/* Center: Logo */}
+          <div
+            className="header-top-center text-center"
+            onClick={goHome}
+            style={{ background: "transparent", cursor: "pointer" }}
+          >
+            <img
+              src="https://www.canva.com/design/DAGwwkhPGJ4/TrjwaRAGmJSgLHZRKbYLGg/view"
+              alt="logo"
+              className="header-logo h-75 w-50"
+            />
           </div>
+
+          {/* Right: Search, Account, Cart */}
           <div className="header-top-right d-flex">
-            <button className="btn btn-outline-secondary border rounded-circle m-3" onClick={toggleSearch}>
-              <i className="bi bi-search fs-5"></i>
-            </button>
-            <Search isOpen={isSearchOpen} setIsSearchOpen={setIsSearchOpen} />
-            {isSearchOpen && (
-              <div className="modal-backdrop fade show" onClick={() => setIsSearchOpen(false)}></div>
-            )}
-            <button className="btn btn-outline-secondary border rounded-circle m-3" onClick={handleClickLogin}>
+            <div ref={searchRef}>
+              <button
+                className="btn btn-outline-secondary border rounded-circle m-3"
+                onClick={toggleSearch}
+              >
+                <i className="bi bi-search fs-5"></i>
+              </button>
+            </div>
+            <button
+              className="btn btn-outline-secondary border rounded-circle m-3"
+              onClick={goToAccount}
+            >
               <i className="bi bi-person fs-5"></i>
             </button>
-            <button className="btn btn-outline-secondary border m-3 position-relative" onClick={toggleCart}>
-              <i className="bi bi-cart4 fs-5"></i>
-              <span className="ms-1">Giỏ hàng</span>
-              <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={{ fontSize: "0.6rem" }}>
-                {totalQuantity}
-              </span>
-            </button>
-            <Cart
-              isOpen={isCartOpen}
-              setIsCartOpen={setIsCartOpen}
-              cartItems={localCartItems} // Sử dụng state cục bộ
-              cartController={cartController}
-              onCartChange={(updatedCart) => {
-                setLocalCartItems(updatedCart); // Cập nhật state cục bộ
-                onCartChange(updatedCart); // Gửi sự kiện lên App.js
-              }}
-            />
-            {isCartOpen && (
-              <div className="modal-backdrop fade show" onClick={() => setIsCartOpen(false)}></div>
-            )}
+            <div ref={cartRef}>
+              <button
+                className="btn btn-outline-secondary border m-3 position-relative"
+                onClick={toggleCart}
+              >
+                <i className="bi bi-cart4 fs-5"></i>
+                <span className="ms-1">Giỏ hàng</span>
+                <span
+                  className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                  style={{ fontSize: "0.6rem" }}
+                >
+                  {totalQuantity}
+                </span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Header Bottom - Navigation */}
       <div className="header-bottom bg-success">
         <div className="container">
           <ul className="navbar justify-content-center list-unstyled row ms-5 me-5 p-3 text-white mb-0">
-            <li className="nav-item hover col-2 text-center">
-              <Link to="#" className="nav-link">Giới thiệu</Link>
-            </li>
-            <li className="nav-item hover col-2 text-center">
-              <Link to="#" className="nav-link">Khuyến mãi</Link>
-            </li>
-            <li className="nav-item hover col-2 text-center">
-              <Link to="#" className="nav-link">Tin tức</Link>
-            </li>
-            <li className="nav-item hover col-2 text-center">
-              <Link to="#" className="nav-link">Kiểm tra đơn hàng</Link>
-            </li>
-            <li className="nav-item hover col-2 text-center">
-              <Link to="#" className="nav-link">Liên hệ</Link>
-            </li>
-            <li className="nav-item hover col-2 text-center">
-              <Link to="#" className="nav-link">Hướng dẫn thiết lập</Link>
-            </li>
+            {[
+              "Giới thiệu",
+              "Khuyến mãi",
+              "Tin tức",
+              "Kiểm tra đơn hàng",
+              "Liên hệ",
+              "Hướng dẫn",
+            ].map((item) => (
+              <li className="nav-item hover col-2 text-center" key={item}>
+                <Link to="#" className="nav-link ">
+                  {item}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
       </div>
+
+      {/* Overlays */}
+      <Menu
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+        authController={authController}
+        isAuthenticated={isAuthenticated}
+        user={currentUser}
+      />
+
+      <Search isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+
+      <Cart
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        cartItems={localCartItems}
+        cartController={cartController}
+        onCartChange={handleCartUpdate}
+      />
+
+      {/* Backdrop (chỉ 1 cái, thông minh) */}
+      {(isMenuOpen || isSearchOpen || isCartOpen) && (
+        <div
+          className="position-fixed inset-0 bg-black bg-opacity-50 z-40"
+          style={{ top: 0, left: 0, right: 0, bottom: 0 }}
+          onClick={() => {
+            setIsMenuOpen(false);
+            setIsSearchOpen(false);
+            setIsCartOpen(false);
+          }}
+        />
+      )}
     </header>
   );
 };

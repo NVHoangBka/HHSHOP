@@ -212,12 +212,14 @@ class AuthController {
   // === QUÊN MẬT KHẨU SIÊU AN TOÀN ===
   static async forgotPassword(req, res) {
     try {
-      const email = req.body.email || req.body.Email;
+      const email = req.body.email;
       if (!email) {
-        return res
-          .status(400)
-          .json({ success: false, message: "Email không được để trống" });
+        return res.status(400).json({
+          success: false,
+          message: "Vui lòng nhập email!",
+        });
       }
+
       const user = await User.findOne({ email });
 
       // Luôn trả success để không lộ email tồn tại
@@ -241,33 +243,38 @@ class AuthController {
       // Gửi link QUA EMAIL
       const resetUrl = `http://localhost:3000/account/reset-password/${token}`;
 
-      await transporter.sendMail({
+      const mailOptions = {
+        from: process.env.EMAIL_USER || "no-reply@hhshop.com",
         to: email,
-        subject: "Đặt lại mật khẩu – Chỉ có hiệu lực 10 phút!",
+        subject: "Đặt lại mật khẩu – HHSHOP (10 phút)",
         html: `
-        <div style="background:#f8f9fa;padding:30px;font-family:Arial">
-          <h2 style="color:#dc3545">CẢNH BÁO BẢO MẬT</h2>
-          <p>Ai đó vừa yêu cầu đặt lại mật khẩu cho tài khoản:</p>
-          <h3><strong>${email}</strong></h3>
-          
-          <p>Link chỉ có hiệu lực <strong>10 phút</strong>:</p>
-          <a href="${resetUrl}" style="background:#28a745;color:white;padding:15px 30px;text-decoration:none;border-radius:50px;">
-            ĐẶT LẠI MẬT KHẨU NGAY
-          </a>
-          
-          <p style="color:red;margin-top:30px">
-            Nếu BẠN KHÔNG YÊU CẦU → VUI LÒNG BỎ QUA EMAIL NÀY!<br>
-            Tài khoản của bạn vẫn an toàn 100%.
-          </p>
-        </div>
-      `,
-      });
+          <div style="font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4;">
+            <h2 style="color: #dc3545;">YÊU CẦU ĐẶT LẠI MẬT KHẨU</h2>
+            <p>Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản:</p>
+            <h3><strong>${email}</strong></h3>
+            <p>Nhấn nút bên dưới để đặt lại (chỉ hiệu lực <strong>10 phút</strong>):</p>
+            <a href="${resetUrl}" style="background:#28a745;color:white;padding:15px 30px;text-decoration:none;border-radius:5px;font-weight:bold;">
+              ĐẶT LẠI MẬT KHẨU
+            </a>
+            <p style="color: red; margin-top: 20px;">
+              Nếu bạn <strong>không yêu cầu</strong>, vui lòng bỏ qua email này.
+            </p>
+          </div>
+        `,
+      };
+
+      // GỬI EMAIL + BẮT LỖI CHI TIẾT
+      await transporter.sendMail(mailOptions);
+      console.log("ĐÃ GỬI EMAIL KHÔI PHỤC đến:", email);
 
       res.json({
         success: true,
         message: "Link đặt lại đã được gửi (nếu email tồn tại)!",
       });
     } catch (error) {
+      // LOG RÕ LỖI ĐỂ BIẾT CHUYỆN GÌ XẢY RA
+      console.error("LỖI GỬI EMAIL KHÔI PHỤC:", error.message);
+      console.error("Chi tiết lỗi:", error);
       res.status(500).json({ success: false, message: "Lỗi hệ thống" });
     }
   }

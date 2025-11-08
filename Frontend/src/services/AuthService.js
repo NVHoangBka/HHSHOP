@@ -112,7 +112,9 @@ class AuthService {
 
   async recoverPassword(email) {
     try {
-      const response = await api.post("/auth/recover-password", email);
+      const response = await api.post("/auth/recover-password", {
+        email: email,
+      });
       return { success: true, message: response.data.message };
     } catch (error) {
       console.error("Recover password error:", error);

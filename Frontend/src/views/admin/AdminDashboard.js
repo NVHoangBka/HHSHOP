@@ -1,28 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import OrderController from '../../controllers/OrderController';
-import ProductController from '../../controllers/ProductController'; 
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import OrderController from "../../controllers/OrderController";
+import ProductController from "../../controllers/ProductController";
 // import AuthController from '../../controllers/AuthController';
-
 
 const orderController = new OrderController();
 
-
-const AdminDashboard = (isAuthenticated, onLogin, authController , productController) => {
+const AdminDashboard = (
+  isAuthenticated,
+  onLogin,
+  authController,
+  productController
+) => {
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
-      setError('');
+      setError("");
       try {
         // Kiểm tra vai trò admin (giả định authController)
         const user = await authController.getCurrentUser();
-        if (!user || user.role !== 'admin') {
-          throw new Error('Bạn không có quyền truy cập trang admin.');
+        if (!user || user.role !== "admin") {
+          throw new Error("Bạn không có quyền truy cập trang admin.");
         }
 
         // Lấy danh sách đơn hàng
@@ -41,8 +44,8 @@ const AdminDashboard = (isAuthenticated, onLogin, authController , productContro
           throw new Error(productResult.message);
         }
       } catch (error) {
-        console.error('AdminDashboard fetch error:', error);
-        setError(error.message || 'Không thể tải dữ liệu.');
+        console.error("AdminDashboard fetch error:", error);
+        setError(error.message || "Không thể tải dữ liệu.");
       } finally {
         setLoading(false);
       }
@@ -57,6 +60,27 @@ const AdminDashboard = (isAuthenticated, onLogin, authController , productContro
   if (error) {
     return <div className="alert alert-danger text-center">{error}</div>;
   }
+
+  // Hàm xử lý (giả định, cần triển khai)
+  const handleUpdateStatus = (orderId) => {
+    console.log("Cập nhật trạng thái cho order:", orderId);
+    // TODO: Thêm logic cập nhật status (ví dụ: mở form modal)
+  };
+
+  const handleEditProduct = (productId) => {
+    console.log("Sửa sản phẩm:", productId);
+    // TODO: Thêm logic chỉnh sửa (ví dụ: điều hướng đến form edit)
+  };
+
+  const handleDeleteProduct = (productId) => {
+    console.log("Xóa sản phẩm:", productId);
+    // TODO: Thêm logic xóa sản phẩm
+  };
+
+  const handleAddProduct = () => {
+    console.log("Thêm sản phẩm mới");
+    // TODO: Thêm logic thêm sản phẩm (ví dụ: điều hướng đến form add)
+  };
 
   return (
     <div className="container mt-4">
@@ -97,18 +121,23 @@ const AdminDashboard = (isAuthenticated, onLogin, authController , productContro
               {orders.map((order) => (
                 <tr key={order.orderId}>
                   <td>{order.orderId}</td>
-                  <td>{new Date(order.createdAt).toLocaleDateString('vi-VN')}</td>
+                  <td>
+                    {new Date(order.createdAt).toLocaleDateString("vi-VN")}
+                  </td>
                   <td>{order.address}</td>
-                  <td>{order.total.toLocaleString('vi-VN')} VNĐ</td>
+                  <td>{order.total.toLocaleString("vi-VN")} VNĐ</td>
                   <td>
                     {{
-                      'pending': 'Đang xử lý',
-                      'shipped': 'Đã giao',
-                      'canceled': 'Đã hủy',
-                    }[order.status] || 'Không xác định'}
+                      pending: "Đang xử lý",
+                      shipped: "Đã giao",
+                      canceled: "Đã hủy",
+                    }[order.status] || "Không xác định"}
                   </td>
                   <td>
-                    <Link to={`/admin/orders/${order.orderId}`} className="btn btn-primary btn-sm me-2">
+                    <Link
+                      to={`/admin/orders/${order.orderId}`}
+                      className="btn btn-primary btn-sm me-2"
+                    >
                       Chi tiết
                     </Link>
                     <button
@@ -142,8 +171,13 @@ const AdminDashboard = (isAuthenticated, onLogin, authController , productContro
               {products.map((product) => (
                 <tr key={product._id.toString()}>
                   <td>{product.name}</td>
-                  <td>{product.price.toLocaleString('vi-VN')} VNĐ</td>
-                  <td>{product.discountPrice ? product.discountPrice.toLocaleString('vi-VN') : 'N/A'} VNĐ</td>
+                  <td>{product.price.toLocaleString("vi-VN")} VNĐ</td>
+                  <td>
+                    {product.discountPrice
+                      ? product.discountPrice.toLocaleString("vi-VN")
+                      : "N/A"}{" "}
+                    VNĐ
+                  </td>
                   <td>
                     <button
                       className="btn btn-info btn-sm me-2"
@@ -169,27 +203,6 @@ const AdminDashboard = (isAuthenticated, onLogin, authController , productContro
       </div>
     </div>
   );
-
-  // Hàm xử lý (giả định, cần triển khai)
-  const handleUpdateStatus = (orderId) => {
-    console.log('Cập nhật trạng thái cho order:', orderId);
-    // TODO: Thêm logic cập nhật status (ví dụ: mở form modal)
-  };
-
-  const handleEditProduct = (productId) => {
-    console.log('Sửa sản phẩm:', productId);
-    // TODO: Thêm logic chỉnh sửa (ví dụ: điều hướng đến form edit)
-  };
-
-  const handleDeleteProduct = (productId) => {
-    console.log('Xóa sản phẩm:', productId);
-    // TODO: Thêm logic xóa sản phẩm
-  };
-
-  const handleAddProduct = () => {
-    console.log('Thêm sản phẩm mới');
-    // TODO: Thêm logic thêm sản phẩm (ví dụ: điều hướng đến form add)
-  };
 };
 
 export default AdminDashboard;

@@ -66,6 +66,10 @@ button:disabled {
   color: rgb(255, 94, 0) !important;
 }
 
+.fs-body {
+  font-size: 14px;
+}
+
 .fs-7 {
   font-size: 14px !important;
 }

@@ -8,11 +8,6 @@
   -moz-appearance: textfield; /* Firefox */
 }
 
-.active {
-  color: white !important;
-  background-color: red !important;
-}
-
 .carousel:hover .carousel-control-prev-icon,
 .carousel:hover .carousel-control-next-icon {
   opacity: 1 !important;
@@ -36,10 +31,6 @@
   text-overflow: ellipsis;
 }
 
-.fs-body {
-  font-size: 14px;
-}
-
 .heading-bar::before {
   content: "";
   position: absolute;
@@ -52,7 +43,6 @@
   border-bottom: 2px solid #016735;
   opacity: 0.1;
 }
-
 
 .menu {
   position: fixed;
