@@ -79,6 +79,36 @@ class ProductModel {
       return null;
     }
   }
+
+  // TÌM KIẾM - DÙNG api (Axios)
+  async search(query, category = "all") {
+    try {
+      const params = new URLSearchParams();
+      if (query) params.append("q", query);
+      if (category !== "all") params.append("category", category);
+
+      const res = await api.get(`/products/search?${params}`);
+      return res.data.products.map((p) => new Product(p));
+    } catch (error) {
+      console.error("Lỗi tìm kiếm:", error);
+      return [];
+    }
+  }
+
+  // LIVE SEARCH - DÙNG api (Axios)
+  async searchLive(query, category = "all") {
+    try {
+      const params = new URLSearchParams();
+      if (query) params.append("q", query);
+      if (category !== "all") params.append("category", category);
+
+      const res = await api.get(`/products/search/live?${params}`);
+      return res.data.products.map((p) => new Product(p));
+    } catch (error) {
+      console.error("Lỗi live search:", error);
+      return [];
+    }
+  }
 }
 
 export default ProductModel;

@@ -9,11 +9,11 @@ module.exports = {
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/image-116.jpg?v=1717487311197",
       description:
         "Nước lau sàn hiệu quả, ngăn côn trùng, an toàn cho gia đình.",
-      types: ["nuoc-giat", "hot"],
+      types: ["nuoc-giat", "hot", "household-cleaning", "washing-liquid"],
       tag: ["flashsale"],
       brands: ["Minimart"],
       colors: ["white", "blue", "black"],
-      titles: ["cham-soc-gia-dinh"],
+      titles: ["cham-soc-gia-dinh", "family-care"],
       subTitles: ["chat-tay-rua"],
     },
     {
@@ -25,7 +25,7 @@ module.exports = {
         "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/image-112.jpg?v=1717486673863",
       description:
         "Nước rửa chén thân thiện với môi trường, dịu nhẹ cho da tay.",
-      types: ["nuoc-giat", "hot"],
+      types: ["nuoc-giat", "hot", "household-cleaning", "washing-liquid"],
       tag: ["flashsale"],
       titles: ["cham-soc-gia-dinh"],
       subTitles: ["chat-tay-rua"],
@@ -78,7 +78,7 @@ module.exports = {
         "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/frame-110.jpg?v=1717486138593",
       description:
         "Tẩy cặn canxi, tẩy kính, vòi sen, bồn sứ, chậu tắm, gạch men, gương soi Hikit 500 ml",
-      types: ["nuoc-giat", "nuoc-lau-nha", "san-deal"],
+      types: ["nuoc-giat", "nuoc-lau-nha", "san-deal", "household-cleaning"],
       tag: ["flashsale"],
       titles: ["cham-soc-gia-dinh"],
       subTitles: ["chat-tay-rua"],
@@ -102,8 +102,8 @@ module.exports = {
       discountPrice: 20000,
       image:
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/image-119.jpg?v=1717487812197",
-      description: "Nước rửa chén giá sốc, sạch bóng chén đĩa.",
-      types: ["nuoc-lau-nha", "xit-phong", "san-deal"],
+      description: "Sáp thơm phòng khử mùi Mr.Fresh Pure Aroma 230g cao cấp",
+      types: ["nuoc-lau-nha", "xit-phong", "san-deal", "household-cleaning"],
       tag: ["flashsale"],
       titles: ["cham-soc-gia-dinh"],
       subTitles: ["sap-thom"],
@@ -115,8 +115,8 @@ module.exports = {
       discountPrice: 20000,
       image:
         "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/upload-e9fa2f43255248b6a348296051b1f4d3.jpg?v=1717407836197",
-      description: "Nước rửa chén giá sốc, sạch bóng chén đĩa.",
-      types: ["rau-cu"],
+      description: "Rau muống hữu cơ 300g",
+      types: ["rau-cu", "food-beverages"],
       tag: ["flashsale"],
       titles: ["thuc-pham-tuoi-song"],
       subTitles: ["rau-cu"],
@@ -128,8 +128,8 @@ module.exports = {
       discountPrice: 20000,
       image:
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/upload-ac8b79ef7a3c4a08aa419a4bf072daa1.jpg?v=1717407834123",
-      description: "Nước rửa chén giá sốc, sạch bóng chén đĩa.",
-      types: ["rau-cu"],
+      description: "VINAMIT-RAU LANG HỮU CƠ 300g",
+      types: ["rau-cu", "food-beverages"],
       tag: ["flashsale"],
       titles: ["thuc-pham-tuoi-song"],
       subTitles: ["rau-cu"],
@@ -142,7 +142,7 @@ module.exports = {
       image:
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/upload-46c2e35320494016b667d5d67c80f7fd.jpg?v=1717407832690",
       description: "VINAMIT-RAU DỀN HỮU CƠ 300G",
-      types: ["rau-cu"],
+      types: ["rau-cu", "food-beverages"],
       tag: ["flashsale"],
       titles: ["thuc-pham-tuoi-song"],
       subTitles: ["rau-cu"],
@@ -154,8 +154,8 @@ module.exports = {
       discountPrice: 20000,
       image:
         "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/upload-30312511bb204a3d9aa344e21a70a52b.jpg?v=1717407831063",
-      description: "Nước rửa chén giá sốc, sạch bóng chén đĩa.",
-      types: ["rau-cu"],
+      description: "VINAMIT-CẢI BẸ XANH HỮU CƠ 300g.",
+      types: ["rau-cu", "food-beverages"],
       tag: ["flashsale"],
       titles: ["thuc-pham-tuoi-song"],
       subTitles: ["rau-cu"],
@@ -167,8 +167,8 @@ module.exports = {
       discountPrice: 20000,
       image:
         "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/upload-8922cfd99be640d89ba6ceaf0006180c.jpg?v=1717407827807",
-      description: "Nước rửa chén giá sốc, sạch bóng chén đĩa.",
-      types: ["rau-cu"],
+      description: "Tôm lột 200G.",
+      types: ["rau-cu", "food-beverages"],
       tag: ["flashsale"],
       titles: ["thuc-pham-tuoi-song"],
       subTitles: ["thuy-hai-san"],
@@ -180,8 +180,8 @@ module.exports = {
       discountPrice: 20000,
       image:
         "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/upload-92ddc58356804b73b775fa81fee2fe40.jpg?v=1717407825213",
-      description: "Nước rửa chén giá sốc, sạch bóng chén đĩa.",
-      types: ["rau-cu"],
+      description: "TH - XƯƠNG BÒ TƠ",
+      types: ["rau-cu", "food-beverages"],
       tag: ["flashsale"],
       titles: ["thuc-pham-tuoi-song"],
       subTitles: ["thit"],
@@ -193,7 +193,7 @@ module.exports = {
       discountPrice: 20000,
       image:
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-92.jpg?v=1717474945973",
-      description: "Nước rửa chén giá sốc, sạch bóng chén đĩa.",
+      description: "Sổ Planner Lên Kế Hoạch Hằng Ngày.",
       types: ["but-viet"],
       tag: ["flashsale"],
       titles: ["van-phong-pham"],
@@ -206,7 +206,8 @@ module.exports = {
       discountPrice: 20000,
       image:
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-88.jpg?v=1717474686750",
-      description: "Nước rửa chén giá sốc, sạch bóng chén đĩa.",
+      description:
+        "Giấy ghi chú màu trong suốt dùng đánh dấu trang sách tiện lợi.",
       types: ["but-viet"],
       tag: ["flashsale"],
       titles: ["van-phong-pham"],
@@ -219,7 +220,7 @@ module.exports = {
       discountPrice: 20000,
       image:
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-84.jpg?v=1717474250750",
-      description: "VINAMIT-RAU DỀN HỮU CƠ 300G",
+      description: "Túi đựng bút chất liệu trong suốt phong cách cá tính",
       types: ["but-viet"],
       tag: ["flashsale"],
       titles: ["van-phong-pham"],
@@ -232,7 +233,7 @@ module.exports = {
       discountPrice: 20000,
       image:
         "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/frame-79.jpg?v=1717473953247",
-      description: "Nước rửa chén giá sốc, sạch bóng chén đĩa.",
+      description: "Hộp bút đánh dấu highlight dạ quang 18 màu lựa chọn.",
       types: ["but-viet"],
       tag: ["flashsale"],
       titles: ["van-phong-pham"],
@@ -245,7 +246,7 @@ module.exports = {
       discountPrice: 20000,
       image:
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-76.jpg?v=1717473523093",
-      description: "Nước rửa chén giá sốc, sạch bóng chén đĩa.",
+      description: "Bút Bi Gel Ngòi 0,5mm Viết Trơn - Mực Đều.",
       types: ["but-viet"],
       tag: ["flashsale"],
       titles: ["van-phong-pham"],
@@ -258,7 +259,8 @@ module.exports = {
       discountPrice: 20000,
       image:
         "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/image-70.jpg?v=1717473122453",
-      description: "Nước rửa chén giá sốc, sạch bóng chén đĩa.",
+      description:
+        "Cuộn Băng Keo Hai Mặt Dài 6m Tiện Dụng Cho Học Sinh / Văn Phòng.",
       types: ["but-viet"],
       tag: ["flashsale"],
       titles: ["van-phong-pham"],

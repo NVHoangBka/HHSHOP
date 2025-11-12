@@ -6,11 +6,13 @@ import AppRouter from "./routers/AppRouter";
 import ToastMessage from "./views/components/ToastMessage";
 import CartController from "./controllers/CartController";
 import AuthController from "./controllers/AuthController";
+import ProductController from "./controllers/ProductController";
 
 const App = () => {
   const navigate = useNavigate();
   const cartController = useRef(new CartController()).current;
   const authController = useRef(new AuthController()).current;
+  const productController = useRef(new ProductController()).current;
   const [cartItems, setCartItems] = useState(cartController.getCartItems());
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [toast, setToast] = useState({
@@ -112,6 +114,7 @@ const App = () => {
         cartItems={cartItems}
         onCartChange={onCartChange}
         authController={authController}
+        productController={productController}
       />
       <div className="">
         <AppRouter

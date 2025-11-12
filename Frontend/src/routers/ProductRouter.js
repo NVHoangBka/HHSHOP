@@ -4,6 +4,7 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import ProductDetail from "../views/components/ProductDetail";
 import Product from "../views/pages/Product";
 import ProductController from "../controllers/ProductController";
+import SearchResults from "../views/pages/SearchResults";
 
 const productController = new ProductController();
 
@@ -63,6 +64,10 @@ const ProductRouter = ({ isAuthenticated, addToCart }) => {
             />
           </ProtectedRoute>
         }
+      />
+      <Route
+        path="/search"
+        element={<SearchResults productController={productController} />}
       />
     </Routes>
   );

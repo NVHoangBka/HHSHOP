@@ -28,6 +28,14 @@ class ProductController {
   getProductById(id) {
     return this.productService.getProductById(id);
   }
+
+  search(query, category = "all") {
+    return this.productService.search(query, category);
+  }
+
+  searchLive(query, category = "all") {
+    return this.productService.searchLive(query, category);
+  }
 }
 
 export default ProductController;

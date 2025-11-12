@@ -10,6 +10,7 @@ const Header = ({
   cartItems,
   onCartChange,
   authController,
+  productController,
 }) => {
   const navigate = useNavigate();
 
@@ -40,26 +41,36 @@ const Header = ({
   }, [authController]);
 
   // Click outside để đóng menu/search/cart
+  // Thay thế useEffect click outside hiện tại bằng đoạn này
   useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
-        setIsMenuOpen(false);
+    const handleClickOutside = (event) => {
+      const target = event.target;
+
+      const isInMenu = menuRef.current?.contains(target);
+      const isInSearch = searchRef.current?.contains(target);
+      const isInCart = cartRef.current?.contains(target);
+
+      // Nếu click VÀO trong menu, search, hoặc cart → KHÔNG đóng
+      if (isInMenu || isInSearch || isInCart) {
+        return;
       }
-      if (searchRef.current && !searchRef.current.contains(e.target)) {
-        setIsSearchOpen(false);
-      }
-      if (cartRef.current && !cartRef.current.contains(e.target)) {
-        setIsCartOpen(false);
-      }
+
+      // Click RA NGOÀI → đóng tất cả
+      setIsMenuOpen(false);
+      setIsSearchOpen(false);
+      setIsCartOpen(false);
     };
 
+    // Chỉ thêm listener khi có ít nhất 1 popup đang mở
     if (isMenuOpen || isSearchOpen || isCartOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     }
 
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    // Cleanup
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, [isMenuOpen, isSearchOpen, isCartOpen]);
-
   // Handler
   const goHome = () => navigate("/");
   const goToAccount = () => {
@@ -116,6 +127,14 @@ const Header = ({
               <i className="bi bi-list fs-5"></i>
             </button>
             <span className="header-top-left-text ms-1">Danh mục sản phẩm</span>
+
+            <Menu
+              isOpen={isMenuOpen}
+              onClose={() => setIsMenuOpen(false)}
+              authController={authController}
+              isAuthenticated={isAuthenticated}
+              user={currentUser}
+            />
           </div>
           {/* Center: Logo */}
           <div
@@ -139,6 +158,11 @@ const Header = ({
               >
                 <i className="bi bi-search fs-5"></i>
               </button>
+              <Search
+                isOpen={isSearchOpen}
+                onClose={() => setIsSearchOpen(false)}
+                productController={productController}
+              />
             </div>
             <button
               className="btn btn-outline-secondary border rounded-circle m-3"
@@ -160,6 +184,13 @@ const Header = ({
                   {totalQuantity}
                 </span>
               </button>
+              <Cart
+                isOpen={isCartOpen}
+                onClose={() => setIsCartOpen(false)}
+                cartItems={localCartItems}
+                cartController={cartController}
+                onCartChange={handleCartUpdate}
+              />
             </div>
           </div>
         </div>
@@ -187,29 +218,10 @@ const Header = ({
         </div>
       </div>
 
-      {/* Overlays */}
-      <Menu
-        isOpen={isMenuOpen}
-        onClose={() => setIsMenuOpen(false)}
-        authController={authController}
-        isAuthenticated={isAuthenticated}
-        user={currentUser}
-      />
-
-      <Search isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
-
-      <Cart
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        cartItems={localCartItems}
-        cartController={cartController}
-        onCartChange={handleCartUpdate}
-      />
-
       {/* Backdrop (chỉ 1 cái, thông minh) */}
       {(isMenuOpen || isSearchOpen || isCartOpen) && (
         <div
-          className="position-fixed inset-0 bg-black bg-opacity-50 z-40"
+          className="position-fixed inset-0 bg-black bg-opacity-50 z-99"
           style={{ top: 0, left: 0, right: 0, bottom: 0 }}
           onClick={() => {
             setIsMenuOpen(false);

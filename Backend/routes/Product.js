@@ -10,5 +10,7 @@ router.get("/tag/:tag", ProductController.getByTag);
 router.get("/type/:type", ProductController.getByType);
 router.get("/:id", ProductController.getById);
 router.post("/seed", ProductController.seed);
+router.get("/search", ProductController.search);
+router.get("/search/live", ProductController.searchLive);
 
 module.exports = router;

@@ -1,5 +1,5 @@
 // backend/models/Product.js
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -12,7 +12,7 @@ const productSchema = new mongoose.Schema({
   brands: { type: [String], default: [] },
   colors: { type: [String], default: [] },
   titles: { type: [String], default: [] },
-  subTitles: { type: [String], default: [] }
+  subTitles: { type: [String], default: [] },
 });
 
-module.exports = mongoose.model('Product', productSchema);
+module.exports = mongoose.model("Product", productSchema);

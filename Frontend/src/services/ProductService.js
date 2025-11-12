@@ -4,10 +4,14 @@ import ProductModel from "../models/ProductModel";
 class ProductService {
   constructor() {
     this.productModel = new ProductModel();
+    this.allProducts = null;
   }
 
-  getAllProducts() {
-    return this.productModel.getAllProducts();
+  async getAllProducts() {
+    if (!this.allProducts) {
+      this.allProducts = await this.productModel.getAllProducts();
+    }
+    return this.allProducts;
   }
 
   getProductsByTitle(titlePath) {
@@ -30,15 +34,39 @@ class ProductService {
     return this.productModel.getProductById(id);
   }
 
-  filterProducts(criteria) {
-    let products = this.getAllProducts();
+  async filterProducts(criteria) {
+    let products = await this.getAllProducts();
+
     if (criteria.titlePath) {
-      products = this.getProductsByTitle(criteria.titlePath);
+      products = await this.getProductsByTitle(criteria.titlePath);
     }
     if (criteria.subTitlePath) {
-      products = this.getProductsBySubTitle(criteria.subTitlePath);
+      products = await this.getProductsBySubTitle(criteria.subTitlePath);
     }
     return products;
+  }
+
+  // SỬA: async + await
+  async search(query, category = "all") {
+    if (!query) return [];
+    const params = new URLSearchParams();
+    params.append("q", query);
+    if (category !== "all") params.append("category", category);
+    else params.append("category", "all");
+
+    return await this.productModel.search(params);
+  }
+
+  // SỬA: await
+  async searchLive(query, category = "all") {
+    if (!query || query.trim().length < 1) return [];
+
+    const params = new URLSearchParams();
+    params.append("q", query);
+    if (category !== "all") params.append("category", category);
+    else params.append("category", "all");
+
+    return await this.productModel.searchLive(params);
   }
 }
 

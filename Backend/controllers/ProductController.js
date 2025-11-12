@@ -75,6 +75,49 @@ class ProductController {
       res.status(500).json({ success: false, message: error.message });
     }
   }
+
+  static async search(req, res) {
+    const { q, category } = req.query;
+    try {
+      let filter = {};
+      if (q) {
+        filter.name = { $regex: q, $options: "i" };
+      }
+      if (category && category !== "all") {
+        filter.types = category;
+      }
+
+      const products = await Product.find(filter).limit(20);
+
+      res.json({ success: true, products });
+    } catch (error) {
+      res.status(500).json({ success: false, message: "Lỗi hệ thống" });
+    }
+  }
+
+  static async searchLive(req, res) {
+    let { q, category } = req.query;
+    try {
+      if (q && q.includes("&")) {
+        const params = new URLSearchParams(q);
+        q = params.get("q") || "";
+        category = params.get("category") || "";
+      }
+
+      let filter = {};
+      if (q) {
+        filter.name = { $regex: q, $options: "i" };
+      }
+      if (category && category !== "all") {
+        filter.types = category;
+      }
+      const products = await Product.find(filter).limit(10);
+
+      res.json({ success: true, products });
+    } catch (error) {
+      res.status(500).json({ success: false, message: "Lỗi hệ thống" });
+    }
+  }
 }
 
 module.exports = ProductController;

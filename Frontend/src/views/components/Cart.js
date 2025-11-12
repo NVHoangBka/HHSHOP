@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Cart = ({
   isOpen,
-  setIsCartOpen,
+  onClose,
   cartController,
   cartItems: propCartItems,
   onCartChange,
@@ -57,7 +57,7 @@ const Cart = ({
           <h2 className="card-title text-black pb-3 pt-4 px-4">Giỏ hàng</h2>
           <button
             className="btn border rounded-circle px-2 py-0"
-            onClick={() => setIsCartOpen(false)}
+            onClick={onClose}
           >
             <i className="bi bi-x fs-4"></i>
           </button>

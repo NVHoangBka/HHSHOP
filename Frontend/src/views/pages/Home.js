@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import Slider from '../components/Slider';
-import ProductItem from '../components/ProductItem';
-import ProductTabSection from '../components/ProductTabSection';
-import { Link } from 'react-router-dom';
-import ProductController from '../../controllers/ProductController';
-import BannerController from '../../controllers/BannerController';
-import TitleController from '../../controllers/TitleController';
+import React, { useEffect, useState } from "react";
+import Slider from "../components/Slider";
+import ProductItem from "../components/ProductItem";
+import ProductTabSection from "../components/ProductTabSection";
+import { Link } from "react-router-dom";
+import BannerController from "../../controllers/BannerController";
+import TitleController from "../../controllers/TitleController";
 
-const productController = new ProductController();
 const bannerController = new BannerController();
 const titleController = new TitleController();
 
-const Home = ({ addToCart }) => {
+const Home = ({ addToCart, productController }) => {
   const [flashSaleProducts, setFlashSaleProducts] = useState([]);
   const [bannerHome, setBannerHome] = useState([]);
   const [titlesHome, setTitlesHome] = useState([]);
@@ -19,20 +17,19 @@ const Home = ({ addToCart }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const flashSale = await productController.getProductsByTag('flashsale');
+        const flashSale = await productController.getProductsByTag("flashsale");
         const banners = await bannerController.getBannersAll();
-        const titles = await titleController.getTitlesByType('h1');
+        const titles = await titleController.getTitlesByType("h1");
 
         setFlashSaleProducts(flashSale);
         setBannerHome(banners);
         setTitlesHome(titles);
       } catch (error) {
-        console.error('Lỗi khi lấy dữ liệu:', error);
+        console.error("Lỗi khi lấy dữ liệu:", error);
       }
     };
     fetchData();
   }, []);
-
 
   return (
     <>
@@ -41,7 +38,7 @@ const Home = ({ addToCart }) => {
         <div className="container">
           <div className="section-banner-group row">
             {bannerHome
-              .filter(banner => banner.showHome === true)
+              .filter((banner) => banner.showHome === true)
               .map((banner, index) => (
                 <div key={index} className="banner-item col-4">
                   <img
@@ -50,7 +47,7 @@ const Home = ({ addToCart }) => {
                     className="w-100 rounded-4"
                   />
                 </div>
-            ))}
+              ))}
           </div>
           <div className="section-flashsale mt-5 bg-danger rounded-4 pb-3">
             <h2 className="text-white ps-3 py-4 m-0">
@@ -60,11 +57,17 @@ const Home = ({ addToCart }) => {
               {flashSaleProducts.length > 0 ? (
                 flashSaleProducts.slice(0, 6).map((product) => (
                   <div className="col-2">
-                    <ProductItem key={product.id} product={product} addToCart={addToCart} />
+                    <ProductItem
+                      key={product.id}
+                      product={product}
+                      addToCart={addToCart}
+                    />
                   </div>
                 ))
               ) : (
-                <p className="text-center text-white">Không có sản phẩm flash sale.</p>
+                <p className="text-center text-white">
+                  Không có sản phẩm flash sale.
+                </p>
               )}
             </div>
           </div>
@@ -94,10 +97,26 @@ const Home = ({ addToCart }) => {
             </div>
           </div>
         </div>
-        <ProductTabSection path="cham-soc-gia-dinh" title="Chăm sóc gia đình" addToCart={addToCart} />
-        <ProductTabSection path="" title="Sản phẩm được quan tâm" addToCart={addToCart} />
-        <ProductTabSection path="thuc-pham-tuoi-song" title="Thực phẩm tươi sống" addToCart={addToCart} />
-        <ProductTabSection path="van-phong-pham" title="Văn phòng phẩm" addToCart={addToCart} />
+        <ProductTabSection
+          path="cham-soc-gia-dinh"
+          title="Chăm sóc gia đình"
+          addToCart={addToCart}
+        />
+        <ProductTabSection
+          path=""
+          title="Sản phẩm được quan tâm"
+          addToCart={addToCart}
+        />
+        <ProductTabSection
+          path="thuc-pham-tuoi-song"
+          title="Thực phẩm tươi sống"
+          addToCart={addToCart}
+        />
+        <ProductTabSection
+          path="van-phong-pham"
+          title="Văn phòng phẩm"
+          addToCart={addToCart}
+        />
       </div>
     </>
   );
