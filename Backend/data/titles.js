@@ -1,0 +1,89 @@
+module.exports = {
+  titles: [
+    {
+      id: 1,
+      name: "Chăm sóc gia đình",
+      image:
+        "https://bizweb.dktcdn.net/thumb/small/100/518/448/themes/953339/assets/coll_1.png?1733201190476",
+      type: "h1",
+      path: "cham-soc-gia-dinh",
+      value: "family-care",
+      subTitles: [
+        { name: "Nước giặt", value: "nuoc-giat", regular: true },
+        { name: "Dầu gội-sữa tắm", value: "dau-goi-sua-tam", regular: true },
+        { name: "Chất tẩy rửa", value: "chat-tay-rua", regular: false },
+        { name: "Đồ gia dụng", value: "do-gia-dung", regular: false },
+        { name: "Sáp thơm", value: "sap-thom", regular: false },
+      ],
+    },
+    {
+      id: 2,
+      name: "Đồ dùng mẹ & bé",
+      image:
+        "https://bizweb.dktcdn.net/thumb/small/100/518/448/themes/953339/assets/coll_2.png?1733201190476",
+      type: "h1",
+      path: "do-dung-me-be",
+      value: "mother&baby-supplies",
+      subTitles: [],
+    },
+    {
+      id: 3,
+      name: "Thực phẩm tươi sống",
+      image:
+        "https://bizweb.dktcdn.net/thumb/small/100/518/448/themes/953339/assets/coll_3.png?1733201190476",
+      type: "h1",
+      path: "thuc-pham-tuoi-song",
+      value: "fresh-food",
+      subTitles: [
+        { name: "Rau củ", value: "rau-cu", regular: false },
+        { name: "Hoa quả", value: "hoa-qua", regular: true },
+        { name: "Thịt các loại", value: "thit", regular: false },
+        { name: "Thủy hải sản", value: "thuy-hai-san", regular: false },
+      ],
+    },
+    {
+      id: 4,
+      name: "Thực phẩm khô",
+      image:
+        "https://bizweb.dktcdn.net/thumb/small/100/518/448/themes/953339/assets/coll_4.png?1733201190476",
+      type: "h1",
+      path: "thuc-pham-kho",
+      value: "dry-food",
+      subTitles: [],
+    },
+    {
+      id: 5,
+      name: "Đồ dùng nhà bếp",
+      image:
+        "https://bizweb.dktcdn.net/thumb/small/100/518/448/themes/953339/assets/coll_5.png?1733201190476",
+      type: "h1",
+      path: "do-dung-nha-bep",
+      value: "kitchen-utensils",
+      subTitles: [],
+    },
+    {
+      id: 6,
+      name: "Sữa các loại",
+      image:
+        "https://bizweb.dktcdn.net/thumb/small/100/518/448/themes/953339/assets/coll_6.png?1733201190476",
+      type: "h1",
+      path: "sua-cac-loai",
+      value: "milk-type",
+      subTitles: [],
+    },
+    {
+      id: 7,
+      name: "Văn phòng phẩm",
+      image:
+        "https://bizweb.dktcdn.net/thumb/small/100/518/448/themes/953339/assets/coll_6.png?1733201190476",
+      type: "h1",
+      path: "van-phong-pham",
+      value: "stationery",
+      subTitles: [
+        { name: "Bút viết", value: "but-viet", regular: false },
+        { name: "Giấy và sổ tay", value: "giay-so-tay", regular: false },
+        { name: "Dụng cụ vẽ", value: "dung-cu-ve", regular: false },
+      ],
+    },
+  ],
+};

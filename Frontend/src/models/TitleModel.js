@@ -14,6 +14,8 @@ export class Title {
 export class TitleModel {
   constructor() {
     this.titles = [];
+    this.loaded = false;
+    this.loading = false;
   }
 
   async load() {
@@ -54,6 +56,16 @@ export class TitleModel {
     await this.load();
     const title = this.titles.find((t) => t.path === path);
     return title?.subTitles.find((s) => s.value === value) || null;
+  }
+
+  async getAllSubTitles() {
+    await this.load();
+    return this.titles.flatMap((title) =>
+      title.subTitles.map((sub) => ({
+        ...sub,
+        parentTitle: title.name,
+      }))
+    );
   }
 }
 

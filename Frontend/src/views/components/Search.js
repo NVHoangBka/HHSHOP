@@ -1,6 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { debounce } from "lodash";
+import TitleController from "../../controllers/TitleController";
+
+const titleController = new TitleController();
 
 const Search = ({ isOpen, onClose, productController }) => {
   const navigate = useNavigate();
@@ -12,11 +15,20 @@ const Search = ({ isOpen, onClose, productController }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [subTitles, setSubTitles] = useState([]);
+
+  useEffect(() => {
+    const fetchSubtitle = async () => {
+      const arrSubTitle = await titleController.getAllSubTitles();
+      setSubTitles(arrSubTitle);
+    };
+
+    fetchSubtitle();
+  }, []);
 
   // Debounce search
   const debouncedSearch = useCallback(
     debounce(async (searchQuery, category) => {
-      console.log("Searching:", searchQuery, category);
       if (!searchQuery) {
         setSuggestions([]);
         setLoading(false);
@@ -52,7 +64,9 @@ const Search = ({ isOpen, onClose, productController }) => {
     if (query.trim()) {
       onClose();
       const category = categoryRef.current?.value || "all";
-      navigate(`/search?q=${encodeURIComponent(query)}&category=${category}`);
+      navigate(
+        `/products/search?q=${encodeURIComponent(query)}&category=${category}`
+      );
     }
   };
 
@@ -85,7 +99,7 @@ const Search = ({ isOpen, onClose, productController }) => {
           </div>
 
           {/* Search Bar */}
-          <form onSubmit={handleSearch} className="mb-4">
+          <form onSubmit={handleSearch} className="mb-4 mx-3">
             <div className="input-group my-3">
               <select
                 ref={categoryRef}
@@ -123,7 +137,7 @@ const Search = ({ isOpen, onClose, productController }) => {
             {/* GỢI Ý TÌM KIẾM */}
             {showSuggestions && (
               <div
-                className="position-absolute start-0 end-0 bg-white border rounded-bottom shadow-sm mt-1"
+                className="position-absolute start-0 end-0 bg-white border rounded-bottom shadow-sm mt-1 mx-3"
                 style={{
                   zIndex: 1000,
                   maxHeight: "60vh",
@@ -178,25 +192,23 @@ const Search = ({ isOpen, onClose, productController }) => {
           </form>
 
           {/* Hot Keywords */}
-          <div>
+          <div className="mx-3">
             <p className="text-success fw-semibold mb-2">Từ khóa phổ biến</p>
             <div className="d-flex flex-wrap gap-2">
-              {[
-                "Nước giặt",
-                "Sữa tắm",
-                "Dầu gội",
-                "Bỉm trẻ em",
-                "Khăn giấy",
-              ].map((kw) => (
-                <Link
-                  key={kw}
-                  to={`/search?q=${encodeURIComponent(kw)}&category=all`}
-                  onClick={onClose}
-                  className="badge bg-light text-dark border px-3 py-2 text-decoration-none hover-bg-success hover-text-white transition btn"
-                >
-                  {kw}
-                </Link>
-              ))}
+              {subTitles
+                .filter((sub) => sub.regular === true)
+                .map((sub, index) => (
+                  <Link
+                    key={index}
+                    to={`/products/search?q=${encodeURIComponent(
+                      sub.value
+                    )}&category=all`}
+                    onClick={onClose}
+                    className="badge bg-light text-dark border px-3 py-2 text-decoration-none hover-bg-success hover-text-white transition btn"
+                  >
+                    {sub.name}
+                  </Link>
+                ))}
             </div>
           </div>
         </div>

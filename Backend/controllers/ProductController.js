@@ -77,44 +77,43 @@ class ProductController {
   }
 
   static async search(req, res) {
-    const { q, category } = req.query;
+    const { q, category = "all" } = req.query;
+
     try {
-      let filter = {};
+      const filter = {};
       if (q) {
-        filter.name = { $regex: q, $options: "i" };
+        const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        filter.name = { $regex: escaped, $options: "i" };
       }
-      if (category && category !== "all") {
+      if (category !== "all") {
         filter.types = category;
       }
 
-      const products = await Product.find(filter).limit(20);
-
+      const products = await Product.find(filter);
       res.json({ success: true, products });
     } catch (error) {
+      console.error("Search error:", error);
       res.status(500).json({ success: false, message: "Lỗi hệ thống" });
     }
   }
 
   static async searchLive(req, res) {
-    let { q, category } = req.query;
-    try {
-      if (q && q.includes("&")) {
-        const params = new URLSearchParams(q);
-        q = params.get("q") || "";
-        category = params.get("category") || "";
-      }
+    const { q, category = "all" } = req.query;
 
-      let filter = {};
+    try {
+      const filter = {};
       if (q) {
-        filter.name = { $regex: q, $options: "i" };
+        const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        filter.name = { $regex: escaped, $options: "i" };
       }
-      if (category && category !== "all") {
+      if (category !== "all") {
         filter.types = category;
       }
-      const products = await Product.find(filter).limit(10);
 
+      const products = await Product.find(filter).limit(10);
       res.json({ success: true, products });
     } catch (error) {
+      console.error("SearchLive error:", error);
       res.status(500).json({ success: false, message: "Lỗi hệ thống" });
     }
   }

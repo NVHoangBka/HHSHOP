@@ -6,7 +6,6 @@ import CartRouter from "./CartRouter";
 import Home from "../views/pages/Home";
 import ProductController from "../controllers/ProductController"; // Giả định export instance
 import AdminDashboard from "../views/admin/AdminDashboard";
-import SearchResults from "../views/pages/SearchResults";
 
 const productController = new ProductController();
 

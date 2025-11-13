@@ -3,12 +3,13 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 
-const SearchResults = ({ productController }) => {
+const SearchResults = ({ productController, titleController }) => {
   const [searchParams] = useSearchParams();
   const q = searchParams.get("q") || "";
   const category = searchParams.get("category") || "all";
 
   const [products, setProducts] = useState([]);
+  const [subTitles, setSubTitles] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -18,13 +19,26 @@ const SearchResults = ({ productController }) => {
         const results = await productController.search(q, category);
         setProducts(results);
       } catch (err) {
-        console.error(err);
+        console.error("Lỗi tìm kiếm:", err);
+        setProducts([]);
       } finally {
         setLoading(false);
       }
     };
     if (q) fetchResults();
   }, [q, category, productController]);
+
+  useEffect(() => {
+    const loadSubTitle = async () => {
+      try {
+        const arrSubTitles = await titleController.getAllSubTitles();
+        setSubTitles(arrSubTitles);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    loadSubTitle();
+  });
 
   if (!q) {
     return (
@@ -40,7 +54,12 @@ const SearchResults = ({ productController }) => {
   return (
     <div className="container py-5">
       <h2 className="mb-4">
-        Kết quả tìm kiếm cho: <strong>"{q}"</strong>
+        Kết quả tìm kiếm cho:{" "}
+        <strong>
+          {subTitles
+            .filter((sub) => sub.value.toLowerCase().includes(q))
+            .map((sub) => sub.name)}
+        </strong>
         {category !== "all" && ` trong ${getCategoryName(category)}`}
       </h2>
 

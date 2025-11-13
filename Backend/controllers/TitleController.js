@@ -14,6 +14,17 @@ class TitleController {
       res.status(500).json({ success: false, message: "Lỗi hệ thống" });
     }
   }
+
+  static async seed(req, res) {
+    try {
+      await Title.deleteMany({});
+      const { titles } = require("../data/titles.js");
+      await Title.insertMany(titles);
+      res.json({ success: true, message: "Đã seed dữ liệu!" });
+    } catch (error) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
 }
 
 module.exports = TitleController;

@@ -1,6 +1,4 @@
-// src/services/ProductService.js
 import ProductModel from "../models/ProductModel";
-
 class ProductService {
   constructor() {
     this.productModel = new ProductModel();
@@ -48,25 +46,14 @@ class ProductService {
 
   // SỬA: async + await
   async search(query, category = "all") {
-    if (!query) return [];
-    const params = new URLSearchParams();
-    params.append("q", query);
-    if (category !== "all") params.append("category", category);
-    else params.append("category", "all");
-
-    return await this.productModel.search(params);
+    if (!query?.trim()) return [];
+    return await this.productModel.search(query, category);
   }
 
   // SỬA: await
   async searchLive(query, category = "all") {
-    if (!query || query.trim().length < 1) return [];
-
-    const params = new URLSearchParams();
-    params.append("q", query);
-    if (category !== "all") params.append("category", category);
-    else params.append("category", "all");
-
-    return await this.productModel.searchLive(params);
+    if (!query?.trim()) return [];
+    return await this.productModel.searchLive(query, category);
   }
 }
 

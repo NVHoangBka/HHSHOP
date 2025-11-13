@@ -5,11 +5,13 @@ import ProductDetail from "../views/components/ProductDetail";
 import Product from "../views/pages/Product";
 import ProductController from "../controllers/ProductController";
 import SearchResults from "../views/pages/SearchResults";
+import TitleController from "../controllers/TitleController";
 
 const productController = new ProductController();
+const titleController = new TitleController();
 
 const ProductRouter = ({ isAuthenticated, addToCart }) => {
-  const [paths, setPaths] = useState(["all"]); // Mặc định có 'all'
+  const [paths, setPaths] = useState(["all"]);
   const [loading, setLoading] = useState(true);
 
   const ProtectedRoute = ({ children }) => {
@@ -67,7 +69,12 @@ const ProductRouter = ({ isAuthenticated, addToCart }) => {
       />
       <Route
         path="/search"
-        element={<SearchResults productController={productController} />}
+        element={
+          <SearchResults
+            productController={productController}
+            titleController={titleController}
+          />
+        }
       />
     </Routes>
   );

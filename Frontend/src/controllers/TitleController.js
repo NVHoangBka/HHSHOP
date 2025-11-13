@@ -40,6 +40,10 @@ class TitleController {
   async getSubTitlesByPath(path, value) {
     return await this.titleService.getSubTitlesByPath(path, value);
   }
+
+  async getAllSubTitles() {
+    return await this.titleService.getAllSubTitles();
+  }
 }
 
 export default TitleController;
