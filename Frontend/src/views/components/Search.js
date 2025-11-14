@@ -37,10 +37,7 @@ const Search = ({ isOpen, onClose, productController }) => {
 
       setLoading(true);
       try {
-        const results = await productController.searchLive(
-          searchQuery,
-          category
-        );
+        const results = await productController.search(searchQuery, category);
         setSuggestions(results);
       } catch (error) {
         console.error("Error fetching search suggestions:", error);
@@ -201,7 +198,7 @@ const Search = ({ isOpen, onClose, productController }) => {
                   <Link
                     key={index}
                     to={`/products/search?q=${encodeURIComponent(
-                      sub.value
+                      sub.name
                     )}&category=all`}
                     onClick={onClose}
                     className="badge bg-light text-dark border px-3 py-2 text-decoration-none hover-bg-success hover-text-white transition btn"

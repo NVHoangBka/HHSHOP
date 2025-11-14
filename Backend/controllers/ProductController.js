@@ -92,27 +92,6 @@ class ProductController {
       const products = await Product.find(filter);
       res.json({ success: true, products });
     } catch (error) {
-      console.error("Search error:", error);
-      res.status(500).json({ success: false, message: "Lỗi hệ thống" });
-    }
-  }
-
-  static async searchLive(req, res) {
-    const { q, category = "all" } = req.query;
-
-    try {
-      const filter = {};
-      if (q) {
-        const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-        filter.name = { $regex: escaped, $options: "i" };
-      }
-      if (category !== "all") {
-        filter.types = category;
-      }
-
-      const products = await Product.find(filter).limit(10);
-      res.json({ success: true, products });
-    } catch (error) {
       console.error("SearchLive error:", error);
       res.status(500).json({ success: false, message: "Lỗi hệ thống" });
     }

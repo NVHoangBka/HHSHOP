@@ -12,7 +12,7 @@ const CartRouter = ({ isAuthenticated, cartItems, removeFromCart }) => {
 
   return (
     <Route
-      path="/cart"
+      path="/"
       element={
         <ProtectedRoute>
           <Cart

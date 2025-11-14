@@ -1,6 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const ProductItem = ({ product, addToCart }) => {
+  const navigate = useNavigate();
+
   if (!product) {
     return (
       <div className="product-item p-3 border mx-2">Sản phẩm không tồn tại</div>
@@ -30,14 +33,22 @@ const ProductItem = ({ product, addToCart }) => {
     return stars;
   };
 
+  const handleShowProductDetail = (e) => {
+    e.stopPropagation();
+    navigate(`/products/${product.id}`);
+  };
+
   return (
-    <div className="product-item w-100 p-3 border mx-2 bg-white h-100 rounded-4">
+    <div
+      className="product-item w-100 p-3 border mx-2 bg-white h-100 rounded-4 cursor-pointer hover"
+      onClick={handleShowProductDetail}
+    >
       <img
         src={product.image}
         className="img-fluid rounded-start w-100"
         alt={product.name}
       />
-      <p className="mt-3 line-clamp-2 fs-body fw-semibold hover fixed-two-lines">
+      <p className="mt-3 line-clamp-2 fs-body fw-semibold text-hover fixed-two-lines">
         {product.name}
       </p>
       <div className="more d-flex justify-content-between mx-1">

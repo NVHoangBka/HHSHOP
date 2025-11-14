@@ -3,14 +3,12 @@ import React, { useState, useEffect } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import ProductDetail from "../views/components/ProductDetail";
 import Product from "../views/pages/Product";
-import ProductController from "../controllers/ProductController";
 import SearchResults from "../views/pages/SearchResults";
 import TitleController from "../controllers/TitleController";
 
-const productController = new ProductController();
 const titleController = new TitleController();
 
-const ProductRouter = ({ isAuthenticated, addToCart }) => {
+const ProductRouter = ({ isAuthenticated, addToCart, productController }) => {
   const [paths, setPaths] = useState(["all"]);
   const [loading, setLoading] = useState(true);
 
@@ -57,14 +55,12 @@ const ProductRouter = ({ isAuthenticated, addToCart }) => {
       ))}
 
       <Route
-        path="/product/:id"
+        path={`/:id`}
         element={
-          <ProtectedRoute>
-            <ProductDetail
-              addToCart={addToCart}
-              productController={productController}
-            />
-          </ProtectedRoute>
+          <ProductDetail
+            addToCart={addToCart}
+            productController={productController}
+          />
         }
       />
       <Route
@@ -73,6 +69,7 @@ const ProductRouter = ({ isAuthenticated, addToCart }) => {
           <SearchResults
             productController={productController}
             titleController={titleController}
+            addToCart={addToCart}
           />
         }
       />

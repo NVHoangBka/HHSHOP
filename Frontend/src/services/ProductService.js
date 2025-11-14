@@ -44,16 +44,9 @@ class ProductService {
     return products;
   }
 
-  // SỬA: async + await
   async search(query, category = "all") {
     if (!query?.trim()) return [];
     return await this.productModel.search(query, category);
-  }
-
-  // SỬA: await
-  async searchLive(query, category = "all") {
-    if (!query?.trim()) return [];
-    return await this.productModel.searchLive(query, category);
   }
 }
 

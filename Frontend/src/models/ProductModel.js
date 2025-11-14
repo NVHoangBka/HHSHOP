@@ -86,27 +86,11 @@ class ProductModel {
       const params = {};
       if (query) params.q = query;
       if (category !== "all") params.category = category;
-      const res = await api.get("/products/search", { params });
-
-      return res.data.products.map((p) => new Product(p));
-    } catch (error) {
-      console.error("Lỗi tìm kiếm:", error);
-      return [];
-    }
-  }
-
-  // LIVE SEARCH - DÙNG api (Axios)
-  async searchLive(query, category = "all") {
-    try {
-      const params = {};
-      if (query) params.q = query;
-      if (category !== "all") params.category = category;
-
       const res = await api.get("/products/search/live", { params });
 
       return res.data.products.map((p) => new Product(p));
     } catch (error) {
-      console.error("Lỗi live search:", error);
+      console.error("Lỗi tìm kiếm:", error);
       return [];
     }
   }

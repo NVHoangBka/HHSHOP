@@ -32,10 +32,6 @@ class ProductController {
   search(query, category = "all") {
     return this.productService.search(query, category);
   }
-
-  searchLive(query, category = "all") {
-    return this.productService.searchLive(query, category);
-  }
 }
 
 export default ProductController;
