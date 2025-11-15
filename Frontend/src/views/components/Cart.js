@@ -89,37 +89,39 @@ const Cart = ({
                     {cartItems.map((item) => (
                       <div className="cart-item py-3 border-bottom">
                         <div className="cart-product-col d-flex justify-content-between align-items-start">
-                          <Link
-                            className="cart-item__image"
-                            to={`/products/${item.id}`}
-                            title={item.name}
-                          >
-                            <img
-                              src={
-                                item.image || "https://via.placeholder.com/60"
-                              } // Hiển thị placeholder nếu không có image
-                              className="me-2 rounded"
-                              alt={item.name}
-                              style={{
-                                width: "60px",
-                                height: "60px",
-                                objectFit: "cover",
-                              }}
-                            />
-                          </Link>
-                          <div>
-                            <p className="cart-item__name mb-0 fw-semibold small">
-                              <Link
-                                to={`/products/${item.id}`}
-                                title={item.name}
-                                className="link text-decoration-none text-dark"
-                              >
-                                {item.name}
-                              </Link>
-                            </p>
-                            <span className="cart-item__variant text-muted fs-7">
-                              Size: {item.size || "default"}
-                            </span>
+                          <div className="d-flex">
+                            <Link
+                              className="cart-item__image"
+                              to={`/products/${item.id}`}
+                              title={item.name}
+                            >
+                              <img
+                                src={
+                                  item.image || "https://via.placeholder.com/60"
+                                } // Hiển thị placeholder nếu không có image
+                                className="me-2 rounded"
+                                alt={item.name}
+                                style={{
+                                  width: "60px",
+                                  height: "60px",
+                                  objectFit: "cover",
+                                }}
+                              />
+                            </Link>
+                            <div>
+                              <p className="cart-item__name mb-0 fw-semibold small">
+                                <Link
+                                  to={`/products/${item.id}`}
+                                  title={item.name}
+                                  className="link text-decoration-none text-dark"
+                                >
+                                  {item.name}
+                                </Link>
+                              </p>
+                              <span className="cart-item__variant text-muted fs-7">
+                                Size: {item.size || "default"}
+                              </span>
+                            </div>
                           </div>
                           <button
                             className="btn btn-sm px-2 rounded-circle text-muted"
