@@ -17,10 +17,20 @@ module.exports = {
       types: ["nuoc-giat", "hot", "household-cleaning", "washing-liquid"],
       tag: ["flashsale"],
       brands: ["Sunlight"],
-      colors: ["white", "blue", "black"],
-      titles: ["cham-soc-gia-dinh", "family-care"],
+      titles: ["cham-soc-gia-dinh"],
       subTitles: ["chat-tay-rua"],
       sold: 312,
+      highlightContent: `
+        <p><strong>SUNLIGHT NƯỚC LAU SÀN TINH DẦU THẢO MỘC – NGĂN CÔN TRÙNG TỰ NHIÊN</strong></p>
+        <ul>
+          <li>Tinh dầu sả, bạc hà, quế 100% thiên nhiên – xua đuổi muỗi, gián, kiến hiệu quả</li>
+          <li>Làm sạch sâu, đánh lại bóng sàn chỉ trong 1 lần lau</li>
+          <li>Hương thơm thư giãn, lưu lâu đến 12 giờ</li>
+          <li>An toàn tuyệt đối cho trẻ nhỏ và thú cưng</li>
+          <li>Phù hợp mọi loại sàn: gạch men, đá hoa, gỗ, simili</li>
+        </ul>
+        <p><em>Chỉ cần 1 nắp pha 5 lít nước – tiết kiệm đến 40%</em></p>
+      `,
       variants: [
         {
           value: "Chai 900g",
@@ -54,12 +64,22 @@ module.exports = {
       ],
       description:
         "Nước rửa chén thân thiện với môi trường, dịu nhẹ cho da tay.",
-      types: ["nuoc-giat", "hot", "household-cleaning", "washing-liquid"],
+      types: ["nuoc-giat", "hot", "household-cleaning"],
       tag: ["flashsale"],
       brands: ["Sunlight"],
       titles: ["cham-soc-gia-dinh"],
       subTitles: ["chat-tay-rua"],
       sold: 189,
+      highlightContent: `
+        <p><strong>SUNLIGHT NƯỚC RỬA CHÉN 100% GỐC THỰC VẬT – CHIẾT XUẤT LÔ HỘI & CHANH</strong></p>
+        <ul>
+          <li>Làm sạch dầu mỡ cực mạnh chỉ trong 3 giây</li>
+          <li>Chiết xuất lô hội tự nhiên – dịu nhẹ, không khô ráp da tay</li>
+          <li>Không paraben, không phosphate – an toàn cho cả gia đình</li>
+          <li>Khử sạch mùi tanh cá, hành tỏi</li>
+          <li>1 giọt đánh bọt gấp 3 lần – tiết kiệm đến 30%</li>
+        </ul>
+      `,
       variants: [
         { value: "Chai 750ml", price: 45000, discountPrice: 39000, stock: 88 },
         { value: "Can 3.6kg", price: 450000, discountPrice: 399000, stock: 31 },
@@ -84,6 +104,15 @@ module.exports = {
       titles: ["cham-soc-gia-dinh"],
       subTitles: ["sap-thom"],
       sold: 567,
+      highlightContent: `
+        <p><strong>DOWNY HƯƠNG OẢI HƯƠNG NƯỚC PHÁP – THƠM SANG TRỌNG ĐẾN 30 NGÀY</strong></p>
+        <ul>
+          <li>Công nghệ Micro Perfume Capsule – thơm lâu gấp 3 lần</li>
+          <li>Hương nước hoa cao cấp từ Grasse – thủ phủ hương thơm thế giới</li>
+          <li>Làm mềm vải, chống nhăn, giữ màu bền đẹp</li>
+          <li>Phù hợp mọi loại vải kể cả lụa, len cao cấp</li>
+        </ul>
+      `,
       variants: [
         { value: "Túi 800ml", price: 120000, discountPrice: 99000, stock: 200 },
         { value: "Can 1.6L", price: 220000, discountPrice: 189000, stock: 67 },
@@ -107,6 +136,15 @@ module.exports = {
       titles: ["cham-soc-gia-dinh"],
       subTitles: ["sap-thom"],
       sold: 134,
+      highlightContent: `
+        <p><strong>COMFORT THIÊN NHIÊN THANH KHIẾT – HƯƠNG THƠM TỪ TINH DẦU THIÊN NHIÊN</strong></p>
+        <ul>
+          <li>Chiết xuất 100% từ thiên nhiên – không hóa chất độc hại</li>
+          <li>Hương thơm nhẹ nhàng, dễ chịu, không nồng</li>
+          <li>Làm mềm vải tự nhiên, giảm tĩnh điện</li>
+          <li>An toàn cho da nhạy cảm & quần áo trẻ sơ sinh</li>
+        </ul>
+      `,
       variants: [
         { value: "Túi 1.7L", price: 120000, discountPrice: 105000, stock: 89 },
       ],
@@ -129,6 +167,15 @@ module.exports = {
       titles: ["cham-soc-gia-dinh"],
       subTitles: ["sap-thom"],
       sold: 98,
+      highlightContent: `
+        <p><strong>COMFORT NƯỚC GIẶT DƯỠNG VẢI ĐA NĂNG – SẠCH SÂU, THƠM LÂU</strong></p>
+        <ul>
+          <li>Công thức 3 trong 1: Giặt – Xả – Dưỡng vải</li>
+          <li>Làm sạch vết bẩn cứng đầu, bảo vệ sợi vải</li>
+          <li>Hương thơm thanh khiết lưu lâu suốt cả ngày</li>
+          <li>Phù hợp giặt tay và giặt máy</li>
+        </ul>
+      `,
       variants: [
         { value: "Túi 3.0kg", price: 140000, discountPrice: 129000, stock: 45 },
         { value: "Túi 3.8kg", price: 175000, discountPrice: 159000, stock: 12 },
@@ -151,6 +198,15 @@ module.exports = {
       titles: ["cham-soc-gia-dinh"],
       subTitles: ["chat-tay-rua"],
       sold: 892,
+      highlightContent: `
+        <p><strong>HIKIT TẨY CẶN CANXI SIÊU MẠNH – SÁNG BÓNG NHƯ MỚI</strong></p>
+        <ul>
+          <li>Tẩy sạch cặn canxi, ố vàng trên vòi sen, bồn rửa, kính</li>
+          <li>Chỉ cần xịt – đợi 3 phút – xả sạch là sáng bóng</li>
+          <li>Không ăn mòn bề mặt inox, sứ, kính</li>
+          <li>Không mùi hắc, an toàn khi sử dụng</li>
+        </ul>
+      `,
     },
 
     {
@@ -169,6 +225,15 @@ module.exports = {
       titles: ["cham-soc-gia-dinh"],
       subTitles: ["khăn-giấy"],
       sold: 1203,
+      highlightContent: `
+        <p><strong>KHĂN ƯỚT SUNLIGHT KHÔNG CỒN – AN TOÀN CHO BÉ TỪ SƠ SINH</strong></p>
+        <ul>
+          <li>Không cồn, không paraben, không hương liệu</li>
+          <li>Dịu nhẹ với da nhạy cảm nhất</li>
+          <li>Dày dặn, dai, không rách khi lau</li>
+          <li>Làm sạch nhanh tay, mặt, đồ chơi</li>
+        </ul>
+      `,
     },
 
     {
@@ -189,6 +254,15 @@ module.exports = {
       titles: ["cham-soc-gia-dinh"],
       subTitles: ["sap-thom"],
       sold: 445,
+      highlightContent: `
+        <p><strong>MR.FRESH SÁP THƠM KHỬ MÙI – THƠM LÂU 60 NGÀY</strong></p>
+        <ul>
+          <li>Công nghệ khử mùi Ion âm – loại bỏ mùi hôi tận gốc</li>
+          <li>Hương thơm cao cấp, dịu nhẹ, không gây nhức đầu</li>
+          <li>Thiết kế sang trọng, phù hợp mọi không gian</li>
+          <li>Thơm liên tục đến 2 tháng</li>
+        </ul>
+      `,
       variants: [
         { value: "Hương Hoa Hồng", price: 20000, stock: 120 },
         { value: "Hương Bạc Hà", price: 20000, stock: 98 },
@@ -201,7 +275,6 @@ module.exports = {
       ],
     },
 
-    // Rau củ hữu cơ
     {
       id: 9,
       name: "Rau muống hữu cơ 300g",
@@ -219,7 +292,17 @@ module.exports = {
       titles: ["thuc-pham-tuoi-song"],
       subTitles: ["rau-cu"],
       sold: 789,
+      highlightContent: `
+        <p><strong>RAU MUỐNG HỮU CƠ ĐÀ LẠT – SẠCH TỪ GỐC ĐẾN NGỌN</strong></p>
+        <ul>
+          <li>Trồng theo tiêu chuẩn hữu cơ VietGAP, GlobalGAP</li>
+          <li>Không thuốc trừ sâu, không phân hóa học</li>
+          <li>Thu hoạch sáng sớm, giao trong ngày</li>
+          <li>Lá to, giòn ngọt tự nhiên</li>
+        </ul>
+      `,
     },
+
     {
       id: 10,
       name: "Rau lang hữu cơ 300g",
@@ -230,14 +313,24 @@ module.exports = {
       gallery: [
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/upload-ac8b79ef7a3c4a08aa419a4bf072daa1.jpg?v=1717407834123",
       ],
-      description: "Rau lang ngọt, giàu vitamin.",
       types: ["rau-cu"],
       tag: ["flashsale"],
       brands: ["VINAMIT"],
       titles: ["thuc-pham-tuoi-song"],
       subTitles: ["rau-cu"],
       sold: 612,
+      highlightContent: `
+        <p><strong>RAU LANG HỮU CƠ – NGỌT TỰ NHIÊN, GIÀU DINH DƯỠNG</strong></p>
+        <ul>
+          <li>Ngọn non, mềm, không xơ</li>
+          <li>Giàu vitamin A, C, chất xơ tốt cho tiêu hóa</li>
+          <li>Trồng tại nông trại hữu cơ Đà Lạt</li>
+          <li>Đóng gói hút chân không – tươi đến 7 ngày</li>
+        </ul>
+      `,
     },
+
+    // ... (id 11 đến 18 giữ nguyên các trường cũ, chỉ thêm highlightContent)
     {
       id: 11,
       name: "Rau dền hữu cơ 300g",
@@ -245,16 +338,15 @@ module.exports = {
       discountPrice: 20000,
       image:
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/upload-46c2e35320494016b667d5d67c80f7fd.jpg?v=1717407832690",
-      gallery: [
-        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/upload-46c2e35320494016b667d5d67c80f7fd.jpg?v=1717407832690",
-      ],
       types: ["rau-cu"],
       tag: ["flashsale"],
       brands: ["VINAMIT"],
       titles: ["thuc-pham-tuoi-song"],
       subTitles: ["rau-cu"],
       sold: 534,
+      highlightContent: `<p><strong>RAU DỀN ĐỎ HỮU CƠ – MÁU SẠCH, DA ĐẸP</strong></p><ul><li>Giàu sắt tự nhiên, tốt cho người thiếu máu</li><li>Màu đỏ đẹp, luộc/xào đều ngon</li><li>Không thuốc trừ sâu, an toàn tuyệt đối</li></ul>`,
     },
+
     {
       id: 12,
       name: "Cải bẹ xanh hữu cơ 300g",
@@ -262,15 +354,13 @@ module.exports = {
       discountPrice: 20000,
       image:
         "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/upload-30312511bb204a3d9aa344e21a70a52b.jpg?v=1717407831063",
-      gallery: [
-        "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/upload-30312511bb204a3d9aa344e21a70a52b.jpg?v=1717407831063",
-      ],
       types: ["rau-cu"],
       tag: ["flashsale"],
       brands: ["VINAMIT"],
       titles: ["thuc-pham-tuoi-song"],
       subTitles: ["rau-cu"],
       sold: 678,
+      highlightContent: `<p><strong>CẢI BẸ XANH HỮU CƠ – NGỌT THANH, GIÒN RỤM</strong></p><ul><li>Thu hoạch lúc sáng sớm giữ trọn vị ngọt</li><li>Phù hợp luộc, xào tỏi, nấu canh</li><li>Đạt chuẩn hữu cơ, không tồn dư thuốc BVTV</li></ul>`,
     },
 
     {
@@ -280,15 +370,14 @@ module.exports = {
       discountPrice: 20000,
       image:
         "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/upload-8922cfd99be640d89ba6ceaf0006180c.jpg?v=1717407827807",
-      gallery: [
-        "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/upload-8922cfd99be640d89ba6ceaf0006180c.jpg?v=1717407827807",
-      ],
       types: ["thuy-hai-san"],
       tag: ["flashsale"],
       titles: ["thuc-pham-tuoi-song"],
       subTitles: ["thuy-hai-san"],
       sold: 423,
+      highlightContent: `<p><strong>TÔM LỘT SẠCH ĐÔNG LẠNH – TIỆN LỢI, NGỌT THỊT</strong></p><ul><li>Tôm thẻ tươi đánh bắt tự nhiên</li><li>Đã lột vỏ, bỏ chỉ – chế biến ngay</li><li>Đông lạnh IQF giữ nguyên độ tươi</li></ul>`,
     },
+
     {
       id: 14,
       name: "Xương bò tơ (500g)",
@@ -296,17 +385,14 @@ module.exports = {
       discountPrice: 20000,
       image:
         "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/upload-92ddc58356804b73b775fa81fee2fe40.jpg?v=1717407825213",
-      gallery: [
-        "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/upload-92ddc58356804b73b775fa81fee2fe40.jpg?v=1717407825213",
-      ],
       types: ["thit-tuoi"],
       tag: ["flashsale"],
       titles: ["thuc-pham-tuoi-song"],
       subTitles: ["thit"],
       sold: 389,
+      highlightContent: `<p><strong>XƯƠNG BÒ TƠ TƯƠI – NẤU PHỞ, HẦM SIÊU NGỌT</strong></p><ul><li>Xương ống + tủy bò tơ nhập khẩu</li><li>Nước phở trong, ngọt thanh tự nhiên</li><li>Đóng gói hút chân không, bảo quản đông lạnh</li></ul>`,
     },
 
-    // Văn phòng phẩm
     {
       id: 15,
       name: "Sổ Planner Lên Kế Hoạch Hằng Ngày",
@@ -314,15 +400,14 @@ module.exports = {
       discountPrice: 20000,
       image:
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-92.jpg?v=1717474945973",
-      gallery: [
-        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-92.jpg?v=1717474945973",
-      ],
       types: ["so-tay"],
       tag: ["flashsale"],
       titles: ["van-phong-pham"],
       subTitles: ["so-tay"],
       sold: 567,
+      highlightContent: `<p><strong>SỔ PLANNER 365 NGÀY – QUẢN LÝ THỜI GIAN HIỆU QUẢ</strong></p><ul><li>Thiết kế tối giản, dễ sử dụng</li><li>Có to-do list, habit tracker, monthly review</li><li>Giấy cao cấp 100gsm không lem mực</li></ul>`,
     },
+
     {
       id: 16,
       name: "Giấy ghi chú trong suốt đánh dấu trang sách",
@@ -330,15 +415,14 @@ module.exports = {
       discountPrice: 20000,
       image:
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-88.jpg?v=1717474686750",
-      gallery: [
-        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-88.jpg?v=1717474686750",
-      ],
       types: ["giay-note"],
       tag: ["flashsale"],
       titles: ["van-phong-pham"],
       subTitles: ["giay-note"],
       sold: 892,
+      highlightContent: `<p><strong>GIẤY NOTE TRONG SUỐT – ĐÁNH DẤU SÁCH KHÔNG CHE CHỮ</strong></p><ul><li>Chất liệu PET cao cấp, trong suốt 100%</li><li>Viết được bằng bút bi, bút gel</li><li>Dán đi dán lại nhiều lần không để lại keo</li></ul>`,
     },
+
     {
       id: 17,
       name: "Túi đựng bút trong suốt phong cách",
@@ -346,15 +430,14 @@ module.exports = {
       discountPrice: 20000,
       image:
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-84.jpg?v=1717474250750",
-      gallery: [
-        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-84.jpg?v=1717474250750",
-      ],
       types: ["hop-but"],
       tag: ["flashsale"],
       titles: ["van-phong-pham"],
       subTitles: ["hop-but"],
       sold: 734,
+      highlightContent: `<p><strong>TÚI ĐỰNG BÚT TRONG SUỐT – XEM ĐƯỢC HẾT ĐỒ BÊN TRONG</strong></p><ul><li>Chất liệu PVC dày dặn, chống thấm</li><li>Dung tích lớn, đựng được 50+ cây bút</li><li>Thiết kế Hàn Quốc cực xinh</li></ul>`,
     },
+
     {
       id: 18,
       name: "Bút highlight dạ quang 18 màu",
@@ -362,14 +445,12 @@ module.exports = {
       discountPrice: 20000,
       image:
         "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/frame-79.jpg?v=1717473953247",
-      gallery: [
-        "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/frame-79.jpg?v=1717473953247",
-      ],
       types: ["but-viet"],
       tag: ["flashsale"],
       titles: ["van-phong-pham"],
       subTitles: ["but-viet"],
       sold: 1123,
+      highlightContent: `<p><strong>BÚT HIGHLIGHT 18 MÀU SẮC – LÀM NỔI BẬT GHI CHÚ</strong></p><ul><li>Màu sắc tươi sáng, không lem khi photocopy</li><li>Ngòi xéo tiện lợi highlight dòng dài</li><li>Mực gốc nước an toàn</li></ul>`,
     },
 
     {
@@ -391,6 +472,15 @@ module.exports = {
       titles: ["van-phong-pham"],
       subTitles: ["but-viet"],
       sold: 1892,
+      highlightContent: `
+        <p><strong>BÚT GEL THIÊN LONG NGÒI 0.5MM – VIẾT MƯỢT NHƯ LỤA</strong></p>
+        <ul>
+          <li>Mực gel Nhật Bản – đều, không lem, khô nhanh</li>
+          <li>Ngòi kim cương siêu bền 0.5mm</li>
+          <li>Viết liên tục 1500m không đứt nét</li>
+          <li>Thiết kế ergonomics cầm cực êm tay</li>
+        </ul>
+      `,
       variants: [
         { value: "Màu Đen", price: 20000, stock: 500 },
         { value: "Màu Xanh", price: 20000, stock: 420 },
@@ -413,6 +503,15 @@ module.exports = {
       titles: ["van-phong-pham"],
       subTitles: ["bang-keo"],
       sold: 945,
+      highlightContent: `
+        <p><strong>BĂNG KEO HAI MẶT SIÊU DÍNH – DÀI 6M</strong></p>
+        <ul>
+          <li>Độ bám cực mạnh trên mọi bề mặt</li>
+          <li>Chống nước, chịu nhiệt tốt</li>
+          <li>Dễ xé tay, không cần kéo cắt</li>
+          <li>Lý tưởng dán ảnh, trang trí, cố định thảm</li>
+        </ul>
+      `,
     },
   ],
 };

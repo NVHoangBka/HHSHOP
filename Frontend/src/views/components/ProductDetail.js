@@ -9,6 +9,7 @@ const ProductDetail = ({ addToCart, productController }) => {
   const [quantity, setQuantity] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [mainImage, setMainImage] = useState("");
+  const [showMore, setShowMore] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -68,6 +69,10 @@ const ProductDetail = ({ addToCart, productController }) => {
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN").format(price) + "₫";
+  };
+
+  const handleShowMore = () => {
+    setShowMore(!showMore);
   };
 
   if (loading) {
@@ -501,48 +506,54 @@ const ProductDetail = ({ addToCart, productController }) => {
           </div>
 
           <div class="tab-content  bg-white py-5" id="product-content">
-            <div className="bg-success-subtle">
-              <div class="container">
-                <h3 class="fs-5 text-center block py-3 fw-semibold mb-5 text-success">
-                  Đặc điểm nổi bật
-                </h3>
-              </div>
-            </div>
-            <div class="container mx-auto">
-              <div class="expandable-content mb-3">
-                <div class="prose text-base w-full max-w-full content">
-                  <p>
-                    SUNLIGHT NƯỚC LAU SÀN TINH DẦU THẢO MỘC HƯƠNG QUẾ CAM
-                    BERGAMOT - SẠCH THƠM THƯ THÁI, TỔ ẤM TRONG LÀNH
-                  </p>
-                  <p>
-                    Sản phẩm nước lau sàn Sunlight Hương Quế và Cam Bergamot sử
-                    dụng chất làm sạch 100% từ thiên nhiên, không chỉ giúp sàn
-                    nhà sạch bóng mà còn chứa tinh dầu quế giúp ngăn đuổi côn
-                    trùng và mang lại không gian thư thái cho cả gia đình.
-                  </p>
-                  <p>
-                    ƯU ĐIỂM NỔI BẬT:Sunlight lau sàn hoạt động hiệu quả cho mọi
-                    loại sàn:- Đá mài- Gạch men- Simili- Mặt gỗ
-                  </p>
-                  <p>
-                    HƯỚNG DẪN SỬ DỤNG:- Bước 1: Hòa 1 nắp đầy nước lau sàn
-                    Sunlight vào nửa xô nước (Loại xô 5L).- Bước 2: Nhúng ướt
-                    giẻ rồi lau sạch các vết bẩn.- Bước 3: Không lau lại bằng
-                    nước.;Xuất xứ thương hiệu: Sản xuất tại Việt Nam - Sản phẩm
-                    của Công ty TNHH Quốc Tế Unilever Việt Nam.
-                  </p>
-                  <p>
-                    Thành phần: Alcohol Ethoxylate; Chất thơm (chứa tinh dầu Quế
-                    (0,38ppm)); Carbomer; Sodium Hydroxide; Isothiazolinones;
-                    Chất tạo màu; Nước.
-                  </p>
-                  <p>Bảo quản: Nơi thoáng mát, tránh ánh nắng trực tiếp</p>
+            <div className="bg-success-subtle pb-4">
+              <h3 class="fs-5 text-center block py-3 fw-semibold text-success m-0">
+                Đặc điểm nổi bật
+              </h3>
+              <div className=" bg-white pb-4 mb-4">
+                <div class="container">
+                  {product.highlightContent ? (
+                    <div
+                      class={`expandable-content mb-3 position-relative overflow-hidden px-5 pt-5 ${
+                        showMore ? "show-all" : ""
+                      }`}
+                    >
+                      <div
+                        class="prose content overflow-hidden"
+                        style={
+                          showMore
+                            ? { maxHeight: "none" }
+                            : {
+                                maxHeight: "200px",
+                                transition: "height 0.5s ease-in-out",
+                              }
+                        }
+                      >
+                        <div
+                          className="prose prose-lg max-w-none text-dark"
+                          dangerouslySetInnerHTML={{
+                            __html: product.highlightContent,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-center text-muted py-5">
+                      Đang cập nhật thông tin chi tiết...
+                    </p>
+                  )}
+                  {product.highlightContent && (
+                    <button
+                      class="btn-showmore px-3 py-2 rounded-5 fs-7"
+                      id="btn-showmore"
+                      onClick={handleShowMore}
+                    >
+                      {showMore ? "Thu gọn" : "Xem thêm"}
+                      <i class="bi bi-chevron-down"></i>
+                    </button>
+                  )}
                 </div>
               </div>
-              <button class="btn btn-showmore">
-                Xem thêm <i class="icon icon-carret-down"></i>
-              </button>
             </div>
           </div>
         </div>

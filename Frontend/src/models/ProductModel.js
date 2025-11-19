@@ -4,20 +4,41 @@ import api from "../services/api";
 class Product {
   constructor(data) {
     this.id = data._id || data.id;
-    this.name = data.name;
-    this.price = data.price;
-    this.discountPrice = data.discountPrice;
-    this.image = data.image;
+    this.name = data.name || "";
+    this.slug = data.slug || "";
+    this.price = data.price || 0;
+    this.discountPrice = data.discountPrice || null;
+    this.image = data.image || "";
     this.gallery = data.gallery || [];
     this.variants = data.variants || [];
-    this.description = data.description;
+    this.description = data.description || "";
+    this.shortDescription = data.shortDescription || "";
+
+    // THÊM 2 TRƯỜNG QUAN TRỌNG
+    this.highlightContent = data.highlightContent || ""; // Chuỗi HTML
+    this.highlightSections = data.highlightSections || []; // Mảng section (tương lai)
+
+    // Phân loại
     this.brands = data.brands || [];
     this.types = data.types || [];
     this.tag = data.tag || [];
     this.titles = data.titles || [];
     this.subTitles = data.subTitles || [];
+
+    // Trạng thái & số liệu
     this.falseSale = data.falseSale || false;
     this.sold = data.sold || 0;
+    this.viewCount = data.viewCount || 0;
+    this.isActive = data.isActive !== false;
+    this.inStock = data.inStock !== false;
+
+    // Tạo sẵn giá cuối cùng (tiện dùng)
+    this.finalPrice = this.discountPrice || this.price;
+  }
+  // Helper: lấy tên hiển thị (có variant)
+  getDisplayName(variant) {
+    if (!variant) return this.name;
+    return `${this.name} - ${variant.value}`;
   }
 }
 
