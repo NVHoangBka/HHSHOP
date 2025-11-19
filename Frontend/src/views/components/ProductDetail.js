@@ -6,6 +6,9 @@ const ProductDetail = ({ addToCart, productController }) => {
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [quantity, setQuantity] = useState(1);
+  const [selectedVariant, setSelectedVariant] = useState(null);
+  const [mainImage, setMainImage] = useState("");
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -18,6 +21,13 @@ const ProductDetail = ({ addToCart, productController }) => {
           return;
         }
         setProduct(data);
+
+        // Ưu tiên ảnh của variant đầu tiên
+        const firstVariant = data.variants?.[0];
+        const defaultImage = firstVariant?.image || data.image || "";
+        setMainImage(defaultImage);
+        // Chọn variant mặc định
+        if (firstVariant) setSelectedVariant(firstVariant);
       } catch (error) {
         console.error("Lỗi tải chi tiết sản phẩm:", error);
       } finally {
@@ -28,10 +38,36 @@ const ProductDetail = ({ addToCart, productController }) => {
     fetchProduct();
   }, [id, productController, navigate]);
 
+  // Khi chọn variant → đổi ảnh + giá
+  const handleVariantChange = (variant) => {
+    setSelectedVariant(variant);
+    setMainImage(variant.image || product.image);
+    setQuantity(1);
+  };
+
   const handleAddToCart = () => {
-    if (product) {
-      addToCart(product);
-    }
+    if (!product) return;
+    const item = {
+      ...product,
+      quantity,
+      selectedVariant: selectedVariant ? { ...selectedVariant } : null,
+      // Tên hiển thị trong giỏ
+      displayName: selectedVariant
+        ? `${product.name} - ${selectedVariant.value}`
+        : product.name,
+      // Giá thực tế
+      finalPrice: selectedVariant
+        ? selectedVariant.discountPrice || selectedVariant.price
+        : product.discountPrice || product.price,
+      // Ảnh trong giỏ
+      cartImage: mainImage,
+    };
+
+    addToCart(item);
+  };
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("vi-VN").format(price) + "₫";
   };
 
   if (loading) {
@@ -55,10 +91,19 @@ const ProductDetail = ({ addToCart, productController }) => {
     );
   }
 
-  const displayPrice = product.discountPrice || product.price;
+  const currentPrice =
+    selectedVariant?.discountPrice ||
+    selectedVariant?.price ||
+    product.discountPrice ||
+    product.price;
+  const originalPrice = selectedVariant?.price || product.price;
+  const hasDiscount = currentPrice < originalPrice;
+
+  const allImages = product?.gallery || [product?.image];
 
   return (
     <>
+      {/* Breadcrumb */}
       <div className="bg-success-subtle">
         <div className="container">
           <div className="breadcrumbs">
@@ -72,7 +117,7 @@ const ProductDetail = ({ addToCart, productController }) => {
                 >
                   <span>Trang chủ</span>
                 </Link>
-                <span className="mx-1 md:mx-2 inline-block">&nbsp;/&nbsp;</span>
+                <span className="mx-1 md:mx-2 inline-block">/</span>
               </li>
               <li>
                 <span className="fs-7" style={{ color: "#BFBFBF" }}>
@@ -83,156 +128,57 @@ const ProductDetail = ({ addToCart, productController }) => {
           </div>
         </div>
       </div>
-      <div class="container">
+
+      <div class="container mt-4">
         <product-form id="main-product">
-          <div class="product-detail row ">
-            <div class="product-gallery-wrapper col-6">
+          <div class="product-detail row justify-content-between">
+            {/* Gallery */}
+            <div class="product-gallery-wrapper col-5">
               <div class="">
                 <div class="product-gallery">
                   <div>
-                    <div id="GalleryMain-product-1" class="swiper gallery-main">
-                      <div
-                        class="swiper-wrapper"
-                        id="swiper-wrapper"
-                        aria-live="polite"
-                      >
-                        <div
-                          class="swiper-slide"
-                          role="group"
-                          aria-label="1 / 3"
-                          data-swiper-slide-index="0"
-                        >
-                          <img
-                            class="object-contain rounded-lg  gallery-main-img"
-                            src="//bizweb.dktcdn.net/thumb/grande/100/518/448/products/image-116.jpg?v=1717487311197"
-                            alt="Nước lau sàn Sunlight Tinh dầu thảo mộc Ngăn côn trùng | Chai 900g"
-                          />
-                        </div>
-
-                        <div
-                          class="swiper-slide"
-                          role="group"
-                          aria-label="2 / 3"
-                          data-swiper-slide-index="1"
-                          style={{ display: "none" }}
-                        >
-                          <img
-                            class="object-contain rounded-lg gallery-main-img"
-                            src="//bizweb.dktcdn.net/thumb/grande/100/518/448/products/image-117.jpg?v=1717487311197"
-                            alt="Nước lau sàn Sunlight Tinh dầu thảo mộc Ngăn côn trùng | Chai 900g"
-                          />
-                        </div>
-
-                        <div
-                          class="swiper-slide"
-                          role="group"
-                          aria-label="3 / 3"
-                          data-swiper-slide-index="2"
-                          style={{ display: "none" }}
-                        >
-                          <img
-                            class="object-contain rounded-lg  gallery-main-img"
-                            src="//bizweb.dktcdn.net/thumb/grande/100/518/448/products/image-118.jpg?v=1717487311197"
-                            alt="Nước lau sàn Sunlight Tinh dầu thảo mộc Ngăn côn trùng | Chai 900g"
-                          />
-                        </div>
-                      </div>
-                      <div
-                        class="swiper-button-prev"
-                        tabindex="0"
-                        role="button"
-                        aria-label="Previous slide"
-                        aria-controls="swiper-wrapper-109b38c3e674d3f1"
-                      ></div>
-                      <div
-                        class="swiper-button-next"
-                        tabindex="0"
-                        role="button"
-                        aria-label="Next slide"
-                        aria-controls="swiper-wrapper-109b38c3e674d3f1"
-                      ></div>
-                      <span
-                        class="swiper-notification"
-                        aria-live="assertive"
-                        aria-atomic="true"
-                      ></span>
+                    <div className="text-center">
+                      <img
+                        src={mainImage || "/placeholder.jpg"}
+                        alt={product.name}
+                        className="object-contain rounded-lg gallery-main-img w-100"
+                      />
                     </div>
 
-                    <div
-                      id="GalleryThumbnails-product-1"
-                      class="swiper w-100  d-flex aligin-items-center justify-content-center"
-                    >
-                      <div
-                        class="swiper-wrapper d-flex"
-                        id="swiper-wrapper"
-                        aria-live="polite"
-                      >
-                        <div
-                          class="swiper-slide cursor-pointer mx-1 border border-warning"
-                          role="group"
-                          aria-label="1 / 3"
-                        >
-                          <div class=" d-flex align-items-center justify-content-center">
+                    {/* Thumbnails (nếu có nhiều ảnh) */}
+                    {allImages.length > 1 && (
+                      <div className="d-flex justify-content-center gap-3 mt-3">
+                        {allImages.map((img, i) => (
+                          <div
+                            key={i}
+                            className={`border p-1 cursor-pointer ${
+                              mainImage === img ? "border-danger" : "border"
+                            }`}
+                            onClick={() => setMainImage(img)}
+                          >
                             <img
-                              class="object-contain w-auto"
-                              src="//bizweb.dktcdn.net/thumb/small/100/518/448/products/image-116.jpg?v=1717487311197"
+                              src={img}
                               width="64"
                               height="64"
-                              alt="Nước lau sàn Sunlight Tinh dầu thảo mộc Ngăn côn trùng | Chai 900g"
+                              className="object-contain"
                             />
                           </div>
-                        </div>
-
-                        <div
-                          class="swiper-slide cursor-pointer mx-1 border"
-                          role="group"
-                          aria-label="2 / 3"
-                        >
-                          <div class=" d-flex align-items-center justify-content-center">
-                            <img
-                              class="object-contain w-auto"
-                              src="//bizweb.dktcdn.net/thumb/small/100/518/448/products/image-117.jpg?v=1717487311197"
-                              width="64"
-                              height="64"
-                              alt="Nước lau sàn Sunlight Tinh dầu thảo mộc Ngăn côn trùng | Chai 900g"
-                            />
-                          </div>
-                        </div>
-
-                        <div
-                          class="swiper-slide cursor-pointer mx-1 border"
-                          role="group"
-                          aria-label="3 / 3"
-                        >
-                          <div class=" d-flex align-items-center justify-content-center">
-                            <img
-                              class="object-contain w-auto"
-                              src="//bizweb.dktcdn.net/thumb/small/100/518/448/products/image-118.jpg?v=1717487311197"
-                              width="64"
-                              height="64"
-                              alt="Nước lau sàn Sunlight Tinh dầu thảo mộc Ngăn côn trùng | Chai 900g"
-                            />
-                          </div>
-                        </div>
+                        ))}
                       </div>
-                      <span
-                        class="swiper-notification"
-                        aria-live="assertive"
-                        aria-atomic="true"
-                      ></span>
-                    </div>
+                    )}
                   </div>
                 </div>
 
+                {/* Chia sẻ */}
                 <div class="mb-3">
-                  <div class="share-group flex justify-center items-center mt-5 gap-3">
-                    <p class="share-group__heading mr-3 ">Chia sẻ</p>
-                    <div class="share-group__list flex gap-3">
+                  <div class="share-group d-flex justify-content-center align-items-center mt-5">
+                    <p class="share-group__heading m-0">Chia sẻ</p>
+                    <div class="share-group__list d-flex ms-3">
                       <Link
                         title="facebook-share"
-                        class="share-group__item p-2 border border-warningneutral-50 rounded-full  flex items-center justify-center facebook"
+                        class="share-group__item p-2 border rounded-5 d-flex align-items-center justify-content-center facebook mx-1"
                         target="_blank"
-                        to="http://www.facebook.com/sharer.php?u=https://ega-mini-mart.mysapo.net/nuoc-lau-san-sunlight-tinh-dau-thao-moc-ngan-con-trung-chai-900g"
+                        to={`https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`}
                       >
                         <img
                           class="object-contain"
@@ -245,9 +191,9 @@ const ProductDetail = ({ addToCart, productController }) => {
                       </Link>
                       <Link
                         title="messenger-share"
-                        class="share-group__item messenger p-2  border border-neutral-50 rounded-full flex items-center justify-center lg:hidden"
+                        class="share-group__item messenger p-2 border rounded-5 d-flex align-items-center justify-content-center mx-1"
                         target="_blank"
-                        to="fb-messenger://share/?link=https://ega-mini-mart.mysapo.net/nuoc-lau-san-sunlight-tinh-dau-thao-moc-ngan-con-trung-chai-900g"
+                        to={`https://m.me/?app_scoped_user_id=&link=${window.location.href}`}
                       >
                         <img
                           class="object-contain"
@@ -258,49 +204,18 @@ const ProductDetail = ({ addToCart, productController }) => {
                           height="20"
                         />
                       </Link>
-                      <Link
-                        title="pinterest-share"
-                        class="share-group__item pinterest p-2 border border-neutral-50 rounded-full"
-                        target="_blank"
-                        to="http://pinterest.com/pin/create/button/?url=https://ega-mini-mart.mysapo.net/nuoc-lau-san-sunlight-tinh-dau-thao-moc-ngan-con-trung-chai-900g"
-                      >
-                        <img
-                          class="object-contain"
-                          src="//bizweb.dktcdn.net/100/518/448/themes/953339/assets/pinterest-icon.png?1760435339581"
-                          alt="pinterest"
-                          loading="lazy"
-                          width="20"
-                          height="20"
-                        />
-                      </Link>
-                      <Link
-                        title="twitter-share"
-                        class="share-group__item twitter p-2 border border-neutral-50 rounded-full flex items-center justify-center "
-                        target="_blank"
-                        to="http://twitter.com/share?text=https://ega-mini-mart.mysapo.net/nuoc-lau-san-sunlight-tinh-dau-thao-moc-ngan-con-trung-chai-900g"
-                      >
-                        <img
-                          class="object-contain"
-                          src="//bizweb.dktcdn.net/100/518/448/themes/953339/assets/twitter-icon.png?1760435339581"
-                          alt="twitter"
-                          loading="lazy"
-                          width="20"
-                          height="20"
-                        />
-                      </Link>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+
+            {/* Thông tin sản phẩm */}
             <div class="product-form-wrapper col-6">
-              <div class="bg-background  lg:rounded-l  md:py-6 lg:p-6 ">
-                <div class="   ">
+              <div class="bg-background">
+                <div class="">
                   <div class="product-title mb-4">
-                    <h1 class="fw-semibold fs-4">
-                      Nước lau sàn Sunlight Tinh dầu thảo mộc Ngăn côn trùng |
-                      Chai 900g
-                    </h1>
+                    <h1 class="fw-semibold fs-4">{product.name}</h1>
 
                     <div class="d-flex flex-wrap align-items-center  my-2 ">
                       <button
@@ -313,34 +228,38 @@ const ProductDetail = ({ addToCart, productController }) => {
                       </button>
                     </div>
 
-                    <div class="group-status  d-flex flex-wrap pb-2 align-items-center border-b border-dash border-neutral-50">
+                    <div class="group-status  d-flex flex-wrap pb-2 align-items-center">
                       <div class="status status-vendor col-4">
-                        <span class="fs-7">Thương hiệu:</span>
+                        <span class="fs-7 me-1">Thương hiệu:</span>
 
-                        <Link
-                          to="/collections/all?vendor=Minimart"
-                          class="link fs-7 fw-semibold text-black"
-                        >
-                          Minimart
-                        </Link>
+                        <span className="fs-7 fw-semibold text-black">
+                          {product.brands?.join(", ") || "Minimart"}
+                        </span>
                       </div>
                       <div class="status status-sku  col-4">
                         <span class="fs-7">Mã sản phẩm:</span>
-                        <span class="fs-7"> Đang cập nhật </span>
+                        <span class="fs-7">{product.id.slice(-8)}</span>
                       </div>
                     </div>
 
+                    {/* Giá */}
                     <div class="product-price-group rounded-sm overflow-hidden mb-4">
                       <div class="price-box d-flex align-items-center flex-wrap">
                         <div class="flex flex-wrap">
                           <span class="price fs-2 fw-bold text-active ms-3">
-                            30.000₫
+                            {formatPrice(currentPrice)}
                           </span>
+                          {hasDiscount && (
+                            <del className="text-muted ms-2 fs-6">
+                              {formatPrice(originalPrice)}
+                            </del>
+                          )}
                         </div>
                       </div>
                     </div>
                   </div>
 
+                  {/* Khuyến mãi */}
                   <div class="promo-box mb-4">
                     <div class="promo-box-group border rounded-2 ">
                       <div class="promo-box__header d-flex align-items-center px-4 py-1 bg-success-subtle text-success">
@@ -368,124 +287,156 @@ const ProductDetail = ({ addToCart, productController }) => {
                   </div>
 
                   <div class="coupon-box mb-4">
-                    <div class="coupon-group d-flex align-items-center">
-                      <div class="coupon-group-header mb-2 flex-shrink-0 flex-grow-0">
-                        Mã giảm giá
-                      </div>
-                      <portal-opener class="block w-full overflow-hidden">
-                        <div class="d-flex" data-portal="#coupon-drawer">
-                          <div class="d-flex overflow-hidden align-items-center cursor-pointer">
-                            <div class="coupon-group-item overflow-hidden d-flex align-items-center px-3 py-2 ">
-                              <i class="bi bi-ticket "> </i>
-                              <div class="coupon-group-item__code font-semibold text-ellipsis overflow-hidden">
-                                EGA50THANG10
-                              </div>
-                            </div>
-
-                            <div class="coupon-group-item overflow-hidden d-flex align-items-center px-3 py-2 ">
-                              <i class="bi bi-ticket "> </i>
-                              <div class="coupon-group-item__code font-semibold text-ellipsis overflow-hidden">
-                                EGA30THANG10
-                              </div>
-                            </div>
-
-                            <div class="coupon-group-item overflow-hidden d-flex align-items-center px-3 py-2 ">
-                              <i class="bi bi-ticket "> </i>
-                              <div class="coupon-group-item__code font-semibold text-ellipsis overflow-hidden">
-                                FREESHIPTHANG10
-                              </div>
+                    <div class="coupon-group d-flex align-items-center justify-content-between">
+                      <div class="coupon-group-header col-2">Mã giảm giá</div>
+                      <div class="d-flex" data-portal="#coupon-drawer">
+                        <div class="d-flex align-items-center cursor-pointer">
+                          <div class="coupon-group-item overflow-hidden d-flex align-items-center px-3 py-2 fs-7 bg-warning-subtle mx-1 text-active rounded-3 col-3">
+                            <i class="bi bi-ticket-perforated"></i>
+                            <div class="coupon-group-item__code fw-semibold ms-1 text-truncate">
+                              EGA50THANG10
                             </div>
                           </div>
-                          <div class="px-3 py-2 ">
-                            <i class="bi bi-carret-right "> </i>
+
+                          <div class="coupon-group-item overflow-hidden d-flex align-items-center px-3 py-2 fs-7 bg-warning-subtle mx-1 text-active rounded-3 col-3">
+                            <i class="bi bi-ticket-perforated"></i>
+                            <div class="coupon-group-item__code fw-semibold ms-1 text-truncate">
+                              EGA30THANG10
+                            </div>
+                          </div>
+
+                          <div class="coupon-group-item overflow-hidden d-flex align-items-center px-3 py-2 fs-7 bg-warning-subtle mx-1 text-active rounded-3 col-3">
+                            <i class="bi bi-ticket-perforated"></i>
+                            <div class="coupon-group-item__code fw-semibold ms-1 text-truncate">
+                              FREESHIPTHANG10
+                            </div>
+                          </div>
+                          <div class="px-3 py-2 bg-warning-subtle mx-1 text-active rounded-3">
+                            <i class="bi bi-caret-right-fill"></i>
                           </div>
                         </div>
-                      </portal-opener>
+                      </div>
                     </div>
                   </div>
+
+                  {/* Variant (nếu có) dung tích */}
+                  {product.variants && product.variants.length > 0 && (
+                    <div class="mb-4">
+                      <div class="variant-picker d-flex">
+                        <div class="variant-picker__input d-flex align-items-center w-100">
+                          <div class="mb-1 col-2">Dung tích</div>
+                          <div
+                            class="fieldset d-flex flex-wrap selected"
+                            data-option="dung-tich"
+                          >
+                            {product.variants.map((v, i) => (
+                              <button
+                                key={i}
+                                onClick={() => handleVariantChange(v)}
+                                className={`mx-1 btn ${
+                                  selectedVariant?.value === v.value
+                                    ? "btn-danger text-white"
+                                    : "btn-outline-secondary"
+                                }`}
+                              >
+                                {v.value}
+                                {v.discountPrice && (
+                                  <small className="ms-1">
+                                    (−
+                                    {Math.round(
+                                      100 - (v.discountPrice / v.price) * 100
+                                    )}
+                                    %)
+                                  </small>
+                                )}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
+                {/* Số lượng + CTA */}
                 <div class="product-cta mb-0 mt-4 ">
-                  <div class=" btn--soldout  font-semibold mt-2 btn bg-neutral-50 w-full ">
+                  <div class="d-none btn fw-semibold mt-2 btn w-100">
                     HẾT HÀNG
                   </div>
+                  <input type="hidden" name="variantId" value="118468360" />
 
-                  <form
-                    class=" hidden "
-                    enctype="multipart/form-data"
-                    id="add-to-cart-form"
-                    action="/cart/add"
-                    method="post"
-                  >
-                    <input type="hidden" name="variantId" value="" />
-
-                    <div class="flex items-center gap-3 mb-4 ">
-                      <div class="w-[88px] text-neutral-400"> Số lượng </div>
-                      <quantity-input>
-                        <div class="custom-number-input product-quantity">
-                          <div class="flex flex-row h-10 border border-neutral-50 relative bg-background rounded-pill overflow-hidden h-[3.8rem] w-[13rem]">
-                            <button
-                              type="button"
-                              name="minus"
-                              class="h-full w-20 cursor-pointer outline-non p-2 disabled"
-                            >
-                              <i class="m-auto icon icon-minus"></i>
-                            </button>
-                            <input
-                              type="number"
-                              class="focus:outline-none form-quantity w-full focus:ring-transparent text-base  font-semibold text-md  md:text-basecursor-default flex items-center outline-none bg-transparent border-none text-center"
-                              name="quantity"
-                              value="1"
-                              min="1"
-                            />
-                            <button
-                              type="button"
-                              name="plus"
-                              class=" h-full w-20 rounded-r cursor-pointer p-2"
-                            >
-                              <i class="m-auto icon icon-plus"></i>
-                            </button>
-                          </div>
+                  <div class="d-flex align-items-center mb-4 ">
+                    <div class="col-2"> Số lượng </div>
+                    <quantity-input>
+                      <div class="custom-number-input product-quantity">
+                        <div class="d-flex border rounded-1 w-50">
+                          <button
+                            type="button"
+                            name="minus"
+                            class="cursor-pointer p-2 bg-transparent border-0 text-hover"
+                            onClick={() =>
+                              setQuantity(Math.max(1, quantity - 1))
+                            }
+                          >
+                            <i class="m-auto bi bi-dash"></i>
+                          </button>
+                          <input
+                            type="text"
+                            class="form-quantity w-100 fw-semibold d-flex align-items-center bg-transparent border-0 text-center"
+                            name="quantity"
+                            value={quantity}
+                            min="1"
+                          />
+                          <button
+                            type="button"
+                            name="plus"
+                            class="cursor-pointer p-2 bg-transparent border-0 text-hover"
+                            onClick={() => setQuantity(quantity + 1)}
+                          >
+                            <i class="m-auto bi bi-plus"></i>
+                          </button>
                         </div>
-                      </quantity-input>
-                    </div>
+                      </div>
+                    </quantity-input>
+                  </div>
 
-                    <div class="flex gap-2 mt-4 border-t border-neutral-50 pt-4">
-                      <button
-                        name="buynow"
-                        class=" font-semibold  btn bg-[var(--color-addtocart-color)] text-[var(--color-addtocart-bg)] border border-[var(--color-addtocart-bg)]  hover:bg-[var(--color-addtocart-bg)] hover:text-[var(--color-addtocart)] btn-buynow w-full"
-                      >
-                        <span> Mua ngay </span>
-                        <span class="loading-icon gap-1 hidden items-center justify-center">
-                          <span class="w-1.5 h-1.5 bg-[currentColor] rounded-full animate-pulse"></span>
+                  <div class="d-flex mt-4 border-top pt-4">
+                    <button
+                      name="buynow"
+                      class=" fw-semibold btn border border-danger btn-buynow w-100 py-2 text-danger col mx-2 rounded-5"
+                    >
+                      <span> Mua ngay </span>
+                      <span class="loading-icon hidden align-items-center justify-content-center">
+                        <span class="rounded-full animate-pulse"></span>
 
-                          <span class="w-1.5 h-1.5 bg-[currentColor] rounded-full animate-pulse"></span>
+                        <span class="rounded-full animate-pulse"></span>
 
-                          <span class="w-1.5 h-1.5 bg-[currentColor] rounded-full animate-pulse"></span>
-                        </span>
-                      </button>
+                        <span class="rounded-full animate-pulse"></span>
+                      </span>
+                    </button>
 
-                      <button
-                        name="addtocart"
-                        class=" font-semibold  btn bg-[var(--color-addtocart-bg)] text-[var(--color-addtocart)] btn-add-to-cart w-full"
-                      >
-                        <span> Thêm vào giỏ</span>
-                        <span class="loading-icon gap-1 hidden items-center justify-center">
-                          <span class="w-1.5 h-1.5 bg-[currentColor] rounded-full animate-pulse"></span>
+                    <button
+                      name="addtocart"
+                      class=" fw-semibold btn btn-add-to-cart w-100 bg-danger text-white py-2 col mx-2 rounded-5"
+                      onClick={handleAddToCart}
+                    >
+                      <span> Thêm vào giỏ</span>
+                      <span class="loading-icon  hidden align-items-center justify-content-center">
+                        <span class="rounded-full animate-pulse"></span>
 
-                          <span class="w-1.5 h-1.5 bg-[currentColor] rounded-full animate-pulse"></span>
+                        <span class="rounded-full animate-pulse"></span>
 
-                          <span class="w-1.5 h-1.5 bg-[currentColor] rounded-full animate-pulse"></span>
-                        </span>
-                      </button>
-                    </div>
-                  </form>
+                        <span class="rounded-full animate-pulse"></span>
+                      </span>
+                    </button>
+                  </div>
                 </div>
 
-                <div class="card-product__badges hidden space-y-2 col-span-full lg:col-start-2 md:py-3 mt-4 "></div>
+                <div class="card-product__badges d-none space-y-2 col-span-full mt-4 "></div>
 
-                <ul class=" pt-3 flex gap-2 flex-col product-polices">
-                  <li class="item relative flex gap-2 items-center">
+                {/* Chính sách */}
+                <ul class="pt-3 d-flex flex-column   product-polices">
+                  <li class="item d-flex align-items-center my-1">
                     <div class="max-w-5">
                       <img
                         class="object-contain"
@@ -496,13 +447,13 @@ const ProductDetail = ({ addToCart, productController }) => {
                         alt="Giao hàng miễn phí trong 24h (chỉ áp dụng khu vực nội thành)"
                       />
                     </div>
-                    <div class="">
+                    <div class="fs-7 ms-2">
                       Giao hàng miễn phí trong 24h (chỉ áp dụng khu vực nội
                       thành)
                     </div>
                   </li>
 
-                  <li class="item relative flex gap-2 items-center">
+                  <li class="item d-flex align-items-center my-1">
                     <div class="max-w-5">
                       <img
                         class="object-contain"
@@ -513,12 +464,12 @@ const ProductDetail = ({ addToCart, productController }) => {
                         alt="Trả góp lãi suất 0% qua thẻ tín dụng Visa, Master, JCB"
                       />
                     </div>
-                    <div class="">
+                    <div class="fs-7 ms-2">
                       Trả góp lãi suất 0% qua thẻ tín dụng Visa, Master, JCB
                     </div>
                   </li>
 
-                  <li class="item relative flex gap-2 items-center">
+                  <li class="item d-flex align-items-center my-1">
                     <div class="max-w-5">
                       <img
                         class="object-contain"
@@ -529,13 +480,72 @@ const ProductDetail = ({ addToCart, productController }) => {
                         alt="Đổi trả miễn phí trong 30 ngày"
                       />
                     </div>
-                    <div class="">Đổi trả miễn phí trong 30 ngày</div>
+                    <div class="fs-7 ms-2">Đổi trả miễn phí trong 30 ngày</div>
                   </li>
                 </ul>
               </div>
             </div>
           </div>
         </product-form>
+      </div>
+
+      <div class="">
+        <div class="product-description relative">
+          <div class="tab-nav container tab-nav--style3 d-none justify-content-center align-items-center ">
+            <button
+              class="tab-btn btn rounded-0 active fw-semibold "
+              aria-controls="product-content"
+            >
+              Đặc điểm nổi bật
+            </button>
+          </div>
+
+          <div class="tab-content  bg-white py-5" id="product-content">
+            <div className="bg-success-subtle">
+              <div class="container">
+                <h3 class="fs-5 text-center block py-3 fw-semibold mb-5 text-success">
+                  Đặc điểm nổi bật
+                </h3>
+              </div>
+            </div>
+            <div class="container mx-auto">
+              <div class="expandable-content mb-3">
+                <div class="prose text-base w-full max-w-full content">
+                  <p>
+                    SUNLIGHT NƯỚC LAU SÀN TINH DẦU THẢO MỘC HƯƠNG QUẾ CAM
+                    BERGAMOT - SẠCH THƠM THƯ THÁI, TỔ ẤM TRONG LÀNH
+                  </p>
+                  <p>
+                    Sản phẩm nước lau sàn Sunlight Hương Quế và Cam Bergamot sử
+                    dụng chất làm sạch 100% từ thiên nhiên, không chỉ giúp sàn
+                    nhà sạch bóng mà còn chứa tinh dầu quế giúp ngăn đuổi côn
+                    trùng và mang lại không gian thư thái cho cả gia đình.
+                  </p>
+                  <p>
+                    ƯU ĐIỂM NỔI BẬT:Sunlight lau sàn hoạt động hiệu quả cho mọi
+                    loại sàn:- Đá mài- Gạch men- Simili- Mặt gỗ
+                  </p>
+                  <p>
+                    HƯỚNG DẪN SỬ DỤNG:- Bước 1: Hòa 1 nắp đầy nước lau sàn
+                    Sunlight vào nửa xô nước (Loại xô 5L).- Bước 2: Nhúng ướt
+                    giẻ rồi lau sạch các vết bẩn.- Bước 3: Không lau lại bằng
+                    nước.;Xuất xứ thương hiệu: Sản xuất tại Việt Nam - Sản phẩm
+                    của Công ty TNHH Quốc Tế Unilever Việt Nam.
+                  </p>
+                  <p>
+                    Thành phần: Alcohol Ethoxylate; Chất thơm (chứa tinh dầu Quế
+                    (0,38ppm)); Carbomer; Sodium Hydroxide; Isothiazolinones;
+                    Chất tạo màu; Nước.
+                  </p>
+                  <p>Bảo quản: Nơi thoáng mát, tránh ánh nắng trực tiếp</p>
+                </div>
+              </div>
+              <button class="btn btn-showmore">
+                Xem thêm <i class="icon icon-carret-down"></i>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );

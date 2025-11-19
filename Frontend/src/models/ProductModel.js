@@ -3,19 +3,21 @@ import api from "../services/api";
 
 class Product {
   constructor(data) {
-    this.id = data._id;
+    this.id = data._id || data.id;
     this.name = data.name;
     this.price = data.price;
-    this.discountPrice = data.discountPrice || null;
+    this.discountPrice = data.discountPrice;
     this.image = data.image;
+    this.gallery = data.gallery || [];
+    this.variants = data.variants || [];
     this.description = data.description;
+    this.brands = data.brands || [];
     this.types = data.types || [];
     this.tag = data.tag || [];
-    this.brands = data.brands || [];
-    this.colors = data.colors || [];
     this.titles = data.titles || [];
     this.subTitles = data.subTitles || [];
     this.falseSale = data.falseSale || false;
+    this.sold = data.sold || 0;
   }
 }
 

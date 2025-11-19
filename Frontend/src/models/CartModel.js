@@ -19,13 +19,14 @@ export class CartModel {
   }
 
   addItem(product) {
+    console.log(product);
     const existing = this.items.find((item) => item.id === product.id);
     if (existing) {
-      existing.quantity += 1;
+      existing.quantity += product.quantity;
     } else {
       this.items.push({
         ...product,
-        quantity: 1,
+        quantity: product.quantity,
         displayPrice: product.discountPrice || product.price,
       });
     }
