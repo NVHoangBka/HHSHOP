@@ -53,14 +53,16 @@ module.exports = {
 
     {
       id: 2,
-      name: "Nước Rửa Chén Bát Sunlight 100% Gốc Thực vật Lô Hội",
-      price: 500000,
-      discountPrice: 450000,
+      name: "Nước Rửa Chén Bát Sunlight 100% Gốc Thực vật Lô Hội/Gừng/Trà Xanh/ Quế & Bồ hòn/Mềm dịu| Chai 3.6KG, 3.5kg",
+      price: 129000,
+      discountPrice: 121000,
       image:
         "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/image-112.jpg?v=1717486673863",
       gallery: [
         "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/image-112.jpg?v=1717486673863",
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/image-113.jpg?v=1717486673863",
+        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/image-114.jpg?v=1717486673863",
+        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/image-115.jpg?v=1717486673863",
       ],
       description:
         "Nước rửa chén thân thiện với môi trường, dịu nhẹ cho da tay.",
@@ -81,21 +83,53 @@ module.exports = {
         </ul>
       `,
       variants: [
-        { value: "Chai 750ml", price: 45000, discountPrice: 39000, stock: 88 },
-        { value: "Can 3.6kg", price: 450000, discountPrice: 399000, stock: 31 },
+        {
+          value: "Thiên nhiên lô hội",
+          price: 129000,
+          discountPrice: 121000,
+          image:
+            "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/image-112.jpg?v=1717486673863",
+          stock: 88,
+        },
+        {
+          value: "Matcha trà nhật",
+          price: 129000,
+          discountPrice: 121000,
+          image:
+            "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/image-113.jpg?v=1717486673863",
+          stock: 31,
+        },
+        {
+          value: "Bưởi tây và hoa anh đào",
+          price: 129000,
+          discountPrice: 121000,
+          image:
+            "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/image-114.jpg?v=1717486673863",
+          stock: 32,
+        },
+        {
+          value: "Quế và bồ hòn",
+          price: 129000,
+          discountPrice: 121000,
+          image:
+            "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/image-115.jpg?v=1717486673863",
+          stock: 33,
+        },
       ],
     },
 
     {
       id: 3,
       name: "Nước xả vải Downy hương hoa Oải Hương nước Pháp",
-      price: 800000,
-      discountPrice: 120000,
+      price: 182000,
+      discountPrice: 167000,
       image:
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-106.jpg?v=1717485532697",
       gallery: [
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-106.jpg?v=1717485532697",
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-107.jpg?v=1717485532697",
+        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-108.jpg?v=1717485532697",
+        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-109.jpg?v=1717485532697",
       ],
       description: "Hương thơm sang trọng, lưu hương đến 30 ngày.",
       types: ["nuoc-giat", "hot", "san-deal"],
@@ -114,8 +148,8 @@ module.exports = {
         </ul>
       `,
       variants: [
-        { value: "Túi 800ml", price: 120000, discountPrice: 99000, stock: 200 },
-        { value: "Can 1.6L", price: 220000, discountPrice: 189000, stock: 67 },
+        { value: "2.2l", price: 182000, discountPrice: 167000, stock: 200 },
+        { value: "3L", price: 230000, discountPrice: 202000, stock: 67 },
       ],
     },
 
@@ -128,6 +162,9 @@ module.exports = {
         "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/frame-101.jpg?v=1717476291620",
       gallery: [
         "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/frame-101.jpg?v=1717476291620",
+        "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/frame-103.jpg?v=1717476291620",
+        "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/frame-104.jpg?v=1717476291620",
+        "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/frame-105.jpg?v=1717476291620",
       ],
       description: "Hương thơm dịu nhẹ từ thiên nhiên.",
       types: ["nuoc-giat", "hot"],
@@ -145,20 +182,20 @@ module.exports = {
           <li>An toàn cho da nhạy cảm & quần áo trẻ sơ sinh</li>
         </ul>
       `,
-      variants: [
-        { value: "Túi 1.7L", price: 120000, discountPrice: 105000, stock: 89 },
-      ],
+      variants: [],
     },
 
     {
       id: 5,
       name: "Nước Giặt Comfort Dưỡng Vải Đa Năng Thiên Nhiên Thanh Khiết 3.0KG",
-      price: 180000,
-      discountPrice: 140000,
+      price: 270000,
+      discountPrice: 159000,
       image:
         "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/frame-102-1.jpg?v=1717475952480",
       gallery: [
         "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/frame-102-1.jpg?v=1717475952480",
+        "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/image-94.jpg?v=1717475952480",
+        "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/image-95.jpg?v=1717475952480",
       ],
       description: "Giặt sạch, lưu hương, bảo vệ sợi vải.",
       types: ["nuoc-giat", "hot", "san-deal"],
@@ -176,20 +213,19 @@ module.exports = {
           <li>Phù hợp giặt tay và giặt máy</li>
         </ul>
       `,
-      variants: [
-        { value: "Túi 3.0kg", price: 140000, discountPrice: 129000, stock: 45 },
-        { value: "Túi 3.8kg", price: 175000, discountPrice: 159000, stock: 12 },
-      ],
+      variants: [],
     },
 
     {
       id: 6,
       name: "Tẩy cặn canxi, tẩy kính, vòi sen Hikit 500ml",
-      price: 10000,
+      price: 50000,
       image:
         "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/frame-110.jpg?v=1717486138593",
       gallery: [
         "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/frame-110.jpg?v=1717486138593",
+        "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/frame-111.jpg?v=1717486138593",
+        "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/frame-112.jpg?v=1717486138593",
       ],
       description: "Tẩy sạch cặn canxi, sáng bóng kính và inox.",
       types: ["nuoc-lau-nha", "san-deal", "household-cleaning"],
@@ -211,27 +247,30 @@ module.exports = {
 
     {
       id: 7,
-      name: "Khăn giấy ướt Sunlight | Gói 50 miếng",
+      name: "Túi Nước Giặt Xả MaxKleen Thiên Nhiên Vườn hoa thanh khiết 3.6kg",
       price: 9000,
       image:
-        "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/frame-102-1.jpg?v=1717475952480",
+        "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/frame-99.jpg?v=1717475690873",
       gallery: [
-        "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/frame-102-1.jpg?v=1717475952480",
+        "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/frame-99.jpg?v=1717475690873",
+        "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/frame-97.jpg?v=1717475690873",
+        "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/frame-98.jpg?v=1717475690873",
+        "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/frame-100.jpg?v=1717475690873",
       ],
-      description: "Khăn ướt tiện lợi, không cồn, an toàn cho bé.",
-      types: ["khăn-giấy", "san-deal"],
+      description: "Giặt sạch, lưu hương, bảo vệ sợi vải.",
+      types: ["nuoc-giat", "hot", "san-deal"],
       tag: ["flashsale"],
-      brands: ["Sunlight"],
+      brands: ["MaxKleen"],
       titles: ["cham-soc-gia-dinh"],
-      subTitles: ["khăn-giấy"],
+      subTitles: ["sap-thom"],
       sold: 1203,
       highlightContent: `
-        <p><strong>KHĂN ƯỚT SUNLIGHT KHÔNG CỒN – AN TOÀN CHO BÉ TỪ SƠ SINH</strong></p>
+        <p><strong>MaxKleen Thiên Nhiên Vườn hoa thanh khiết – SẠCH SÂU, THƠM LÂU</strong></p>
         <ul>
-          <li>Không cồn, không paraben, không hương liệu</li>
-          <li>Dịu nhẹ với da nhạy cảm nhất</li>
-          <li>Dày dặn, dai, không rách khi lau</li>
-          <li>Làm sạch nhanh tay, mặt, đồ chơi</li>
+          <li>Công thức 3 trong 1: Giặt – Xả – Dưỡng vải</li>
+          <li>Làm sạch vết bẩn cứng đầu, bảo vệ sợi vải</li>
+          <li>Hương thơm thanh khiết lưu lâu suốt cả ngày</li>
+          <li>Phù hợp giặt tay và giặt máy</li>
         </ul>
       `,
     },
@@ -245,7 +284,9 @@ module.exports = {
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/image-119.jpg?v=1717487812197",
       gallery: [
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/image-119.jpg?v=1717487812197",
-        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/sap-thom-2.jpg",
+        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/image-120.jpg?v=1717487812197",
+        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/image-121.jpg?v=1717487812197",
+        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/image-122.jpg?v=1717487812197",
       ],
       description: "Khử mùi hiệu quả, thơm mát lâu dài.",
       types: ["xit-phong", "san-deal"],
@@ -263,18 +304,8 @@ module.exports = {
           <li>Thơm liên tục đến 2 tháng</li>
         </ul>
       `,
-      variants: [
-        { value: "Hương Hoa Hồng", price: 20000, stock: 120 },
-        { value: "Hương Bạc Hà", price: 20000, stock: 98 },
-        {
-          value: "Hương Cam Quế",
-          price: 22000,
-          discountPrice: 19000,
-          stock: 67,
-        },
-      ],
+      variants: [],
     },
-
     {
       id: 9,
       name: "Rau muống hữu cơ 300g",
@@ -329,8 +360,6 @@ module.exports = {
         </ul>
       `,
     },
-
-    // ... (id 11 đến 18 giữ nguyên các trường cũ, chỉ thêm highlightContent)
     {
       id: 11,
       name: "Rau dền hữu cơ 300g",
@@ -369,7 +398,12 @@ module.exports = {
       price: 35000,
       discountPrice: 20000,
       image:
-        "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/upload-8922cfd99be640d89ba6ceaf0006180c.jpg?v=1717407827807",
+        "https://bizweb.dktcdn.net/thumb/small/100/518/448/products/upload-8922cfd99be640d89ba6ceaf0006180c.jpg?v=1717407827807",
+      gallery: [
+        "https://bizweb.dktcdn.net/thumb/small/100/518/448/products/upload-8922cfd99be640d89ba6ceaf0006180c.jpg?v=1717407827807",
+        "https://bizweb.dktcdn.net/thumb/small/100/518/448/products/upload-6716023728214270af491c1f1ba2dc9e.jpg?v=1717407827807",
+        "https://bizweb.dktcdn.net/thumb/small/100/518/448/products/upload-413f080c0a294b4696753d5b81cadff9.jpg?v=1717407827807",
+      ],
       types: ["thuy-hai-san"],
       tag: ["flashsale"],
       titles: ["thuc-pham-tuoi-song"],
@@ -399,7 +433,13 @@ module.exports = {
       price: 35000,
       discountPrice: 20000,
       image:
+        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-91.jpg?v=1717474945973",
+      gallery: [
+        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-91.jpg?v=1717474945973",
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-92.jpg?v=1717474945973",
+        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-93.jpg?v=1717474945973",
+        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-94.jpg?v=1717474945973",
+      ],
       types: ["so-tay"],
       tag: ["flashsale"],
       titles: ["van-phong-pham"],
@@ -414,7 +454,13 @@ module.exports = {
       price: 35000,
       discountPrice: 20000,
       image:
+        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-87.jpg?v=1717474686750",
+      gallery: [
+        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-87.jpg?v=1717474686750",
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-88.jpg?v=1717474686750",
+        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-89.jpg?v=1717474686750",
+        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-90.jpg?v=1717474686750",
+      ],
       types: ["giay-note"],
       tag: ["flashsale"],
       titles: ["van-phong-pham"],
@@ -429,7 +475,13 @@ module.exports = {
       price: 35000,
       discountPrice: 20000,
       image:
+        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-83.jpg?v=1717474250750",
+      gallery: [
+        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-83.jpg?v=1717474250750",
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-84.jpg?v=1717474250750",
+        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-85.jpg?v=1717474250750",
+        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-86.jpg?v=1717474250750",
+      ],
       types: ["hop-but"],
       tag: ["flashsale"],
       titles: ["van-phong-pham"],
@@ -441,29 +493,42 @@ module.exports = {
     {
       id: 18,
       name: "Bút highlight dạ quang 18 màu",
-      price: 35000,
-      discountPrice: 20000,
+      price: 25000,
+      discountPrice: 180000,
       image:
         "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/frame-79.jpg?v=1717473953247",
+      gallery: [
+        "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/frame-79.jpg?v=1717473953247",
+        "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/frame-80.jpg?v=1717473953247",
+        "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/frame-81.jpg?v=1717473953247",
+        "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/frame-82.jpg?v=1717473953247",
+      ],
       types: ["but-viet"],
       tag: ["flashsale"],
       titles: ["van-phong-pham"],
       subTitles: ["but-viet"],
       sold: 1123,
-      highlightContent: `<p><strong>BÚT HIGHLIGHT 18 MÀU SẮC – LÀM NỔI BẬT GHI CHÚ</strong></p><ul><li>Màu sắc tươi sáng, không lem khi photocopy</li><li>Ngòi xéo tiện lợi highlight dòng dài</li><li>Mực gốc nước an toàn</li></ul>`,
+      highlightContent: `
+      <p><strong>BÚT HIGHLIGHT 18 MÀU SẮC – LÀM NỔI BẬT GHI CHÚ</strong></p>
+      <ul>
+        <li>Màu sắc tươi sáng, không lem khi photocopy</li>
+        <li>Ngòi xéo tiện lợi highlight dòng dài</li>
+        <li>Mực gốc nước an toàn</li>
+      </ul>`,
     },
 
     {
       id: 19,
       name: "Bút Bi Gel Ngòi 0,5mm Viết Trơn",
-      price: 35000,
-      discountPrice: 20000,
+      price: 6000,
+      discountPrice: 3000,
       image:
-        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-76.jpg?v=1717473523093",
+        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-75.jpg?v=1717473523093",
       gallery: [
+        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-75.jpg?v=1717473523093",
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-76.jpg?v=1717473523093",
-        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/but-gel-den.jpg",
-        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/but-gel-xanh.jpg",
+        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-77.jpg?v=1717473523093",
+        "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-78.jpg?v=1717473523093",
       ],
       description: "Viết mượt, mực đều, không lem.",
       types: ["but-viet"],
@@ -482,21 +547,24 @@ module.exports = {
         </ul>
       `,
       variants: [
-        { value: "Màu Đen", price: 20000, stock: 500 },
-        { value: "Màu Xanh", price: 20000, stock: 420 },
-        { value: "Màu Đỏ", price: 22000, discountPrice: 19000, stock: 280 },
+        { value: "Bút Đen", price: 6000, discountPrice: 3000, stock: 500 },
+        { value: "Bút Xanh", price: 6000, discountPrice: 3000, stock: 420 },
+        { value: "Bút Đỏ", price: 6000, discountPrice: 3000, stock: 280 },
       ],
     },
 
     {
       id: 20,
       name: "Băng keo hai mặt dài 6m",
-      price: 35000,
-      discountPrice: 20000,
+      price: 45000,
+      discountPrice: 29000,
       image:
         "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/image-70.jpg?v=1717473122453",
       gallery: [
         "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/image-70.jpg?v=1717473122453",
+        "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/image-71.jpg?v=1717473122453",
+        "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/image-72.jpg?v=1717473122453",
+        "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/image-73.jpg?v=1717473122453",
       ],
       types: ["bang-keo"],
       tag: ["flashsale"],
