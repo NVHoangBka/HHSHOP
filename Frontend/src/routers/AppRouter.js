@@ -7,6 +7,7 @@ import Home from "../views/pages/Home";
 import ProductController from "../controllers/ProductController"; // Giả định export instance
 import AdminDashboard from "../views/admin/AdminDashboard";
 import Checkout from "../views/pages/CheckOut";
+import AdminRouter from "./AdminRouter";
 
 const productController = new ProductController();
 
@@ -44,9 +45,9 @@ const AppRouter = ({
 
       {/* Admin */}
       <Route
-        path="/admin"
+        path="/admin/*"
         element={
-          <AdminDashboard
+          <AdminRouter
             isAuthenticated={isAuthenticated}
             onLogin={onLogin}
             authController={authController}
