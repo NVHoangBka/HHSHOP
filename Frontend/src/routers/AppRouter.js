@@ -6,6 +6,7 @@ import CartRouter from "./CartRouter";
 import Home from "../views/pages/Home";
 import ProductController from "../controllers/ProductController"; // Giả định export instance
 import AdminDashboard from "../views/admin/AdminDashboard";
+import Checkout from "../views/pages/CheckOut";
 
 const productController = new ProductController();
 
@@ -77,6 +78,9 @@ const AppRouter = ({
           />
         }
       />
+
+      {/* Checkout */}
+      <Route path="/checkout/*" element={<Checkout />} />
     </Routes>
   );
 };

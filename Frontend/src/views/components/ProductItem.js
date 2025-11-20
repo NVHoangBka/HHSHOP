@@ -10,6 +10,8 @@ const ProductItem = ({ product, addToCart }) => {
     );
   }
 
+  const { id, name, image, price, discountPrice, rating = 0 } = product;
+
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -35,7 +37,12 @@ const ProductItem = ({ product, addToCart }) => {
 
   const handleShowProductDetail = (e) => {
     e.stopPropagation();
-    navigate(`/products/${product.id}`);
+    navigate(`/products/${id}`);
+  };
+
+  const handleAddToCart = (e) => {
+    e.stopPropagation(); // 👉 chặn navigate
+    addToCart(product);
   };
 
   return (
@@ -43,34 +50,30 @@ const ProductItem = ({ product, addToCart }) => {
       className="product-item w-100 p-3 border mx-2 bg-white h-100 rounded-4 cursor-pointer hover"
       onClick={handleShowProductDetail}
     >
-      <img
-        src={product.image}
-        className="img-fluid rounded-start w-100"
-        alt={product.name}
-      />
+      <img src={image} className="img-fluid rounded-start w-100" alt={name} />
       <p className="mt-3 line-clamp-2 fs-body fw-semibold text-hover fixed-two-lines">
-        {product.name}
+        {name}
       </p>
       <div className="more d-flex justify-content-between mx-1">
         <div className="price">
           <p className="price-current m-0 text-danger fw-bold">
-            {formatPrice(product.discountPrice || product.price)}
+            {formatPrice(discountPrice || price)}
           </p>
-          {product.discountPrice && (
+          {discountPrice && (
             <p className="price-old text-decoration-line-through m-0">
-              {formatPrice(product.price)}
+              {formatPrice(price)}
             </p>
           )}
         </div>
         <button
           className="text-danger border px-2 py-1 rounded-circle bg-warning-subtle hover"
-          onClick={() => addToCart(product)}
-          aria-label={`Add ${product.name} to cart`}
+          onClick={handleAddToCart}
+          aria-label={`Add ${name} to cart`}
         >
           <i className="bi bi-cart4 fs-4"></i>
         </button>
       </div>
-      <div className="rate">{renderStars(product.rating)}</div>
+      <div className="rate">{renderStars(rating)}</div>
     </div>
   );
 };

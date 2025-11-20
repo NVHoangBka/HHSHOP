@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Cart = ({
   isOpen,
@@ -8,6 +8,7 @@ const Cart = ({
   cartItems: propCartItems,
   onCartChange,
 }) => {
+  const navigate = useNavigate();
   const [cartItems, setCartItems] = useState(propCartItems || []);
   const [total, setTotal] = useState(cartController.getTotalPrice());
 
@@ -48,6 +49,10 @@ const Cart = ({
     setCartItems([...updatedCart]);
     setTotal(cartController.getTotalPrice());
     onCartChange(updatedCart);
+  };
+
+  const handleCheckout = (e) => {
+    navigate(`/checkout`);
   };
 
   return (
@@ -392,6 +397,7 @@ const Cart = ({
                         <button
                           type="submit"
                           className="btn w-100 btn fw-semibold  bg-success text-white d-flex justify-content-center align-items-center rounded-5 py-2"
+                          onClick={handleCheckout}
                         >
                           THANH TOÁN
                           <i className="bi bi-arrow-bar-right ms-1"></i>
