@@ -5,10 +5,14 @@ import ProductRouter from "./ProductRouter";
 import CartRouter from "./CartRouter";
 import Home from "../views/pages/Home";
 import ProductController from "../controllers/ProductController"; // Giả định export instance
-import Checkout from "../views/pages/CheckOut";
+import CartController from "../controllers/CartController";
+import OrderController from "../controllers/OrderController";
+import CheckOut from "../views/pages/CheckOut";
 import AdminRouter from "./AdminRouter";
 
 const productController = new ProductController();
+const cartController = new CartController();
+const orderController = new OrderController();
 
 const AppRouter = ({
   isAuthenticated,
@@ -80,7 +84,15 @@ const AppRouter = ({
       />
 
       {/* Checkout */}
-      <Route path="/checkout/*" element={<Checkout />} />
+      <Route
+        path="/checkout"
+        element={
+          <CheckOut
+            cartController={cartController}
+            orderController={orderController}
+          />
+        }
+      />
     </Routes>
   );
 };
