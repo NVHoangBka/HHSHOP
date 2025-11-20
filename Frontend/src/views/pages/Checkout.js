@@ -1,11 +1,8 @@
 import React, { useState, useContext } from "react";
-import { CartContext } from "../context/CartContext";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-const Checkout = () => {
-  const { cart, updateQuantity, removeFromCart, clearCart } =
-    useContext(CartContext);
+const CheckOut = () => {
+  const { cart, updateQuantity, removeFromCart, clearCart } = useContext();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -24,17 +21,19 @@ const Checkout = () => {
     e.preventDefault();
 
     if (cart.length === 0) {
-      toast.error("Giỏ hàng trống!");
+      console.error("Giỏ hàng trống!");
       return;
     }
 
     if (!formData.fullName || !formData.phone || !formData.address) {
-      toast.error("Vui lòng điền đầy đủ thông tin bắt buộc!");
+      console.error("Vui lòng điền đầy đủ thông tin bắt buộc!");
       return;
     }
 
     // Giả lập gửi đơn hàng thành công
-    toast.success("Đặt hàng thành công! Cảm ơn bạn đã mua sắm tại Minimart ❤️");
+    console.success(
+      "Đặt hàng thành công! Cảm ơn bạn đã mua sắm tại Minimart ❤️"
+    );
 
     // Xóa giỏ hàng sau khi đặt thành công
     clearCart();
@@ -258,4 +257,4 @@ const Checkout = () => {
   );
 };
 
-export default Checkout;
+export default CheckOut;
