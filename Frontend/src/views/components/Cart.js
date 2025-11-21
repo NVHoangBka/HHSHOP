@@ -52,11 +52,12 @@ const Cart = ({
   };
 
   const handleCheckout = (e) => {
+    onClose();
     navigate(`/checkout`);
   };
 
   return (
-    <div className={`cart d-flex flex-column ${isOpen ? "active" : ""}`}>
+    <div className={`cart d-flex flex-column end-0`}>
       <div className="cart-header d-flex justify-content-between align-items-center border-bottom">
         <h2 className="card-title text-black pb-3 pt-4 px-4">Giỏ hàng</h2>
         <button

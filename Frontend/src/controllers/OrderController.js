@@ -1,21 +1,13 @@
-import AuthService from "../services/AuthService";
+import OrderService from "../services/OrderService";
 
 class OrderController {
   constructor() {
-    this.authService = new AuthService();
-  }
-  async getAddressCount(userId) {
-    try {
-      const count = await this.authService.getAddressCount(userId);
-      return { success: true, count };
-    } catch (error) {
-      return { success: false, message: error.message };
-    }
+    this.orderService = new OrderService();
   }
 
   async getOrders() {
     try {
-      const orders = await this.authService.getOrders();
+      const orders = await this.orderService.getOrders();
       return { success: true, orders };
     } catch (error) {
       return { success: false, message: error.message };
@@ -25,7 +17,7 @@ class OrderController {
   // Tạo đơn hàng mới
   async createOrder(orderData) {
     try {
-      const result = await this.authService.createOrder(orderData);
+      const result = await this.orderService.createOrder(orderData);
 
       if (result.success) {
         return {

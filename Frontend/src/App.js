@@ -48,6 +48,7 @@ const App = () => {
   const addToCart = (product) => {
     try {
       const updatedCart = cartController.addToCart(product);
+      setCartItems([...updatedCart]);
       showToast(`Đã thêm "${product.name}" vào giỏ hàng`, "success");
     } catch (error) {
       showToast(error.message, "danger");

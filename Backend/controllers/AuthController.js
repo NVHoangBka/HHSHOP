@@ -347,24 +347,24 @@ class AuthController {
     }
   }
 
-  // === LẤY ĐƠN HÀNG ===
-  static async getOrders(req, res) {
-    try {
-      const userId = req.user.id;
-      if (!userId) {
-        return res.status(401).json({
-          success: false,
-          message: "Không có quyền truy cập",
-          expired: true,
-        });
-      }
-      const orders = await Order.find({ userId }).populate("items.productId");
-      res.json({ success: true, orders });
-    } catch (error) {
-      console.error("Get orders error:", error.message, error.stack);
-      res.status(500).json({ success: false, message: "Lỗi hệ thống" });
-    }
-  }
+  // // === LẤY ĐƠN HÀNG ===
+  // static async getOrders(req, res) {
+  //   try {
+  //     const userId = req.user.id;
+  //     if (!userId) {
+  //       return res.status(401).json({
+  //         success: false,
+  //         message: "Không có quyền truy cập",
+  //         expired: true,
+  //       });
+  //     }
+  //     const orders = await Order.find({ userId }).populate("items.productId");
+  //     res.json({ success: true, orders });
+  //   } catch (error) {
+  //     console.error("Get orders error:", error.message, error.stack);
+  //     res.status(500).json({ success: false, message: "Lỗi hệ thống" });
+  //   }
+  // }
 
   // === ĐỔI MẬT KHẨU ===
   static async changePassword(req, res) {

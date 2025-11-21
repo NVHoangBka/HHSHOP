@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import AuthService from "../../services/AuthService";
 
-const authService = new AuthService();
-const Checkout = ({ cartController, orderController }) => {
+const Checkout = ({ cartController, orderController, authController }) => {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
   const [user, setUser] = useState(null);
@@ -24,32 +22,49 @@ const Checkout = ({ cartController, orderController }) => {
   // Load user + giỏ hàng khi vào trang
   useEffect(() => {
     const init = async () => {
-      const currentUser = await authService.getCurrentUser();
-
-      if (!currentUser) {
-        alert("Vui lòng đăng nhập để thanh toán!");
-        navigate("/login", { state: { from: "/checkout" } });
-        return;
-      }
+      const currentUser = await authController.getCurrentUser();
 
       setUser(currentUser);
 
       // Tự động điền thông tin nếu có
-      setFormData({
-        fullName: currentUser.fullName || "",
-        phone: currentUser.phone || "",
-        email: currentUser.email || "",
-        address: currentUser.defaultAddress || "",
-        note: "",
-      });
+      if (currentUser) {
+        const { email, firstName, lastName, address, phoneNumber } =
+          currentUser;
+
+        const fullName = `${firstName} ${lastName}`;
+
+        const defaultAddress = address;
+        setFormData({
+          fullName: fullName || "",
+          phone: phoneNumber || "",
+          email: email || "",
+          address: defaultAddress || "",
+          note: "",
+        });
+      } else {
+        setFormData({
+          fullName: "",
+          phone: "",
+          email: "",
+          address: "",
+          note: "",
+        });
+      }
+
+      const items = await cartController.getCartItems();
+      if (items.length === 0) {
+        alert("Giỏ hàng trống!");
+        navigate("/cart");
+        return;
+      }
 
       // Load giỏ hàng
-      setCartItems(cartController.getCartItems());
+      setCartItems(items);
       setLoading(false);
     };
 
     init();
-  }, [navigate]);
+  }, [cartController, authController, navigate]);
 
   // Tính toán
   const shippingFee = 30000;
@@ -88,27 +103,23 @@ const Checkout = ({ cartController, orderController }) => {
     setSubmitting(true);
 
     try {
+      const orderItems = cartItems.map((item) => ({
+        productId: item.id || item._id,
+        quantity: item.quantity,
+        price: item.discountPrice || item.price,
+      }));
+
       const orderData = {
-        items: cartItems,
-        customer: {
-          fullName: formData.fullName,
-          phone: formData.phone,
-          email: formData.email || null,
-          address: formData.address,
-        },
-        note: formData.note,
-        paymentMethod: "cod",
-        shippingFee,
-        voucherCode: voucherCode || null,
-        voucherDiscount,
-        subTotal,
-        total,
-        status: "pending",
-        createdAt: new Date().toISOString(),
+        address: formData.address,
+        items: orderItems,
+        total: total,
+        note: formData.note || undefined,
+        voucherCode: voucherCode || undefined,
+        voucherDiscount: voucherDiscount || 0,
       };
 
-      // Gửi đơn hàng qua AuthService (giả sử có method createOrder)
-      const result = await authService.createOrder(orderData);
+      // Gửi đơn hàng qua orderController
+      const result = await orderController.createOrder(orderData);
 
       if (result.success) {
         // Xóa giỏ hàng
@@ -121,7 +132,7 @@ const Checkout = ({ cartController, orderController }) => {
           }`
         );
 
-        navigate("/order-success", { state: { order: result.order } });
+        navigate("/checkout/order-success", { state: { order: result.order } });
       } else {
         alert("Đặt hàng thất bại: " + result.message);
       }
@@ -159,38 +170,6 @@ const Checkout = ({ cartController, orderController }) => {
       <h2 className="mb-4 fw-bold">Xác nhận thanh toán</h2>
 
       <div className="row g-5">
-        {/* Danh sách sản phẩm */}
-        <div className="col-lg-7">
-          <div className="card border-0 shadow-sm">
-            <div className="card-body p-4">
-              <h5 className="card-title mb-4">Sản phẩm ({cartItems.length})</h5>
-              {cartItems.map((item) => (
-                <div key={item.id} className="d-flex py-3 border-bottom">
-                  <img
-                    src={item.image || "/placeholder.jpg"}
-                    alt={item.name}
-                    className="rounded me-3"
-                    style={{ width: 80, height: 80, objectFit: "cover" }}
-                  />
-                  <div className="flex-grow-1">
-                    <p className="mb-1 fw-semibold">{item.name}</p>
-                    {item.size && (
-                      <small className="text-muted">Size: {item.size}</small>
-                    )}
-                    <span className="ms-2 text-muted">× {item.quantity}</span>
-                  </div>
-                  <div className="text-danger fw-bold text-end">
-                    {(
-                      (item.discountPrice || item.price) * item.quantity
-                    ).toLocaleString("vi-VN")}
-                    ₫
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
         {/* Form thanh toán */}
         <div className="col-lg-5">
           <div
@@ -327,6 +306,38 @@ const Checkout = ({ cartController, orderController }) => {
                   ← Quay lại giỏ hàng
                 </Link>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Danh sách sản phẩm */}
+        <div className="col-lg-7">
+          <div className="card border-0 shadow-sm">
+            <div className="card-body p-4">
+              <h5 className="card-title mb-4">Sản phẩm ({cartItems.length})</h5>
+              {cartItems.map((item) => (
+                <div key={item.id} className="d-flex py-3 border-bottom">
+                  <img
+                    src={item.image || "/placeholder.jpg"}
+                    alt={item.name}
+                    className="rounded me-3"
+                    style={{ width: 80, height: 80, objectFit: "cover" }}
+                  />
+                  <div className="flex-grow-1">
+                    <p className="mb-1 fw-semibold">{item.name}</p>
+                    {item.size && (
+                      <small className="text-muted">Size: {item.size}</small>
+                    )}
+                    <span className="ms-2 text-muted">× {item.quantity}</span>
+                  </div>
+                  <div className="text-danger fw-bold text-end">
+                    {(
+                      (item.discountPrice || item.price) * item.quantity
+                    ).toLocaleString("vi-VN")}
+                    ₫
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

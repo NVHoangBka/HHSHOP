@@ -7,7 +7,7 @@ const cors = require("cors");
 const app = express();
 
 const appRouter = require("./routes/appRoutes");
-
+require("./models");
 // Middleware
 app.use(cors());
 app.use(express.json());

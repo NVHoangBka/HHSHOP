@@ -7,8 +7,8 @@ import Home from "../views/pages/Home";
 import ProductController from "../controllers/ProductController"; // Giả định export instance
 import CartController from "../controllers/CartController";
 import OrderController from "../controllers/OrderController";
-import CheckOut from "../views/pages/CheckOut";
 import AdminRouter from "./AdminRouter";
+import OrderRouter from "./OrderRouter";
 
 const productController = new ProductController();
 const cartController = new CartController();
@@ -83,13 +83,14 @@ const AppRouter = ({
         }
       />
 
-      {/* Checkout */}
+      {/* Orders */}
       <Route
-        path="/checkout"
+        path="/checkout/*"
         element={
-          <CheckOut
+          <OrderRouter
             cartController={cartController}
             orderController={orderController}
+            authController={authController}
           />
         }
       />

@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Offcanvas } from "react-bootstrap";
 import Menu from "./Menu";
 import Search from "./Search";
 import Cart from "./Cart";
@@ -13,20 +14,14 @@ const Header = ({
   productController,
 }) => {
   const navigate = useNavigate();
-
-  const menuRef = useRef(null);
-  const searchRef = useRef(null);
-  const cartRef = useRef(null);
-
   const [currentUser, setCurrentUser] = useState(null);
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const [localCartItems, setLocalCartItems] = useState(cartItems || []);
+  // State cho 3 popup
+  const [showCart, setShowCart] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
 
-  // Dùng props cartItems trực tiếp → không cần local state (tránh lệch)
-  const totalQuantity = localCartItems.reduce(
+  const totalQuantity = cartItems.reduce(
     (sum, item) => sum + (item.quantity || 0),
     0
   );
@@ -40,37 +35,6 @@ const Header = ({
     fetchUser();
   }, [authController]);
 
-  // Click outside để đóng menu/search/cart
-  // Thay thế useEffect click outside hiện tại bằng đoạn này
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      const target = event.target;
-
-      const isInMenu = menuRef.current?.contains(target);
-      const isInSearch = searchRef.current?.contains(target);
-      const isInCart = cartRef.current?.contains(target);
-
-      // Nếu click VÀO trong menu, search, hoặc cart → KHÔNG đóng
-      if (isInMenu || isInSearch || isInCart) {
-        return;
-      }
-
-      // Click RA NGOÀI → đóng tất cả
-      setIsMenuOpen(false);
-      setIsSearchOpen(false);
-      setIsCartOpen(false);
-    };
-
-    // Chỉ thêm listener khi có ít nhất 1 popup đang mở
-    if (isMenuOpen || isSearchOpen || isCartOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    // Cleanup
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isMenuOpen, isSearchOpen, isCartOpen]);
   // Handler
   const goHome = () => navigate("/");
   const goToAccount = () => {
@@ -82,21 +46,21 @@ const Header = ({
   };
 
   const toggleMenu = () => {
-    setIsMenuOpen((v) => !v);
-    setIsSearchOpen(false);
-    setIsCartOpen(false);
+    setShowMenu((v) => !v);
+    setShowSearch(false);
+    setShowCart(false);
   };
 
   const toggleSearch = () => {
-    setIsSearchOpen((v) => !v);
-    setIsMenuOpen(false);
-    setIsCartOpen(false);
+    setShowSearch((v) => !v);
+    setShowMenu(false);
+    setShowCart(false);
   };
 
   const toggleCart = () => {
-    setIsCartOpen((v) => !v);
-    setIsMenuOpen(false);
-    setIsSearchOpen(false);
+    setShowCart((v) => !v);
+    setShowMenu(false);
+    setShowSearch(false);
   };
 
   const handleCartUpdate = useCallback(
@@ -106,20 +70,12 @@ const Header = ({
     [onCartChange]
   );
 
-  // Cập nhật localCartItems khi cartItems từ props thay đổi
-  React.useEffect(() => {
-    setLocalCartItems(cartItems || []);
-  }, [cartItems]);
-
   return (
     <header className="header">
       <div className="header-top">
         <div className="container d-flex justify-content-between align-items-center">
           {/* Left: Menu */}
-          <div
-            className="header-top-left d-flex align-items-center"
-            ref={menuRef}
-          >
+          <div className="header-top-left d-flex align-items-center">
             <button
               className="btn btn-outline-secondary border rounded-circle"
               onClick={toggleMenu}
@@ -127,14 +83,6 @@ const Header = ({
               <i className="bi bi-list fs-5"></i>
             </button>
             <span className="header-top-left-text ms-1">Danh mục sản phẩm</span>
-
-            <Menu
-              isOpen={isMenuOpen}
-              onClose={() => setIsMenuOpen(false)}
-              authController={authController}
-              isAuthenticated={isAuthenticated}
-              user={currentUser}
-            />
           </div>
           {/* Center: Logo */}
           <div
@@ -151,26 +99,19 @@ const Header = ({
 
           {/* Right: Search, Account, Cart */}
           <div className="header-top-right d-flex">
-            <div ref={searchRef}>
-              <button
-                className="btn btn-outline-secondary border rounded-circle m-3"
-                onClick={toggleSearch}
-              >
-                <i className="bi bi-search fs-5"></i>
-              </button>
-              <Search
-                isOpen={isSearchOpen}
-                onClose={() => setIsSearchOpen(false)}
-                productController={productController}
-              />
-            </div>
+            <button
+              className="btn btn-outline-secondary border rounded-circle m-3"
+              onClick={toggleSearch}
+            >
+              <i className="bi bi-search fs-5"></i>
+            </button>
             <button
               className="btn btn-outline-secondary border rounded-circle m-3"
               onClick={goToAccount}
             >
               <i className="bi bi-person fs-5"></i>
             </button>
-            <div ref={cartRef}>
+            <div>
               <button
                 className="btn btn-outline-secondary border m-3 position-relative"
                 onClick={toggleCart}
@@ -184,13 +125,6 @@ const Header = ({
                   {totalQuantity}
                 </span>
               </button>
-              <Cart
-                isOpen={isCartOpen}
-                onClose={() => setIsCartOpen(false)}
-                cartItems={localCartItems}
-                cartController={cartController}
-                onCartChange={handleCartUpdate}
-              />
             </div>
           </div>
         </div>
@@ -218,18 +152,64 @@ const Header = ({
         </div>
       </div>
 
-      {/* Backdrop (chỉ 1 cái, thông minh) */}
-      {(isMenuOpen || isSearchOpen || isCartOpen) && (
-        <div
-          className="position-fixed inset-0 bg-black bg-opacity-50 z-99"
-          style={{ top: 0, left: 0, right: 0, bottom: 0 }}
-          onClick={() => {
-            setIsMenuOpen(false);
-            setIsSearchOpen(false);
-            setIsCartOpen(false);
-          }}
-        />
-      )}
+      {/* ==================== MENU MOBILE (Offcanvas trái) ==================== */}
+      <Offcanvas
+        show={showMenu}
+        onHide={() => setShowMenu(false)}
+        placement="start"
+      >
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title>
+            {currentUser ? `Xin chào, ${currentUser.firstName}` : "Menu"}
+          </Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body className="p-0">
+          <Menu
+            isOpen={showMenu}
+            onClose={() => setShowMenu(false)}
+            user={currentUser}
+          />
+        </Offcanvas.Body>
+      </Offcanvas>
+
+      {/* ==================== SEARCH FULLSCREEN (Modal) ==================== */}
+      <Offcanvas
+        show={showSearch}
+        onHide={() => setShowSearch(false)}
+        placement="end"
+      >
+        <Offcanvas.Body className="p-0">
+          <Search
+            isOpen={showSearch}
+            onClose={() => setShowSearch(false)}
+            productController={productController}
+          />
+        </Offcanvas.Body>
+      </Offcanvas>
+
+      {/* ==================== CART SIDEBAR (Offcanvas phải) ==================== */}
+      <Offcanvas
+        show={showCart}
+        onHide={() => setShowCart(false)}
+        placement="end"
+      >
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title>Giỏ hàng ({totalQuantity} sản phẩm)</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body className="p-0 d-flex flex-column">
+          <div className="flex-grow-1 overflow-auto">
+            <Cart
+              isOpen={showCart}
+              onClose={(e) => {
+                setShowCart(false);
+              }}
+              cartItems={cartItems}
+              cartController={cartController}
+              onCartChange={handleCartUpdate}
+            />
+          </div>
+        </Offcanvas.Body>
+      </Offcanvas>
     </header>
   );
 };
