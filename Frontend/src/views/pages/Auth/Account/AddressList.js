@@ -26,7 +26,7 @@ const AddressList = ({ authController }) => {
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
 
-// === FETCH ADDRESSES ===
+  // === FETCH ADDRESSES ===
   useEffect(() => {
     const fetchAddresses = async () => {
       setLoading(true);
@@ -100,7 +100,7 @@ const AddressList = ({ authController }) => {
     setCity(addr.city);
     setTimeout(() => {
       setDistrict(addr.district || "");
-      
+
       setTimeout(() => {
         setWard(addr.ward || "");
       }, 50);
@@ -287,8 +287,15 @@ const AddressList = ({ authController }) => {
                     </div>
                     <div className="col-12">
                       <div className="form-check">
-                        <input type="checkbox" className="form-check-input" checked={isDefault} onChange={e => setIsDefault(e.target.checked)} />
-                        <label className="form-check-label">Đặt làm mặc định</label>
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          checked={isDefault}
+                          onChange={(e) => setIsDefault(e.target.checked)}
+                        />
+                        <label className="form-check-label">
+                          Đặt làm mặc định
+                        </label>
                       </div>
                     </div>
                   </div>

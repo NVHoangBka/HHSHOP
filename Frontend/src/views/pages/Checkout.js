@@ -23,22 +23,33 @@ const Checkout = ({ cartController, orderController, authController }) => {
   useEffect(() => {
     const init = async () => {
       const currentUser = await authController.getCurrentUser();
+      const addressList = await authController.getAddressAll();
 
       setUser(currentUser);
 
+      let selectedAddress = null; // ← DÙNG LET, KHÔNG DÙNG CONST
+
+      const addressListArr = addressList.addresses;
+
+      if (addressListArr && Array.isArray(addressListArr)) {
+        const defaultAddr = addressListArr.find(
+          (addr) => addr.isDefault === true
+        );
+        if (defaultAddr) {
+          selectedAddress = defaultAddr;
+        }
+      }
+
       // Tự động điền thông tin nếu có
       if (currentUser) {
-        const { email, firstName, lastName, address, phoneNumber } =
-          currentUser;
+        const { email, firstName, lastName, phoneNumber } = currentUser;
 
         const fullName = `${firstName} ${lastName}`;
-
-        const defaultAddress = address;
         setFormData({
           fullName: fullName || "",
           phone: phoneNumber || "",
           email: email || "",
-          address: defaultAddress || "",
+          address: selectedAddress.addressLine || "",
           note: "",
         });
       } else {
@@ -177,9 +188,50 @@ const Checkout = ({ cartController, orderController, authController }) => {
             style={{ top: 20 }}
           >
             <div className="card-body p-4">
-              <h5 className="mb-4">Thông tin giao hàng</h5>
+              <h5 className="mb-4">Thông tin nhận hàng</h5>
 
               <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                  <label for="customer-address" class="field__label">
+                    Sổ địa chỉ
+                  </label>
+                  <select
+                    size="1"
+                    class="field__input field__input--select"
+                    id="customer-address"
+                    data-bind="customerAddress"
+                  >
+                    <option value="0">Địa chỉ khác...</option>
+                    <option
+                      selected="selected"
+                      data-name="Nguyễn Văn Hoàng"
+                      data-address="số nhà 58 ngõ 61 nguyễn văn trỗi phường phương liệt quận thanh xuân TP hà nội"
+                      data-phone="038542179"
+                      data-province="1"
+                      data-district="11"
+                      data-ward="128"
+                    >
+                      Nguyễn Văn Hoàng, số nhà 58 ngõ 61 nguyễn văn trỗi phường
+                      phương liệt quận thanh xuân TP hà nội, Phường Kim Giang,
+                      Quận Thanh Xuân, Hà Nội
+                    </option>
+                  </select>
+                  <div class="field__caret">
+                    <i class="fa fa-caret-down"></i>
+                  </div>
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Email</label>
+                  <input
+                    type="email"
+                    className="form-control"
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
+                    disabled
+                  />
+                </div>
                 <div className="mb-3">
                   <label className="form-label">Họ và tên *</label>
                   <input
@@ -192,7 +244,6 @@ const Checkout = ({ cartController, orderController, authController }) => {
                     required
                   />
                 </div>
-
                 <div className="mb-3">
                   <label className="form-label">Số điện thoại *</label>
                   <input
@@ -205,19 +256,6 @@ const Checkout = ({ cartController, orderController, authController }) => {
                     required
                   />
                 </div>
-
-                <div className="mb-3">
-                  <label className="form-label">Email</label>
-                  <input
-                    type="email"
-                    className="form-control"
-                    value={formData.email}
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
-                  />
-                </div>
-
                 <div className="mb-3">
                   <label className="form-label">Địa chỉ nhận hàng *</label>
                   <textarea
