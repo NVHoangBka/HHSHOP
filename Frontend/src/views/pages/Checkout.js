@@ -9,6 +9,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
   const [selectedAddressId, setSelectedAddressId] = useState("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -170,213 +171,211 @@ const Checkout = ({ cartController, orderController, authController }) => {
 
   return (
     <div className="container py-5">
-      <h2 className="mb-4 fw-bold">Xác nhận thanh toán</h2>
+      <h2 className="mb-4 fw-bold">Trang thanh toán</h2>
 
-      <div className="row g-5">
+      <div className="row">
         {/* Form thanh toán */}
-        <div className="col-lg-5">
-          <div
-            className="card border-0 shadow-sm sticky-top"
-            style={{ top: 20 }}
-          >
-            <div className="card-body p-4">
-              <h5 className="mb-4">Thông tin nhận hàng</h5>
+        <div className="row col-8">
+          <div className="col-6">
+            <div className="card shadow-sm sticky-top" style={{ top: 20 }}>
+              <div className="card-body p-4">
+                <h5 className="mb-4 fw-semibold">Thông tin nhận hàng</h5>
 
-              <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                  <label for="customer-address" class="field__label">
-                    Sổ địa chỉ
-                  </label>
-                  <select
-                    id="customer-address"
-                    className="form-select form-select-lg shadow-sm"
-                    value={selectedAddressId}
-                  >
-                    {addressList.map((addr) => (
-                      <option key={addr._id} value={addr._id} className="fs-7">
-                        {addr.recipientName} • {addr.phoneNumber} • {addr.ward}{" "}
-                        • {addr.district} • {addr.city}
-                        {addr.isDefault && " (Mặc định)"}
-                      </option>
-                    ))}
-                  </select>
-                  <div class="field__caret">
-                    <i class="fa fa-caret-down"></i>
+                <form onSubmit={handleSubmit}>
+                  <div className="mb-3">
+                    <label for="customer-address" class="field__label">
+                      Sổ địa chỉ
+                    </label>
+                    <select
+                      id="customer-address"
+                      className="form-select form-select-lg shadow-sm"
+                      value={selectedAddressId}
+                    >
+                      {addressList.map((addr) => (
+                        <option
+                          key={addr._id}
+                          value={addr._id}
+                          className="fs-7"
+                        >
+                          {addr.recipientName} • {addr.phoneNumber} •{" "}
+                          {addr.ward} • {addr.district} • {addr.city}
+                          {addr.isDefault && " (Mặc định)"}
+                        </option>
+                      ))}
+                    </select>
+                    <div class="field__caret">
+                      <i class="fa fa-caret-down"></i>
+                    </div>
                   </div>
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Email</label>
-                  <input
-                    type="email"
-                    className="form-control"
-                    value={formData.email}
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
-                    disabled
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Họ và tên *</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={formData.fullName}
-                    onChange={(e) =>
-                      setFormData({ ...formData, fullName: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Số điện thoại *</label>
-                  <input
-                    type="tel"
-                    className="form-control"
-                    value={formData.phone}
-                    onChange={(e) =>
-                      setFormData({ ...formData, phone: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">
-                    Địa chỉ nhận hàng (tuỳ chọn)
-                  </label>
-                  <textarea
-                    className="form-control"
-                    rows="3"
-                    value={formData.address}
-                    onChange={(e) =>
-                      setFormData({ ...formData, address: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Tỉnh</label>
-                  <select
-                    id="city-address"
-                    className="form-select form-select-lg"
-                    onChange={(e) =>
-                      setFormData({ ...formData, city: e.target.value })
-                    }
-                  >
-                    <option className="fs-7">1</option>
-                  </select>
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Quận/huyện</label>
-                  <select
-                    id="district-address"
-                    className="form-select form-select-lg"
-                    onChange={(e) =>
-                      setFormData({ ...formData, district: e.target.value })
-                    }
-                  >
-                    <option className="fs-7">1</option>
-                  </select>
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Phường/Xã</label>
-                  <select
-                    id="ward-address"
-                    className="form-select form-select-lg"
-                    onChange={(e) =>
-                      setFormData({ ...formData, ward: e.target.value })
-                    }
-                  >
-                    <option className="fs-7">1</option>
-                  </select>
-                </div>
-
-                <div className="mb-4">
-                  <label className="form-label">Ghi chú</label>
-                  <textarea
-                    className="form-control"
-                    rows="2"
-                    placeholder="Giao giờ hành chính, để trước cửa..."
-                    value={formData.note}
-                    onChange={(e) =>
-                      setFormData({ ...formData, note: e.target.value })
-                    }
-                  />
-                </div>
-
-                {/* Mã giảm giá */}
-                <div className="mb-4">
-                  <label className="form-label">Mã giảm giá</label>
-                  <div className="input-group">
+                  <div className="mb-3">
+                    <label className="form-label">Email</label>
+                    <input
+                      type="email"
+                      className="form-control"
+                      value={formData.email}
+                      onChange={(e) =>
+                        setFormData({ ...formData, email: e.target.value })
+                      }
+                      disabled
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Họ và tên *</label>
                     <input
                       type="text"
                       className="form-control"
-                      placeholder="Nhập mã"
-                      value={voucherCode}
-                      onChange={(e) => setVoucherCode(e.target.value)}
+                      value={formData.fullName}
+                      onChange={(e) =>
+                        setFormData({ ...formData, fullName: e.target.value })
+                      }
+                      required
                     />
-                    <button
-                      type="button"
-                      className="btn btn-outline-success"
-                      onClick={handleApplyVoucher}
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Số điện thoại *</label>
+                    <input
+                      type="tel"
+                      className="form-control"
+                      value={formData.phone}
+                      onChange={(e) =>
+                        setFormData({ ...formData, phone: e.target.value })
+                      }
+                      required
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">
+                      Địa chỉ nhận hàng (tuỳ chọn)
+                    </label>
+                    <textarea
+                      className="form-control"
+                      rows="3"
+                      value={formData.address}
+                      onChange={(e) =>
+                        setFormData({ ...formData, address: e.target.value })
+                      }
+                      required
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Tỉnh</label>
+                    <select
+                      id="city-address"
+                      className="form-select form-select-lg"
+                      onChange={(e) =>
+                        setFormData({ ...formData, city: e.target.value })
+                      }
                     >
-                      Áp dụng
-                    </button>
+                      <option className="fs-7">1</option>
+                    </select>
                   </div>
-                  {voucherDiscount > 0 && (
-                    <div className="text-success mt-2 small">
-                      Đã giảm: -{voucherDiscount.toLocaleString("vi-VN")}₫
-                    </div>
-                  )}
+                  <div className="mb-3">
+                    <label className="form-label">Quận/huyện</label>
+                    <select
+                      id="district-address"
+                      className="form-select form-select-lg"
+                      onChange={(e) =>
+                        setFormData({ ...formData, district: e.target.value })
+                      }
+                    >
+                      <option className="fs-7">1</option>
+                    </select>
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Phường/Xã</label>
+                    <select
+                      id="ward-address"
+                      className="form-select form-select-lg"
+                      onChange={(e) =>
+                        setFormData({ ...formData, ward: e.target.value })
+                      }
+                    >
+                      <option className="fs-7">1</option>
+                    </select>
+                  </div>
+
+                  <div className="mb-4">
+                    <label className="form-label">Ghi chú</label>
+                    <textarea
+                      className="form-control"
+                      rows="2"
+                      placeholder="Giao giờ hành chính, để trước cửa..."
+                      value={formData.note}
+                      onChange={(e) =>
+                        setFormData({ ...formData, note: e.target.value })
+                      }
+                    />
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div className="col-6">
+            <div className="border p-4 shadow-sm rounded-3">
+              <div class="section__header">
+                <h5 className="mb-4 fw-semibold">Vận chuyển</h5>
+              </div>
+              <div class="section__content" id="shippingMethodList">
+                <div class="alert alert--loader spinner spinner--active d-none">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="spinner-loader"
+                  >
+                    <use href="#spinner"></use>
+                  </svg>
                 </div>
 
-                {/* Tổng tiền */}
-                <div className="border-top pt-3">
-                  <div className="d-flex justify-content-between mb-2">
-                    <span>Tạm tính</span>
-                    <span>{subTotal.toLocaleString("vi-VN")}₫</span>
-                  </div>
-                  <div className="d-flex justify-content-between mb-2">
-                    <span>Phí vận chuyển</span>
-                    <span>{shippingFee.toLocaleString("vi-VN")}₫</span>
-                  </div>
-                  {voucherDiscount > 0 && (
-                    <div className="d-flex justify-content-between text-success mb-2">
-                      <span>Giảm giá</span>
-                      <span>-{voucherDiscount.toLocaleString("vi-VN")}₫</span>
+                <div class="alert alert-retry alert--danger d-none">
+                  <span data-bind="loadingShippingErrorMessage">
+                    Không thể load phí vận chuyển. Vui lòng thử lại
+                  </span>{" "}
+                  <i class="fa fa-refresh"></i>
+                </div>
+
+                <div class="content-box">
+                  <div class="content-box border rounded-2">
+                    <div class="radio-wrapper d-flex">
+                      <div class="radio__input">
+                        <input
+                          type="radio"
+                          class="input-radio"
+                          name="shippingMethod"
+                          id="shippingMethod"
+                          value="40.000 VND"
+                          data-bind="shippingMethod"
+                        />
+                      </div>
+                      <label for="shippingMethod" class="radio__label">
+                        <span class="radio__label__primary">
+                          <span>Giao hàng tận nơi</span>
+                        </span>
+                        <span class="radio__label__accessory">
+                          <span class="content-box__emphasis price">
+                            40.000₫
+                          </span>
+                        </span>
+                      </label>
                     </div>
-                  )}
-                  <div className="d-flex justify-content-between fw-bold fs-4 text-danger">
-                    <span>Tổng cộng</span>
-                    <span>{total.toLocaleString("vi-VN")}₫</span>
                   </div>
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="btn btn-success w-100 mt-4 py-3 fw-bold text-white"
-                >
-                  {submitting ? "Đang gửi đơn hàng..." : "HOÀN TẤT ĐẶT HÀNG"}
-                </button>
-              </form>
-
-              <div className="text-center mt-3">
-                <Link to="/cart" className="text-muted small">
-                  ← Quay lại giỏ hàng
-                </Link>
+                <div class="alert alert--info d-none">
+                  Vui lòng nhập thông tin giao hàng
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Danh sách sản phẩm */}
-        <div className="col-lg-7">
-          <div className="card border-0 shadow-sm">
-            <div className="card-body p-4">
-              <h5 className="card-title mb-4">Sản phẩm ({cartItems.length})</h5>
+        <div className="col-4">
+          <div className="card border-bottom mb-4">
+            <div className="cart-content">
+              <h5 className="card-title mb-4 fw-semibold p-3 border-bottom">
+                Giỏ hàng ({cartItems.length} sản phẩm)
+              </h5>
               {cartItems.map((item) => (
-                <div key={item.id} className="d-flex py-3 border-bottom">
+                <div key={item.id} className="d-flex py-3 px-4">
                   <img
                     src={item.image || "/placeholder.jpg"}
                     alt={item.name}
@@ -384,13 +383,13 @@ const Checkout = ({ cartController, orderController, authController }) => {
                     style={{ width: 80, height: 80, objectFit: "cover" }}
                   />
                   <div className="flex-grow-1">
-                    <p className="mb-1 fw-semibold">{item.name}</p>
+                    <p className="mb-1 fs-6">{item.name}</p>
                     {item.size && (
                       <small className="text-muted">Size: {item.size}</small>
                     )}
                     <span className="ms-2 text-muted">× {item.quantity}</span>
                   </div>
-                  <div className="text-danger fw-bold text-end">
+                  <div className="text-danger fw-bold text-end ms-2 ">
                     {(
                       (item.discountPrice || item.price) * item.quantity
                     ).toLocaleString("vi-VN")}
@@ -398,6 +397,72 @@ const Checkout = ({ cartController, orderController, authController }) => {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+          <div>
+            {/* Mã giảm giá */}
+            <div className="mb-4">
+              <div className="input-group">
+                <input
+                  type="text"
+                  className="form-control py-2"
+                  placeholder="Nhập mã giảm giá"
+                  value={voucherCode}
+                  onChange={(e) => setVoucherCode(e.target.value)}
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setIsFocused(false)}
+                />
+                <button
+                  type="button"
+                  className="btn btn-success"
+                  disabled={!isFocused}
+                  onClick={handleApplyVoucher}
+                >
+                  Áp dụng
+                </button>
+              </div>
+              {voucherDiscount > 0 && (
+                <div className="text-success mt-2 small">
+                  Đã giảm: -{voucherDiscount.toLocaleString("vi-VN")}₫
+                </div>
+              )}
+            </div>
+
+            {/* Tổng tiền */}
+            <div className="border-top pt-3">
+              <div className="d-flex justify-content-between mb-2">
+                <span>Tạm tính</span>
+                <span>{subTotal.toLocaleString("vi-VN")}₫</span>
+              </div>
+              <div className="d-flex justify-content-between mb-2">
+                <span>Phí vận chuyển</span>
+                <span>{shippingFee.toLocaleString("vi-VN")}₫</span>
+              </div>
+              {voucherDiscount > 0 && (
+                <div className="d-flex justify-content-between text-success mb-2">
+                  <span>Giảm giá</span>
+                  <span>-{voucherDiscount.toLocaleString("vi-VN")}₫</span>
+                </div>
+              )}
+              <div className="d-flex justify-content-between fw-bold fs-4 text-danger border-top mt-3 pt-2">
+                <span>Tổng cộng</span>
+                <span>{total.toLocaleString("vi-VN")}₫</span>
+              </div>
+            </div>
+            <div className="d-flex justify-content-between align-items-center mt-4">
+              <div className="text-center">
+                <Link to="/cart" className="text-muted text-hover">
+                  ← Quay lại giỏ hàng
+                </Link>
+              </div>
+              <button
+                type="submit"
+                disabled={submitting}
+                className="btn btn-success w-50 py-3 fw-bold text-white"
+                onClick={handleSubmit}
+              >
+                {submitting ? "Đang gửi đơn hàng..." : "ĐẶT HÀNG"}
+              </button>
             </div>
           </div>
         </div>
