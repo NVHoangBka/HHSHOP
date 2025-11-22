@@ -5,6 +5,8 @@ const Checkout = ({ cartController, orderController, authController }) => {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
   const [user, setUser] = useState(null);
+  const [addressList, setAddressList] = useState([]);
+  const [selectedAddressId, setSelectedAddressId] = useState("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
@@ -19,58 +21,57 @@ const Checkout = ({ cartController, orderController, authController }) => {
   const [voucherCode, setVoucherCode] = useState("");
   const [voucherDiscount, setVoucherDiscount] = useState(0);
 
-  // Load user + giỏ hàng khi vào trang
+  // ==================== LOAD DATA ====================
   useEffect(() => {
     const init = async () => {
-      const currentUser = await authController.getCurrentUser();
-      const addressList = await authController.getAddressAll();
+      const [currentUser, addressRes, cartData] = await Promise.all([
+        authController.getCurrentUser(),
+        authController.getAddressAll().catch(() => ({ addresses: [] })),
+        cartController.getCartItems(),
+      ]);
 
-      setUser(currentUser);
-
-      let selectedAddress = null; // ← DÙNG LET, KHÔNG DÙNG CONST
-
-      const addressListArr = addressList.addresses;
-
-      if (addressListArr && Array.isArray(addressListArr)) {
-        const defaultAddr = addressListArr.find(
-          (addr) => addr.isDefault === true
-        );
-        if (defaultAddr) {
-          selectedAddress = defaultAddr;
-        }
-      }
-
-      // Tự động điền thông tin nếu có
-      if (currentUser) {
-        const { email, firstName, lastName, phoneNumber } = currentUser;
-
-        const fullName = `${firstName} ${lastName}`;
-        setFormData({
-          fullName: fullName || "",
-          phone: phoneNumber || "",
-          email: email || "",
-          address: selectedAddress.addressLine || "",
-          note: "",
-        });
-      } else {
-        setFormData({
-          fullName: "",
-          phone: "",
-          email: "",
-          address: "",
-          note: "",
-        });
-      }
-
-      const items = await cartController.getCartItems();
-      if (items.length === 0) {
+      if (cartData.length === 0 || !cartData) {
         alert("Giỏ hàng trống!");
         navigate("/cart");
         return;
       }
 
-      // Load giỏ hàng
-      setCartItems(items);
+      const addresses = addressRes.addresses || [];
+      const defaultAddr = addresses.find((a) => a.isDefault);
+
+      console.log(addresses);
+      console.log(defaultAddr);
+
+      setUser(currentUser);
+      setAddressList(addresses);
+      setCartItems(cartData);
+
+      if (defaultAddr) {
+        setSelectedAddressId(defaultAddr._id);
+        setFormData({
+          fullName: defaultAddr.recipientName,
+          phone: defaultAddr.phoneNumber,
+          email: currentUser.email,
+          address: defaultAddr.addressLine,
+          city: defaultAddr.city,
+          district: defaultAddr.district,
+          ward: defaultAddr.ward,
+          note: "",
+        });
+      } else {
+        // Không có địa chỉ mặc định → để trống cho nhập mới
+        setFormData({
+          fullName: "",
+          phone: "",
+          email: "",
+          address: "",
+          city: "",
+          district: "",
+          ward: "",
+          note: "",
+        });
+      }
+
       setLoading(false);
     };
 
@@ -78,29 +79,22 @@ const Checkout = ({ cartController, orderController, authController }) => {
   }, [cartController, authController, navigate]);
 
   // Tính toán
-  const shippingFee = 30000;
   const subTotal = cartController.getTotalPrice();
+  const shippingFee = 30000;
   const total = subTotal + shippingFee - voucherDiscount;
 
   const handleApplyVoucher = () => {
-    if (!voucherCode) return;
-
-    const code = voucherCode.toUpperCase().trim();
-    let discount = 0;
-
+    const code = voucherCode.trim().toUpperCase();
     if (code === "GIAM10") {
-      discount = subTotal * 0.1;
-      alert("Áp dụng mã GIAM10 – Giảm 10%");
+      setVoucherDiscount(subTotal * 0.1);
+      alert("Áp dụng GIAM10 – Giảm 10%");
     } else if (code === "FREESHIP") {
-      discount = shippingFee;
+      setVoucherDiscount(shippingFee);
       alert("Miễn phí vận chuyển!");
     } else {
       alert("Mã không hợp lệ");
       setVoucherDiscount(0);
-      return;
     }
-
-    setVoucherDiscount(discount);
   };
 
   const handleSubmit = async (e) => {
@@ -133,17 +127,15 @@ const Checkout = ({ cartController, orderController, authController }) => {
       const result = await orderController.createOrder(orderData);
 
       if (result.success) {
-        // Xóa giỏ hàng
-        cartController.clearCart();
-        setCartItems([]);
-
         alert(
           `Đặt hàng thành công! Mã đơn: #${
             result.order.id || result.order.orderId
           }`
         );
-
         navigate("/checkout/order-success", { state: { order: result.order } });
+        // Xóa giỏ hàng
+        cartController.clearCart();
+        setCartItems([]);
       } else {
         alert("Đặt hàng thất bại: " + result.message);
       }
@@ -196,25 +188,17 @@ const Checkout = ({ cartController, orderController, authController }) => {
                     Sổ địa chỉ
                   </label>
                   <select
-                    size="1"
-                    class="field__input field__input--select"
                     id="customer-address"
-                    data-bind="customerAddress"
+                    className="form-select form-select-lg shadow-sm"
+                    value={selectedAddressId}
                   >
-                    <option value="0">Địa chỉ khác...</option>
-                    <option
-                      selected="selected"
-                      data-name="Nguyễn Văn Hoàng"
-                      data-address="số nhà 58 ngõ 61 nguyễn văn trỗi phường phương liệt quận thanh xuân TP hà nội"
-                      data-phone="038542179"
-                      data-province="1"
-                      data-district="11"
-                      data-ward="128"
-                    >
-                      Nguyễn Văn Hoàng, số nhà 58 ngõ 61 nguyễn văn trỗi phường
-                      phương liệt quận thanh xuân TP hà nội, Phường Kim Giang,
-                      Quận Thanh Xuân, Hà Nội
-                    </option>
+                    {addressList.map((addr) => (
+                      <option key={addr._id} value={addr._id} className="fs-7">
+                        {addr.recipientName} • {addr.phoneNumber} • {addr.ward}{" "}
+                        • {addr.district} • {addr.city}
+                        {addr.isDefault && " (Mặc định)"}
+                      </option>
+                    ))}
                   </select>
                   <div class="field__caret">
                     <i class="fa fa-caret-down"></i>
@@ -257,7 +241,9 @@ const Checkout = ({ cartController, orderController, authController }) => {
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Địa chỉ nhận hàng *</label>
+                  <label className="form-label">
+                    Địa chỉ nhận hàng (tuỳ chọn)
+                  </label>
                   <textarea
                     className="form-control"
                     rows="3"
@@ -267,6 +253,42 @@ const Checkout = ({ cartController, orderController, authController }) => {
                     }
                     required
                   />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Tỉnh</label>
+                  <select
+                    id="city-address"
+                    className="form-select form-select-lg"
+                    onChange={(e) =>
+                      setFormData({ ...formData, city: e.target.value })
+                    }
+                  >
+                    <option className="fs-7">1</option>
+                  </select>
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Quận/huyện</label>
+                  <select
+                    id="district-address"
+                    className="form-select form-select-lg"
+                    onChange={(e) =>
+                      setFormData({ ...formData, district: e.target.value })
+                    }
+                  >
+                    <option className="fs-7">1</option>
+                  </select>
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Phường/Xã</label>
+                  <select
+                    id="ward-address"
+                    className="form-select form-select-lg"
+                    onChange={(e) =>
+                      setFormData({ ...formData, ward: e.target.value })
+                    }
+                  >
+                    <option className="fs-7">1</option>
+                  </select>
                 </div>
 
                 <div className="mb-4">
