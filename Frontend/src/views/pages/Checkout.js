@@ -10,6 +10,8 @@ const Checkout = ({ cartController, orderController, authController }) => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("COD");
+  const [orderId, setOrderId] = useState("");
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -128,6 +130,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
       const result = await orderController.createOrder(orderData);
 
       if (result.success) {
+        setOrderId(result.order.id || result.order.orderId);
         alert(
           `Đặt hàng thành công! Mã đơn: #${
             result.order.id || result.order.orderId
@@ -188,14 +191,14 @@ const Checkout = ({ cartController, orderController, authController }) => {
                     </label>
                     <select
                       id="customer-address"
-                      className="form-select form-select-lg shadow-sm"
+                      className="form-select form-select-lg shadow-sm fs-7"
                       value={selectedAddressId}
                     >
                       {addressList.map((addr) => (
                         <option
                           key={addr._id}
                           value={addr._id}
-                          className="fs-7"
+                          className="fs-7 w-100"
                         >
                           {addr.recipientName} • {addr.phoneNumber} •{" "}
                           {addr.ward} • {addr.district} • {addr.city}
@@ -312,55 +315,170 @@ const Checkout = ({ cartController, orderController, authController }) => {
           </div>
           <div className="col-6">
             <div className="border p-4 shadow-sm rounded-3">
-              <div class="section__header">
-                <h5 className="mb-4 fw-semibold">Vận chuyển</h5>
-              </div>
-              <div class="section__content" id="shippingMethodList">
-                <div class="alert alert--loader spinner spinner--active d-none">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="spinner-loader"
-                  >
-                    <use href="#spinner"></use>
-                  </svg>
+              <div class="section mb-4">
+                <div class="section__header">
+                  <h5 className="mb-2 fw-semibold">Vận chuyển</h5>
                 </div>
+                <div class="section__content" id="shippingMethodList">
+                  <div class="alert alert--loader spinner spinner--active d-none">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="spinner-loader"
+                    >
+                      <use href="#spinner"></use>
+                    </svg>
+                  </div>
 
-                <div class="alert alert-retry alert--danger d-none">
-                  <span data-bind="loadingShippingErrorMessage">
-                    Không thể load phí vận chuyển. Vui lòng thử lại
-                  </span>{" "}
-                  <i class="fa fa-refresh"></i>
-                </div>
+                  <div class="alert alert-retry alert--danger d-none">
+                    <span data-bind="loadingShippingErrorMessage">
+                      Không thể load phí vận chuyển. Vui lòng thử lại
+                    </span>{" "}
+                    <i class="fa fa-refresh"></i>
+                  </div>
 
-                <div class="content-box">
-                  <div class="content-box border rounded-2">
-                    <div class="radio-wrapper d-flex">
-                      <div class="radio__input">
-                        <input
-                          type="radio"
-                          class="input-radio"
-                          name="shippingMethod"
-                          id="shippingMethod"
-                          value="40.000 VND"
-                          data-bind="shippingMethod"
-                        />
-                      </div>
-                      <label for="shippingMethod" class="radio__label">
-                        <span class="radio__label__primary">
-                          <span>Giao hàng tận nơi</span>
-                        </span>
-                        <span class="radio__label__accessory">
-                          <span class="content-box__emphasis price">
-                            40.000₫
+                  <div class="content-box">
+                    <div class="content-box border rounded-2 py-2 px-3">
+                      <div class="radio-wrapper d-flex w-100 align-items-center">
+                        <div class="radio__input">
+                          <input
+                            type="radio"
+                            class="form-check-input"
+                            name="shippingMethod"
+                            id="shippingMethod"
+                            value="40.000 VND"
+                            data-bind="shippingMethod"
+                          />
+                        </div>
+                        <label
+                          for="shippingMethod"
+                          class="radio__label d-flex ms-2 justify-content-between align-items-center fs-7"
+                        >
+                          <span class="radio__label__primary">
+                            <span>Giao hàng tận nơi</span>
                           </span>
-                        </span>
-                      </label>
+                          <span class="radio__label__accessory">
+                            <span class="content-box__emphasis price">
+                              40.000₫
+                            </span>
+                          </span>
+                        </label>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div class="alert alert--info d-none">
-                  Vui lòng nhập thông tin giao hàng
+                  <div class="alert alert--info d-none">
+                    Vui lòng nhập thông tin giao hàng
+                  </div>
+                </div>
+              </div>
+              <div class="section">
+                <div class="section__header">
+                  <h5 className="mb-2 fw-semibold">Thanh toán</h5>
+                </div>
+                <div class="section__content" id="shippingMethodList">
+                  <div class="alert alert--loader spinner spinner--active d-none">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="spinner-loader"
+                    >
+                      <use href="#spinner"></use>
+                    </svg>
+                  </div>
+                  <div class="content-box">
+                    <div class="content-box border rounded-2 py-2 px-3 mb-1">
+                      <div class="radio-wrapper d-flex align-items-center w-100">
+                        <div class="radio__input">
+                          <input
+                            type="radio"
+                            class="form-check-input"
+                            name="paymentMethod"
+                            id="paymentMethodBank"
+                            data-bind="paymentMethod"
+                            checked={paymentMethod === "BANK"}
+                            onChange={() => setPaymentMethod("BANK")}
+                          />
+                        </div>
+                        <label
+                          for="paymentMethodBank"
+                          class="radio__label d-flex ms-2 justify-content-between align-items-center fs-7 w-100"
+                        >
+                          <span class="radio__label__primary">
+                            <span>Chuyển khoản</span>
+                          </span>
+                          <span class="radio__label__accessory me-2">
+                            <i class="bi bi-cash text-primary fs-4"></i>
+                          </span>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="content-box border rounded-2 py-2 px-3">
+                      <div class="radio-wrapper d-flex w-100 align-items-center">
+                        <div class="radio__input">
+                          <input
+                            type="radio"
+                            class="form-check-input"
+                            name="paymentMethod"
+                            id="paymentMethodCOD"
+                            data-bind="paymentMethod"
+                            checked={paymentMethod === "COD"}
+                            onChange={() => {
+                              setPaymentMethod("COD");
+                            }}
+                          />
+                        </div>
+                        <label
+                          for="paymentMethodCOD"
+                          class="radio__label d-flex ms-2 justify-content-between align-items-center fs-7 w-100"
+                        >
+                          <span class="radio__label__primary">
+                            <span>Thu hộ (COD)</span>
+                          </span>
+                          <span class="radio__label__accessory me-2">
+                            <i class="bi bi-cash text-primary fs-4"></i>
+                          </span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Hiển thị QR khi chọn chuyển khoản */}
+                  {paymentMethod === "BANK" && (
+                    <div className="mt-3 p-3 bg-light rounded-3 border">
+                      <div className="text-center">
+                        <p className="mb-3 fw-medium text-success">
+                          Quét mã QR để thanh toán
+                        </p>
+                        <img
+                          src="/qr/vietcombank-qr.jpg"
+                          alt="QR Thanh toán MB BANK"
+                          className="img-fluid rounded shadow-sm"
+                          style={{ maxWidth: "220px", height: "auto" }}
+                        />
+                        <div className="mt-3 small text-muted">
+                          <p className="mb-1">
+                            <strong>Ngân hàng:</strong> MB BANK
+                          </p>
+                          <p className="mb-1">
+                            <strong>Chủ tài khoản:</strong> NGUYEN VAN HOANG
+                          </p>
+                          <p className="mb-1">
+                            <strong>Số tài khoản:</strong> 860210006886
+                          </p>
+                          <p className="mb-0">
+                            <strong>Nội dung chuyển khoản:</strong>{" "}
+                            <span className="text-danger fw-bold">
+                              DH {orderId}-
+                              {new Date().getTime().toString().slice(-6)}
+                            </span>
+                          </p>
+                          <small className="text-danger">
+                            Vui lòng ghi đúng nội dung để đơn hàng được xử lý
+                            nhanh!
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
