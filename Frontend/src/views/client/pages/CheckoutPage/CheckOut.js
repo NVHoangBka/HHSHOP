@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import vietnamData from "../../../../data/vietnam.json";
 
 const Checkout = ({ cartController, orderController, authController }) => {
   const navigate = useNavigate();
@@ -12,6 +13,13 @@ const Checkout = ({ cartController, orderController, authController }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("COD");
   const [orderId, setOrderId] = useState("");
+
+  const [citys, setCitys] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+  const [city, setCity] = useState("");
+  const [district, setDistrict] = useState("");
+  const [ward, setWard] = useState("");
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -58,6 +66,10 @@ const Checkout = ({ cartController, orderController, authController }) => {
           ward: defaultAddr.ward,
           note: "",
         });
+
+        setCity(defaultAddr.city);
+        setDistrict(defaultAddr.district);
+        setWard(defaultAddr.ward);
       } else {
         // Không có địa chỉ mặc định → để trống cho nhập mới
         setFormData({
@@ -77,6 +89,35 @@ const Checkout = ({ cartController, orderController, authController }) => {
 
     init();
   }, [cartController, authController, navigate]);
+
+  // Load tỉnh
+  useEffect(() => {
+    setCitys(vietnamData);
+  }, [city]);
+
+  // Load huyện
+  useEffect(() => {
+    if (city) {
+      const citys = vietnamData.find((p) => p.name === city);
+      setDistricts(citys?.districts || []);
+    } else {
+      setDistricts([]);
+    }
+    setDistrict("");
+    setWard("");
+  }, [city]);
+
+  // Load xã
+  useEffect(() => {
+    if (district && city) {
+      const citys = vietnamData.find((p) => p.name === city);
+      const dist = citys?.districts.find((d) => d.name === district);
+      setWards(dist?.wards || []);
+    } else {
+      setWards([]);
+    }
+    setWard("");
+  }, [district, city]);
 
   // Tính toán
   const subTotal = cartController.getTotalPrice();
@@ -312,8 +353,17 @@ const Checkout = ({ cartController, orderController, authController }) => {
                       onChange={(e) =>
                         setFormData({ ...formData, city: e.target.value })
                       }
+                      value={formData.city}
                     >
-                      <option className="fs-7">1</option>
+                      {citys.map((city) => (
+                        <option
+                          key={city.id}
+                          value={city.name}
+                          className="fs-7"
+                        >
+                          {city.name}
+                        </option>
+                      ))}
                     </select>
                   </div>
                   <div className="mb-3">
@@ -324,8 +374,17 @@ const Checkout = ({ cartController, orderController, authController }) => {
                       onChange={(e) =>
                         setFormData({ ...formData, district: e.target.value })
                       }
+                      value={formData.district}
                     >
-                      <option className="fs-7">1</option>
+                      {districts.map((district) => (
+                        <option
+                          key={district.id}
+                          value={district.name}
+                          className="fs-7"
+                        >
+                          {district.name}
+                        </option>
+                      ))}
                     </select>
                   </div>
                   <div className="mb-3">
@@ -336,8 +395,17 @@ const Checkout = ({ cartController, orderController, authController }) => {
                       onChange={(e) =>
                         setFormData({ ...formData, ward: e.target.value })
                       }
+                      value={formData.ward}
                     >
-                      <option className="fs-7">1</option>
+                      {wards.map((ward) => (
+                        <option
+                          key={ward.id}
+                          value={ward.name}
+                          className="fs-7"
+                        >
+                          {ward.name}
+                        </option>
+                      ))}
                     </select>
                   </div>
 

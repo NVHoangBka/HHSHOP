@@ -26,16 +26,34 @@ const AdminLayout = () => {
           <div className="col-md-2 bg-white shadow-sm min-vh-100 p-0">
             <div className="list-group list-group-flush">
               <Link
-                to="/admin"
+                to="/admin/dashboard"
                 className="list-group-item list-group-item-action py-3"
               >
                 Tổng quan
               </Link>
               <Link
                 to="/admin/products"
-                className="list-group-item list-group-item-action py-3 active"
+                className="list-group-item list-group-item-action py-3"
               >
                 Sản phẩm
+              </Link>
+              <Link
+                to="/admin/orders"
+                className="list-group-item list-group-item-action py-3 "
+              >
+                Đơn hàng
+              </Link>
+              <Link
+                to="/admin/users"
+                className="list-group-item list-group-item-action py-3 "
+              >
+                Người dùng
+              </Link>
+              <Link
+                to="/admin/setting"
+                className="list-group-item list-group-item-action py-3 "
+              >
+                Cài đặt
               </Link>
             </div>
           </div>

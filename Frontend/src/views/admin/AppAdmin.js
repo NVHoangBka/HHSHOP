@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import AdminRouter from "../../routers/AdminRouter/AdminRouter";
 import ToastMessage from "../client/components/ToastMessage/ToastMessage";
 import HeaderAdmin from "./components/HeaderAdmin";
@@ -8,8 +7,7 @@ import AdminController from "../../controllers/AdminController";
 const adminController = new AdminController();
 
 const AppAdmin = () => {
-  const navigate = useNavigate();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticatedAdmin, setIsAuthenticatedAdmin] = useState(false);
   const [toast, setToast] = useState({
     show: false,
     message: "",
@@ -19,10 +17,10 @@ const AppAdmin = () => {
   const onLogin = async (email, password) => {
     const result = await adminController.login(email, password);
     if (result.success) {
-      setIsAuthenticated(true);
+      setIsAuthenticatedAdmin(true);
       return true;
     } else {
-      setIsAuthenticated(false);
+      setIsAuthenticatedAdmin(false);
       return false;
     }
   };
@@ -30,7 +28,7 @@ const AppAdmin = () => {
   const onLogout = async () => {
     const result = await adminController.logout();
     if (result.success) {
-      setIsAuthenticated(false);
+      setIsAuthenticatedAdmin(false);
     } else {
     }
   };
@@ -42,6 +40,7 @@ const AppAdmin = () => {
           onLogin={onLogin}
           onLogout={onLogout}
           adminController={adminController}
+          isAuthenticatedAdmin={isAuthenticatedAdmin}
         />
       </div>
       <div className="toast-container position-fixed bottom-0 top-0 end-0">

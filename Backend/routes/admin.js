@@ -5,7 +5,6 @@ const { protect } = require("../middleware/auth");
 
 // ĐÚNG
 router.post("/login", AdminController.login);
-router.post("/refresh-token", AdminController.refreshToken);
 router.post("/logout", protect, AdminController.logout);
 router.get("/users", protect, AdminController.getUsers);
 
