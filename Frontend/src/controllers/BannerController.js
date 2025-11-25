@@ -19,4 +19,6 @@ class BannerController {
   }
 }
 
-export default BannerController;
+const bannerController = new BannerController();
+
+export default bannerController;

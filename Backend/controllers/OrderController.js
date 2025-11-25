@@ -5,22 +5,14 @@ const mongoose = require("mongoose");
 class OrderController {
   static async generateOrderId() {
     const date = new Date();
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    const prefix = `DH${year}${month}${day}`;
-
-    // Tìm đơn hàng cuối cùng trong ngày để tăng số thứ tự
-    return await Order.findOne({ orderId: new RegExp(`^${prefix}`) })
-      .sort({ orderId: -1 })
-      .then((lastOrder) => {
-        let seq = 1;
-        if (lastOrder) {
-          const lastSeq = parseInt(lastOrder.orderId.slice(-3));
-          seq = lastSeq + 1;
-        }
-        return `${prefix}${String(seq).padStart(3, "0")}`;
-      });
+    const prefix = `DH${date.getFullYear()}${String(
+      date.getMonth() + 1
+    ).padStart(2, "0")}${String(date.getDate()).padStart(2, "0")}`;
+    const lastOrder = await Order.findOne({
+      orderId: new RegExp(`^${prefix}`),
+    }).sort({ orderId: -1 });
+    const seq = lastOrder ? parseInt(lastOrder.orderId.slice(-3)) + 1 : 1;
+    return `${prefix}${String(seq).padStart(3, "0")}`;
   }
 
   // API: Tạo đơn hàng mới
@@ -29,16 +21,20 @@ class OrderController {
     session.startTransaction();
 
     try {
-      const { address } = req.body;
-      const userId = req.user.id; // Giả sử bạn đã có middleware auth
+      const {
+        items: cartItems,
+        address,
+        note,
+        paymentMethod = "COD", // ← NHẬN TỪ FRONTEND
+        voucherCode,
+        voucherDiscount = 0,
+      } = req.body;
 
-      // 1. Lấy giỏ hàng từ request (có thể từ body hoặc từ DB)
-      const cartItems = req.body.items || []; // [{ productId, quantity }]
+      const userId = req.user.id; // Giả sử bạn đã có middleware auth
 
       if (!cartItems || cartItems.length === 0) {
         return res.status(400).json({ message: "Giỏ hàng trống!" });
       }
-
       if (!address) {
         return res
           .status(400)
@@ -74,7 +70,9 @@ class OrderController {
         orderItems.push({
           productId: product._id,
           quantity: item.quantity,
-          price: price,
+          price,
+          name: product.name,
+          image: product.image,
         });
       }
 
@@ -86,35 +84,40 @@ class OrderController {
         userId,
         orderId,
         address,
-        total,
         items: orderItems,
+        total,
+        note,
+        voucherCode,
+        voucherDiscount,
+        paymentMethod, // ← LƯU ĐÚNG COD HOẶC BANK
+        paymentStatus: "pending",
         status: "pending",
       });
 
       await newOrder.save({ session });
 
       await session.commitTransaction();
-      session.endSession();
 
       // Trả về kết quả
       res.status(201).json({
         success: true,
         message: "Đặt hàng thành công!",
         order: {
+          _id: newOrder._id,
           orderId: newOrder.orderId,
           total: newOrder.total,
-          status: newOrder.status,
+          paymentMethod: newOrder.paymentMethod,
           createdAt: newOrder.createdAt,
         },
       });
     } catch (error) {
       await session.abortTransaction();
-      session.endSession();
-
       res.status(400).json({
         success: false,
         message: error.message || "Đặt hàng thất bại!",
       });
+    } finally {
+      session.endSession();
     }
   }
 

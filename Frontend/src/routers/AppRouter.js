@@ -1,99 +1,14 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import AuthRouter from "./AuthRouter";
-import ProductRouter from "./ProductRouter";
-import CartRouter from "./CartRouter";
-import Home from "../views/pages/Home";
-import ProductController from "../controllers/ProductController"; // Giả định export instance
-import CartController from "../controllers/CartController";
-import OrderController from "../controllers/OrderController";
-import AdminRouter from "./AdminRouter";
-import OrderRouter from "./OrderRouter";
 
-const productController = new ProductController();
-const cartController = new CartController();
-const orderController = new OrderController();
+import AppAdmin from "../views/admin/AppAdmin";
+import AppClient from "../views/client/AppClient";
 
-const AppRouter = ({
-  isAuthenticated,
-  cartItems,
-  addToCart,
-  removeFromCart,
-  onLogin,
-  onRegister,
-  onCartChange,
-  authController,
-}) => {
+const AppRouter = () => {
   return (
     <Routes>
-      {/* trang chủ */}
-      <Route
-        path="/"
-        element={
-          <Home addToCart={addToCart} productController={productController} />
-        }
-      />
-      {/* Auth */}
-      <Route
-        path="/account/*"
-        element={
-          <AuthRouter
-            isAuthenticated={isAuthenticated}
-            onLogin={onLogin}
-            onRegister={onRegister}
-            authController={authController}
-          />
-        }
-      />
-
-      {/* Admin */}
-      <Route
-        path="/admin/*"
-        element={
-          <AdminRouter
-            isAuthenticated={isAuthenticated}
-            onLogin={onLogin}
-            authController={authController}
-          />
-        }
-      />
-
-      {/* Product */}
-      <Route
-        path="/products/*"
-        element={
-          <ProductRouter
-            isAuthenticated={isAuthenticated}
-            addToCart={addToCart}
-            productController={productController}
-          />
-        }
-      />
-
-      {/* Cart */}
-      <Route
-        path="/cart/*"
-        element={
-          <CartRouter
-            isAuthenticated={isAuthenticated}
-            cartItems={cartItems}
-            removeFromCart={removeFromCart}
-            onCartChange={onCartChange}
-          />
-        }
-      />
-
-      {/* Orders */}
-      <Route
-        path="/checkout/*"
-        element={
-          <OrderRouter
-            cartController={cartController}
-            orderController={orderController}
-            authController={authController}
-          />
-        }
-      />
+      <Route path="/admin/*" element={<AppAdmin />} />
+      <Route path="/*" element={<AppClient />} />
     </Routes>
   );
 };

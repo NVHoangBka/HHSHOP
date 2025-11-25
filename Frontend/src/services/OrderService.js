@@ -4,70 +4,90 @@ import AuthService from "./AuthService.js";
 class OrderService {
   constructor() {}
 
+  // === LẤY DANH SÁCH ĐƠN HÀNG ===
   async getOrders() {
     try {
-      const response = await api.get("/orders", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
+      const response = await api.get("/orders");
       return response.data.orders;
     } catch (error) {
-      if (error.response?.data?.expired) {
-        const refreshResult = await AuthService.refreshToken();
-        if (refreshResult.success) {
-          const retryResponse = await api.get("/orders", {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-            },
-          });
-          return retryResponse.data.orders;
-        }
-        throw new Error("Phiên đăng nhập hết hạn.");
-      }
-      throw new Error(
-        error.response?.data?.message || "Không thể tải đơn hàng."
+      return await this.handleAuthError(error, () => api.get("/orders"));
+    }
+  }
+
+  // === TẠO ĐƠN HÀNG ===
+  async createOrder(orderData) {
+    try {
+      const response = await api.post("/orders", orderData);
+      return {
+        success: true,
+        order: response.data.order || response.data,
+      };
+    } catch (error) {
+      return await this.handleAuthError(error, () =>
+        api.post("/orders", orderData)
       );
     }
   }
 
-  async createOrder(orderData) {
+  // === MỚI: TẠO QR THANH TOÁN (GỌI BACKEND → LƯU VÀO DB) ===
+  async generatePaymentQR(orderId) {
     try {
-      const response = await api.post("/orders", orderData, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
+      const response = await api.post("/payment/generate-qr", { orderId });
+
+      if (!response.data.success) {
+        throw new Error(response.data.message || "Không thể tạo QR");
+      }
 
       return {
         success: true,
-        order: response.data.order || response.data, // backend trả gì thì nhận
+        qrImage: response.data.qrImage,
+        bankInfo: response.data.bankInfo,
+        expiredAt: response.data.expiredAt,
       };
     } catch (error) {
-      // Xử lý token hết hạn → tự động refresh
-      if (error.response?.status === 401 || error.response?.data?.expired) {
-        const refreshResult = await AuthService.refreshToken();
-        if (refreshResult.success) {
-          // Thử lại lần nữa với token mới
-          try {
-            const retryResponse = await api.post("/orders", orderData, {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-              },
-            });
-            return {
-              success: true,
-              order: retryResponse.data.order || retryResponse.data,
-            };
-          } catch (retryError) {
-            return { success: false, message: "Phiên đăng nhập đã hết hạn" };
-          }
+      return await this.handleAuthError(error, () =>
+        api.post("/payment/generate-qr", { orderId })
+      );
+    }
+  }
+
+  // === HÀM XỬ LÝ LỖI 401 + TỰ ĐỘNG REFRESH TOKEN (DÙNG CHUNG) ===
+  async handleAuthError(error, retryCallback) {
+    const isAuthError =
+      error.response?.status === 401 || error.response?.data?.expired;
+
+    if (isAuthError) {
+      const refreshResult = await AuthService.refreshToken();
+      if (refreshResult.success) {
+        try {
+          const retryResponse = await retryCallback();
+          return this.extractSuccessData(retryResponse);
+        } catch (retryError) {
+          AuthService.logout();
+          window.location.href = "/login";
+          return { success: false, message: "Phiên đăng nhập đã hết hạn" };
         }
       }
-
-      const msg = error.response?.data?.message || "Không thể tạo đơn hàng";
-      return { success: false, message: msg };
     }
+
+    const msg = error.response?.data?.message || "Lỗi kết nối server";
+    return { success: false, message: msg };
+  }
+
+  // === HÀM TRÍCH XUẤT DATA THÀNH CÔNG ===
+  extractSuccessData(response) {
+    if (response.data?.order) {
+      return { success: true, order: response.data.order };
+    }
+    if (response.data?.qrImage) {
+      return {
+        success: true,
+        qrImage: response.data.qrImage,
+        bankInfo: response.data.bankInfo,
+        expiredAt: response.data.expiredAt,
+      };
+    }
+    return { success: true, ...response.data };
   }
 }
 

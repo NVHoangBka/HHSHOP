@@ -17,25 +17,45 @@ class OrderController {
   // Tạo đơn hàng mới
   async createOrder(orderData) {
     try {
-      const result = await this.orderService.createOrder(orderData);
+      // Bước 1: Tạo đơn hàng
+      const orderResult = await this.orderService.createOrder(orderData);
+      if (!orderResult.success) {
+        return { success: false, message: orderResult.message };
+      }
 
-      if (result.success) {
+      const order = orderResult.order;
+
+      // Bước 2: Gọi backend tạo QR (lưu vào DB luôn)
+      const qrResult = await this.orderService.generatePaymentQR(order._id);
+
+      if (!qrResult.success) {
+        // Vẫn cho đặt hàng thành công, nhưng cảnh báo QR lỗi
         return {
           success: true,
-          order: result.order,
-          message: "Đặt hàng thành công!",
+          order,
+          qrImage: null,
+          bankInfo: null,
+          warning: "Đơn hàng đã tạo nhưng không tạo được QR thanh toán",
         };
-      } else {
-        return { success: false, message: result.message };
       }
+
+      return {
+        success: true,
+        order,
+        qrImage: qrResult.qrImage,
+        bankInfo: qrResult.bankInfo,
+        expiredAt: qrResult.expiredAt,
+        message: "Đặt hàng thành công! Vui lòng thanh toán bằng QR",
+      };
     } catch (error) {
       console.error("OrderController.createOrder:", error);
       return {
         success: false,
-        message: "Hệ thống đang bận, vui lòng thử lại sau ít phút",
+        message: "Hệ thống đang lỗi, vui lòng thử lại sau ít phút",
       };
     }
   }
 }
 
-export default OrderController;
+const orderController = new OrderController();
+export default orderController;

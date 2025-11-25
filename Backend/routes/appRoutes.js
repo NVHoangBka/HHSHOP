@@ -9,6 +9,8 @@ const productRouter = require("./Product");
 const titleRouter = require("./Title");
 const bannerRouter = require("./Banner");
 const cartRouter = require("./Cart");
+const paymentRouter = require("./Payment");
+const adminRouter = require("./admin");
 
 router.use("/auth", authRouter);
 router.use("/addresses", addressRouter);
@@ -17,5 +19,7 @@ router.use("/products", productRouter);
 router.use("/titles", titleRouter);
 router.use("/banners", bannerRouter);
 router.use("/cart", cartRouter);
+router.use("/payment", paymentRouter);
+router.use("/admin", adminRouter);
 
 module.exports = router;

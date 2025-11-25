@@ -46,4 +46,6 @@ class TitleController {
   }
 }
 
-export default TitleController;
+const titleController = new TitleController();
+
+export default titleController;

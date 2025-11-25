@@ -1,36 +1,17 @@
 import api from "./api.js";
 import UserModel from "../models/UserModel.js";
 
-class AuthService {
+class AdminService {
   constructor() {
     this.userModel = new UserModel();
   }
 
-  async register(newUser) {
-    try {
-      const response = await api.post("/auth/register", newUser);
-      const { accessToken, refreshToken, user } = response.data;
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
-      this.userModel.setCurrentUser(user);
-      return { success: true, user };
-    } catch (error) {
-      return {
-        success: false,
-        message:
-          error.response?.data?.message || "Lỗi hệ thống, vui lòng thử lại.",
-        status: error.response?.status || 500,
-      };
-    }
-  }
-
   async login(email, password) {
     try {
-      const response = await api.post("/auth/login", { email, password });
+      const response = await api.post("/admin/login", { email, password });
       const { accessToken, refreshToken, user } = response.data;
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
-      this.userModel.setCurrentUser(user);
       return { success: true, user };
     } catch (error) {
       console.error("Login error:", error);
@@ -235,4 +216,4 @@ class AuthService {
   }
 }
 
-export default AuthService;
+export default AdminService;
