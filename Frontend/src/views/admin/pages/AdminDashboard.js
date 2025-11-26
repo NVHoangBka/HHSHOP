@@ -12,9 +12,6 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     // Gọi API thống kê
-    fetch("/api/admin/stats")
-      .then((r) => r.json())
-      .then((data) => setStats(data));
   }, []);
 
   return (

@@ -1,6 +1,6 @@
 // backend/controllers/CartController.js
 const Cart = require("../models/Cart");
-const Product = require("../models/Products");
+const Product = require("../models/Product");
 
 class CartController {
   // LẤY GIỎ HÀNG CỦA USER

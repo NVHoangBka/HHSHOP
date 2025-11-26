@@ -4,7 +4,7 @@ mongoose.Promise = global.Promise;
 
 require("./User");
 require("./Order");
-require("./Products");
+require("./Product");
 require("./Title");
 require("./Address");
 require("./Banner");

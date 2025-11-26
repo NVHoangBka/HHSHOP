@@ -1,48 +1,69 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AdminRouter from "../../routers/AdminRouter/AdminRouter";
-import ToastMessage from "../client/components/ToastMessage/ToastMessage";
-import HeaderAdmin from "./components/HeaderAdmin";
 import AdminController from "../../controllers/AdminController";
-
+import ToastMessage from "../client/components/ToastMessage/ToastMessage";
 const adminController = new AdminController();
 
 const AppAdmin = () => {
   const [isAuthenticatedAdmin, setIsAuthenticatedAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState({
     show: false,
     message: "",
     type: "info",
   });
 
-  const onLogin = async (email, password) => {
-    const result = await adminController.login(email, password);
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const user = await adminController.getCurrentAdmin();
+        setIsAuthenticatedAdmin(!!user);
+      } catch (error) {
+        console.error("Lỗi check auth:", error);
+        setIsAuthenticatedAdmin(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, [adminController]);
+
+  const onLoginAdmin = async (email, password) => {
+    const result = await adminController.loginAdmin(email, password);
     if (result.success) {
       setIsAuthenticatedAdmin(true);
       return true;
     } else {
-      setIsAuthenticatedAdmin(false);
       return false;
     }
   };
 
-  const onLogout = async () => {
-    const result = await adminController.logout();
+  const onLogoutAdmin = async () => {
+    const result = await adminController.logoutAdmin();
     if (result.success) {
       setIsAuthenticatedAdmin(false);
-    } else {
     }
   };
+
+  // HIỂN THỊ LOADING KHI ĐANG KIỂM TRA TOKEN
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600"></div>
+      </div>
+    );
+  }
+
   return (
     <>
-      <HeaderAdmin />
-      <div className="">
-        <AdminRouter
-          onLogin={onLogin}
-          onLogout={onLogout}
-          adminController={adminController}
-          isAuthenticatedAdmin={isAuthenticatedAdmin}
-        />
-      </div>
+      <AdminRouter
+        onLoginAdmin={onLoginAdmin}
+        onLogoutAdmin={onLogoutAdmin}
+        adminController={adminController}
+        isAuthenticatedAdmin={isAuthenticatedAdmin}
+      />
+
       <div className="toast-container position-fixed bottom-0 top-0 end-0">
         <ToastMessage
           show={toast.show}

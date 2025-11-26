@@ -37,4 +37,9 @@ userSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
+// === VIRTUAL: LẤY TÊN ĐẦY ĐỦ ===
+userSchema.virtual("fullName").get(function () {
+  return `${this.firstName} ${this.lastName}`.trim();
+});
+
 module.exports = mongoose.model("User", userSchema);

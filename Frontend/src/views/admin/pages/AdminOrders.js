@@ -1,25 +1,23 @@
 // src/admin/pages/Orders.jsx
 import React, { useEffect, useState } from "react";
+import AdminController from "../../../controllers/AdminController";
 
-const AdminOrders = () => {
+const adminController = new AdminController();
+const AdminOrders = ({}) => {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    fetch("/api/orders")
-      .then((r) => r.json())
-      .then((data) => setOrders(data.orders));
-  }, []);
+    const fetchOrder = async () => {
+      try {
+        const orders = await adminController.getAllOrders();
+        console.log(orders);
 
-  const updateStatus = async (orderId, status) => {
-    await fetch(`/api/orders/${orderId}/status`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status }),
-    });
-    setOrders((prev) =>
-      prev.map((o) => (o._id === orderId ? { ...o, status } : o))
-    );
-  };
+        return orders;
+      } catch (error) {}
+    };
+
+    fetchOrder();
+  }, [adminController]);
 
   return (
     <div className="container py-4">
@@ -38,15 +36,15 @@ const AdminOrders = () => {
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => (
+            {/* {orders.map((order) => (
               <tr key={order._id}>
                 <td>
                   <strong>#{order.orderId}</strong>
                 </td>
                 <td>
-                  {order.address.recipientName}
+                  {order.shippingAddress.recipientName}
                   <br />
-                  <small>{order.address.phoneNumber}</small>
+                  <small>{order.shippingAddress.phoneNumber}</small>
                 </td>
                 <td className="text-danger fw-bold">
                   {order.total.toLocaleString()}₫
@@ -66,7 +64,7 @@ const AdminOrders = () => {
                   <select
                     className="form-select form-select-sm"
                     value={order.status}
-                    onChange={(e) => updateStatus(order._id, e.target.value)}
+                    // onChange={(e) => updateStatus(order._id, e.target.value)}
                   >
                     <option value="pending">Chờ xử lý</option>
                     <option value="confirmed">Đã xác nhận</option>
@@ -91,7 +89,7 @@ const AdminOrders = () => {
                   <button className="btn btn-sm btn-success">Chi tiết</button>
                 </td>
               </tr>
-            ))}
+            ))} */}
           </tbody>
         </table>
       </div>

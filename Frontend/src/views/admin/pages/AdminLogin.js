@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const AdminLogin = ({ onLogin, adminController }) => {
+const AdminLogin = ({ onLoginAdmin, isAuthenticatedAdmin }) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,10 +15,9 @@ const AdminLogin = ({ onLogin, adminController }) => {
     setError("");
 
     try {
-      const result = await adminController.login(email, password);
+      const result = await onLoginAdmin(email, password);
 
       if (result.success) {
-        onLogin(email, password);
         // Chuyển vào dashboard
         navigate("/admin/dashboard");
       }
@@ -79,10 +78,9 @@ const AdminLogin = ({ onLogin, adminController }) => {
             )}
 
             <button
-              type="button"
+              type="submit"
               disabled={loading}
               className="btn btn-success btn-lg w-100 fw-bold"
-              onClick={handleSubmit}
             >
               {loading ? (
                 <>

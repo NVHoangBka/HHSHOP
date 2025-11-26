@@ -2,11 +2,10 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 
-const AdminLayout = () => {
+const AdminLayout = ({ onLoginAdmin, onLogoutAdmin, adminController }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem("isAdmin");
     navigate("/admin/login");
   };
 

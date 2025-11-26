@@ -5,58 +5,57 @@ class AdminController {
     this.adminService = new AdminService();
   }
 
-  async login(email, password) {
+  async loginAdmin(email, password) {
     try {
-      const result = await this.adminService.login(email, password);
+      const result = await this.adminService.loginAdmin(email, password);
       return result; // { success, user, message, status }
     } catch (error) {
       return { success: false, message: "Đăng nhập thất bại", status: 500 };
     }
   }
 
-  async logout() {
+  async logoutAdmin() {
     try {
-      const result = await this.adminService.logout();
+      const result = await this.adminService.logoutAdmin();
       return result; // { success, message }
     } catch (error) {
       return { success: false, message: "Đăng xuất thất bại" };
     }
   }
 
-  async isAuthenticated() {
+  async isAuthenticatedAdmin() {
     try {
-      return await this.adminService.isAuthenticated();
+      return await this.adminService.isAuthenticatedAdmin();
     } catch (error) {
       return false;
     }
   }
-  async recoverPassword(email) {
+
+  async getCurrentAdmin() {
     try {
-      const result = await this.adminService.recoverPassword(email);
-      return result; // { success, message }
+      return await this.authService.getCurrentAdmin();
     } catch (error) {
-      return { success: false, message: "Yêu cầu đặt lại mật khẩu thất bại" };
+      return null;
     }
   }
 
-  async resetPassword(token, newPassword) {
+  // =============   ORDERS  ==================
+
+  async getAllOrders() {
     try {
-      const result = await this.adminService.resetPassword(token, newPassword);
-      return result; // { success, message }
+      const result = await this.adminService.getAllOrders();
+      return result;
     } catch (error) {
-      return { success: false, message: "Đặt lại mật khẩu thất bại" };
+      return { success: false, message: "Lấy đơn hàng thất bại" };
     }
   }
 
-  async changePassword(oldPassword, newPassword) {
+  async updateOrderStatus(orderId, status) {
     try {
-      const result = await this.adminService.changePassword(
-        oldPassword,
-        newPassword
-      );
-      return result; // { success, message }
+      const result = await this.adminService.updateOrderStatus(orderId, status);
+      return result;
     } catch (error) {
-      return { success: false, message: "Đổi mật khẩu thất bại" };
+      return { success: false, message: "Lấy đơn hàng thất bại" };
     }
   }
 }

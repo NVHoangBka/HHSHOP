@@ -1,16 +1,21 @@
 import api from "./api.js";
-import UserModel from "../models/UserModel.js";
+import AdminModel from "../models/AdminModel.js";
 
 class AdminService {
   constructor() {
-    this.userModel = new UserModel();
+    this.adminModel = new AdminModel();
   }
 
-  async login(email, password) {
+  async loginAdmin(email, password) {
     try {
       const response = await api.post("/admin/login", { email, password });
-      const { user } = response.data;
-      return { success: true, user };
+      const { accessToken, refreshToken, user } = response.data;
+
+      // LƯU TOKEN VÀO LOCALSTORAGE (chỉ ở đây!)
+      localStorage.setItem("adminToken", accessToken);
+      if (refreshToken) localStorage.setItem("adminRefreshToken", refreshToken);
+      this.adminModel.setCurrentAdmin(user);
+      return { success: true, user, accessToken };
     } catch (error) {
       console.error("Login error:", error);
       return {
@@ -22,20 +27,78 @@ class AdminService {
     }
   }
 
-  async logout() {
+  // === ĐĂNG XUẤT ===
+  async logoutAdmin() {
     try {
-      await api.post("/admin/logout", null);
-      this.userModel.clearCurrentUser();
+      const token = localStorage.getItem("adminToken");
+      if (token) {
+        await api.post("/admin/logout", null, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      }
+      localStorage.removeItem("adminToken");
+      localStorage.removeItem("adminRefreshToken");
+      this.adminModel.clearCurrentAdmin();
       return { success: true };
     } catch (error) {
-      console.error("Logout error:", error);
-      return { success: false, message: "Đăng xuất thất bại" };
+      console.error("Logout API error:", error);
+    }
+  }
+  // === LẤY ADMIN HIỆN TẠI (nếu cần) ===
+  async getCurrentAdmin() {
+    const token = localStorage.getItem("adminToken");
+    if (!token) return null;
+    try {
+      const response = await api.post("/admin/me", null, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const user = response.data.user;
+      this.adminModel.setCurrentAdmin(user);
+
+      return { success: true };
+    } catch (error) {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      this.adminModel.clearCurrentAdmin();
+      return null;
     }
   }
 
-  isAuthenticated() {
-    return !!this.userModel.getCurrentUser();
+  // === KIỂM TRA ĐĂNG NHẬP – DÙNG TOKEN TỪ LOCALSTORAGE ===
+  async isAuthenticatedAdmin() {
+    return !!this.adminModel.getCurrentAdmin();
   }
+
+  async getAllOrders() {
+    try {
+      const res = await api.get("/admin/orders");
+
+      console.log(res);
+      return { success: true, res };
+    } catch (error) {
+      console.error("Login error:", error);
+      return {
+        success: false,
+        message: error.res?.data?.message || "Lỗi hệ thống, vui lòng thử lại.",
+        status: error.res?.status || 500,
+      };
+    }
+  }
+
+  // async updateOrderStatus(orderId, status) {
+  //   try {
+  //     const res = await api.put(`/admin/orders/${orderId}/status`, status);
+
+  //     return res.data.status;
+  //   } catch (error) {
+  //     console.error("Login error:", error);
+  //     return {
+  //       success: false,
+  //       message: error.res?.data?.message || "Lỗi hệ thống, vui lòng thử lại.",
+  //       status: error.res?.status || 500,
+  //     };
+  //   }
+  // }
 }
 
 export default AdminService;

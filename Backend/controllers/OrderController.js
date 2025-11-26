@@ -1,5 +1,5 @@
 const Order = require("../models/Order");
-const Product = require("../models/Products");
+const Product = require("../models/Product");
 const mongoose = require("mongoose");
 
 class OrderController {

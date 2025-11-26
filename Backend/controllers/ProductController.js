@@ -1,5 +1,5 @@
 // backend/controllers/ProductController.js
-const Product = require("../models/Products");
+const Product = require("../models/Product");
 
 class ProductController {
   static async getAll(req, res) {

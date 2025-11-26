@@ -19,7 +19,6 @@ export class CartModel {
   }
 
   addItem(product) {
-    console.log(product);
     const existing = this.items.find((item) => item.id === product.id);
     if (existing) {
       existing.quantity += product.quantity;

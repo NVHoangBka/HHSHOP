@@ -12,7 +12,6 @@ const Login = ({ onLogin, authController }) => {
     e.preventDefault();
     setError("");
     const result = await authController.login(email, password);
-    console.log("Kết quả đăng nhập:", result);
     if (result.success) {
       onLogin(email, password);
       navigate("/");

@@ -64,12 +64,12 @@ const OrderList = ({ orderController }) => {
                   <td>
                     {new Date(order.createdAt).toLocaleDateString("vi-VN")}
                   </td>
-                  <td>{order.address.recipientName}</td>
-                  <td>{order.address.phoneNumber}</td>
+                  <td>{order.shippingAddress.recipientName}</td>
+                  <td>{order.shippingAddress.phoneNumber}</td>
                   <td>
-                    {order.address
-                      ? `${order.address.ward}, ${order.address.district}, ${order.address.city} ` ||
-                        `${order.address.addressList}`
+                    {order.shippingAddress
+                      ? `${order.shippingAddress.ward}, ${order.shippingAddress.district}, ${order.shippingAddress.city} ` ||
+                        `${order.shippingAddress.addressList}`
                       : "Không có địa chỉ"}
                   </td>
                   <td>{order.total.toLocaleString("vi-VN")} VNĐ</td>
