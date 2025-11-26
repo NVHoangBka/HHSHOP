@@ -57,44 +57,53 @@ const Cart = ({
   };
 
   return (
-    <div className={`cart d-flex flex-column end-0`}>
-      <div className="cart-header d-flex justify-content-between align-items-center border-bottom">
-        <h2 className="card-title text-black pb-3 pt-4 px-4">Giỏ hàng</h2>
-        <button
-          className="btn border rounded-circle px-2 py-0"
-          onClick={onClose}
-        >
-          <i className="bi bi-x fs-4"></i>
-        </button>
+    <div className="bg-success-subtle">
+      <div className="breadcrumbs">
+        <div className="container">
+          <ul className="breadcrumb py-3 d-flex flex-wrap align-items-center">
+            <li className="home">
+              <Link
+                className="link hover"
+                to="/"
+                title="Trang chủ"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                Trang chủ
+              </Link>
+              <span className="mx-1 md:mx-2 inline-block">&nbsp;/&nbsp;</span>
+            </li>
+            <li>
+              <span className="text-secondary">Giỏ hàng</span>
+            </li>
+          </ul>
+        </div>
       </div>
-      <div className="card-body">
-        <div className="cart-content px-4 py-3 h-100">
-          {cartItems.length === 0 ? (
-            <div className="cart-empty">
-              <div className="text-black text-center">
-                <img
-                  src="https://bizweb.dktcdn.net/100/518/448/themes/953339/assets/cart_empty_background.png?1733201190476"
-                  alt=""
-                />
-                <h2 className="font-bold">Giỏ hàng chưa có gì!</h2>
-                <p>Hãy tìm sản phẩm ứng ý và thêm vào giỏ hàng bạn nhé</p>
-                <Link
-                  className="btn font-bold bg-success text-white rounded-pill"
-                  to="/products/all"
-                  title="Tiếp tục mua sắm"
-                >
-                  Tiếp tục mua sắm
-                </Link>
-              </div>
-            </div>
-          ) : (
-            <div className="d-flex h-100 flex-column justify-content-between">
-              <div className="cart-top pt-1 overflow-y-auto flex flex-col">
-                <div className="cart-table">
-                  <div className="cart-items">
+      <div className="section section-main-cart">
+        <div className="container">
+          <div className="cart-header d-flex justify-content-between align-items-center border-bottom">
+            <h2 className="card-title text-black pb-3 pt-4 px-4">Giỏ hàng</h2>
+          </div>
+          <div className="card-body">
+            <div className="cart-content px-4 py-3">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Sản phẩm</th>
+                    <th scope="col">Đơn giá</th>
+                    <th scope="col">Số Lượng</th>
+                    <th scope="col">Tạm tính</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                {cartItems.length === 0 ? (
+                  <tbody>
+                    <tr>Chưa có sản phẩm nào</tr>
+                  </tbody>
+                ) : (
+                  <tbody>
                     {cartItems.map((item) => (
-                      <div className="cart-item py-3 border-bottom">
-                        <div className="cart-product-col d-flex justify-content-between align-items-start">
+                      <tr className="cart-item py-3 border-bottom">
+                        <td>
                           <div className="d-flex">
                             <Link
                               className="cart-item__image"
@@ -129,27 +138,20 @@ const Cart = ({
                               </span>
                             </div>
                           </div>
-                          <button
-                            className="btn btn-sm px-2 rounded-circle text-muted"
-                            onClick={() => handleRemove(item.id)}
-                          >
-                            <i className="bi bi-x-lg"></i>
-                          </button>
-                        </div>
-
-                        <div className="px-3 ms-5 d-flex justify-content-between cart-quantity-col">
-                          <div className="cart-unit-price-col">
-                            <div className="price text-danger fw-bold">
-                              {(
-                                (item.discountPrice || item.price) *
-                                item.quantity
-                              ).toLocaleString("vi-VN")}
-                              ₫
-                            </div>
-                          </div>
+                        </td>
+                        <td className="price text-danger fw-bold">
+                          {(item.discountPrice || item.price).toLocaleString(
+                            "vi-VN"
+                          )}
+                          ₫
+                        </td>
+                        <td>
                           <div
                             className="input-group custom-number-input cart-item-quantity d-flex border rounded row"
-                            style={{ maxWidth: "100px", height: "28px" }}
+                            style={{
+                              maxWidth: "100px",
+                              height: "28px",
+                            }}
                           >
                             <button
                               type="button"
@@ -177,12 +179,28 @@ const Cart = ({
                               <i className="bi bi-plus"></i>
                             </button>
                           </div>
-                        </div>
-                      </div>
+                        </td>
+                        <td className="price text-danger fw-bold">
+                          {(
+                            (item.discountPrice || item.price) * item.quantity
+                          ).toLocaleString("vi-VN")}
+                          ₫
+                        </td>
+                        <td>
+                          <div className="cart-product-col d-flex justify-content-between align-items-start">
+                            <button
+                              className="btn btn-sm px-2 rounded-circle text-muted"
+                              onClick={() => handleRemove(item.id)}
+                            >
+                              <i className="bi bi-x-lg"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
                     ))}
-                  </div>
-                </div>
-              </div>
+                  </tbody>
+                )}
+              </table>
               <div className="cart-bottom pt-4">
                 <div className="cart-summary">
                   <div className="cart-summary-info">
@@ -409,7 +427,7 @@ const Cart = ({
                 </div>
               </div>
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>

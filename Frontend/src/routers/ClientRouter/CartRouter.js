@@ -1,28 +1,26 @@
 import React from "react";
-import { Route, Navigate } from "react-router-dom";
-import Cart from "../../views/client/components/Header/Cart/Cart";
-import CartController from "../../controllers/CartController";
+import { Route, Navigate, Routes } from "react-router-dom";
+import Cart from "../../views/client/pages/CartPage/Cart";
 
-const cartController = new CartController();
-
-const CartRouter = ({ isAuthenticated, cartItems, removeFromCart }) => {
-  const ProtectedRoute = ({ children }) => {
-    return isAuthenticated ? children : <Navigate to="/login" />;
-  };
-
+const CartRouter = ({
+  isAuthenticated,
+  cartItems,
+  removeFromCart,
+  cartController,
+}) => {
   return (
-    <Route
-      path="/"
-      element={
-        <ProtectedRoute>
+    <Routes>
+      <Route
+        path="/"
+        element={
           <Cart
             cartItems={cartItems}
             removeFromCart={removeFromCart}
             cartController={cartController}
           />
-        </ProtectedRoute>
-      }
-    />
+        }
+      />
+    </Routes>
   );
 };
 

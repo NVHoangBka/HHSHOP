@@ -4,7 +4,7 @@ import { Offcanvas } from "react-bootstrap";
 
 import Menu from "./Menu/Menu";
 import Search from "./Search/Search";
-import Cart from "./Cart/Cart";
+import Cart from "./CartHeader/CartHeader";
 
 const Header = ({
   cartController,

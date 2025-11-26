@@ -67,6 +67,35 @@ const ProductDetail = ({ addToCart, productController }) => {
     addToCart(item);
   };
 
+  const handleBuyNow = () => {
+    if (!product) return;
+
+    const buyNowItem = {
+      _id: product._id,
+      name: product.name,
+      price: product.price,
+      discountPrice: product.discountPrice,
+      image: product.image,
+      quantity,
+      selectedVariant: selectedVariant ? { ...selectedVariant } : null,
+      displayName: selectedVariant
+        ? `${product.name} - ${selectedVariant.value}`
+        : product.name,
+      finalPrice: selectedVariant
+        ? selectedVariant.discountPrice || selectedVariant.price
+        : product.discountPrice || product.price,
+      cartImage: mainImage,
+    };
+
+    // TRUYỀN TRỰC TIẾP QUA STATE → KHÔNG CẦN GIỎ HÀNG
+    navigate("/checkout", {
+      state: {
+        buyNowItem: buyNowItem,
+        isBuyNow: true,
+      },
+    });
+  };
+
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN").format(price) + "₫";
   };
@@ -407,6 +436,7 @@ const ProductDetail = ({ addToCart, productController }) => {
 
                   <div class="d-flex mt-4 border-top pt-4">
                     <button
+                      onClick={handleBuyNow}
                       name="buynow"
                       class=" fw-semibold btn border border-danger btn-buynow w-100 py-2 text-danger col mx-2 rounded-5"
                     >

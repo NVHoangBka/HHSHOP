@@ -60,6 +60,7 @@ const ClientRouter = (props) => (
           cartItems={props.cartItems}
           removeFromCart={props.removeFromCart}
           onCartChange={props.onCartChange}
+          cartController={props.cartController}
         />
       }
     />
