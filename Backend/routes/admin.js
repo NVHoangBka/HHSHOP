@@ -15,6 +15,7 @@ router.use(adminOnly);
 
 router.post("/logout", AdminController.logout);
 router.get("/me", AdminController.me);
+router.post("/refresh-token", AdminController.refreshToken);
 router.get("/users", AdminController.getUsers);
 
 // Thống kê

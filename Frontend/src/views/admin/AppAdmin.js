@@ -2,9 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import AdminRouter from "../../routers/AdminRouter/AdminRouter";
 import AdminController from "../../controllers/AdminController";
 import ToastMessage from "../client/components/ToastMessage/ToastMessage";
-const adminController = new AdminController();
 
+const adminController = new AdminController();
 const AppAdmin = () => {
+  // const adminController = useRef(new AdminController()).current;
   const [isAuthenticatedAdmin, setIsAuthenticatedAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState({
@@ -15,15 +16,11 @@ const AppAdmin = () => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      try {
-        const user = await adminController.getCurrentAdmin();
-        setIsAuthenticatedAdmin(!!user);
-      } catch (error) {
-        console.error("Lỗi check auth:", error);
-        setIsAuthenticatedAdmin(false);
-      } finally {
-        setLoading(false);
-      }
+      // const user = await adminController.getCurrentAdmin();
+      const result = await adminController.isAuthenticatedAdmin();
+      console.log(result);
+      setIsAuthenticatedAdmin(result);
+      setLoading(false);
     };
 
     checkAuth();
@@ -35,6 +32,7 @@ const AppAdmin = () => {
       setIsAuthenticatedAdmin(true);
       return true;
     } else {
+      setIsAuthenticatedAdmin(false);
       return false;
     }
   };

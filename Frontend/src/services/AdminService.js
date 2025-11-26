@@ -11,7 +11,7 @@ class AdminService {
       const response = await api.post("/admin/login", { email, password });
       const { accessToken, refreshToken, user } = response.data;
 
-      // LƯU TOKEN VÀO LOCALSTORAGE (chỉ ở đây!)
+      // LƯU TOKEN VÀO LOCALSTORAGE
       localStorage.setItem("adminToken", accessToken);
       if (refreshToken) localStorage.setItem("adminRefreshToken", refreshToken);
       this.adminModel.setCurrentAdmin(user);
@@ -22,6 +22,27 @@ class AdminService {
         success: false,
         message:
           error.response?.data?.message || "Lỗi hệ thống, vui lòng thử lại.",
+        status: error.response?.status || 500,
+      };
+    }
+  }
+
+  async refreshToken() {
+    try {
+      const refreshToken = localStorage.getItem("adminRefreshToken");
+      if (!refreshToken) {
+        return { success: false, message: "Không có refresh token" };
+      }
+      const response = await api.post("/admin/refresh-token", { refreshToken });
+      const { accessToken, refreshToken: newRefreshToken } = response.data;
+      localStorage.setItem("adminAccessToken", accessToken);
+      localStorage.setItem("adminRefreshToken", newRefreshToken);
+      return { success: true, accessToken, refreshToken: newRefreshToken };
+    } catch (error) {
+      console.error("Refresh token error:", error);
+      return {
+        success: false,
+        message: error.response?.data?.message || "Không thể làm mới token",
         status: error.response?.status || 500,
       };
     }
@@ -49,14 +70,21 @@ class AdminService {
     const token = localStorage.getItem("adminToken");
     if (!token) return null;
     try {
-      const response = await api.post("/admin/me", null, {
+      const response = await api.get("/admin/me", {
         headers: { Authorization: `Bearer ${token}` },
       });
+
       const user = response.data.user;
       this.adminModel.setCurrentAdmin(user);
 
       return { success: true };
     } catch (error) {
+      if (error.response?.data?.expired) {
+        const refreshResult = await this.refreshToken();
+        if (refreshResult.success) {
+          return await this.getCurrentAdmin();
+        }
+      }
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       this.adminModel.clearCurrentAdmin();

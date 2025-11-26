@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const AdminLogin = ({ onLoginAdmin, isAuthenticatedAdmin }) => {
+const AdminLogin = ({ onLoginAdmin, adminController }) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,10 +15,10 @@ const AdminLogin = ({ onLoginAdmin, isAuthenticatedAdmin }) => {
     setError("");
 
     try {
-      const result = await onLoginAdmin(email, password);
+      const result = await adminController.loginAdmin(email, password);
 
       if (result.success) {
-        // Chuyển vào dashboard
+        onLoginAdmin(email, password);
         navigate("/admin/dashboard");
       }
     } catch (err) {
@@ -55,6 +55,7 @@ const AdminLogin = ({ onLoginAdmin, isAuthenticatedAdmin }) => {
                 placeholder="admin@hhshop.vn"
                 value={email}
                 name="email"
+                id="email"
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
@@ -67,6 +68,7 @@ const AdminLogin = ({ onLoginAdmin, isAuthenticatedAdmin }) => {
                 className="form-control form-control-lg"
                 placeholder="••••••••"
                 value={password}
+                id="password"
                 name="password"
                 onChange={(e) => setPassword(e.target.value)}
                 required
