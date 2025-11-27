@@ -25,7 +25,7 @@ const OrderList = ({ orderController }) => {
       }
     }
     fetchOrders();
-  }, []);
+  }, [orderController]);
 
   if (loading) {
     return <div className="text-center">Đang tải đơn hàng...</div>;
@@ -45,14 +45,15 @@ const OrderList = ({ orderController }) => {
               <th>SDT</th>
               <th>Địa chỉ</th>
               <th>Giá trị đơn hàng</th>
+              <th>Hình thức thanh toán</th>
               <th>TT thanh toán</th>
-              <th>Xem chi tiết</th>
+              <th>TT đơn hàng</th>
             </tr>
           </thead>
           <tbody>
             {orders.length === 0 ? (
-              <tr className="fs-7 text-center">
-                <td colSpan={6}>Không đơn hàng nào.</td>
+              <tr className="text-center">
+                <td colSpan={9}>Chưa đơn hàng nào.</td>
               </tr>
             ) : (
               orders.map((order) => (
@@ -72,21 +73,31 @@ const OrderList = ({ orderController }) => {
                         `${order.shippingAddress.addressList}`
                       : "Không có địa chỉ"}
                   </td>
-                  <td>{order.total.toLocaleString("vi-VN")} VNĐ</td>
+                  <td>{order.totalAmount.toLocaleString("vi-VN")} VNĐ</td>
                   <td>
                     {{
-                      pending: "Đang xử lý",
-                      shipped: "Đã giao",
-                      canceled: "Đã hủy",
-                    }[order.status] || "Không xác định"}
+                      COD: "COD",
+                      BANK: "Chuyển Khoản",
+                    }[order.paymentMethod] || "Không xác định"}
                   </td>
                   <td>
-                    <Link
-                      to={`/account/orders/${order.orderId}`}
-                      className="text-primary"
-                    >
-                      Xem chi tiết
-                    </Link>
+                    {{
+                      pending: "Đang chờ thanh toán",
+                      paid: "Đã thanh toán",
+                      failed: "Thanh toán thất bại",
+                      canceled: "Đã hoàn tiền",
+                    }[order.paymentStatus] || "Không xác định"}
+                  </td>
+                  <td>
+                    {{
+                      pending: "Chờ xác nhận",
+                      confirmed: "Đã xác nhận",
+                      preparing: "Đang đóng gói",
+                      shipped: "Đã giao cho bên vận chuyển",
+                      delivered: "Đã giao thành công",
+                      canceled: "Đã huỷ",
+                      returned: "Khách trả hàng",
+                    }[order.status] || "Không xác định"}
                   </td>
                 </tr>
               ))

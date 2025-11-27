@@ -61,7 +61,7 @@ const OrderSuccess = () => {
           <strong className="text-danger">#{order.orderId || order.id}</strong>
         </p>
         <p className="fs-3 text-danger fw-bold">
-          {order.total?.toLocaleString()}₫
+          {order.totalAmount?.toLocaleString()} VNĐ
         </p>
       </div>
 

@@ -18,31 +18,34 @@ class OrderController {
   // API: Tạo đơn hàng mới
   static async createOrder(req, res) {
     const session = await mongoose.startSession();
-    session.startTransaction();
 
     try {
+      await session.startTransaction();
+
       const {
         items: cartItems,
-        address,
+        shippingAddress,
         note,
-        paymentMethod = "COD", // ← NHẬN TỪ FRONTEND
+        paymentMethod = paymentMethod || "COD",
         voucherCode,
-        voucherDiscount = 0,
+        voucherDiscount = voucherDiscount || 0,
+        shippingFee = shippingFee || 30000,
       } = req.body;
 
-      const userId = req.user.id; // Giả sử bạn đã có middleware auth
+      const userId = req.user.id;
 
+      // === VALIDATE ===
       if (!cartItems || cartItems.length === 0) {
         return res.status(400).json({ message: "Giỏ hàng trống!" });
       }
-      if (!address) {
+      if (!shippingAddress) {
         return res
           .status(400)
           .json({ message: "Vui lòng nhập địa chỉ giao hàng!" });
       }
 
-      // 2. Kiểm tra và lấy thông tin sản phẩm + tính tổng tiền
-      let total = 0;
+      // === XỬ LÝ SẢN PHẨM + GIẢM KHO ===
+      let subTotal = 0;
       const orderItems = [];
 
       for (let item of cartItems) {
@@ -65,53 +68,72 @@ class OrderController {
         // Tính giá (ưu tiên discountPrice)
         const price = product.discountPrice || product.price;
 
-        total += price * item.quantity;
+        subTotal += price * item.quantity;
 
         orderItems.push({
           productId: product._id,
-          quantity: item.quantity,
-          price,
           name: product.name,
           image: product.image,
+          price,
+          discountPrice: product.discountPrice || undefined,
+          quantity: item.quantity,
+          variant: item.variant,
         });
       }
 
-      // 3. Tạo mã đơn hàng
+      // === TÍNH TỔNG CUỐI ===
+      const totalAmount = subTotal + shippingFee - voucherDiscount;
+
+      // === TẠO MÃ ĐƠN HÀNG ===
       const orderId = await OrderController.generateOrderId();
 
       // 4. Tạo đơn hàng mới
-      const newOrder = new Order({
-        userId,
-        orderId,
-        address,
-        items: orderItems,
-        total,
-        note,
-        voucherCode,
-        voucherDiscount,
-        paymentMethod, // ← LƯU ĐÚNG COD HOẶC BANK
-        paymentStatus: "pending",
-        status: "pending",
-      });
+      const newOrder = await Order.create(
+        [
+          {
+            userId,
+            orderId,
+            shippingAddress,
+            items: orderItems,
+            subTotal,
+            shippingFee,
+            voucherCode: voucherCode || undefined,
+            voucherDiscount,
+            totalAmount,
+            note: note || undefined,
+            paymentMethod,
+            paymentStatus: "pending",
+            status: "pending",
+          },
+        ],
+        { session }
+      );
 
-      await newOrder.save({ session });
-
+      // === COMMIT THÀNH CÔNG ===
       await session.commitTransaction();
 
-      // Trả về kết quả
+      // === TRẢ VỀ KẾT QUẢ ===
       res.status(201).json({
         success: true,
         message: "Đặt hàng thành công!",
         order: {
-          _id: newOrder._id,
-          orderId: newOrder.orderId,
-          total: newOrder.total,
-          paymentMethod: newOrder.paymentMethod,
-          createdAt: newOrder.createdAt,
+          _id: newOrder[0]._id,
+          orderId: newOrder[0].orderId,
+          totalAmount: newOrder[0].totalAmount,
+          paymentMethod: newOrder[0].paymentMethod,
+          shippingAddress: newOrder[0].shippingAddress,
+          createdAt: newOrder[0].createdAt,
         },
       });
     } catch (error) {
-      await session.abortTransaction();
+      // === FIX LỖI TRANSACTION: chỉ abort nếu chưa commit ===
+      try {
+        await session.abortTransaction();
+      } catch (error) {
+        console.warn("Abort failed (already committed?):", abortError.message);
+      }
+
+      console.error("Create Order Error:", error);
       res.status(400).json({
         success: false,
         message: error.message || "Đặt hàng thất bại!",

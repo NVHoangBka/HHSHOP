@@ -12,6 +12,7 @@ class AuthService {
       const { accessToken, refreshToken, user } = response.data;
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
+      localStorage.setItem("userRole", "user"); // ← ĐÁNH DẤU LÀ USER
       this.userModel.setCurrentUser(user);
       return { success: true, user };
     } catch (error) {
@@ -30,6 +31,7 @@ class AuthService {
       const { accessToken, refreshToken, user } = response.data;
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
+      localStorage.setItem("userRole", "user"); // ← ĐÁNH DẤU LÀ USER
       this.userModel.setCurrentUser(user);
       return { success: true, user };
     } catch (error) {
@@ -51,8 +53,9 @@ class AuthService {
       }
       const response = await api.post("/auth/refresh-token", { refreshToken });
       const { accessToken, refreshToken: newRefreshToken } = response.data;
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", newRefreshToken);
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("userRole");
       return { success: true, accessToken, refreshToken: newRefreshToken };
     } catch (error) {
       console.error("Refresh token error:", error);

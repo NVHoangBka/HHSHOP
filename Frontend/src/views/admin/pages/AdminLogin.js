@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const AdminLogin = ({ onLoginAdmin, adminController }) => {
+const AdminLogin = ({ onLoginAdmin }) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,10 +15,9 @@ const AdminLogin = ({ onLoginAdmin, adminController }) => {
     setError("");
 
     try {
-      const result = await adminController.loginAdmin(email, password);
+      const result = await onLoginAdmin(email, password);
 
       if (result.success) {
-        onLoginAdmin(email, password);
         navigate("/admin/dashboard");
       }
     } catch (err) {
@@ -54,10 +53,9 @@ const AdminLogin = ({ onLoginAdmin, adminController }) => {
                 className="form-control form-control-lg"
                 placeholder="admin@hhshop.vn"
                 value={email}
-                name="email"
-                id="email"
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                disabled={loading}
               />
             </div>
 
@@ -68,10 +66,9 @@ const AdminLogin = ({ onLoginAdmin, adminController }) => {
                 className="form-control form-control-lg"
                 placeholder="••••••••"
                 value={password}
-                id="password"
-                name="password"
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                disabled={loading}
               />
             </div>
 

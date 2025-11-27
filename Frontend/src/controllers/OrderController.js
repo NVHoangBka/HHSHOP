@@ -26,27 +26,36 @@ class OrderController {
       const order = orderResult.order;
 
       // Bước 2: Gọi backend tạo QR (lưu vào DB luôn)
-      const qrResult = await this.orderService.generatePaymentQR(order._id);
-
-      if (!qrResult.success) {
-        // Vẫn cho đặt hàng thành công, nhưng cảnh báo QR lỗi
+      if (orderData.paymentMethod === "BANK") {
+        const qrResult = await this.orderService.generatePaymentQR(order._id);
         return {
           success: true,
           order,
-          qrImage: null,
-          bankInfo: null,
-          warning: "Đơn hàng đã tạo nhưng không tạo được QR thanh toán",
+          ...qrResult, // qrImage, bankInfo, expiredAt
         };
       }
 
-      return {
-        success: true,
-        order,
-        qrImage: qrResult.qrImage,
-        bankInfo: qrResult.bankInfo,
-        expiredAt: qrResult.expiredAt,
-        message: "Đặt hàng thành công! Vui lòng thanh toán bằng QR",
-      };
+      return { success: true, order };
+
+      // if (!qrResult.success) {
+      //   // Vẫn cho đặt hàng thành công, nhưng cảnh báo QR lỗi
+      //   return {
+      //     success: true,
+      //     order,
+      //     qrImage: null,
+      //     bankInfo: null,
+      //     warning: "Đơn hàng đã tạo nhưng không tạo được QR thanh toán",
+      //   };
+      // }
+
+      // return {
+      //   success: true,
+      //   order,
+      //   qrImage: qrResult.qrImage,
+      //   bankInfo: qrResult.bankInfo,
+      //   expiredAt: qrResult.expiredAt,
+      //   message: "Đặt hàng thành công! Vui lòng thanh toán bằng QR",
+      // };
     } catch (error) {
       console.error("OrderController.createOrder:", error);
       return {

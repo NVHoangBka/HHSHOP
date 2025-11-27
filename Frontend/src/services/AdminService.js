@@ -9,11 +9,12 @@ class AdminService {
   async loginAdmin(email, password) {
     try {
       const response = await api.post("/admin/login", { email, password });
-      const { accessToken, refreshToken, user } = response.data;
+      const { accessToken, user } = response.data;
 
-      // LƯU TOKEN VÀO LOCALSTORAGE
-      localStorage.setItem("adminToken", accessToken);
-      if (refreshToken) localStorage.setItem("adminRefreshToken", refreshToken);
+      // DÙNG KEY RIÊNG – KHÔNG BAO GIỜ TRÙNG VỚI USER
+      localStorage.setItem("adminAccessToken", accessToken);
+      localStorage.setItem("adminLoggedIn", "true"); // để check nhanh
+
       this.adminModel.setCurrentAdmin(user);
       return { success: true, user, accessToken };
     } catch (error) {
@@ -27,38 +28,18 @@ class AdminService {
     }
   }
 
-  async refreshToken() {
-    try {
-      const refreshToken = localStorage.getItem("adminRefreshToken");
-      if (!refreshToken) {
-        return { success: false, message: "Không có refresh token" };
-      }
-      const response = await api.post("/admin/refresh-token", { refreshToken });
-      const { accessToken, refreshToken: newRefreshToken } = response.data;
-      localStorage.setItem("adminAccessToken", accessToken);
-      localStorage.setItem("adminRefreshToken", newRefreshToken);
-      return { success: true, accessToken, refreshToken: newRefreshToken };
-    } catch (error) {
-      console.error("Refresh token error:", error);
-      return {
-        success: false,
-        message: error.response?.data?.message || "Không thể làm mới token",
-        status: error.response?.status || 500,
-      };
-    }
-  }
-
   // === ĐĂNG XUẤT ===
   async logoutAdmin() {
     try {
-      const token = localStorage.getItem("adminToken");
+      const token = localStorage.getItem("adminAccessToken");
       if (token) {
         await api.post("/admin/logout", null, {
           headers: { Authorization: `Bearer ${token}` },
         });
       }
-      localStorage.removeItem("adminToken");
-      localStorage.removeItem("adminRefreshToken");
+      // XÓA SẠCH KEY RIÊNG
+      localStorage.removeItem("adminAccessToken");
+      localStorage.removeItem("adminLoggedIn");
       this.adminModel.clearCurrentAdmin();
       return { success: true };
     } catch (error) {
@@ -67,7 +48,7 @@ class AdminService {
   }
   // === LẤY ADMIN HIỆN TẠI (nếu cần) ===
   async getCurrentAdmin() {
-    const token = localStorage.getItem("adminToken");
+    const token = localStorage.getItem("adminAccessToken");
     if (!token) return null;
     try {
       const response = await api.get("/admin/me", {
@@ -85,9 +66,10 @@ class AdminService {
           return await this.getCurrentAdmin();
         }
       }
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-      this.adminModel.clearCurrentAdmin();
+      // XÓA SẠCH KEY RIÊNG
+      // localStorage.removeItem("adminAccessToken");
+      // localStorage.removeItem("adminLoggedIn");
+      // this.adminModel.clearCurrentAdmin();
       return null;
     }
   }
@@ -97,11 +79,25 @@ class AdminService {
     return !!this.adminModel.getCurrentAdmin();
   }
 
-  async getAllOrders() {
+  async getUsersAllAdmin() {
+    try {
+      const res = await api.get("/admin/users");
+
+      return { success: true, res };
+    } catch (error) {
+      console.error("Login error:", error);
+      return {
+        success: false,
+        message: error.res?.data?.message || "Lỗi hệ thống, vui lòng thử lại.",
+        status: error.res?.status || 500,
+      };
+    }
+  }
+
+  async getOrdersAllAdmin() {
     try {
       const res = await api.get("/admin/orders");
 
-      console.log(res);
       return { success: true, res };
     } catch (error) {
       console.error("Login error:", error);

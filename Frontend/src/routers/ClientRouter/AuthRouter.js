@@ -13,7 +13,6 @@ const AuthRouter = ({
   productController,
   orderController,
 }) => {
-  console.log(isAuthenticated);
   // Nếu đã đăng nhập → vào trang hồ sơ
   if (isAuthenticated) {
     return (

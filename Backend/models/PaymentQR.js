@@ -19,7 +19,7 @@ const paymentQRSchema = new mongoose.Schema(
     },
 
     // === SỐ TIỀN ===
-    amount: {
+    totalAmount: {
       type: Number,
       required: true,
       min: [1000, "Số tiền tối thiểu 1.000₫"],
@@ -34,7 +34,7 @@ const paymentQRSchema = new mongoose.Schema(
       bin: String, // 970415 (Vietcombank), 970422 (Techcombank)...
       bankName: String,
       accountNumber: String,
-      accountName: { type: String, uppercase: true },
+      accountName: String,
       content: String, // nội dung chuyển khoản (rất quan trọng!)
     },
 

@@ -4,32 +4,31 @@ const router = express.Router();
 
 const AdminController = require("../controllers/AdminController");
 
-const { protect, adminOnly } = require("../middleware/auth");
+const { adminProtect } = require("../middleware/admin");
 
 // PUBLIC: Đăng nhập admin
 router.post("/login", AdminController.login);
+router.post("/logout", AdminController.logout);
 
 // PROTECTED: Chỉ admin mới vào được
-router.use(protect);
-router.use(adminOnly);
+router.use(adminProtect);
 
-router.post("/logout", AdminController.logout);
-router.get("/me", AdminController.me);
-router.post("/refresh-token", AdminController.refreshToken);
-router.get("/users", AdminController.getUsers);
+router.get("/me", AdminController.getCurrentAdmin);
+// router.post("/refresh-token", AdminController.refreshToken);
+router.get("/users", AdminController.getUsersAllAdmin);
 
-// Thống kê
-router.get("/stats", AdminController.getAllDashBoardStats);
+// // // Thống kê
+// router.get("/stats", AdminController.getAllDashBoardStats);
 
-// Quản lý đơn hàng
-router.get("/orders", AdminController.getAllOrders);
-router.patch("/orders/:id/status", AdminController.updateOrderStatus);
+// // // Quản lý đơn hàng
+// router.get("/orders", AdminController.getOrdersAllAdmin);
+// router.patch("/orders/:id/status", AdminController.updateOrderStatus);
 
-// Quản lý sản phẩm
-router.get("/products", AdminController.getProducts);
-router.get("/products/:id", AdminController.getProductById);
-router.post("/products", AdminController.createProduct);
-router.put("/products/:id", AdminController.updateProduct);
-router.delete("/products/:id", AdminController.deleteProduct);
+// // Quản lý sản phẩm
+// router.get("/products", AdminController.getProducts);
+// router.get("/products/:id", AdminController.getProductById);
+// router.post("/products", AdminController.createProduct);
+// router.put("/products/:id", AdminController.updateProduct);
+// router.delete("/products/:id", AdminController.deleteProduct);
 
 module.exports = router;

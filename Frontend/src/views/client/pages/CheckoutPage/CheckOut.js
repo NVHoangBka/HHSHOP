@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import vietnamData from "../../../../data/vietnam.json";
 
 const Checkout = ({ cartController, orderController, authController }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [cartItems, setCartItems] = useState([]);
   const [user, setUser] = useState(null);
   const [addressList, setAddressList] = useState([]);
@@ -21,6 +23,8 @@ const Checkout = ({ cartController, orderController, authController }) => {
   const [district, setDistrict] = useState("");
   const [ward, setWard] = useState("");
 
+  const [isQuickBuy, setIsQuickBuy] = useState(false);
+
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
@@ -35,16 +39,27 @@ const Checkout = ({ cartController, orderController, authController }) => {
   // ==================== LOAD DATA ====================
   useEffect(() => {
     const init = async () => {
+      setLoading(true);
       const [currentUser, addressRes, cartData] = await Promise.all([
         authController.getCurrentUser(),
         authController.getAddressAll().catch(() => ({ addresses: [] })),
         cartController.getCartItems(),
       ]);
-
-      if (cartData.length === 0 || !cartData) {
-        alert("Giỏ hàng trống!");
-        navigate("/cart");
-        return;
+      // ƯU TIÊN 1: Nếu có "Mua ngay" → dùng danh sách này
+      if (
+        location.state?.isQuickBuy &&
+        location.state?.checkoutItems?.length > 0
+      ) {
+        setCartItems(location.state.checkoutItems);
+        setIsQuickBuy(true);
+      } else {
+        // ƯU TIÊN 2: Nếu không có → lấy giỏ hàng bình thường
+        if (cartData.length === 0) {
+          alert("Giỏ hàng trống!");
+          navigate("/cart");
+          return;
+        }
+        setCartItems(cartData);
       }
 
       const addresses = addressRes.addresses || [];
@@ -52,7 +67,6 @@ const Checkout = ({ cartController, orderController, authController }) => {
 
       setUser(currentUser);
       setAddressList(addresses);
-      setCartItems(cartData);
 
       if (defaultAddr) {
         setSelectedAddressId(defaultAddr._id);
@@ -120,9 +134,13 @@ const Checkout = ({ cartController, orderController, authController }) => {
   }, [district, city]);
 
   // Tính toán
-  const subTotal = cartController.getTotalPrice();
+  const subTotal = cartItems.reduce((sum, item) => {
+    const price = item.finalPrice || item.discountPrice || item.price || 0;
+    return sum + price * (item.quantity || 1);
+  }, 0);
+
   const shippingFee = 30000;
-  const total = subTotal + shippingFee - voucherDiscount;
+  const totalAmount = subTotal + shippingFee - voucherDiscount;
 
   const handleApplyVoucher = () => {
     const code = voucherCode.trim().toUpperCase();
@@ -177,12 +195,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
 
       const orderData = {
         items: orderItems,
-        total: total,
-        note: formData.note || undefined,
-        paymentMethod: paymentMethod,
-        voucherCode: voucherCode || undefined,
-        voucherDiscount: voucherDiscount || 0,
-        address: {
+        shippingAddress: {
           recipientName: formData.fullName,
           phoneNumber: formData.phone,
           addressLine: formData.address,
@@ -190,6 +203,11 @@ const Checkout = ({ cartController, orderController, authController }) => {
           district: formData.district || "Hoàn Kiếm",
           ward: formData.ward || "Hàng Bạc",
         },
+        note: formData.note || undefined,
+        paymentMethod: paymentMethod,
+        voucherCode: voucherCode || undefined,
+        voucherDiscount: voucherDiscount || 0,
+        shippingFee: shippingFee || 30000,
       };
 
       // Gửi đơn hàng qua orderController
@@ -639,7 +657,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
               )}
               <div className="d-flex justify-content-between fw-bold fs-4 text-danger border-top mt-3 pt-2">
                 <span>Tổng cộng</span>
-                <span>{total.toLocaleString("vi-VN")}₫</span>
+                <span>{totalAmount.toLocaleString("vi-VN")}₫</span>
               </div>
             </div>
             <div className="d-flex justify-content-between align-items-center mt-4">

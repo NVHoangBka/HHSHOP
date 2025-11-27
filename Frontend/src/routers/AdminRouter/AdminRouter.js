@@ -19,6 +19,7 @@ const AdminRouter = ({
   adminController,
 }) => {
   if (isAuthenticatedAdmin) {
+    // Nếu đã đăng nhập → hiển thị toàn bộ admin
     return (
       <Routes>
         {/* === CÁC TRANG ADMIN – BẮT BUỘC ĐĂNG NHẬP === */}
@@ -28,7 +29,6 @@ const AdminRouter = ({
             <AdminLayout
               onLogoutAdmin={onLogoutAdmin}
               adminController={adminController}
-              isAuthenticatedAdmin={isAuthenticatedAdmin}
             />
             // </ProtectedAdminRoute>
           }
@@ -53,22 +53,18 @@ const AdminRouter = ({
         <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
       </Routes>
     );
-  } else {
-    return (
-      <Routes>
-        {/* === ĐĂNG NHẬP ADMIN === */}
-        <Route
-          path="login"
-          element={
-            <AdminLogin
-              adminController={adminController}
-              onLoginAdmin={onLoginAdmin}
-            />
-          }
-        />
-      </Routes>
-    );
   }
+
+  // Nếu chưa đăng nhập → chỉ cho vào login
+  return (
+    <Routes>
+      {/* === ĐĂNG NHẬP ADMIN === */}
+      <Route
+        path="login"
+        element={<AdminLogin onLoginAdmin={onLoginAdmin} />}
+      />
+    </Routes>
+  );
 };
 
 export default AdminRouter;

@@ -58,7 +58,7 @@ const productSchema = new mongoose.Schema(
 
     // Trạng thái & số liệu
     isActive: { type: Boolean, default: true },
-    inStock: { type: Boolean, default: true },
+    inStock: { type: Number, default: true },
     falseSale: { type: Boolean, default: false },
     sold: { type: Number, default: 0 },
     viewCount: { type: Number, default: 0 },

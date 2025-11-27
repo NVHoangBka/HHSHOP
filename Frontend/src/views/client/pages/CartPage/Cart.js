@@ -52,7 +52,6 @@ const Cart = ({
   };
 
   const handleCheckout = (e) => {
-    onClose();
     navigate(`/checkout`);
   };
 
@@ -78,350 +77,356 @@ const Cart = ({
           </ul>
         </div>
       </div>
-      <div className="section section-main-cart">
-        <div className="container">
-          <div className="cart-header d-flex justify-content-between align-items-center border-bottom">
-            <h2 className="card-title text-black pb-3 pt-4 px-4">Giỏ hàng</h2>
-          </div>
-          <div className="card-body">
-            <div className="cart-content px-4 py-3">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col">Sản phẩm</th>
-                    <th scope="col">Đơn giá</th>
-                    <th scope="col">Số Lượng</th>
-                    <th scope="col">Tạm tính</th>
-                    <th scope="col"></th>
-                  </tr>
-                </thead>
-                {cartItems.length === 0 ? (
-                  <tbody>
-                    <tr>Chưa có sản phẩm nào</tr>
-                  </tbody>
-                ) : (
-                  <tbody>
-                    {cartItems.map((item) => (
-                      <tr className="cart-item py-3 border-bottom">
-                        <td>
-                          <div className="d-flex">
-                            <Link
-                              className="cart-item__image"
-                              to={`/products/${item.id}`}
-                              title={item.name}
-                            >
-                              <img
-                                src={
-                                  item.image || "https://via.placeholder.com/60"
-                                } // Hiển thị placeholder nếu không có image
-                                className="me-2 rounded"
-                                alt={item.name}
-                                style={{
-                                  width: "60px",
-                                  height: "60px",
-                                  objectFit: "cover",
-                                }}
-                              />
-                            </Link>
-                            <div>
-                              <p className="cart-item__name mb-0 fw-semibold small">
+      <div className="section section-main-cart pb-5">
+        <div className="container bg-white">
+          <div className="row px-4">
+            <div className="cart-left col-8">
+              <div className="cart-header d-flex justify-content-between align-items-center">
+                <h2 className="card-title text-black pb-3 pt-4 px-1">
+                  Giỏ hàng
+                </h2>
+              </div>
+              <div className="card-body">
+                <div className="cart-content px-2 py-3">
+                  <table class="table align-middle">
+                    <thead>
+                      <tr className="text-center">
+                        <th scope="col">Sản phẩm</th>
+                        <th scope="col">Đơn giá</th>
+                        <th scope="col">Số Lượng</th>
+                        <th scope="col">Tạm tính</th>
+                        <th scope="col"></th>
+                      </tr>
+                    </thead>
+                    {cartItems.length === 0 ? (
+                      <tbody>
+                        <tr>Chưa có sản phẩm nào</tr>
+                      </tbody>
+                    ) : (
+                      <tbody>
+                        {cartItems.map((item) => (
+                          <tr className="cart-item py-3 border-bottom">
+                            <td>
+                              <div className="d-flex">
                                 <Link
+                                  className="cart-item__image"
                                   to={`/products/${item.id}`}
                                   title={item.name}
-                                  className="link text-decoration-none text-dark"
                                 >
-                                  {item.name}
+                                  <img
+                                    src={
+                                      item.image ||
+                                      "https://via.placeholder.com/60"
+                                    } // Hiển thị placeholder nếu không có image
+                                    className="me-2 rounded"
+                                    alt={item.name}
+                                    style={{
+                                      width: "60px",
+                                      height: "60px",
+                                      objectFit: "cover",
+                                    }}
+                                  />
                                 </Link>
-                              </p>
-                              <span className="cart-item__variant text-muted fs-7">
-                                Size: {item.size || "default"}
-                              </span>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="price text-danger fw-bold">
-                          {(item.discountPrice || item.price).toLocaleString(
-                            "vi-VN"
-                          )}
-                          ₫
-                        </td>
-                        <td>
-                          <div
-                            className="input-group custom-number-input cart-item-quantity d-flex border rounded row"
-                            style={{
-                              maxWidth: "100px",
-                              height: "28px",
-                            }}
-                          >
-                            <button
-                              type="button"
-                              name="minus"
-                              className="col-3 d-flex justify-content-center align-items-center btn-outline-secondary border-0"
-                              onClick={() => handleDecrease(item.id)}
-                            >
-                              <i className="bi bi-dash"></i>
-                            </button>
+                                <div>
+                                  <p className="cart-item__name mb-0 fw-semibold small">
+                                    <Link
+                                      to={`/products/${item.id}`}
+                                      title={item.name}
+                                      className="link text-decoration-none text-dark"
+                                    >
+                                      {item.name}
+                                    </Link>
+                                  </p>
+                                  <span className="cart-item__variant text-muted fs-7">
+                                    Size: {item.size || "default"}
+                                  </span>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="price text-center">
+                              {item.discountPrice ? (
+                                <div>
+                                  <p className="m-0 text-danger fw-bold">
+                                    {item.discountPrice.toLocaleString("vi-VN")}
+                                    ₫
+                                  </p>
+                                  <p className="m-0 text-decoration-line-through">
+                                    {item.price.toLocaleString("vi-VN")}₫
+                                  </p>
+                                </div>
+                              ) : (
+                                <p className="m-0 text-danger fw-bold">
+                                  {item.price.toLocaleString("vi-VN")}₫
+                                </p>
+                              )}
+                            </td>
+                            <td className="align-middle">
+                              <div
+                                className="input-group custom-number-input cart-item-quantity d-flex border rounded row"
+                                style={{
+                                  maxWidth: "100px",
+                                }}
+                              >
+                                <button
+                                  type="button"
+                                  name="minus"
+                                  className="col-3 d-flex justify-content-center align-items-center btn-outline-secondary border-0"
+                                  onClick={() => handleDecrease(item.id)}
+                                >
+                                  <i className="bi bi-dash"></i>
+                                </button>
+                                <input
+                                  type="number"
+                                  className="form-quantity col-6 text-center no-spinner border-0"
+                                  name="Lines"
+                                  data-line-index="1"
+                                  value={item.quantity || 1}
+                                  min="1"
+                                  readOnly
+                                />
+                                <button
+                                  type="button"
+                                  name="plus"
+                                  className="col-3 d-flex justify-content-center align-items-center btn-outline-secondary border-0"
+                                  onClick={() => handleIncrease(item.id)}
+                                >
+                                  <i className="bi bi-plus"></i>
+                                </button>
+                              </div>
+                            </td>
+                            <td className="total text-danger fw-bold">
+                              {(
+                                (item.discountPrice || item.price) *
+                                item.quantity
+                              ).toLocaleString("vi-VN")}
+                              ₫
+                            </td>
+                            <td>
+                              <div className="cart-product-col d-flex justify-content-between align-items-start">
+                                <button
+                                  className="btn btn-sm px-2 rounded-circle text-muted"
+                                  onClick={() => handleRemove(item.id)}
+                                >
+                                  <i className="bi bi-x-lg"></i>
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    )}
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div className="cart-right my-4 col-4 border p-3 border-success rounded-4">
+              <div className="cart-summary">
+                <div className="cart-summary-info">
+                  <div className="cart-opener-group  divide-dashed divide-y divide-neutral-50">
+                    <div className="cart-opener-item border-bottom">
+                      <div className="bill-field  space-y-3 d-none ">
+                        <div className="flex items-center">
+                          <div className="flex items-center ">
                             <input
-                              type="number"
-                              className="form-quantity col-6 text-center no-spinner border-0"
-                              name="Lines"
-                              data-line-index="1"
-                              value={item.quantity || 1}
-                              min="1"
-                              readOnly
+                              className="invoice"
+                              type="hidden"
+                              name="attributes[Xuất hóa đơn]"
+                              value="không"
                             />
-                            <button
-                              type="button"
-                              name="plus"
-                              className="col-3 d-flex justify-content-center align-items-center btn-outline-secondary border-0"
-                              onClick={() => handleIncrease(item.id)}
-                            >
-                              <i className="bi bi-plus"></i>
-                            </button>
-                          </div>
-                        </td>
-                        <td className="price text-danger fw-bold">
-                          {(
-                            (item.discountPrice || item.price) * item.quantity
-                          ).toLocaleString("vi-VN")}
-                          ₫
-                        </td>
-                        <td>
-                          <div className="cart-product-col d-flex justify-content-between align-items-start">
-                            <button
-                              className="btn btn-sm px-2 rounded-circle text-muted"
-                              onClick={() => handleRemove(item.id)}
-                            >
-                              <i className="bi bi-x-lg"></i>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                )}
-              </table>
-              <div className="cart-bottom pt-4">
-                <div className="cart-summary">
-                  <div className="cart-summary-info">
-                    <div className="cart-opener-group  divide-dashed divide-y divide-neutral-50">
-                      <div
-                        className="cart-opener-item"
-                        style={{ display: "none" }}
-                      >
-                        <div className="bill-field  space-y-3 hidden ">
-                          <div className="flex items-center">
-                            <div className="flex items-center ">
-                              <input
-                                className="invoice"
-                                type="hidden"
-                                name="attributes[Xuất hóa đơn]"
-                                value="không"
-                              />
-                              <input
-                                className="invoice-checkbox form-checkbox"
-                                type="checkbox"
-                              />
-                            </div>
-                            <div className="ml-2 text-sm">
-                              <label>Xuất hóa đơn</label>
-                            </div>
-                          </div>
-                          <div className="form-group">
-                            <label className="label block mb-2">
-                              Tên công ty
-                            </label>
                             <input
-                              type="text"
-                              className="form-input"
-                              name="attributes[Tên công ty]"
-                              value=""
-                              data-rules="['required']"
-                              data-messages="{'required':'Trường này không được bỏ trống' }"
-                              placeholder="Tên công ty"
+                              className="invoice-checkbox form-checkbox"
+                              type="checkbox"
                             />
-                            <span className="error  text-error"></span>
                           </div>
-                          <div className="form-group">
-                            <label className="label block mb-2">
-                              Mã số thuế
-                            </label>
-                            <input
-                              type="number"
-                              className="form-input"
-                              name="attributes[Mã số thuế]"
-                              value=""
-                              data-rules="['minLength:10','required']"
-                              data-messages="{ 'minLength:10': 'Số kí tự tối thiểu [size]', 'require':'Trường này không được bỏ trống' }"
-                              placeholder="Mã số thuế"
-                            />
-                            <span className="error text-error"></span>
-                          </div>
-                          <div className="form-group">
-                            <label className="label block mb-2">
-                              Địa chỉ công ty
-                            </label>
-                            <textarea
-                              className="form-textarea"
-                              data-rules="['required']"
-                              data-messages="{'required':'Trường này không được bỏ trống' }"
-                              name="attributes[Địa chỉ công ty]"
-                              placeholder="Địa chỉ công ty"
-                            ></textarea>
-                            <span className="error  text-error"></span>
-                          </div>
-                          <div className="form-group">
-                            <label className="label block mb-2">
-                              Email nhận hóa đơn
-                            </label>
-                            <input
-                              type="email"
-                              className="form-input"
-                              name="attributes[Email nhận hóa đơn]"
-                              value=""
-                              placeholder="Email nhận hóa đơn"
-                              data-rules="['required','email']"
-                              data-messages="{'required':'Trường này không được bỏ trống', 'email': 'Email không đúng định dạng' }"
-                            />
-                            <span className="error  text-error"></span>
+                          <div className="ml-2 text-sm">
+                            <label>Xuất hóa đơn</label>
                           </div>
                         </div>
-                        <portal-opener>
-                          <div
-                            className="cart-voucer text-neutral-300 py-2 md:py-4 flex items-center justify-between w-full"
-                            data-portal="#cart-vat-drawer"
-                          >
-                            <p className="flex items-center gap-1">
-                              <i className="icon icon-receipt"></i>
-                              <span className="line-clamp-1">
-                                {" "}
-                                Xuất hóa đơn{" "}
-                              </span>
-                            </p>
-                            <button type="button" className="flex items-center">
-                              Thay đổi
-                              <i className="icon icon-carret-right ml-2  flex items-center"></i>
-                            </button>
-                          </div>
-                        </portal-opener>
+                        <div className="form-group">
+                          <label className="label block mb-2">
+                            Tên công ty
+                          </label>
+                          <input
+                            type="text"
+                            className="form-input"
+                            name="attributes[Tên công ty]"
+                            value=""
+                            data-rules="['required']"
+                            data-messages="{'required':'Trường này không được bỏ trống' }"
+                            placeholder="Tên công ty"
+                          />
+                          <span className="error  text-error"></span>
+                        </div>
+                        <div className="form-group">
+                          <label className="label block mb-2">Mã số thuế</label>
+                          <input
+                            type="number"
+                            className="form-input"
+                            name="attributes[Mã số thuế]"
+                            value=""
+                            data-rules="['minLength:10','required']"
+                            data-messages="{ 'minLength:10': 'Số kí tự tối thiểu [size]', 'require':'Trường này không được bỏ trống' }"
+                            placeholder="Mã số thuế"
+                          />
+                          <span className="error text-error"></span>
+                        </div>
+                        <div className="form-group">
+                          <label className="label block mb-2">
+                            Địa chỉ công ty
+                          </label>
+                          <textarea
+                            className="form-textarea"
+                            data-rules="['required']"
+                            data-messages="{'required':'Trường này không được bỏ trống' }"
+                            name="attributes[Địa chỉ công ty]"
+                            placeholder="Địa chỉ công ty"
+                          ></textarea>
+                          <span className="error  text-error"></span>
+                        </div>
+                        <div className="form-group">
+                          <label className="label block mb-2">
+                            Email nhận hóa đơn
+                          </label>
+                          <input
+                            type="email"
+                            className="form-input"
+                            name="attributes[Email nhận hóa đơn]"
+                            value=""
+                            placeholder="Email nhận hóa đơn"
+                            data-rules="['required','email']"
+                            data-messages="{'required':'Trường này không được bỏ trống', 'email': 'Email không đúng định dạng' }"
+                          />
+                          <span className="error  text-error"></span>
+                        </div>
                       </div>
-                      <div
-                        className="cart-opener-item"
-                        style={{ display: "none" }}
-                      >
-                        <portal-opener>
-                          <div
-                            className="cart-voucer text-neutral-300 py-2 md:py-4 flex items-center justify-between w-full"
-                            data-portal="#cart-delivery-drawer"
+                      <portal-opener>
+                        <div
+                          className="cart-voucer text-secondary py-2 d-flex align-items-center justify-content-between w-100 py-3"
+                          data-portal="#cart-vat-drawer"
+                        >
+                          <p className="d-flex align-items-center m-0 fs-6">
+                            <i className="bi bi-receipt "></i>
+                            <span className="line-clamp-1 ms-1">
+                              Xuất hóa đơn
+                            </span>
+                          </p>
+                          <button
+                            type="button"
+                            className="d-flex align-items-center border-0 bg-transparent text-secondary text-hover"
                           >
-                            <p className="flex items-center gap-1">
-                              <i className="icon icon-time"></i>
-                              <span className="line-clamp-1">
-                                Hẹn giờ nhận hàng{" "}
-                              </span>
-                            </p>
-                            <button type="button" className="flex items-center">
-                              Thay đổi
-                              <i className="icon icon-carret-right ml-2  flex items-center"></i>
-                            </button>
-                            <input
-                              type="hidden"
-                              name="attributes[Hẹn giờ nhận hàng]"
-                              value=""
-                            />
-                            <input
-                              type="hidden"
-                              name="attributes[Ngày nhận hàng]"
-                              value=""
-                            />
-                            <input
-                              type="hidden"
-                              name="attributes[Thời gian nhận hàng]"
-                              value=""
-                            />
-                          </div>
-                        </portal-opener>
-                      </div>
-                      <div
-                        className="cart-opener-item"
-                        style={{ display: "none" }}
-                      >
-                        <portal-opener>
-                          <div
-                            className="cart-voucer text-neutral-300 py-2 md:py-4 flex items-center justify-between w-full"
-                            data-portal="#cart-note-drawer"
+                            Thay đổi
+                            <i className="bi bi-caret-right ms-2  d-flex align-items-center"></i>
+                          </button>
+                        </div>
+                      </portal-opener>
+                    </div>
+                    <div className="cart-opener-item border-bottom">
+                      <portal-opener>
+                        <div
+                          className="cart-voucer text-secondary py-2 d-flex align-items-center justify-content-between w-100 py-3"
+                          data-portal="#cart-delivery-drawer"
+                        >
+                          <p className="d-flex align-items-center m-0 fs-6">
+                            <i className="bi bi-clock"></i>
+                            <span className="line-clamp-1 ms-1">
+                              Hẹn giờ nhận hàng
+                            </span>
+                          </p>
+                          <button
+                            type="button"
+                            className="d-flex align-items-center border-0 bg-transparent text-secondary text-hover"
                           >
-                            <p className="flex items-center gap-1">
-                              <i className="icon icon-stickynote"></i>
-                              <span className="line-clamp-1">
-                                {" "}
-                                Ghi chú đơn hàng{" "}
-                              </span>
-                            </p>
-                            <button type="button" className="flex items-center">
-                              Thay đổi
-                              <i className="icon icon-carret-right ml-2  flex items-center"></i>
-                            </button>
-                            <textarea
-                              className="form-textarea hidden"
-                              name="note"
-                            ></textarea>
-                          </div>
-                        </portal-opener>
-                      </div>
-                      <div
-                        className="cart-opener-item"
-                        style={{ display: "none" }}
-                      >
-                        <portal-opener>
-                          <div
-                            className="cart-voucer text-neutral-300 py-2 md:py-4 flex items-center justify-between w-full"
-                            data-portal="#coupon-drawer"
+                            Thay đổi
+                            <i className="bi bi-caret-right ms-2  d-flex align-items-center"></i>
+                          </button>
+                          <input
+                            type="hidden"
+                            name="attributes[Hẹn giờ nhận hàng]"
+                            value=""
+                          />
+                          <input
+                            type="hidden"
+                            name="attributes[Ngày nhận hàng]"
+                            value=""
+                          />
+                          <input
+                            type="hidden"
+                            name="attributes[Thời gian nhận hàng]"
+                            value=""
+                          />
+                        </div>
+                      </portal-opener>
+                    </div>
+                    <div className="cart-opener-item border-bottom">
+                      <portal-opener>
+                        <div
+                          className="cart-voucer text-secondary py-2 d-flex align-items-center justify-content-between w-100 py-3 "
+                          data-portal="#cart-note-drawer"
+                        >
+                          <p className="d-flex align-items-center m-0 fs-6">
+                            <i className="bi bi-sticky"></i>
+                            <span className="line-clamp-1 ms-1">
+                              Ghi chú đơn hàng
+                            </span>
+                          </p>
+                          <button
+                            type="button"
+                            className="d-flex align-items-center border-0 bg-transparent text-secondary text-hover"
                           >
-                            <p className="flex items-center gap-1">
-                              <i className="icon icon-ticket-discount"></i>
-                              <span className="line-clamp-1">
-                                {" "}
-                                Mã giảm giá{" "}
-                              </span>
-                            </p>
-                            <button type="button" className="flex items-center">
-                              Chọn
-                              <i className="icon icon-carret-right ml-2  flex items-center"></i>
-                            </button>
-                          </div>
-                        </portal-opener>
+                            Thay đổi
+                            <i className="bi bi-caret-right ms-2  d-flex align-items-center"></i>
+                          </button>
+                          <textarea
+                            className="form-textarea d-none"
+                            name="note"
+                          ></textarea>
+                        </div>
+                      </portal-opener>
+                    </div>
+                    <div className="cart-opener-item border-bottom">
+                      <portal-opener>
+                        <div
+                          className="cart-voucer text-secondary py-2 d-flex align-items-center justify-content-between w-100 py-3 "
+                          data-portal="#coupon-drawer"
+                        >
+                          <p className="d-flex align-items-center m-0 fs-6">
+                            <i className="bi bi-ticket-perforated"></i>
+                            <span className="line-clamp-1 ms-1">
+                              Mã giảm giá
+                            </span>
+                          </p>
+                          <button
+                            type="button"
+                            className="d-flex align-items-center border-0 bg-transparent text-secondary text-hover"
+                          >
+                            Chọn
+                            <i className="bi bi-caret-right ms-2  d-flex align-items-center"></i>
+                          </button>
+                        </div>
+                      </portal-opener>
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    <div className="cart-total py-3 d-flex align-items-start justify-content-between w-100 ">
+                      <p className="fw-semibold text-black">TỔNG CỘNG</p>
+                      <div className="d-flex flex-column align-items-end">
+                        <div className="price text-active fw-semibold">
+                          {total.toLocaleString("vi-VN")}₫
+                        </div>
+                        <div className="fs-7 text-secondary cart-vat-note">
+                          Nhập mã giảm giá ở trang thanh toán
+                        </div>
                       </div>
                     </div>
-                    <div className="border-top">
-                      <div className="cart-total py-3 d-flex align-items-start justify-content-between w-100 ">
-                        <p className="fw-semibold text-black">TỔNG CỘNG</p>
-                        <div className="d-flex flex-column align-items-end">
-                          <div className="price text-active fw-semibold">
-                            {total.toLocaleString("vi-VN")}₫
-                          </div>
-                          <span className="loading-icon gap-1 hidden items-center justify-center">
-                            <span className="w-1.5 h-1.5 bg-[currentColor] rounded-full animate-pulse"></span>
-
-                            <span className="w-1.5 h-1.5 bg-[currentColor] rounded-full animate-pulse"></span>
-
-                            <span className="w-1.5 h-1.5 bg-[currentColor] rounded-full animate-pulse"></span>
-                          </span>
-                          <div className="fs-7 text-secondary cart-vat-note">
-                            Nhập mã giảm giá ở trang thanh toán
-                          </div>
-                        </div>
-                      </div>
-                      <div className="cart-submit">
-                        <button
-                          type="submit"
-                          className="btn w-100 btn fw-semibold  bg-success text-white d-flex justify-content-center align-items-center rounded-5 py-2"
-                          onClick={handleCheckout}
-                        >
-                          THANH TOÁN
-                          <i className="bi bi-arrow-bar-right ms-1"></i>
-                        </button>
-                      </div>
+                    <div className="cart-submit d-flex justify-content-center mt-1">
+                      <button
+                        type="submit"
+                        className="btn w-75 btn fw-semibold  bg-success text-white d-flex justify-content-center align-items-center rounded-5 py-2"
+                        onClick={handleCheckout}
+                      >
+                        THANH TOÁN
+                        <i className="bi bi-arrow-bar-right ms-1"></i>
+                      </button>
                     </div>
                   </div>
                 </div>

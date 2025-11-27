@@ -1,13 +1,18 @@
 // src/admin/pages/Users.jsx
 import React, { useEffect, useState } from "react";
 
-const AdminUsers = () => {
+const AdminUsers = ({ adminController }) => {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    fetch("/api/admin/users")
-      .then((r) => r.json())
-      .then((d) => setUsers(d.users));
+    const fetchUser = async () => {
+      try {
+        const users = await adminController.getUsersAllAdmin();
+        return users;
+      } catch (error) {}
+    };
+
+    fetchUser();
   }, []);
 
   return (

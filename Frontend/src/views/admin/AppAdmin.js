@@ -16,15 +16,16 @@ const AppAdmin = () => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      // const user = await adminController.getCurrentAdmin();
-      const result = await adminController.isAuthenticatedAdmin();
-      console.log(result);
-      setIsAuthenticatedAdmin(result);
+      const isLoggedIn = localStorage.getItem("adminLoggedIn") === "true";
+      if (isLoggedIn) {
+        const user = await adminController.getCurrentAdmin();
+        setIsAuthenticatedAdmin(!!user);
+      }
       setLoading(false);
     };
 
     checkAuth();
-  }, [adminController]);
+  }, []);
 
   const onLoginAdmin = async (email, password) => {
     const result = await adminController.loginAdmin(email, password);

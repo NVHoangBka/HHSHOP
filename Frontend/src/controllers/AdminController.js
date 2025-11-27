@@ -33,17 +33,26 @@ class AdminController {
 
   async getCurrentAdmin() {
     try {
-      return await this.authService.getCurrentAdmin();
+      return await this.adminService.getCurrentAdmin();
     } catch (error) {
       return null;
     }
   }
 
+  async getUsersAllAdmin() {
+    try {
+      const result = await this.adminService.getUsersAllAdmin();
+      return result;
+    } catch (error) {
+      return { success: false, message: "Lấy người dùng thất bại" };
+    }
+  }
+
   // =============   ORDERS  ==================
 
-  async getAllOrders() {
+  async getOrdersAllAdmin() {
     try {
-      const result = await this.adminService.getAllOrders();
+      const result = await this.adminService.getOrdersAllAdmin();
       return result;
     } catch (error) {
       return { success: false, message: "Lấy đơn hàng thất bại" };

@@ -16,6 +16,12 @@ const generateQR = async (req, res) => {
       return res.status(400).json({ message: "Đơn hàng đã thanh toán" });
     }
 
+    if (order.paymentMethod !== "BANK") {
+      return res
+        .status(400)
+        .json({ message: "Đơn hàng không dùng chuyển khoản" });
+    }
+
     // Kiểm tra đã tạo QR chưa
     let paymentQR = await PaymentQR.findOne({ orderId: order._id });
     if (paymentQR) {
@@ -27,15 +33,18 @@ const generateQR = async (req, res) => {
       });
     }
 
-    // Thông tin tài khoản MB Bank
-    const bankAccount = "0385427179";
-    const accountName = "NGUYEN%20VAN%20HOANG";
+    // === THÔNG TIN NGÂN HÀNG (có thể đưa ra config sau) ===
+    const BANK_ACCOUNT = "0385427179";
+    const ACCOUNT_NAME = "NGUYEN VAN HOANG";
+    const BANK_NAME = "MB BANK";
 
     // Tạo QR mới
     const content = `Thanh toan don ${order.orderId}`;
-    const qrUrl = `https://img.vietqr.io/image/mb-${bankAccount}-compact2.jpg?amount=${
-      order.total
-    }&addInfo=${encodeURIComponent(content)}&accountName=${accountName}`;
+    const totalAmount = order.totalAmount;
+
+    const qrUrl = `https://img.vietqr.io/image/mb-${BANK_ACCOUNT}-compact2.jpg?amount=${totalAmount}&addInfo=${encodeURIComponent(
+      content
+    )}&accountName=${encodeURIComponent(ACCOUNT_NAME)}`;
 
     const response = await axios.get(qrUrl, { responseType: "arraybuffer" });
     const qrBase64 = `data:image/png;base64,${Buffer.from(
@@ -46,16 +55,18 @@ const generateQR = async (req, res) => {
     paymentQR = new PaymentQR({
       orderId: order._id,
       orderCode: order.orderId,
-      amount: order.total,
+      totalAmount,
       qrImageUrl: qrUrl,
       qrBase64,
       bankInfo: {
-        bank: "MB BANK",
-        accountNumber: "0385427179",
-        accountName: "NGUYEN VAN HOANG",
+        bin: "970422",
+        bankName: BANK_NAME,
+        accountNumber: BANK_ACCOUNT,
+        accountName: ACCOUNT_NAME,
         content,
       },
       expiredAt: new Date(Date.now() + 15 * 60 * 1000), // hết hạn sau 15 phút
+      status: "pending",
     });
 
     await paymentQR.save();
@@ -63,6 +74,7 @@ const generateQR = async (req, res) => {
     // Cập nhật đơn hàng có QR
     order.paymentQR = paymentQR._id;
     order.paymentMethod = "BANK";
+    order.paymentStatus = "pending";
     await order.save();
 
     res.json({

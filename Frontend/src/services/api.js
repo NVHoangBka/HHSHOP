@@ -6,19 +6,20 @@ const api = axios.create({
 
 // INTERCEPTOR THÔNG MINH – TỰ ĐỘNG CHỌN TOKEN ĐÚNG!
 api.interceptors.request.use((config) => {
-  // ƯU TIÊN 1: Admin đang đăng nhập → dùng adminToken
-  const adminToken = localStorage.getItem("adminToken");
-  if (adminToken) {
-    config.headers.Authorization = `Bearer ${adminToken}`;
-    return config;
+  // ƯU TIÊN CAO NHẤT: Nếu đang ở trang /admin → dùng admin token
+  if (window.location.pathname.startsWith("/admin")) {
+    const adminToken = localStorage.getItem("adminAccessToken");
+    if (adminToken) {
+      config.headers.Authorization = `Bearer ${adminToken}`;
+      return config;
+    }
   }
 
-  // ƯU TIÊN 2: Client đang đăng nhập → dùng accessToken
-  const clientToken = localStorage.getItem("accessToken");
-  if (clientToken) {
-    config.headers.Authorization = `Bearer ${clientToken}`;
+  // Nếu không phải admin → dùng token user bình thường
+  const userToken = localStorage.getItem("accessToken");
+  if (userToken) {
+    config.headers.Authorization = `Bearer ${userToken}`;
   }
-
   return config;
 });
 

@@ -7,6 +7,7 @@ const CartRouter = ({
   cartItems,
   removeFromCart,
   cartController,
+  onCartChange,
 }) => {
   return (
     <Routes>
@@ -17,6 +18,7 @@ const CartRouter = ({
             cartItems={cartItems}
             removeFromCart={removeFromCart}
             cartController={cartController}
+            onCartChange={onCartChange}
           />
         }
       />

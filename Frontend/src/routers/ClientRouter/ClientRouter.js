@@ -1,10 +1,12 @@
 import { Routes, Route } from "react-router-dom";
-// =====Router=====
+
+// ===== Router Modules =====
 import AuthRouter from "./AuthRouter";
 import ProductRouter from "./ProductRouter";
 import CartRouter from "./CartRouter";
 import OrderRouter from "./OrderRouter";
 
+// ===== Pages =====
 import Home from "../../views/client/pages/HomePage/Home";
 
 const ClientRouter = (props) => (

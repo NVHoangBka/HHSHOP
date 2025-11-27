@@ -71,11 +71,7 @@ const ProductDetail = ({ addToCart, productController }) => {
     if (!product) return;
 
     const buyNowItem = {
-      _id: product._id,
-      name: product.name,
-      price: product.price,
-      discountPrice: product.discountPrice,
-      image: product.image,
+      ...product,
       quantity,
       selectedVariant: selectedVariant ? { ...selectedVariant } : null,
       displayName: selectedVariant
@@ -86,12 +82,11 @@ const ProductDetail = ({ addToCart, productController }) => {
         : product.discountPrice || product.price,
       cartImage: mainImage,
     };
-
-    // TRUYỀN TRỰC TIẾP QUA STATE → KHÔNG CẦN GIỎ HÀNG
+    // TRUYỀN RIÊNG DANH SÁCH CHỈ CÓ 1 MÓN NÀY → CHECKOUT SẼ ƯU TIÊN HIỂN THỊ
     navigate("/checkout", {
       state: {
-        buyNowItem: buyNowItem,
-        isBuyNow: true,
+        checkoutItems: [buyNowItem], // ← Quan trọng: chỉ có món này
+        isQuickBuy: true, // ← Dấu hiệu để Checkout biết đang "Mua ngay"
       },
     });
   };
@@ -267,13 +262,23 @@ const ProductDetail = ({ addToCart, productController }) => {
                         <span class="fs-7 me-1">Thương hiệu:</span>
 
                         <span className="fs-7 fw-semibold text-black">
-                          {product.brands?.join(", ") || "Minimart"}
+                          {Array.isArray(product.brands)
+                            ? product.brands.join(", ")
+                            : product.brands || "Minimart"}
                         </span>
                       </div>
                       <div class="status status-sku  col-4">
                         <span class="fs-7">Mã sản phẩm:</span>
-                        <span class="fs-7">{product.id.slice(-8)}</span>
+                        <span class="fs-7">
+                          {product._id?.slice(-8).toUpperCase() || "N/A"}
+                        </span>
                       </div>
+                      {product.stock !== undefined && product.stock < 10 && (
+                        <div class="text-danger fs-7">
+                          <i class="bi bi-exclamation-triangle"></i> Chỉ còn{" "}
+                          {product.stock} sản phẩm!
+                        </div>
+                      )}
                     </div>
 
                     {/* Giá */}
@@ -394,77 +399,83 @@ const ProductDetail = ({ addToCart, productController }) => {
 
                 {/* Số lượng + CTA */}
                 <div class="product-cta mb-0 mt-4 ">
-                  <div class="d-none btn fw-semibold mt-2 btn w-100">
-                    HẾT HÀNG
-                  </div>
-                  <input type="hidden" name="variantId" value="118468360" />
-
-                  <div class="d-flex align-items-center mb-4 ">
-                    <div class="col-2"> Số lượng </div>
-                    <quantity-input>
-                      <div class="custom-number-input product-quantity">
-                        <div class="d-flex border rounded-1 w-50">
-                          <button
-                            type="button"
-                            name="minus"
-                            class="cursor-pointer p-2 bg-transparent border-0 text-hover"
-                            onClick={() =>
-                              setQuantity(Math.max(1, quantity - 1))
-                            }
-                          >
-                            <i class="m-auto bi bi-dash"></i>
-                          </button>
-                          <input
-                            type="text"
-                            class="form-quantity w-100 fw-semibold d-flex align-items-center bg-transparent border-0 text-center"
-                            name="quantity"
-                            value={quantity}
-                            min="1"
-                          />
-                          <button
-                            type="button"
-                            name="plus"
-                            class="cursor-pointer p-2 bg-transparent border-0 text-hover"
-                            onClick={() => setQuantity(quantity + 1)}
-                          >
-                            <i class="m-auto bi bi-plus"></i>
-                          </button>
-                        </div>
+                  {product.stock === 0 ? (
+                    <div>
+                      <div class="d-none btn fw-semibold mt-2 btn w-100">
+                        HẾT HÀNG
                       </div>
-                    </quantity-input>
-                  </div>
+                      <input type="hidden" name="variantId" value="118468360" />
+                    </div>
+                  ) : (
+                    <div>
+                      <div class="d-flex align-items-center mb-4 ">
+                        <div class="col-2"> Số lượng </div>
+                        <quantity-input>
+                          <div class="custom-number-input product-quantity">
+                            <div class="d-flex border rounded-1 w-50">
+                              <button
+                                type="button"
+                                name="minus"
+                                class="cursor-pointer p-2 bg-transparent border-0 text-hover"
+                                onClick={() =>
+                                  setQuantity(Math.max(1, quantity - 1))
+                                }
+                              >
+                                <i class="m-auto bi bi-dash"></i>
+                              </button>
+                              <input
+                                type="text"
+                                class="form-quantity w-100 fw-semibold d-flex align-items-center bg-transparent border-0 text-center"
+                                name="quantity"
+                                value={quantity}
+                                min="1"
+                              />
+                              <button
+                                type="button"
+                                name="plus"
+                                class="cursor-pointer p-2 bg-transparent border-0 text-hover"
+                                onClick={() => setQuantity(quantity + 1)}
+                              >
+                                <i class="m-auto bi bi-plus"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </quantity-input>
+                      </div>
 
-                  <div class="d-flex mt-4 border-top pt-4">
-                    <button
-                      onClick={handleBuyNow}
-                      name="buynow"
-                      class=" fw-semibold btn border border-danger btn-buynow w-100 py-2 text-danger col mx-2 rounded-5"
-                    >
-                      <span> Mua ngay </span>
-                      <span class="loading-icon hidden align-items-center justify-content-center">
-                        <span class="rounded-full animate-pulse"></span>
+                      <div class="d-flex mt-4 border-top pt-4">
+                        <button
+                          onClick={handleBuyNow}
+                          name="buynow"
+                          class=" fw-semibold btn border border-danger btn-buynow w-100 py-2 text-danger col mx-2 rounded-5"
+                        >
+                          <span> Mua ngay </span>
+                          <span class="loading-icon hidden align-items-center justify-content-center">
+                            <span class="rounded-full animate-pulse"></span>
 
-                        <span class="rounded-full animate-pulse"></span>
+                            <span class="rounded-full animate-pulse"></span>
 
-                        <span class="rounded-full animate-pulse"></span>
-                      </span>
-                    </button>
+                            <span class="rounded-full animate-pulse"></span>
+                          </span>
+                        </button>
 
-                    <button
-                      name="addtocart"
-                      class=" fw-semibold btn btn-add-to-cart w-100 bg-danger text-white py-2 col mx-2 rounded-5"
-                      onClick={handleAddToCart}
-                    >
-                      <span> Thêm vào giỏ</span>
-                      <span class="loading-icon  hidden align-items-center justify-content-center">
-                        <span class="rounded-full animate-pulse"></span>
+                        <button
+                          name="addtocart"
+                          class=" fw-semibold btn btn-add-to-cart w-100 bg-danger text-white py-2 col mx-2 rounded-5"
+                          onClick={handleAddToCart}
+                        >
+                          <span> Thêm vào giỏ</span>
+                          <span class="loading-icon  hidden align-items-center justify-content-center">
+                            <span class="rounded-full animate-pulse"></span>
 
-                        <span class="rounded-full animate-pulse"></span>
+                            <span class="rounded-full animate-pulse"></span>
 
-                        <span class="rounded-full animate-pulse"></span>
-                      </span>
-                    </button>
-                  </div>
+                            <span class="rounded-full animate-pulse"></span>
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div class="card-product__badges d-none space-y-2 col-span-full mt-4 "></div>

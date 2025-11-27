@@ -41,7 +41,7 @@ const orderSchema = new mongoose.Schema(
     items: [orderItemSchema],
 
     // === TỔNG TIỀN ===
-    subtotal: { type: Number, required: true, min: 0 }, // tiền hàng
+    subTotal: { type: Number, required: true, min: 0 }, // tiền hàng
     shippingFee: { type: Number, default: 0 },
     voucherCode: String,
     voucherDiscount: { type: Number, default: 0 },
@@ -58,7 +58,12 @@ const orderSchema = new mongoose.Schema(
     },
     paymentStatus: {
       type: String,
-      enum: ["pending", "paid", "failed", "refunded"],
+      enum: [
+        "pending", //đang chờ thanh toán
+        "paid", // đã thanh toán
+        "failed", // thanh toán thất bại
+        "refunded", // đã hoàn tiền
+      ],
       default: "pending",
     },
     paidAt: Date,

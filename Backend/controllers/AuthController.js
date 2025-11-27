@@ -37,17 +37,9 @@ class AuthController {
         });
       }
 
-      // BƯỚC 4: Tạo refreshToken TRƯỚC
-      const refreshToken = jwt.sign(
-        { email: email.toLowerCase() },
-        process.env.JWT_REFRESH_SECRET,
-        { expiresIn: "7d" }
-      );
-
       // BƯỚC 5: Hash password + refreshToken
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
-      const hashedRefreshToken = await bcrypt.hash(refreshToken, salt);
 
       // BƯỚC 6: Tạo user – ĐẢM BẢO CÓ await!!!
       const newUser = await User.create({
@@ -57,8 +49,19 @@ class AuthController {
         lastName,
         phoneNumber,
         address,
-        refreshToken: hashedRefreshToken,
       });
+      // Tạo token SAU KHI user tồn tại
+      const refreshToken = jwt.sign(
+        { id: newUser._id },
+        process.env.JWT_REFRESH_SECRET,
+        { expiresIn: "7d" }
+      );
+      const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+
+      await User.updateOne(
+        { _id: newUser._id },
+        { refreshToken: hashedRefreshToken }
+      );
 
       // BƯỚC 7: Tạo accessToken DỰA TRÊN _id THẬT
       const accessToken = jwt.sign(
@@ -332,17 +335,6 @@ class AuthController {
       res.json({ success: true, message: "Đăng xuất thành công" });
     } catch (error) {
       console.error("Logout error:", error.message, error.stack);
-      res.status(500).json({ success: false, message: "Lỗi hệ thống" });
-    }
-  }
-
-  // === LẤY TẤT CẢ USER (ADMIN) ===
-  static async getUsers(req, res) {
-    try {
-      const users = await User.find({}, { password: 0, refreshToken: 0 });
-      res.json({ success: true, users });
-    } catch (error) {
-      console.error("Get users error:", error.message, error.stack);
       res.status(500).json({ success: false, message: "Lỗi hệ thống" });
     }
   }

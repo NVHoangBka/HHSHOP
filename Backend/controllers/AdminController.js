@@ -1,311 +1,160 @@
-// backend/controllers/AdminController.js
+// backend/controllers/AdminAuthController.js  (MỚI)
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const Order = require("../models/Order");
-const Product = require("../models/Product"); // <-- ĐÚNG TÊN MODEL
 
-// Blacklist token (tạm dùng Set, sau này thay bằng Redis)
-const tokenBlacklist = new Set();
-
-class AdminController {
-  // ====================== AUTH ======================
+class AdminAuthController {
   static async login(req, res) {
     try {
       const { email, password } = req.body;
+      if (!email || !password) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Thiếu thông tin" });
+      }
 
       const admin = await User.findOne({ email, role: "admin" }).select(
         "+password"
       );
-      if (!admin || !(await admin.comparePassword(password))) {
-        return res.status(401).json({
-          success: false,
-          message: "Email hoặc mật khẩu không đúng",
-        });
+      if (!admin || !(await bcrypt.compare(password, admin.password))) {
+        return res
+          .status(401)
+          .json({ success: false, message: "Sai email hoặc mật khẩu" });
       }
 
+      // DÙNG SECRET RIÊNG CHO ADMIN (QUAN TRỌNG NHẤT!)
       const accessToken = jwt.sign(
-        { id: admin._id, role: admin.role },
-        process.env.JWT_SECRET,
+        { id: admin._id, role: "admin" },
+        process.env.ADMIN_JWT_SECRET, // <-- SECRET RIÊNG!
         { expiresIn: "15m" }
       );
 
       const refreshToken = jwt.sign(
         { id: admin._id },
-        process.env.JWT_REFRESH_SECRET,
+        process.env.ADMIN_JWT_REFRESH_SECRET, // <-- REFRESH RIÊNG!
         { expiresIn: "7d" }
       );
 
-      admin.refreshToken = refreshToken;
-      await admin.save({ validateBeforeSave: false });
+      admin.refreshToken = await bcrypt.hash(refreshToken, 10);
+      await admin.save();
+
+      // Cookie riêng cho admin
+      res.cookie("admin_rt", refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        path: "/api/admin", // chỉ dùng cho admin
+      });
 
       res.json({
         success: true,
-        message: "Đăng nhập thành công!",
+        message: "Admin đăng nhập thành công",
         accessToken,
-        refreshToken,
         user: {
           id: admin._id,
           email: admin.email,
-          firstName: admin.firstName,
-          lastName: admin.lastName,
-          phoneNumber: admin.phoneNumber,
-          role: admin.role,
           fullName: admin.fullName,
+          role: "admin",
         },
       });
     } catch (error) {
-      console.error("Admin login error:", error);
-      res.status(500).json({ success: false, message: "Lỗi hệ thống" });
-    }
-  }
-
-  static async logout(req, res) {
-    try {
-      addToBlacklist(req.token);
-
-      // Xóa refresh token trong DB
-      if (req.user) {
-        await User.updateOne(
-          { _id: req.user.id },
-          { $unset: { refreshToken: 1 } }
-        );
-      }
-
-      res.json({ success: true, message: "Đăng xuất thành công!" });
-    } catch (error) {
+      console.error(error);
       res.status(500).json({ success: false, message: "Lỗi hệ thống" });
     }
   }
 
   static async refreshToken(req, res) {
-    try {
-      const { token } = req.body;
-      if (!token)
-        return res
-          .status(401)
-          .json({ success: false, message: "Không có refresh token" });
+    const token = req.cookies.admin_rt;
+    if (!token)
+      return res
+        .status(401)
+        .json({ success: false, message: "Chưa đăng nhập admin" });
 
-      const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
-      const admin = await User.findOne({
-        _id: decoded.id,
-        refreshToken: token,
-      });
-      if (!admin)
-        return res
-          .status(401)
-          .json({ success: false, message: "Token không hợp lệ" });
+    try {
+      const decoded = jwt.verify(token, process.env.ADMIN_JWT_REFRESH_SECRET);
+      const admin = await User.findById(decoded.id);
+      if (!admin || !(await bcrypt.compare(token, admin.refreshToken))) {
+        return res.status(401).json({ success: false });
+      }
 
       const newAccessToken = jwt.sign(
-        { id: admin._id, role: admin.role },
-        process.env.JWT_SECRET,
+        { id: admin._id, role: "admin" },
+        process.env.ADMIN_JWT_SECRET,
         { expiresIn: "15m" }
       );
 
       res.json({ success: true, accessToken: newAccessToken });
     } catch (error) {
-      res.status(401).json({ success: false, message: "Token hết hạn" });
+      res.status(401).json({ success: false });
     }
   }
 
-  static async me(req, res) {
+  static async logout(req, res) {
+    res.clearCookie("admin_rt", { path: "/api/admin" });
+    if (req.user) {
+      await User.updateOne(
+        { _id: req.user.id },
+        { $unset: { refreshToken: 1 } }
+      );
+    }
+    res.json({ success: true, message: "Admin đăng xuất thành công" });
+  }
+
+  // === LẤY USER HIỆN TẠI ===
+  static async getCurrentAdmin(req, res) {
     try {
-      const admin = await User.findById(req.user.id).select(
+      // req.user được gán bởi middleware `auth`
+      const userId = req.user.id;
+      const user = await User.findById(userId).select(
         "-password -refreshToken"
       );
-      res.json({ success: true, user: admin });
-    } catch (error) {
-      res.status(500).json({ success: false, message: "Lỗi hệ thống" });
-    }
-  }
 
-  static async getAllDashBoardStats(req, res) {
-    try {
-    } catch (error) {}
-  }
-
-  // ====================== USER MANAGEMENT ======================
-  static async getUsers(req, res) {
-    try {
-      const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 10;
-
-      const users = await User.find({ role: { $ne: "admin" } })
-        .select("-password -refreshToken")
-        .skip((page - 1) * limit)
-        .limit(limit)
-        .sort({ createdAt: -1 });
-
-      const total = await User.countDocuments({ role: { $ne: "admin" } });
+      if (!user) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Không tìm thấy người dùng" });
+      }
 
       res.json({
         success: true,
-        users,
-        pagination: {
-          page,
-          limit,
-          total,
-          totalPages: Math.ceil(total / limit),
+        user: {
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          phoneNumber: user.phoneNumber,
+          address: user.address,
         },
       });
     } catch (error) {
+      console.error("Get current user error:", error);
       res.status(500).json({ success: false, message: "Lỗi hệ thống" });
     }
   }
 
-  // ====================== ORDER MANAGEMENT ======================
-  static async getAllOrders(req, res) {
+  // === LẤY TẤT CẢ USER (ADMIN) ===
+  static async getUsersAllAdmin(req, res) {
     try {
-      const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 10;
-      const status = req.query.status;
-
-      const filter = status ? { status } : {};
-      const orders = await Order.find(filter)
-        .populate("userId", "email fullName phoneNumber")
-        .sort({ createdAt: -1 })
-        .skip((page - 1) * limit)
-        .limit(limit);
-
-      const total = await Order.countDocuments(filter);
-
-      res.json({
-        success: true,
-        orders,
-        pagination: {
-          page,
-          limit,
-          total,
-          totalPages: Math.ceil(total / limit),
-        },
-      });
+      const users = await User.find({}, { password: 0, refreshToken: 0 });
+      res.json({ success: true, users });
     } catch (error) {
+      console.error("Get users error:", error.message, error.stack);
       res.status(500).json({ success: false, message: "Lỗi hệ thống" });
     }
   }
+  // === LẤY TẤT CẢ Order (ADMIN) ===
+  // static async getOrdersAllAdmin(req, res) {
+  //   try {
+  //     const orders = await Order.find({})
+  //       .populate("items.productId", "name image price discountPrice")
+  //       .sort({ createdAt: -1 });
 
-  static async updateOrderStatus(req, res) {
-    try {
-      const { status } = req.body;
-      const validStatus = [
-        "confirmed",
-        "preparing",
-        "shipped",
-        "delivered",
-        "canceled",
-        "returned",
-      ];
-      if (!validStatus.includes(status)) {
-        return res
-          .status(400)
-          .json({ success: false, message: "Trạng thái không hợp lệ" });
-      }
-
-      const order = await Order.findByIdAndUpdate(
-        req.params.id,
-        { status, [`${status}At`]: new Date() },
-        { new: true }
-      );
-
-      if (!order)
-        return res
-          .status(404)
-          .json({ success: false, message: "Không tìm thấy đơn hàng" });
-
-      res.json({
-        success: true,
-        message: "Cập nhật trạng thái thành công",
-        order,
-      });
-    } catch (error) {
-      res.status(500).json({ success: false, message: "Lỗi hệ thống" });
-    }
-  }
-
-  // ====================== PRODUCT MANAGEMENT ======================
-  static async getProducts(req, res) {
-    try {
-      const products = await Product.find().sort({ createdAt: -1 });
-      res.json({ success: true, products });
-    } catch (error) {
-      res.status(500).json({ success: false, message: "Lỗi hệ thống" });
-    }
-  }
-
-  static async getProductById(req, res) {
-    try {
-      const product = await Product.findById(req.params.id);
-      if (!product)
-        return res
-          .status(404)
-          .json({ success: false, message: "Không tìm thấy sản phẩm" });
-      res.json({ success: true, product });
-    } catch (error) {
-      res.status(500).json({ success: false, message: "Lỗi hệ thống" });
-    }
-  }
-
-  static async createProduct(req, res) {
-    try {
-      const thumbnail =
-        req.files?.thumbnail?.[0]?.secure_url ||
-        req.files?.thumbnail?.[0]?.path;
-      const gallery =
-        req.files?.gallery?.map((f) => f.secure_url || f.path) || [];
-
-      const product = await Product.create({
-        ...req.body,
-        thumbnail,
-        gallery,
-      });
-
-      res
-        .status(201)
-        .json({ success: true, message: "Tạo sản phẩm thành công", product });
-    } catch (error) {
-      console.error("Create product error:", error);
-      res.status(500).json({ success: false, message: "Lỗi hệ thống" });
-    }
-  }
-
-  static async updateProduct(req, res) {
-    try {
-      const updates = { ...req.body };
-      if (req.files?.thumbnail?.[0]) {
-        updates.thumbnail =
-          req.files.thumbnail[0].secure_url || req.files.thumbnail[0].path;
-      }
-      if (req.files?.gallery) {
-        updates.gallery = req.files.gallery.map((f) => f.secure_url || f.path);
-      }
-
-      const product = await Product.findByIdAndUpdate(req.params.id, updates, {
-        new: true,
-      });
-      if (!product)
-        return res
-          .status(404)
-          .json({ success: false, message: "Không tìm thấy sản phẩm" });
-
-      res.json({ success: true, message: "Cập nhật thành công", product });
-    } catch (error) {
-      res.status(500).json({ success: false, message: "Lỗi hệ thống" });
-    }
-  }
-
-  static async deleteProduct(req, res) {
-    try {
-      const product = await Product.findByIdAndDelete(req.params.id);
-      if (!product)
-        return res
-          .status(404)
-          .json({ success: false, message: "Không tìm thấy sản phẩm" });
-
-      res.json({ success: true, message: "Xóa sản phẩm thành công" });
-    } catch (error) {
-      res.status(500).json({ success: false, message: "Lỗi hệ thống" });
-    }
-  }
+  //     res.json({ success: true, orders });
+  //   } catch (error) {
+  //     res.status(500).json({ success: false, message: error.message });
+  //   }
+  // }
 }
 
-module.exports = AdminController;
+module.exports = AdminAuthController;
