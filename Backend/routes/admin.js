@@ -21,14 +21,13 @@ router.get("/users", AdminController.getUsersAllAdmin);
 // router.get("/stats", AdminController.getAllDashBoardStats);
 
 // // // Quản lý đơn hàng
-// router.get("/orders", AdminController.getOrdersAllAdmin);
+router.get("/orders", AdminController.getOrdersAllAdmin);
 // router.patch("/orders/:id/status", AdminController.updateOrderStatus);
 
 // // Quản lý sản phẩm
-// router.get("/products", AdminController.getProducts);
-// router.get("/products/:id", AdminController.getProductById);
-// router.post("/products", AdminController.createProduct);
-// router.put("/products/:id", AdminController.updateProduct);
-// router.delete("/products/:id", AdminController.deleteProduct);
+router.get("/products", AdminController.getProductsAllAdmin);
+router.post("/products", AdminController.createProductAdmin);
+router.put("/products/:id", AdminController.updateProductAdmin);
+router.delete("/products/:id", AdminController.deleteProductAdmin);
 
 module.exports = router;

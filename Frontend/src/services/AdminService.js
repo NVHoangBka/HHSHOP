@@ -19,12 +19,7 @@ class AdminService {
       return { success: true, user, accessToken };
     } catch (error) {
       console.error("Login error:", error);
-      return {
-        success: false,
-        message:
-          error.response?.data?.message || "Lỗi hệ thống, vui lòng thử lại.",
-        status: error.response?.status || 500,
-      };
+      return this.handleError(error);
     }
   }
 
@@ -82,30 +77,22 @@ class AdminService {
   async getUsersAllAdmin() {
     try {
       const res = await api.get("/admin/users");
-
-      return { success: true, res };
+      const users = res.data.users;
+      return { success: true, users };
     } catch (error) {
       console.error("Login error:", error);
-      return {
-        success: false,
-        message: error.res?.data?.message || "Lỗi hệ thống, vui lòng thử lại.",
-        status: error.res?.status || 500,
-      };
+      return this.handleError(error);
     }
   }
 
   async getOrdersAllAdmin() {
     try {
       const res = await api.get("/admin/orders");
-
-      return { success: true, res };
+      const orders = res.data.orders;
+      return { success: true, orders };
     } catch (error) {
       console.error("Login error:", error);
-      return {
-        success: false,
-        message: error.res?.data?.message || "Lỗi hệ thống, vui lòng thử lại.",
-        status: error.res?.status || 500,
-      };
+      return this.handleError(error);
     }
   }
 
@@ -123,6 +110,61 @@ class AdminService {
   //     };
   //   }
   // }
+
+  async getProductsAllAdmin() {
+    try {
+      const res = await api.get("/admin/products");
+      const products = res.data.products;
+      return { success: true, products };
+    } catch (error) {
+      console.error("Login error:", error);
+      return this.handleError(error);
+    }
+  }
+
+  async createProductAdmin(productData) {
+    try {
+      const res = await api.post("/admin/products", productData);
+      const products = res.data.products;
+      return { success: true, products };
+    } catch (error) {
+      console.error("Login error:", error);
+      return this.handleError(error);
+    }
+  }
+
+  async updateProductAdmin(productId, productData) {
+    try {
+      const res = await api.put(`/admin/products/${productId}`, productData);
+      const products = res.data.products;
+      return { success: true, products };
+    } catch (error) {
+      return this.handleError(error);
+    }
+  }
+
+  // XÓA SẢN PHẨM
+  async deleteProductAdmin(productId) {
+    try {
+      const res = await api.delete(`/admin/products/${productId}`);
+      return { success: true, message: res.data.message };
+    } catch (error) {
+      return this.handleError(error);
+    }
+  }
+
+  // === XỬ LÝ LỖI CHUNG ===
+  handleError(error) {
+    const message = error.response?.data?.message || "Lỗi hệ thống";
+    const status = error.response?.status;
+
+    if (status === 401) {
+      this.logoutAdmin();
+      window.location.href = "/admin/login";
+    }
+
+    return { success: false, message, status };
+  }
 }
 
 export default AdminService;

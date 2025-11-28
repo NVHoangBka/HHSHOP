@@ -36,13 +36,22 @@ const AdminRouter = ({
           {/* Trang mặc định khi vào /admin */}
           <Route index element={<Navigate to="/admin/dashboard" replace />} />
 
-          <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="products/*" element={<AdminProducts />} />
+          <Route
+            path="dashboard"
+            element={<AdminDashboard adminController={adminController} />}
+          />
+          <Route
+            path="products/*"
+            element={<AdminProducts adminController={adminController} />}
+          />
           <Route
             path="orders/*"
             element={<AdminOrders adminController={adminController} />}
           />
-          <Route path="users/*" element={<AdminUsers />} />
+          <Route
+            path="users/*"
+            element={<AdminUsers adminController={adminController} />}
+          />
           <Route path="setting" element={<AdminSetting />} />
 
           {/* Nếu cần thêm nested route cho products */}

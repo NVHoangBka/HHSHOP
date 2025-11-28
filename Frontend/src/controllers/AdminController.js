@@ -67,6 +67,16 @@ class AdminController {
       return { success: false, message: "Lấy đơn hàng thất bại" };
     }
   }
+
+  // =============   PRODUCTS  ==================
+  async getProductsAllAdmin() {
+    try {
+      const result = await this.adminService.getProductsAllAdmin();
+      return result;
+    } catch (error) {
+      return { success: false, message: "Lấy đơn hàng thất bại" };
+    }
+  }
 }
 
 export default AdminController;

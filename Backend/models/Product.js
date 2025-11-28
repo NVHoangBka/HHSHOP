@@ -1,27 +1,42 @@
-// backend/models/Product.js (ĐÃ ĐƯỢC NÂNG CẤP HOÀN CHỈNH)
-
+// backend/models/Product.js → PHIÊN BẢN CUỐI CÙNG – ĐỈNH CAO THẬT SỰ
 const mongoose = require("mongoose");
 
 const variantSchema = new mongoose.Schema(
   {
-    value: { type: String, required: true },
+    value: { type: String, required: true, trim: true }, // vd: "Đỏ", "128GB", "Size L"
     price: { type: Number, required: true },
     discountPrice: { type: Number },
-    image: { type: String },
+    image: { type: String }, // ảnh riêng cho từng phân loại
     stock: { type: Number, default: 0 },
-    sku: { type: String },
+    sku: { type: String, unique: true, sparse: true }, // mã riêng
+    sold: { type: Number, default: 0 }, // bán riêng từng loại
   },
-  { _id: false }
+  { _id: false, timestamps: true }
 );
 
 const highlightSectionSchema = new mongoose.Schema(
   {
-    title: { type: String, required: true }, // vd: "Đặc điểm nổi bật", "Thành phần", "Hướng dẫn sử dụng"
-    content: { type: String, required: true }, // HTML content
-    icon: { type: String, default: "bi bi-star-fill" }, // Bootstrap icon
-    order: { type: Number, default: 0 }, // để sắp xếp
+    title: { type: String, required: true },
+    content: { type: String, required: true }, // hỗ trợ HTML
+    icon: { type: String, default: "bi bi-star-fill" },
+    order: { type: Number, default: 0 },
   },
   { _id: false }
+);
+
+const reviewSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    rating: { type: Number, required: true, min: 1, max: 5 },
+    comment: { type: String },
+    images: [{ type: String }],
+    helpful: { type: Number, default: 0 },
+  },
+  { timestamps: true }
 );
 
 const productSchema = new mongoose.Schema(
@@ -29,58 +44,96 @@ const productSchema = new mongoose.Schema(
     name: { type: String, required: true, trim: true },
     slug: { type: String, unique: true, sparse: true },
 
-    price: { type: Number, required: true },
+    // Giá cơ bản (nếu không có variants)
+    price: { type: Number },
     discountPrice: { type: Number },
 
-    image: { type: String, required: true },
+    // Ảnh chính + gallery
+    image: { type: String },
     gallery: [{ type: String }],
 
+    // Phân loại mạnh mẽ
     variants: [variantSchema],
 
-    description: { type: String },
-    shortDescription: { type: String },
+    // Nội dung chi tiết
+    shortDescription: { type: String, maxlength: 500 },
+    description: { type: String }, // HTML content
+    highlightContent: { type: String }, // fallback cũ
+    highlightSections: [highlightSectionSchema], // MỚI – SIÊU ĐẸP
 
-    // ĐÂY LÀ PHẦN MỚI – SIÊU MẠNH MẼ!
-    highlightContent: {
-      type: String,
-      default: "",
-    },
-    // Hoặc dùng dạng section linh hoạt hơn (khuyên dùng cho admin đẹp)
-    highlightSections: [highlightSectionSchema],
+    // Phân loại tìm kiếm
+    category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
+    types: [{ type: String }], // vd: ["hot", "new", "sale"]
+    tags: [{ type: String, index: true }],
+    brand: { type: String, index: true },
+    colors: [{ type: String }],
+    sizes: [{ type: String }],
 
-    // Phân loại
-    types: { type: [String], default: [] },
-    tag: { type: [String], default: [] },
-    brands: { type: [String], default: [] },
-    colors: { type: [String], default: [] },
-    titles: { type: [String], default: [] },
-    subTitles: { type: [String], default: [] },
+    // Đánh giá & tương tác
+    reviews: [reviewSchema],
+    ratingAverage: { type: Number, default: 0, min: 0, max: 5 },
+    reviewCount: { type: Number, default: 0 },
 
     // Trạng thái & số liệu
-    isActive: { type: Boolean, default: true },
-    inStock: { type: Number, default: true },
-    falseSale: { type: Boolean, default: false },
-    sold: { type: Number, default: 0 },
+    isActive: { type: Boolean, default: true, index: true },
+    isFeatured: { type: Boolean, default: false },
+    inStock: { type: Boolean, default: true },
+    totalStock: { type: Number, default: 0 }, // tổng tồn tất cả variants
+    totalSold: { type: Number, default: 0 }, // tổng đã bán
     viewCount: { type: Number, default: 0 },
+    falseSale: { type: Boolean, default: false }, // flash sale giả
+    flashSaleEnd: { type: Date }, // kết thúc flash sale
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
 
-// Index tìm kiếm
+// ==================== VIRTUALS SIÊU MẠNH ====================
+
+// Giá thấp nhất (dùng cho hiển thị)
+productSchema.virtual("finalPrice").get(function () {
+  if (this.variants && this.variants.length > 0) {
+    const prices = this.variants
+      .map((v) => v.discountPrice || v.price)
+      .filter((p) => p > 0);
+    return prices.length > 0 ? Math.min(...prices) : this.price;
+  }
+  return this.discountPrice || this.price || 0;
+});
+
+// Tổng tồn kho
+productSchema.virtual("stock").get(function () {
+  if (this.variants && this.variants.length > 0) {
+    return this.variants.reduce((sum, v) => sum + v.stock, 0);
+  }
+  return this.totalStock || 0;
+});
+
+// ==================== INDEX TÌM KIẾM SIÊU NHANH ====================
 productSchema.index({
   name: "text",
   description: "text",
-  brands: "text",
-  tag: "text",
-  highlightContent: "text", // thêm để tìm kiếm trong đặc điểm nổi bật
+  "highlightSections.title": "text",
+  "highlightSections.content": "text",
+  tags: "text",
+  brand: "text",
 });
 
-// Tạo slug tự động
+// Index tìm kiếm nhanh
+productSchema.index({ slug: 1 });
+productSchema.index({ category: 1 });
+productSchema.index({ isActive: 1 });
+productSchema.index({ isFeatured: 1 });
+productSchema.index({ createdAt: -1 });
+
+// ==================== PRE SAVE – TỰ ĐỘNG HOÁ ====================
 productSchema.pre("save", function (next) {
+  // Tạo slug
   if (this.isModified("name") || !this.slug) {
-    this.slug = this.name
+    const baseSlug = this.name
       .toLowerCase()
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
@@ -89,8 +142,24 @@ productSchema.pre("save", function (next) {
       .trim()
       .replace(/\s+/g, "-")
       .replace(/-+/g, "-");
+
+    this.slug = baseSlug + "-" + Date.now().toString(36);
   }
+
+  // Cập nhật totalStock & totalSold từ variants
+  if (this.variants && this.variants.length > 0) {
+    this.totalStock = this.variants.reduce((sum, v) => sum + v.stock, 0);
+    this.totalSold = this.variants.reduce((sum, v) => sum + v.sold, 0);
+  }
+
   next();
 });
+
+// ==================== STATIC METHODS ====================
+productSchema.statics.search = function (query) {
+  return this.find({ $text: { $search: query } }).sort({
+    score: { $meta: "textScore" },
+  });
+};
 
 module.exports = mongoose.model("Product", productSchema);

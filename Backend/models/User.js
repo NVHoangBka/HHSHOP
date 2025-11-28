@@ -19,6 +19,8 @@ const userSchema = new mongoose.Schema({
   ],
   role: { type: String, default: "user", enum: ["user", "admin"] },
   refreshToken: { type: String },
+  createAt: Date,
+  updateAt: Date,
 });
 
 userSchema.pre("save", async function (next) {
