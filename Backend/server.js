@@ -3,6 +3,7 @@ require("dotenv").config(); // ĐẦU TIÊN
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require("path");
 
 const app = express();
 
@@ -19,6 +20,7 @@ mongoose
   .catch((err) => console.log("MongoDB connection error:", err));
 
 // Routes
+app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
 app.use("/api", appRouter);
 
 const PORT = process.env.PORT || 5000;

@@ -1,22 +1,34 @@
-// src/admin/pages/Products.jsx → PHIÊN BẢN MODAL SIÊU ĐẸP
+// src/admin/pages/Products.jsx → FORM THÊM/SỬA SẢN PHẨM ĐỈNH CAO NHẤT 2025
 import React, { useEffect, useState, useRef } from "react";
 
 const AdminProducts = ({ adminController }) => {
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState({ show: false, message: "", type: "" });
 
-  // Modal state
   const [modalOpen, setModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [currentProduct, setCurrentProduct] = useState(null);
+  const [currentId, setCurrentId] = useState(null);
 
-  const formRef = useRef({
+  const [formData, setFormData] = useState({
     name: "",
     price: "",
     discountPrice: "",
-    stock: "",
     image: "",
+    gallery: "",
+    shortDescription: "",
+    description: "",
+    types: [],
+    tags: [],
+    brand: "",
+    colors: [],
+    titles: [],
+    subTitles: [],
+    inStock: true,
+    falseSale: false,
+    highlightSections: [
+      { title: "", content: "", icon: "bi-star-fill", order: 0 },
+    ],
   });
 
   useEffect(() => {
@@ -40,44 +52,89 @@ const AdminProducts = ({ adminController }) => {
     setTimeout(() => setToast({ show: false, message: "", type: "" }), 3000);
   };
 
+  const popularTypes = ["hot", "new", "flashsale", "best-seller"];
+  const popularTags = [
+    "nước-giat",
+    "nuoc-rua-chen",
+    "huu-co",
+    "tiet-kiem",
+    "thom-lau",
+  ];
+  const popularBrands = [
+    "Sunlight",
+    "Comfort",
+    "Omo",
+    "Downy",
+    "Lifebuoy",
+    "Vim",
+  ];
+  const popularColors = ["Vàng", "Xanh", "Hồng", "Trắng"];
+
   const openModal = (product = null) => {
     if (product) {
       setIsEditing(true);
-      setCurrentProduct(product);
-      formRef.current = { ...product };
+      setCurrentId(product._id);
+      // CHUYỂN ĐỔI GALLERY TỪ ARRAY → STRING (mỗi link 1 dòng)
+      const galleryString = Array.isArray(product.gallery)
+        ? product.gallery.join("\n")
+        : product.gallery || "";
+
+      setFormData({ ...product, gallery: galleryString });
     } else {
       setIsEditing(false);
-      setCurrentProduct(null);
-      formRef.current = {
+      setCurrentId(null);
+      setFormData({
         name: "",
         price: "",
         discountPrice: "",
-        stock: "",
         image: "",
-      };
+        gallery: "",
+        shortDescription: "",
+        description: "",
+        types: [],
+        tags: [],
+        brand: "",
+        colors: [],
+        titles: [],
+        subTitles: [],
+        inStock: true,
+        falseSale: false,
+        highlightSections: [
+          { title: "", content: "", icon: "bi-star-fill", order: 0 },
+        ],
+      });
     }
     setModalOpen(true);
   };
 
-  const closeModal = () => {
-    setModalOpen(false);
-    setTimeout(() => {
-      setIsEditing(false);
-      setCurrentProduct(null);
-    }, 300);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = { ...formRef.current };
+
+    const galleryArray = formData.gallery
+      ? formData.gallery
+          .split("\n")
+          .map((url) => url.trim())
+          .filter((url) => url.length > 0)
+      : [];
+
+    const data = {
+      ...formData,
+      price: Number(formData.price),
+      discountPrice: formData.discountPrice
+        ? Number(formData.discountPrice)
+        : undefined,
+      gallery: galleryArray,
+      types: formData.types,
+      tags: formData.tags,
+      colors: formData.colors,
+      inStock: Boolean(formData.inStock),
+      falseSale: Boolean(formData.falseSale),
+    };
 
     try {
       let result;
       if (isEditing) {
-        result = await adminController.updateProductAdmin(
-          currentProduct._id,
-          data
-        );
+        result = await adminController.updateProductAdmin(currentId, data);
       } else {
         result = await adminController.createProductAdmin(data);
       }
@@ -87,12 +144,20 @@ const AdminProducts = ({ adminController }) => {
           isEditing ? "Cập nhật thành công!" : "Thêm sản phẩm thành công!",
           "success"
         );
-        closeModal();
+        setModalOpen(false);
+        // Reload danh sách
+
         loadProducts();
       }
     } catch (err) {
       showToast("Lỗi: " + (err.message || "Không thể lưu"), "danger");
     }
+  };
+
+  const toggleArray = (arr, value) => {
+    return arr.includes(value)
+      ? arr.filter((i) => i !== value)
+      : [...arr, value];
   };
 
   const handleDelete = async (id) => {
@@ -105,6 +170,43 @@ const AdminProducts = ({ adminController }) => {
       }
     } catch (err) {
       showToast("Xóa thất bại", "danger");
+    }
+  };
+
+  const handleUploadSingle = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      setLoading(true);
+      const url = await adminController.uploadSingle(file);
+      setFormData({ ...formData, image: url });
+      showToast("Upload ảnh chính thành công!", "success");
+    } catch (err) {
+      showToast("Upload thất bại: " + err.message, "danger");
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleUploadMultiple = async (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+
+    try {
+      setLoading(true);
+      const urls = await adminController.uploadMultiple(files);
+
+      const currentGallery = formData.gallery || "";
+      const newGallery = currentGallery
+        ? currentGallery + "\n" + urls.join("\n")
+        : urls.join("\n");
+
+      setFormData({ ...formData, gallery: newGallery });
+      showToast("Upload ảnh chính thành công!", "success");
+    } catch (err) {
+      showToast("Upload thất bại: " + err.message, "danger");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -154,7 +256,7 @@ const AdminProducts = ({ adminController }) => {
         <div className="card shadow border-0">
           <div className="card-body p-0">
             <div className="table-responsive">
-              <table className="table table-hover mb-0">
+              <table className="table table-hover mb-0 align-middle">
                 <thead className="table-primary text-white">
                   <tr>
                     <th className="ps-4">Ảnh</th>
@@ -190,7 +292,16 @@ const AdminProducts = ({ adminController }) => {
                             onError={(e) => (e.target.src = "/placeholder.jpg")}
                           />
                         </td>
-                        <td className="fw-bold">{p.name}</td>
+                        <td>
+                          <p className="mb-1">
+                            <b>Tên sản phẩm: </b>
+                            {p.name}
+                          </p>
+                          <span className="">
+                            <b>Mô tả: </b>
+                            {p.description}
+                          </span>
+                        </td>
                         <td>
                           <div>
                             <del className="text-muted small">
@@ -212,7 +323,7 @@ const AdminProducts = ({ adminController }) => {
                                 : "bg-danger"
                             } fs-6`}
                           >
-                            {p.stock} cái
+                            {p.stock || 0} cái
                           </span>
                         </td>
                         <td className="text-center">
@@ -239,122 +350,432 @@ const AdminProducts = ({ adminController }) => {
         </div>
       </div>
 
-      {/* Modal */}
-      <div
-        className={`modal fade ${modalOpen ? "show" : ""}`}
-        style={{ display: modalOpen ? "block" : "none" }}
-        tabIndex="-1"
-      >
-        <div className="modal-dialog modal-dialog-centered modal-lg ">
-          <div className="modal-content border-0 shadow-lg">
-            <div className="modal-header bg-success text-white">
-              <h5 className="modal-title">
-                {isEditing ? "Sửa sản phẩm" : "Thêm sản phẩm mới"}
-              </h5>
-              <button
-                type="button"
-                className="btn-close btn-close-white"
-                onClick={closeModal}
-              ></button>
-            </div>
-            <div className="modal-body">
-              <form onSubmit={handleSubmit}>
-                <div className="row g-3">
-                  <div className="col-md-12">
-                    <label className="form-label fw-bold">Tên sản phẩm</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={formRef.current.name}
-                      onChange={(e) => (formRef.current.name = e.target.value)}
-                      required
-                    />
+      {/* MODAL SIÊU ĐẸP – HIỆN GIỮA MÀN HÌNH */}
+      {modalOpen && (
+        <>
+          <div
+            className="modal-backdrop fade show"
+            onClick={() => setModalOpen(false)}
+          ></div>
+          <div
+            className="modal show d-block"
+            style={{ background: "rgba(0,0,0,0.5)" }}
+          >
+            <div className="modal-dialog modal-dialog-centered modal-xl">
+              <div className="modal-content border-0 shadow-lg">
+                <div className="modal-header bg-success text-white">
+                  <h5 className="modal-title fw-bold">
+                    {isEditing ? "SỬA SẢN PHẨM" : "THÊM SẢN PHẨM MỚI"}
+                  </h5>
+                  <button
+                    className="btn-close btn-close-white"
+                    onClick={() => setModalOpen(false)}
+                  ></button>
+                </div>
+
+                <form onSubmit={handleSubmit}>
+                  <div
+                    className="modal-body px-5"
+                    style={{ maxHeight: "70vh", overflowY: "auto" }}
+                  >
+                    <div className="row g-3">
+                      {/* TÊN + GIÁ */}
+                      <div className="col-12">
+                        <label className="form-label fw-bold text-danger">
+                          Tên sản phẩm *
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control form-control-lg"
+                          value={formData.name}
+                          onChange={(e) =>
+                            setFormData({ ...formData, name: e.target.value })
+                          }
+                          required
+                        />
+                      </div>
+
+                      <div className="col-md-4">
+                        <label className="form-label fw-bold">
+                          Giá gốc (₫) *
+                        </label>
+                        <input
+                          type="number"
+                          className="form-control"
+                          value={formData.price}
+                          onChange={(e) =>
+                            setFormData({ ...formData, price: e.target.value })
+                          }
+                          required
+                        />
+                      </div>
+
+                      <div className="col-md-4">
+                        <label className="form-label fw-bold">
+                          Giá khuyến mãi (₫)
+                        </label>
+                        <input
+                          type="number"
+                          className="form-control"
+                          value={formData.discountPrice}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              discountPrice: e.target.value,
+                            })
+                          }
+                          placeholder="Để trống nếu không giảm"
+                        />
+                      </div>
+
+                      <div className="col-4">
+                        <label className="form-label fw-bold">
+                          Thương hiệu
+                        </label>
+                        <select
+                          className="form-select"
+                          value={formData.brand}
+                          onChange={(e) =>
+                            setFormData({ ...formData, brand: e.target.value })
+                          }
+                        >
+                          <option value="">Chọn thương hiệu</option>
+                          {popularBrands.map((b) => (
+                            <option key={b} value={b}>
+                              {b}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* ẢNH CHÍNH */}
+                      <div className="col-12 mb-4">
+                        <label className="form-label fw-bold text-danger">
+                          Ảnh chính *
+                        </label>
+
+                        {/* Input dán link */}
+                        <div className="input-group mb-2">
+                          <input
+                            type="url"
+                            className="form-control"
+                            placeholder="Dán link ảnh vào đây[](https://...)"
+                            value={formData.image || ""}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                image: e.target.value,
+                              })
+                            }
+                          />
+                          <span className="input-group-text">HOẶC</span>
+                        </div>
+
+                        {/* Upload file */}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="form-control"
+                          onChange={handleUploadSingle}
+                        />
+
+                        {/* Preview ảnh chính */}
+                        {formData.image && (
+                          <div className="mt-3 text-center">
+                            <img
+                              src={formData.image}
+                              alt="Preview"
+                              className="rounded shadow border"
+                              style={{ maxHeight: "320px", maxWidth: "100%" }}
+                              onError={(e) => {
+                                e.target.src = "/placeholder.jpg";
+                                e.target.alt =
+                                  "Link lỗi hoặc ảnh không tồn tại";
+                              }}
+                            />
+                            <div className="mt-2">
+                              <small className="text-muted">
+                                Link hiện tại:
+                              </small>
+                              <br />
+                              <code className="bg-light p-1 rounded">
+                                {formData.image}
+                              </code>
+                            </div>
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-outline-danger mt-2"
+                              onClick={() =>
+                                setFormData({ ...formData, image: "" })
+                              }
+                            >
+                              Xóa ảnh chính
+                            </button>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* GALLERY – CẢ DÁN NHIỀU LINK + UPLOAD NHIỀU ẢNH */}
+                      <div className="col-12">
+                        <label className="form-label fw-bold">
+                          Gallery (
+                          {formData.gallery
+                            ? formData.gallery.split("\n").filter(Boolean)
+                                .length
+                            : 0}{" "}
+                          ảnh)
+                        </label>
+
+                        {/* Dán nhiều link (mỗi link 1 dòng) */}
+                        <textarea
+                          className="form-control mb-3"
+                          rows="4"
+                          placeholder="Dán nhiều link ảnh, mỗi link 1 dòng...&#10;HOẶC dùng nút upload bên dưới"
+                          value={formData.gallery || ""}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              gallery: e.target.value,
+                            })
+                          }
+                        />
+
+                        {/* Upload nhiều ảnh */}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          className="form-control mb-3"
+                          onChange={handleUploadMultiple}
+                        />
+
+                        {/* Preview Gallery đẹp lung linh */}
+                        {formData.gallery && (
+                          <div className="row g-3">
+                            {formData.gallery
+                              .split("\n")
+                              .map((s) => s.trim())
+                              .filter(Boolean)
+                              .map((url, i) => (
+                                <div
+                                  key={i}
+                                  className="col-6 col-md-4 col-lg-3 position-relative"
+                                >
+                                  <img
+                                    src={url}
+                                    alt={`Gallery ${i + 1}`}
+                                    className="img-fluid rounded shadow"
+                                    style={{
+                                      height: "180px",
+                                      objectFit: "cover",
+                                    }}
+                                    onError={(e) =>
+                                      (e.target.src = "/placeholder.jpg")
+                                    }
+                                  />
+                                  <button
+                                    type="button"
+                                    className="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle"
+                                    style={{
+                                      width: "30px",
+                                      height: "30px",
+                                      padding: 0,
+                                    }}
+                                    onClick={() => {
+                                      const lines = formData.gallery
+                                        .split("\n")
+                                        .map((s) => s.trim())
+                                        .filter(Boolean);
+                                      lines.splice(i, 1);
+                                      setFormData({
+                                        ...formData,
+                                        gallery: lines.join("\n"),
+                                      });
+                                    }}
+                                  >
+                                    ×
+                                  </button>
+                                </div>
+                              ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* MÔ TẢ */}
+                      <div className="col-12">
+                        <label className="form-label fw-bold">Mô tả ngắn</label>
+                        <textarea
+                          className="form-control"
+                          rows="2"
+                          value={formData.shortDescription}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              shortDescription: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+
+                      <div className="col-12 mb-2">
+                        <label className="form-label fw-bold">
+                          Mô tả chi tiết (HTML)
+                        </label>
+                        <textarea
+                          className="form-control"
+                          rows="5"
+                          value={formData.description}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              description: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+
+                      {/* PHÂN LOẠI CHECKBOX */}
+                      <div className="col-12 mb-2">
+                        <label className="form-label fw-bold">
+                          Loại sản phẩm
+                        </label>
+                        <div className="d-flex mx-3">
+                          {popularTypes.map((t) => (
+                            <div key={t} className="col-3 form-check">
+                              <input
+                                className="form-check-input"
+                                type="checkbox"
+                                checked={formData.types.includes(t)}
+                                onChange={() =>
+                                  setFormData({
+                                    ...formData,
+                                    types: toggleArray(formData.types, t),
+                                  })
+                                }
+                              />
+                              <label className="form-check-label text-capitalize">
+                                {t}
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* TAGS */}
+                      <div className="col-12">
+                        <label className="form-label fw-bold">
+                          Tags (gõ rồi Enter)
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="nước-giat, huu-co..."
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              const val = e.target.value.trim();
+                              if (val && !formData.tags.includes(val)) {
+                                formData.tags.push(val);
+                                e.target.value = "";
+                              }
+                            }
+                          }}
+                        />
+                        {/* <div className="mt-2">
+                          {formData.tags.map((tag, i) => (
+                            <span
+                              key={i}
+                              className="badge bg-secondary me-2 mb-2"
+                            >
+                              {tag}
+                              <button
+                                type="button"
+                                className="btn-close btn-close-white ms-2"
+                                onClick={() =>
+                                  (formData.tags = formData.tags.filter(
+                                    (_, j) => j !== i
+                                  ))
+                                }
+                              ></button>
+                            </span>
+                          ))}
+                        </div> */}
+                      </div>
+
+                      {/* CÁC TRƯỜNG KHÁC */}
+                      <div className="col-md-12">
+                        <label className="form-label fw-bold">Màu sắc</label>
+                        <select
+                          className="form-select"
+                          value={formData.colors}
+                          onChange={(e) => {
+                            setFormData({
+                              ...formData,
+                              colors: e.target.value,
+                            });
+                          }}
+                        >
+                          {popularColors.map((c) => (
+                            <option key={c}>{c}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="col-md-6">
+                        <label className="form-label fw-bold">Còn hàng?</label>
+                        <select
+                          className="form-select"
+                          value={formData.inStock}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              inStock: e.target.value,
+                            })
+                          }
+                        >
+                          <option value={true}>Có hàng</option>
+                          <option value={false}>Hết hàng</option>
+                        </select>
+                      </div>
+
+                      <div className="col-12">
+                        <div className="form-check form-switch">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            checked={formData.falseSale}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                falseSale: e.target.checked,
+                              })
+                            }
+                          />
+                          <label className="form-check-label fw-bold text-danger">
+                            Hiển thị Flash Sale giả
+                          </label>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="col-md-4">
-                    <label className="form-label fw-bold">Giá gốc (₫)</label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      value={formRef.current.price}
-                      onChange={(e) =>
-                        (formRef.current.price = +e.target.value)
-                      }
-                      required
-                    />
+                  <div className="modal-footer">
+                    <button
+                      type="button"
+                      className="btn btn-secondary btn-lg"
+                      onClick={() => setModalOpen(false)}
+                    >
+                      Hủy
+                    </button>
+                    <button type="submit" className="btn btn-success btn-lg">
+                      {isEditing ? "CẬP NHẬT" : "THÊM MỚI"}
+                    </button>
                   </div>
-                  <div className="col-md-4">
-                    <label className="form-label fw-bold">
-                      Giá khuyến mãi (₫)
-                    </label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      value={formRef.current.discountPrice}
-                      onChange={(e) =>
-                        (formRef.current.discountPrice = e.target.value
-                          ? +e.target.value
-                          : "")
-                      }
-                      placeholder="Để trống nếu không có"
-                    />
-                  </div>
-                  <div className="col-md-4">
-                    <label className="form-label fw-bold">Số lượng tồn</label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      value={formRef.current.stock}
-                      onChange={(e) =>
-                        (formRef.current.stock = +e.target.value)
-                      }
-                      required
-                    />
-                  </div>
-                  <div className="col-md-12">
-                    <label className="form-label fw-bold">Link ảnh</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={formRef.current.image}
-                      onChange={(e) => (formRef.current.image = e.target.value)}
-                      placeholder="https://..."
-                    />
-                  </div>
-                  <div className="col-md-12">
-                    <label className="form-label fw-bold">Mô tả sản phẩm</label>
-                    <textarea
-                      type="text"
-                      className="form-control"
-                      value={formRef.current.description}
-                      onChange={(e) =>
-                        (formRef.current.description = e.target.value)
-                      }
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="modal-footer mt-4">
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={closeModal}
-                  >
-                    Hủy
-                  </button>
-                  <button type="submit" className="btn btn-success">
-                    {isEditing ? "Cập nhật" : "Thêm sản phẩm"}
-                  </button>
-                </div>
-              </form>
+                </form>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Backdrop */}
-      {modalOpen && (
-        <div className="modal-backdrop fade show" onClick={closeModal}></div>
+        </>
       )}
     </>
   );

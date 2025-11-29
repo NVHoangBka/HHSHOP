@@ -11,6 +11,7 @@ const bannerRouter = require("./Banner");
 const cartRouter = require("./Cart");
 const paymentRouter = require("./Payment");
 const adminRouter = require("./admin");
+const uploadRouter = require("./Upload");
 
 router.use("/auth", authRouter);
 router.use("/addresses", addressRouter);
@@ -21,5 +22,6 @@ router.use("/banners", bannerRouter);
 router.use("/cart", cartRouter);
 router.use("/payment", paymentRouter);
 router.use("/admin", adminRouter);
+router.use("/upload", uploadRouter);
 
 module.exports = router;

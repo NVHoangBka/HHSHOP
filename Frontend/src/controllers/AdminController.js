@@ -1,8 +1,10 @@
 import AdminService from "../services/AdminService";
+import UploadService from "../services/UploadService";
 
 class AdminController {
   constructor() {
     this.adminService = new AdminService();
+    this.uploadService = new UploadService();
   }
 
   async loginAdmin(email, password) {
@@ -75,6 +77,54 @@ class AdminController {
       return result;
     } catch (error) {
       return { success: false, message: "Lấy đơn hàng thất bại" };
+    }
+  }
+
+  async createProductAdmin(productData) {
+    try {
+      const result = await this.adminService.createProductAdmin(productData);
+      return result;
+    } catch (error) {
+      return { success: false, message: "Lấy đơn hàng thất bại" };
+    }
+  }
+
+  async updateProductAdmin(productId, productData) {
+    try {
+      const result = await this.adminService.updateProductAdmin(
+        productId,
+        productData
+      );
+      return result;
+    } catch (error) {
+      return { success: false, message: "Lấy đơn hàng thất bại" };
+    }
+  }
+
+  async deleteProductAdmin(productId) {
+    try {
+      const result = await this.adminService.deleteProductAdmin(productId);
+      return result;
+    } catch (error) {
+      return { success: false, message: "Lấy đơn hàng thất bại" };
+    }
+  }
+
+  async uploadSingle(file) {
+    try {
+      const result = this.uploadService.uploadSingle(file);
+      return result;
+    } catch (error) {
+      return { success: false, message: "Lỗi upload ảnh" };
+    }
+  }
+
+  async uploadMultiple(files) {
+    try {
+      const result = this.uploadService.uploadMultiple(files);
+      return result;
+    } catch (error) {
+      return { success: false, message: "Lỗi upload ảnh" };
     }
   }
 }
