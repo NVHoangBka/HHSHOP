@@ -63,17 +63,25 @@ const productSchema = new mongoose.Schema(
 
     // Phân loại tìm kiếm
     category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
-    types: [{ type: String }], // vd: ["hot", "new", "sale"]
-    tags: [{ type: String, index: true }],
-    brand: { type: String, index: true },
-    colors: [{ type: String }],
-    sizes: [{ type: String }],
+    subCategory: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
+
+    brand: { type: mongoose.Schema.Types.ObjectId, ref: "Brand", index: true },
+    colors: [{ type: mongoose.Schema.Types.ObjectId, ref: "Color" }],
+    tags: [{ type: mongoose.Schema.Types.ObjectId, ref: "Tag" }],
+    // Thuộc tính động (dung tích, kích thước, chất liệu...)
+    attributes: [
+      {
+        attribute: { type: mongoose.Schema.Types.ObjectId, ref: "Attribute" },
+        value: String,
+      },
+    ],
 
     // Đánh giá & tương tác
     reviews: [reviewSchema],
     ratingAverage: { type: Number, default: 0, min: 0, max: 5 },
     reviewCount: { type: Number, default: 0 },
 
+    variants: [variantSchema],
     // Trạng thái & số liệu
     isActive: { type: Boolean, default: true, index: true },
     isFeatured: { type: Boolean, default: false },
