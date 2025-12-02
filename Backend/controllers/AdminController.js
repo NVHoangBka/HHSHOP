@@ -181,16 +181,63 @@ class AdminAuthController {
     }
   }
 
+  // CẬP NHẬT TRẠNG THÁI ĐƠN HÀNG
+  static async updateOrderStatus(req, res) {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+      const order = await Order.findOneAndUpdate({ _id: id }, { status }, {});
+      if (!order) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Không tìm thấy đơn hàng" });
+      }
+
+      res.json({
+        success: true,
+        message: "Cập nhật trạng thái thành công",
+        order,
+      });
+    } catch (error) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
+  // CẬP NHẬT TRẠNG THÁI THANH TOÁN
+  static async updateOrderPaymentStatus(req, res) {
+    try {
+      const { id } = req.params;
+      const { paymentStatus } = req.body;
+
+      const order = await Order.findOneAndUpdate(
+        { _id: id },
+        { paymentStatus }
+      );
+      if (!order) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Không tìm thấy đơn hàng" });
+      }
+      res.json({
+        success: true,
+        message: "Cập nhật trạng thái thành công",
+        order,
+      });
+    } catch (error) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
   // LẤY TẤT CẢ SẢN PHẨM CHO ADMIN (có phân trang + tìm kiếm)
   static async getProductsAllAdmin(req, res) {
+    console.log(req.query);
     try {
       const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 15;
+      const limit = parseInt(req.query.limit) || 10;
       const search = req.query.search?.trim();
 
       const filter = search ? { name: { $regex: search, $options: "i" } } : {};
 
-      const [products, total] = await Promise.all([
+      const [products, totalProducts] = await Promise.all([
         Product.find(filter)
           .sort({ createdAt: -1 })
           .skip((page - 1) * limit)
@@ -205,8 +252,8 @@ class AdminAuthController {
         pagination: {
           page,
           limit,
-          total,
-          totalPages: Math.ceil(total / limit),
+          totalProducts,
+          totalPages: Math.ceil(totalProducts / limit),
         },
       });
     } catch (error) {

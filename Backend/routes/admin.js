@@ -22,7 +22,11 @@ router.get("/users", AdminController.getUsersAllAdmin);
 
 // // // Quản lý đơn hàng
 router.get("/orders", AdminController.getOrdersAllAdmin);
-// router.patch("/orders/:id/status", AdminController.updateOrderStatus);
+router.put("/orders/:id/status", AdminController.updateOrderStatus);
+router.put(
+  "/orders/:id/payment-status",
+  AdminController.updateOrderPaymentStatus
+);
 
 // // Quản lý sản phẩm
 router.get("/products", AdminController.getProductsAllAdmin);

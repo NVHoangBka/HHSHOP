@@ -10,6 +10,16 @@ const AdminProducts = ({ adminController }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentId, setCurrentId] = useState(null);
 
+  // TÌM KIẾM: CHỈ BẤM ENTER MỚI LỌC
+  const [searchInput, setSearchInput] = useState(""); // ô nhập liệu
+  const [searchTerm, setSearchTerm] = useState(""); // từ khoá tìm kiếm chính thức
+
+  // Phân trang
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [limit, setLimit] = useState(10); // backend mặc định 10
+
   const [formData, setFormData] = useState({
     name: "",
     price: "",
@@ -31,21 +41,38 @@ const AdminProducts = ({ adminController }) => {
     ],
   });
 
-  useEffect(() => {
-    loadProducts();
-  }, [adminController]);
+  const pagination = {
+    page: currentPage,
+    limit,
+    search: searchTerm || undefined,
+  };
 
   const loadProducts = async () => {
     try {
       setLoading(true);
-      const result = await adminController.getProductsAllAdmin();
-      if (result.success) setProducts(result.products || []);
+      const result = await adminController.getProductsAllAdmin(pagination);
+      if (result.success) {
+        setProducts(result.products || []);
+        setTotalProducts(result.paginationData.totalProducts);
+        setTotalPages(result.paginationData.totalPages);
+        setCurrentPage(currentPage);
+      }
     } catch (err) {
       showToast("Lỗi tải sản phẩm", "danger");
     } finally {
       setLoading(false);
     }
   };
+
+  // Load lần đầu + khi search hoặc đổi trang
+  useEffect(() => {
+    setCurrentPage(1);
+    loadProducts();
+  }, [searchTerm]);
+
+  useEffect(() => {
+    loadProducts(currentPage);
+  }, [currentPage]);
 
   const showToast = (msg, type = "success") => {
     setToast({ show: true, message: msg, type });
@@ -68,7 +95,14 @@ const AdminProducts = ({ adminController }) => {
     "Lifebuoy",
     "Vim",
   ];
-  const popularColors = ["Vàng", "Xanh", "Hồng", "Trắng"];
+  const popularColors = ["Vàng", "Xanh", "Hồng", "Trắng", "Đỏ", "Tím", "Đen"];
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages && page !== currentPage) {
+      setCurrentPage(page);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   const openModal = (product = null) => {
     if (product) {
@@ -210,6 +244,30 @@ const AdminProducts = ({ adminController }) => {
     }
   };
 
+  // === LỌC KHI BẤM ENTER ===
+  const handleSearchKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      setSearchTerm(searchInput.trim());
+    }
+    if (e.key === "Escape") {
+      setSearchInput("");
+      setSearchTerm("");
+    }
+  };
+
+  const clearSearch = () => {
+    setSearchInput("");
+    setSearchTerm("");
+  };
+
+  // Lọc chỉ theo tên sản phẩm (không phân biệt hoa thường)
+  const filteredProducts = products.filter(
+    (product) =>
+      searchTerm === "" ||
+      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   if (loading) {
     return (
       <div className="text-center py-5">
@@ -221,6 +279,10 @@ const AdminProducts = ({ adminController }) => {
       </div>
     );
   }
+
+  console.log(totalPages);
+  // console.log(currentPage);
+  // console.log(totalProducts);
 
   return (
     <>
@@ -243,13 +305,40 @@ const AdminProducts = ({ adminController }) => {
 
       <div className="container-fluid py-4">
         <div className="d-flex justify-content-between align-items-center mb-4">
-          <h2 className="fw-bold text-primary">Quản lý sản phẩm</h2>
-          <button
-            className="btn btn-success btn-lg shadow"
-            onClick={() => openModal()}
-          >
-            Thêm sản phẩm mới
-          </button>
+          <div>
+            <h2 className="fw-bold text-primary">Quản lý sản phẩm</h2>
+          </div>
+          <div className="d-flex justify-content-between align-items-center">
+            <div
+              className="me-3 position-relative border rounded-pill py-1 bg-white py-2"
+              style={{ width: "300px" }}
+            >
+              <input
+                type="text"
+                className="input-group border-0 mx-1 px-3 fs-6 outline-0 no-focus"
+                placeholder="Tìm sản phẩm..."
+                value={searchInput}
+                style={{ maxWidth: "230px" }}
+                onChange={(e) => setSearchInput(e.target.value)}
+                onKeyDown={handleSearchKeyDown}
+              />
+              <i className="bi bi-search position-absolute top-50 end-0 translate-middle fs-5"></i>
+
+              {searchInput && (
+                <button
+                  type="button"
+                  className="btn-close position-absolute top-50 end-0 translate-middle-y py-0 px-3 me-4 fs-7"
+                  onClick={clearSearch}
+                ></button>
+              )}
+            </div>
+            <button
+              className="btn btn-success shadow "
+              onClick={() => openModal()}
+            >
+              + Thêm sản phẩm mới
+            </button>
+          </div>
         </div>
 
         {/* Table */}
@@ -259,6 +348,7 @@ const AdminProducts = ({ adminController }) => {
               <table className="table table-hover mb-0 align-middle">
                 <thead className="table-primary text-white">
                   <tr>
+                    <th className="text-center">STT</th>
                     <th className="ps-4">Ảnh</th>
                     <th>Tên sản phẩm</th>
                     <th>Giá</th>
@@ -267,18 +357,21 @@ const AdminProducts = ({ adminController }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {products.length === 0 ? (
+                  {filteredProducts.length === 0 ? (
                     <tr>
                       <td
                         colSpan="5"
                         className="text-center py-5 text-muted fs-4"
                       >
-                        Chưa có sản phẩm nào
+                        {searchTerm
+                          ? "Không tìm thấy sản phẩm nào"
+                          : "Chưa có sản phẩm"}
                       </td>
                     </tr>
                   ) : (
-                    products.map((p) => (
+                    filteredProducts.map((p, index) => (
                       <tr key={p._id}>
+                        <td className="fw-bold text-center">{index + 1}</td>
                         <td className="ps-4">
                           <img
                             src={p.image || "/placeholder.jpg"}
@@ -348,6 +441,43 @@ const AdminProducts = ({ adminController }) => {
             </div>
           </div>
         </div>
+
+        {/* PHÂN TRANG ĐẸP */}
+        {totalPages > 1 && (
+          <nav aria-label="Page navigation" className="mt-5">
+            <div className="pagination d-flex justify-content-center">
+              <button
+                className="btn bg-white mx-1"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                <i className="bi bi-chevron-left"></i>
+              </button>
+
+              {[...Array(totalPages)].map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => handlePageChange(index + 1)}
+                  className={`btn bg-white mx-1 ${
+                    currentPage === index + 1
+                      ? "btn-outline-danger text-danger"
+                      : "text-black"
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              ))}
+
+              <button
+                className="btn bg-white mx-1"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                <i className="bi bi-chevron-right"></i>
+              </button>
+            </div>
+          </nav>
+        )}
       </div>
 
       {/* MODAL SIÊU ĐẸP – HIỆN GIỮA MÀN HÌNH */}
@@ -661,6 +791,30 @@ const AdminProducts = ({ adminController }) => {
                         </div>
                       </div>
 
+                      <div className="col-12 mb-2">
+                        <label className="form-label fw-bold">Màu sắc</label>
+                        <div className="d-flex flex-wrap mx-3">
+                          {popularColors.map((color, index) => (
+                            <div key={index} className="col-3 form-check mb-2">
+                              <input
+                                className="form-check-input"
+                                type="checkbox"
+                                checked={formData.colors.includes(color)}
+                                onChange={() =>
+                                  setFormData({
+                                    ...formData,
+                                    colors: toggleArray(formData.colors, color),
+                                  })
+                                }
+                              />
+                              <label className="form-check-label text-capitalize">
+                                {color}
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
                       {/* TAGS */}
                       <div className="col-12">
                         <label className="form-label fw-bold">
@@ -703,23 +857,6 @@ const AdminProducts = ({ adminController }) => {
                       </div>
 
                       {/* CÁC TRƯỜNG KHÁC */}
-                      <div className="col-md-12">
-                        <label className="form-label fw-bold">Màu sắc</label>
-                        <select
-                          className="form-select"
-                          value={formData.colors}
-                          onChange={(e) => {
-                            setFormData({
-                              ...formData,
-                              colors: e.target.value,
-                            });
-                          }}
-                        >
-                          {popularColors.map((c) => (
-                            <option key={c}>{c}</option>
-                          ))}
-                        </select>
-                      </div>
 
                       <div className="col-md-6">
                         <label className="form-label fw-bold">Còn hàng?</label>

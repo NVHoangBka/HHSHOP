@@ -70,10 +70,25 @@ class AdminController {
     }
   }
 
-  // =============   PRODUCTS  ==================
-  async getProductsAllAdmin() {
+  async updateOrderPaymentStatus(orderId, paymentStatus) {
     try {
-      const result = await this.adminService.getProductsAllAdmin();
+      const result = await this.adminService.updateOrderPaymentStatus(
+        orderId,
+        paymentStatus
+      );
+      return result;
+    } catch (error) {
+      return {
+        success: false,
+        message: "Cập nhật trạng thái thanh toán thất bại",
+      };
+    }
+  }
+
+  // =============   PRODUCTS  ==================
+  async getProductsAllAdmin(pagination) {
+    try {
+      const result = await this.adminService.getProductsAllAdmin(pagination);
       return result;
     } catch (error) {
       return { success: false, message: "Lấy đơn hàng thất bại" };

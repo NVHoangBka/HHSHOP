@@ -1,12 +1,11 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 
 const AdminLayout = ({ onLoginAdmin, onLogoutAdmin, adminController }) => {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    navigate("/admin/login");
+  const handleLogout = (e) => {
+    e.preventDefault();
+    onLogoutAdmin();
   };
 
   return (
@@ -57,7 +56,7 @@ const AdminLayout = ({ onLoginAdmin, onLogoutAdmin, adminController }) => {
             </div>
           </div>
 
-          <div className="col-md-10 p-4">
+          <div className="col-md-10 p-4 bg-success-subtle">
             <Outlet />
           </div>
         </div>

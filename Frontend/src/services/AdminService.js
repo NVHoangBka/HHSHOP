@@ -85,6 +85,7 @@ class AdminService {
     }
   }
 
+  // =============   ORDERS ADMIN  ==================
   async getOrdersAllAdmin() {
     try {
       const res = await api.get("/admin/orders");
@@ -95,27 +96,37 @@ class AdminService {
       return this.handleError(error);
     }
   }
-
-  // async updateOrderStatus(orderId, status) {
-  //   try {
-  //     const res = await api.put(`/admin/orders/${orderId}/status`, status);
-
-  //     return res.data.status;
-  //   } catch (error) {
-  //     console.error("Login error:", error);
-  //     return {
-  //       success: false,
-  //       message: error.res?.data?.message || "Lỗi hệ thống, vui lòng thử lại.",
-  //       status: error.res?.status || 500,
-  //     };
-  //   }
-  // }
-
-  async getProductsAllAdmin() {
+  async updateOrderStatus(orderId, status) {
     try {
-      const res = await api.get("/admin/products");
+      const res = await api.put(`/admin/orders/${orderId}/status`, { status });
+      const order = res.data.order;
+      return { success: true, order };
+    } catch (error) {
+      console.error("Login error:", error);
+      return this.handleError(error);
+    }
+  }
+
+  async updateOrderPaymentStatus(orderId, paymentStatus) {
+    try {
+      const res = await api.put(`/admin/orders/${orderId}/payment-status`, {
+        paymentStatus,
+      });
+      const order = res.data.order;
+      return { success: true, order };
+    } catch (error) {
+      console.error("Login error:", error);
+      return this.handleError(error);
+    }
+  }
+
+  // =============   PRODUCT ADMIN  ==================
+  async getProductsAllAdmin(pagination) {
+    try {
+      const res = await api.get("/admin/products", { params: pagination });
       const products = res.data.products;
-      return { success: true, products };
+      const paginationData = res.data.pagination;
+      return { success: true, products, paginationData };
     } catch (error) {
       console.error("Login error:", error);
       return this.handleError(error);

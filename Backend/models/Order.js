@@ -1,4 +1,5 @@
 // backend/models/Order.js
+
 const mongoose = require("mongoose");
 
 const orderItemSchema = new mongoose.Schema(
@@ -8,12 +9,12 @@ const orderItemSchema = new mongoose.Schema(
       ref: "Product",
       required: true,
     },
-    name: { type: String, required: true }, // snapshot tên sản phẩm
-    image: { type: String, required: true }, // ảnh lúc mua
-    price: { type: Number, required: true, min: 0 }, // giá lúc mua
-    discountPrice: { type: Number, min: 0 }, // nếu có khuyến mãi
+    name: { type: String, required: true },
+    image: { type: String, required: true },
+    price: { type: Number, required: true, min: 0 },
+    discountPrice: { type: Number, min: 0 },
     quantity: { type: Number, required: true, min: 1 },
-    variant: { type: String }, // "Chai 900g", "Hương chanh", v.v.
+    variant: { type: String },
   },
   { _id: false }
 );
@@ -37,61 +38,52 @@ const orderSchema = new mongoose.Schema(
       city: String,
     },
 
-    // === SẢN PHẨM TRONG ĐƠN ===
     items: [orderItemSchema],
 
-    // === TỔNG TIỀN ===
-    subTotal: { type: Number, required: true, min: 0 }, // tiền hàng
+    subTotal: { type: Number, required: true, min: 0 },
     shippingFee: { type: Number, default: 0 },
     voucherCode: String,
     voucherDiscount: { type: Number, default: 0 },
-    totalAmount: { type: Number, required: true, min: 0 }, // cuối cùng khách trả
+    totalAmount: { type: Number, required: true, min: 0 },
 
     note: String,
 
-    // === THANH TOÁN ===
     paymentMethod: {
       type: String,
       enum: ["COD", "BANK"],
       default: "COD",
       required: true,
     },
+
     paymentStatus: {
       type: String,
-      enum: [
-        "pending", //đang chờ thanh toán
-        "paid", // đã thanh toán
-        "failed", // thanh toán thất bại
-        "refunded", // đã hoàn tiền
-      ],
+      enum: ["pending", "paid", "failed", "refunded"],
       default: "pending",
     },
     paidAt: Date,
 
-    // Liên kết với QR
     paymentQR: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "PaymentQR",
       default: null,
     },
 
-    // === TRẠNG THÁI ĐƠN HÀNG ===
     status: {
       type: String,
       enum: [
-        "pending", // chờ xác nhận
-        "confirmed", // đã xác nhận
-        "preparing", // đang đóng gói
-        "shipped", // đã giao cho đơn vị vận chuyển
-        "delivered", // đã giao thành công
-        "canceled", // đã hủy
-        "returned", // khách trả hàng
+        "pending",
+        "confirmed",
+        "preparing",
+        "shipped",
+        "delivered",
+        "canceled",
+        "returned",
       ],
       default: "pending",
-      index: true, // lọc đơn theo trạng thái nhanh
+      index: true,
     },
 
-    // === THỜI GIAN CHI TIẾT ===
+    // Thời gian theo trạng thái đơn hàng
     confirmedAt: Date,
     preparingAt: Date,
     shippedAt: Date,
@@ -102,9 +94,107 @@ const orderSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// === INDEX TÌM KIẾM NHANH ===
+// ===========================================================================
+// TỰ ĐỘNG CẬP NHẬT THỜI GIAN KHI THAY ĐỔI status HOẶC paymentStatus
+// ===========================================================================
+
+// 1. Khi tạo mới đơn hàng (save)
+orderSchema.pre("save", function (next) {
+  if (this.isNew) {
+    // Đơn mới tạo → mặc định là pending
+    this.confirmedAt =
+      this.preparingAt =
+      this.shippedAt =
+      this.deliveredAt =
+      this.canceledAt =
+      this.returnedAt =
+        undefined;
+  }
+  next();
+});
+
+// 2. Khi update (findOneAndUpdate, findByIdAndUpdate, updateOne, ...)
+orderSchema.pre(
+  ["updateOne", "findOneAndUpdate", "update"],
+  async function (next) {
+    const update = this.getUpdate();
+
+    // Nếu không update status hay paymentStatus → bỏ qua
+    if (
+      !update.status &&
+      !update.paymentStatus &&
+      !update.$set?.status &&
+      !update.$set?.paymentStatus
+    ) {
+      return next();
+    }
+
+    try {
+      // Lấy document hiện tại để biết trạng thái cũ
+      const doc = await this.model.findOne(this.getQuery());
+      if (!doc) return next();
+
+      const now = new Date();
+
+      // === XỬ LÝ TRẠNG THÁI ĐƠN HÀNG ===
+      const newStatus = update.status || update.$set?.status;
+      if (newStatus && newStatus !== doc.status) {
+        const timestampMap = {
+          confirmed: "confirmedAt",
+          preparing: "preparingAt",
+          shipped: "shippedAt",
+          delivered: "deliveredAt",
+          canceled: "canceledAt",
+          returned: "returnedAt",
+        };
+
+        const field = timestampMap[newStatus];
+        if (field) {
+          if (update.$set) {
+            update.$set[field] = now;
+          } else {
+            update[field] = now;
+          }
+        }
+
+        // Bonus: Nếu giao thành công + là COD → tự động đánh dấu đã thanh toán
+        if (newStatus === "delivered" && doc.paymentMethod === "COD") {
+          if (update.$set) {
+            update.$set.paymentStatus = "paid";
+            update.$set.paidAt = now;
+          } else {
+            update.paymentStatus = "paid";
+            update.paidAt = now;
+          }
+        }
+      }
+
+      // === XỬ LÝ TRẠNG THÁI THANH TOÁN ===
+      const newPaymentStatus =
+        update.paymentStatus || update.$set?.paymentStatus;
+      if (
+        newPaymentStatus &&
+        newPaymentStatus !== doc.paymentStatus &&
+        newPaymentStatus === "paid"
+      ) {
+        if (update.$set) {
+          update.$set.paidAt = now;
+        } else {
+          update.paidAt = now;
+        }
+      }
+
+      next();
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+// Index tìm kiếm nhanh
 orderSchema.index({ userId: 1, createdAt: -1 });
 orderSchema.index({ status: 1 });
+orderSchema.index({ paymentStatus: 1 });
 orderSchema.index({ orderId: 1 });
 
 module.exports = mongoose.model("Order", orderSchema);
