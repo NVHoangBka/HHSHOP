@@ -17,9 +17,11 @@ const Home = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const flashSale = await productController.getProductsByTag("flashsale");
+        const orders = await productController.getAllProducts();
         const banners = await bannerController.getBannersAll();
         const titles = await titleController.getTitlesByType("h1");
+
+        const flashSale = orders.filter((order) => order.flashSale === true);
 
         setFlashSaleProducts(flashSale);
         setBannerHome(banners);

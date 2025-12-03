@@ -82,7 +82,6 @@ const productSchema = new mongoose.Schema(
     ratingAverage: { type: Number, default: 0, min: 0, max: 5 },
     reviewCount: { type: Number, default: 0 },
 
-    variants: [variantSchema],
     // Trạng thái & số liệu
     isActive: { type: Boolean, default: true, index: true },
     isFeatured: { type: Boolean, default: false },
@@ -90,7 +89,7 @@ const productSchema = new mongoose.Schema(
     totalStock: { type: Number, default: 0 }, // tổng tồn tất cả variants
     totalSold: { type: Number, default: 0 }, // tổng đã bán
     viewCount: { type: Number, default: 0 },
-    falseSale: { type: Boolean, default: false }, // flash sale giả
+    flashSale: { type: Boolean, default: false }, // flash sale giả
     flashSaleEnd: { type: Date }, // kết thúc flash sale
   },
   {

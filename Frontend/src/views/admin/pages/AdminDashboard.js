@@ -154,48 +154,56 @@ const AdminDashboard = ({ adminController }) => {
     <div className="container-fluid py-4">
       <h2 className="mb-4 fw-bold text-success">ADMIN PANEL - HHSHOP</h2>
 
-      <div className="row g-4">
-        <div className="col-md-2">
-          <div className="card border-0 shadow-lg text-white bg-success">
-            <div className="card-body">
-              <h5>Tổng đơn hàng</h5>
-              <h2 className="fw-bold">{stats.totalOrders}</h2>
+      <div className="row">
+        <div className="col-6">
+          <div className="row">
+            <div className="col">
+              <div className="card border-0 shadow-lg text-white bg-success">
+                <div className="card-body">
+                  <h5>Tổng đơn hàng</h5>
+                  <h2 className="fw-bold">{stats.totalOrders}</h2>
+                </div>
+              </div>
+            </div>
+            <div className="col">
+              <div className="card border-0 shadow-lg text-white bg-success">
+                <div className="card-body">
+                  <h5>Đơn đã giao</h5>
+                  <h2 className="fw-bold">{stats.countSuccessOrders}</h2>
+                </div>
+              </div>
+            </div>
+            <div className="col">
+              <div className="card border-0 shadow-lg text-white bg-warning">
+                <div className="card-body">
+                  <h5>Đơn chờ xử lý</h5>
+                  <h2 className="fw-bold">{stats.countPendingOrders}</h2>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div className="col-md-2">
-          <div className="card border-0 shadow-lg text-white bg-success">
-            <div className="card-body">
-              <h5>Đơn giao thành công</h5>
-              <h2 className="fw-bold">{stats.countSuccessOrders}</h2>
+        <div className="col-6">
+          <div className="row">
+            <div className="col">
+              <div className="card border-0 shadow-lg text-white bg-primary">
+                <div className="card-body">
+                  <h5>Tổng doanh thu</h5>
+                  <h2 className="fw-bold">
+                    {stats.totalRevenue.toLocaleString("vi-VN")}₫
+                  </h2>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div className="col-md-2">
-          <div className="card border-0 shadow-lg text-white bg-warning">
-            <div className="card-body">
-              <h5>Đơn chờ xử lý</h5>
-              <h2 className="fw-bold">{stats.countPendingOrders}</h2>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-2">
-          <div className="card border-0 shadow-lg text-white bg-primary">
-            <div className="card-body">
-              <h5>Tổng doanh thu</h5>
-              <h2 className="fw-bold">
-                {stats.totalRevenue.toLocaleString("vi-VN")}₫
-              </h2>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-2">
-          <div className="card border-0 shadow-lg text-white bg-danger">
-            <div className="card-body">
-              <h5>Doanh thu hôm nay</h5>
-              <h2 className="fw-bold">
-                {stats.todayOrders.toLocaleString("vi-VN")}₫
-              </h2>
+            <div className="col">
+              <div className="card border-0 shadow-lg text-white bg-danger">
+                <div className="card-body">
+                  <h5>Doanh thu hôm nay</h5>
+                  <h2 className="fw-bold">
+                    {stats.todayOrders.toLocaleString("vi-VN")}₫
+                  </h2>
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -35,7 +35,7 @@ const AdminProducts = ({ adminController }) => {
     titles: [],
     subTitles: [],
     inStock: true,
-    falseSale: false,
+    flashSale: false,
     highlightSections: [
       { title: "", content: "", icon: "bi-star-fill", order: 0 },
     ],
@@ -132,7 +132,7 @@ const AdminProducts = ({ adminController }) => {
         titles: [],
         subTitles: [],
         inStock: true,
-        falseSale: false,
+        flashSale: false,
         highlightSections: [
           { title: "", content: "", icon: "bi-star-fill", order: 0 },
         ],
@@ -162,7 +162,7 @@ const AdminProducts = ({ adminController }) => {
       tags: formData.tags,
       colors: formData.colors,
       inStock: Boolean(formData.inStock),
-      falseSale: Boolean(formData.falseSale),
+      flashSale: Boolean(formData.flashSale),
     };
 
     try {
@@ -882,11 +882,11 @@ const AdminProducts = ({ adminController }) => {
                           <input
                             className="form-check-input"
                             type="checkbox"
-                            checked={formData.falseSale}
+                            checked={formData.flashSale}
                             onChange={(e) =>
                               setFormData({
                                 ...formData,
-                                falseSale: e.target.checked,
+                                flashSale: e.target.checked,
                               })
                             }
                           />

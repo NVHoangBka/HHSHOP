@@ -140,7 +140,6 @@ const AdminOrders = ({ adminController }) => {
               <th>Hình thức TT</th>
               <th>Trạng thái TT</th>
               <th>Trạng thái ĐH</th>
-              {/* <th>QR</th> */}
               <th>Hành động</th>
             </tr>
           </thead>
@@ -157,7 +156,7 @@ const AdminOrders = ({ adminController }) => {
                   {order.shippingAddress.city}
                 </td>
                 <td className="text-danger fw-bold">
-                  {order.totalAmount.toLocaleString("vi-VN")} VNĐ
+                  {order.totalAmount.toLocaleString("vi-VN")} đ
                 </td>
                 <td>
                   <span
@@ -167,7 +166,7 @@ const AdminOrders = ({ adminController }) => {
                         : "bg-success"
                     }`}
                   >
-                    {order.paymentMethod === "BANK" ? "Chuyển khoản" : "COD"}
+                    {order.paymentMethod}
                   </span>
                 </td>
                 <td>
@@ -201,29 +200,19 @@ const AdminOrders = ({ adminController }) => {
                     <option value="returned">Đã trả hàng</option>
                   </select>
                 </td>
-                {/* <td>
-                  {order.paymentMethod === "BANK" && order.paymentQR && (
-                    <button
-                      className="btn btn-sm btn-outline-danger"
-                      data-bs-toggle="modal"
-                      data-bs-target={`#qrModal${order._id}`}
-                    >
-                      Xem QR
-                    </button>
-                  )}
-                </td> */}
-                <td>
+
+                <td className="d-flex align-items-center">
                   <button
-                    className="btn btn-sm btn-success mx-1"
+                    className="btn btn-success mx-1"
                     onClick={() => handleUpdateOrder(order._id)}
                   >
-                    Cập nhật
+                    <i className="bi bi-floppy"></i>
                   </button>
                   <button
-                    className="btn btn-sm btn-danger mx-1"
+                    className="btn btn-danger mx-1"
                     onClick={() => handleDeleteOrder(order._id)}
                   >
-                    Xoá
+                    <i className="bi bi-trash"></i>
                   </button>
                 </td>
               </tr>
