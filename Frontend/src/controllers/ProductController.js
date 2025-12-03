@@ -32,6 +32,10 @@ class ProductController {
   search(query, category = "all") {
     return this.productService.search(query, category);
   }
+
+  getProductBySlug(slug) {
+    return this.productService.getProductBySlug(slug);
+  }
 }
 
 export default ProductController;

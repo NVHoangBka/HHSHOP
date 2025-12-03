@@ -67,7 +67,8 @@ const productSchema = new mongoose.Schema(
 
     brand: { type: mongoose.Schema.Types.ObjectId, ref: "Brand", index: true },
     colors: [{ type: mongoose.Schema.Types.ObjectId, ref: "Color" }],
-    tags: [{ type: mongoose.Schema.Types.ObjectId, ref: "Tag" }],
+    // tags: [{ type: mongoose.Schema.Types.ObjectId, ref: "Tag" }],
+    tags: [{ type: String, lowercase: true, trim: true }],
     // Thuộc tính động (dung tích, kích thước, chất liệu...)
     attributes: [
       {

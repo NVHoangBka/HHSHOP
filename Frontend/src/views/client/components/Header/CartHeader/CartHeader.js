@@ -98,7 +98,7 @@ const CartHeader = ({
                           <div className="d-flex">
                             <Link
                               className="cart-item__image"
-                              to={`/products/${item.id}`}
+                              to={`/products/slug/${item.slug}`}
                               title={item.name}
                             >
                               <img
@@ -117,7 +117,7 @@ const CartHeader = ({
                             <div>
                               <p className="cart-item__name mb-0 fw-semibold small">
                                 <Link
-                                  to={`/products/${item.id}`}
+                                  to={`/products/slug/${item.slug}`}
                                   title={item.name}
                                   className="link text-decoration-none text-dark"
                                 >

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 
 const ProductDetail = ({ addToCart, productController }) => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -15,7 +15,7 @@ const ProductDetail = ({ addToCart, productController }) => {
     const fetchProduct = async () => {
       setLoading(true);
       try {
-        const data = await productController.getProductById(id);
+        const data = await productController.getProductBySlug(slug);
         if (!data) {
           console.error("Không có sản phẩm");
           // navigate("/");
@@ -37,7 +37,7 @@ const ProductDetail = ({ addToCart, productController }) => {
     };
 
     fetchProduct();
-  }, [id, productController, navigate]);
+  }, [slug, productController, navigate]);
 
   // Khi chọn variant → đổi ảnh + giá
   const handleVariantChange = (variant) => {

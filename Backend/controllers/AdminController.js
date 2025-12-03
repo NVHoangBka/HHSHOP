@@ -148,7 +148,7 @@ class AdminAuthController {
       const orderStats = orders.reduce((acc, order) => {
         const userId = order.userId.toString();
         if (!acc[userId]) {
-          acc[userId] = { count: 0, totalSpent: 0 };
+          acc[userId] = { count: 0, totalOrder: 0 };
         }
         acc[userId].count += 1;
         acc[userId].totalOrder += order.totalAmount;
@@ -229,7 +229,6 @@ class AdminAuthController {
 
   // LẤY TẤT CẢ SẢN PHẨM CHO ADMIN (có phân trang + tìm kiếm)
   static async getProductsAllAdmin(req, res) {
-    console.log(req.query);
     try {
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 10;

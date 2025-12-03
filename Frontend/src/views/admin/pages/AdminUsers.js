@@ -4,6 +4,10 @@ import React, { useEffect, useState } from "react";
 const AdminUsers = ({ adminController }) => {
   const [users, setUsers] = useState([]);
 
+  // TÌM KIẾM: CHỈ BẤM ENTER MỚI LỌC
+  const [searchInput, setSearchInput] = useState(""); // ô nhập liệu
+  const [searchTerm, setSearchTerm] = useState(""); // từ khoá tìm kiếm chính thức
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -21,15 +25,84 @@ const AdminUsers = ({ adminController }) => {
 
   const updateStatus = () => {};
 
+  const openModal = () => {
+    // Mở modal thêm người dùng
+  };
+  // === LỌC KHI BẤM ENTER ===
+  const handleSearchKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      setSearchTerm(searchInput.trim());
+    }
+    if (e.key === "Escape") {
+      setSearchInput("");
+      setSearchTerm("");
+    }
+  };
+
+  const clearSearch = () => {
+    setSearchInput("");
+    setSearchTerm("");
+  };
+
+  // Lọc chỉ theo tên sản phẩm (không phân biệt hoa thường)
+  const filteredUsers = users.filter(
+    (user) =>
+      searchTerm === "" ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      `${user.firstName} ${user.lastName}`
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      user.phoneNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.address.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="user-admin py-4">
-      <div className="user-admin_header">
-        <h2 className="mb-4 fw-bold text-uppercase">Quản lý người dùng</h2>
+      <div className="user-admin_header d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h2 className="fw-bold text-uppercase text-success">
+            Quản lý người dùng
+          </h2>
+        </div>
+        <div className="d-flex justify-content-between align-items-center">
+          <div
+            className="me-3 position-relative border rounded-pill py-1 bg-white py-2"
+            style={{ width: "300px" }}
+          >
+            <input
+              type="text"
+              className="input-group border-0 mx-1 px-3 fs-6 outline-0 no-focus"
+              placeholder="Tìm người dùng..."
+              value={searchInput}
+              style={{ maxWidth: "230px" }}
+              onChange={(e) => setSearchInput(e.target.value)}
+              onKeyDown={handleSearchKeyDown}
+            />
+            <i className="bi bi-search position-absolute top-50 end-0 translate-middle fs-5"></i>
+
+            {searchInput && (
+              <button
+                type="button"
+                className="btn-close position-absolute top-50 end-0 translate-middle-y py-0 px-3 me-4 fs-7"
+                onClick={clearSearch}
+              ></button>
+            )}
+          </div>
+          <button
+            className="btn btn-success shadow "
+            onClick={() => openModal()}
+          >
+            + Thêm người dùng mới
+          </button>
+        </div>
       </div>
-      <div className="user-admin_content table-responsive ">
+      <div className="user-admin_content table-responsive">
         <table className="table table-striped table-bordered table-hover align-middle">
-          <thead className="table-success">
-            <tr className="text-center align-middles">
+          <thead className="table-primary">
+            <tr className="text-center align-middle">
               <th>STT</th>
               <th>Email</th>
               <th>Họ Tên</th>
@@ -42,7 +115,7 @@ const AdminUsers = ({ adminController }) => {
             </tr>
           </thead>
           <tbody>
-            {users.map((user, index) => (
+            {filteredUsers.map((user, index) => (
               <tr key={user._id} className="text-center fs-7 align-middle">
                 <td>{index + 1}</td>
                 <td>{user.email}</td>

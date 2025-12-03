@@ -10,7 +10,7 @@ const ProductItem = ({ product, addToCart }) => {
     );
   }
 
-  const { id, name, image, price, discountPrice, rating = 0 } = product;
+  const { id, name, image, price, discountPrice, rating = 0, slug } = product;
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -37,7 +37,7 @@ const ProductItem = ({ product, addToCart }) => {
 
   const handleShowProductDetail = (e) => {
     e.stopPropagation();
-    navigate(`/products/${id}`);
+    navigate(`/products/slug/${slug}`);
   };
 
   const handleAddToCart = (e) => {

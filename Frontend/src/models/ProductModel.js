@@ -1,6 +1,4 @@
 // src/models/ProductModel.js
-import api from "../services/api";
-
 class Product {
   constructor(data) {
     this.id = data._id || data.id;
@@ -13,110 +11,36 @@ class Product {
     this.variants = data.variants || [];
     this.description = data.description || "";
     this.shortDescription = data.shortDescription || "";
-
-    // THÊM 2 TRƯỜNG QUAN TRỌNG
-    this.highlightContent = data.highlightContent || ""; // Chuỗi HTML
-    this.highlightSections = data.highlightSections || []; // Mảng section (tương lai)
+    this.highlightContent = data.highlightContent || "";
+    this.highlightSections = data.highlightSections || [];
 
     // Phân loại
     this.brands = data.brands || [];
     this.types = data.types || [];
-    this.tag = data.tag || [];
+    this.tags = data.tags || [];
     this.titles = data.titles || [];
     this.subTitles = data.subTitles || [];
 
-    // Trạng thái & số liệu
-    this.falseSale = data.falseSale || false;
-    this.sold = data.sold || 0;
+    // Số liệu
     this.viewCount = data.viewCount || 0;
+    this.totalSold = data.totalSold || 0;
+    this.stock = data.stock || 0;
     this.isActive = data.isActive !== false;
-    this.inStock = data.inStock !== false;
 
-    // Tạo sẵn giá cuối cùng (tiện dùng)
     this.finalPrice = this.discountPrice || this.price;
-  }
-  // Helper: lấy tên hiển thị (có variant)
-  getDisplayName(variant) {
-    if (!variant) return this.name;
-    return `${this.name} - ${variant.value}`;
   }
 }
 
 class ProductModel {
-  async getAllProducts() {
-    try {
-      const res = await api.get("/products");
-      return res.data.products.map((p) => new Product(p));
-    } catch (error) {
-      console.error("Lỗi tải sản phẩm:", error);
-      return [];
-    }
+  // Chỉ map data → không gọi API nữa
+  mapProduct(data) {
+    return new Product(data);
   }
 
-  async getProductsByTitle(titlePath) {
-    try {
-      const res = await api.get(`/products/title/${titlePath}`);
-      return res.data.products.map((p) => new Product(p));
-    } catch (error) {
-      console.error("Lỗi lọc theo title:", error);
-      return [];
-    }
-  }
-
-  async getProductsBySubTitle(subTitlePath) {
-    try {
-      const res = await api.get(`/products/subtitle/${subTitlePath}`);
-      return res.data.products.map((p) => new Product(p));
-    } catch (error) {
-      console.error("Lỗi lọc theo subtitle:", error);
-      return [];
-    }
-  }
-
-  async getProductsByTag(tag) {
-    try {
-      const res = await api.get(`/products/tag/${tag}`);
-      return res.data.products.map((p) => new Product(p));
-    } catch (error) {
-      console.error("Lỗi lọc theo tag:", error);
-      return [];
-    }
-  }
-
-  async getProductsByType(type) {
-    try {
-      const res = await api.get(`/products/type/${type}`);
-      return res.data.products.map((p) => new Product(p));
-    } catch (error) {
-      console.error("Lỗi lọc theo type:", error);
-      return [];
-    }
-  }
-
-  async getProductById(id) {
-    try {
-      const res = await api.get(`/products/${id}`);
-      return new Product(res.data.product);
-    } catch (error) {
-      console.error("Lỗi lấy chi tiết sản phẩm:", error);
-      return null;
-    }
-  }
-
-  // TÌM KIẾM - DÙNG api (Axios)
-  async search(query, category = "all") {
-    try {
-      const params = {};
-      if (query) params.q = query;
-      if (category !== "all") params.category = category;
-      const res = await api.get("/products/search/live", { params });
-
-      return res.data.products.map((p) => new Product(p));
-    } catch (error) {
-      console.error("Lỗi tìm kiếm:", error);
-      return [];
-    }
+  mapProducts(list) {
+    return list.map((item) => new Product(item));
   }
 }
 
 export default ProductModel;
+export { Product };

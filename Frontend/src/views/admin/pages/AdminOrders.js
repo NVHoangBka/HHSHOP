@@ -101,7 +101,9 @@ const AdminOrders = ({ adminController }) => {
   return (
     <div className="order-admin py-4">
       <div className="order-admin_header d-flex justify-content-between mb-4 align-items-center">
-        <h2 className="fw-bold text-uppercase">Quản lý đơn hàng</h2>
+        <h2 className="fw-bold text-uppercase text-success">
+          Quản lý đơn hàng
+        </h2>
         <div
           className="me-3 position-relative border rounded-pill py-1 bg-white py-2"
           style={{ width: "300px" }}
@@ -193,9 +195,10 @@ const AdminOrders = ({ adminController }) => {
                     <option value="pending">Chờ xử lý</option>
                     <option value="confirmed">Đã xác nhận</option>
                     <option value="preparing">Đang chuẩn bị</option>
-                    <option value="shipped">Đã giao</option>
-                    <option value="delivered">Hoàn thành</option>
-                    <option value="canceled">Hủy</option>
+                    <option value="shipped">Đang giao hàng</option>
+                    <option value="delivered">Đã giao hàng</option>
+                    <option value="canceled">Đã hủy</option>
+                    <option value="returned">Đã trả hàng</option>
                   </select>
                 </td>
                 {/* <td>

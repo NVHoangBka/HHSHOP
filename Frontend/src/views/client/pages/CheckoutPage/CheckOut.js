@@ -179,7 +179,11 @@ const Checkout = ({ cartController, orderController, authController }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.fullName || !formData.phone || !formData.address) {
+    if (
+      !formData.fullName ||
+      !formData.phone ||
+      (!formData.address && !city && !district && !ward)
+    ) {
       alert("Vui lòng điền đầy đủ thông tin nhận hàng");
       return;
     }
@@ -198,7 +202,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
         shippingAddress: {
           recipientName: formData.fullName,
           phoneNumber: formData.phone,
-          addressLine: formData.address,
+          addressLine: formData.address || "",
           city: formData.city || "Hà Nội",
           district: formData.district || "Hoàn Kiếm",
           ward: formData.ward || "Hàng Bạc",
@@ -360,7 +364,6 @@ const Checkout = ({ cartController, orderController, authController }) => {
                       onChange={(e) =>
                         setFormData({ ...formData, address: e.target.value })
                       }
-                      required
                     />
                   </div>
                   <div className="mb-3">

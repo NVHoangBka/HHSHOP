@@ -280,7 +280,7 @@ const AdminProducts = ({ adminController }) => {
     );
   }
 
-  console.log(totalPages);
+  // console.log(totalPages);
   // console.log(currentPage);
   // console.log(totalProducts);
 
@@ -306,7 +306,9 @@ const AdminProducts = ({ adminController }) => {
       <div className="container-fluid py-4">
         <div className="d-flex justify-content-between align-items-center mb-4">
           <div>
-            <h2 className="fw-bold text-primary">Quản lý sản phẩm</h2>
+            <h2 className="fw-bold text-success text-uppercase">
+              Quản lý sản phẩm
+            </h2>
           </div>
           <div className="d-flex justify-content-between align-items-center">
             <div

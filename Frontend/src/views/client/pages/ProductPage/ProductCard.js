@@ -13,7 +13,7 @@ const ProductCard = ({ product, addToCart }) => {
       <div className="card-body d-flex flex-column">
         <h5 className="card-title">
           <Link
-            to={`/product/${product.id}`}
+            to={`/product/slug/${product.slug}`}
             className="text-decoration-none text-dark"
           >
             {product.name}

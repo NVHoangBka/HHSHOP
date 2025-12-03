@@ -60,7 +60,7 @@ const ProductRouter = ({
       ))}
 
       <Route
-        path={`/:id`}
+        path={`/slug/:slug`}
         element={
           <ProductDetail
             addToCart={addToCart}
