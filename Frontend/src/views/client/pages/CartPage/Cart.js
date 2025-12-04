@@ -11,6 +11,7 @@ const Cart = ({
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState(propCartItems || []);
   const [total, setTotal] = useState(cartController.getTotalPrice());
+  const [showBillInfo, setShowBillInfo] = useState(false);
 
   // Đồng bộ state với props khi có thay đổi
   useEffect(() => {
@@ -55,6 +56,11 @@ const Cart = ({
     navigate(`/checkout`);
   };
 
+  const handleShowBillInfo = (e) => {
+    e.preventDefault();
+    setShowBillInfo(true);
+  };
+
   return (
     <div className="bg-success-subtle">
       <div className="breadcrumbs">
@@ -82,7 +88,7 @@ const Cart = ({
           <div className="row px-4">
             <div className="cart-left col-8">
               <div className="cart-header d-flex justify-content-between align-items-center">
-                <h2 className="card-title text-black pb-3 pt-4 px-1">
+                <h2 className="card-title text-black pb-3 pt-4 px-1 fw-bold">
                   Giỏ hàng
                 </h2>
               </div>
@@ -91,11 +97,11 @@ const Cart = ({
                   <table class="table align-middle">
                     <thead>
                       <tr className="text-center">
-                        <th scope="col">Sản phẩm</th>
-                        <th scope="col">Đơn giá</th>
-                        <th scope="col">Số Lượng</th>
-                        <th scope="col">Tạm tính</th>
-                        <th scope="col"></th>
+                        <th style={{ width: "50%" }}>Sản phẩm</th>
+                        <th style={{ width: "15%" }}>Đơn giá</th>
+                        <th style={{ width: "15%" }}>Số Lượng</th>
+                        <th style={{ width: "15%" }}>Tạm tính</th>
+                        <th style={{ width: "10%" }}></th>
                       </tr>
                     </thead>
                     {cartItems.length === 0 ? (
@@ -105,12 +111,15 @@ const Cart = ({
                     ) : (
                       <tbody>
                         {cartItems.map((item) => (
-                          <tr className="cart-item py-3 border-bottom">
+                          <tr
+                            className="cart-item py-3 border-bottom text-center"
+                            key={item.id}
+                          >
                             <td>
-                              <div className="d-flex">
+                              <div className="d-flex text-start align-items-center">
                                 <Link
                                   className="cart-item__image"
-                                  to={`/products/${item.id}`}
+                                  to={`/products/slug/${item.slug}`}
                                   title={item.name}
                                 >
                                   <img
@@ -130,7 +139,7 @@ const Cart = ({
                                 <div>
                                   <p className="cart-item__name mb-0 fw-semibold small">
                                     <Link
-                                      to={`/products/${item.id}`}
+                                      to={`/products/slug/${item.slug}`}
                                       title={item.name}
                                       className="link text-decoration-none text-dark"
                                     >
@@ -160,13 +169,8 @@ const Cart = ({
                                 </p>
                               )}
                             </td>
-                            <td className="align-middle">
-                              <div
-                                className="input-group custom-number-input cart-item-quantity d-flex border rounded row"
-                                style={{
-                                  maxWidth: "100px",
-                                }}
-                              >
+                            <td className="quantity text-center">
+                              <div className="input-group custom-number-input cart-item-quantity d-flex border rounded">
                                 <button
                                   type="button"
                                   name="minus"
@@ -224,86 +228,95 @@ const Cart = ({
                 <div className="cart-summary-info">
                   <div className="cart-opener-group  divide-dashed divide-y divide-neutral-50">
                     <div className="cart-opener-item border-bottom">
-                      <div className="bill-field  space-y-3 d-none ">
-                        <div className="flex items-center">
-                          <div className="flex items-center ">
-                            <input
-                              className="invoice"
-                              type="hidden"
-                              name="attributes[Xuất hóa đơn]"
-                              value="không"
-                            />
-                            <input
-                              className="invoice-checkbox form-checkbox"
-                              type="checkbox"
-                            />
+                      <div
+                        className="modal fade"
+                        id="billInfoModal"
+                        tabIndex="-1"
+                        aria-labelledby="billInfoModalLabel"
+                        aria-hidden="true"
+                      >
+                        <div className="bill-field modal-dialog slide-right position-absolute px-3 py-4 top-0 bg-white end-0 h-100 shadow-lg">
+                          <div className="me-5">
+                            <div className="d-flex align-items-center mb-3">
+                              <i className="bi bi-arrow-left fs-4 me-2"></i>
+                              <h3 className="fw-bold m-0">
+                                Xuất hoá đơn công ty
+                              </h3>
+                            </div>
                           </div>
-                          <div className="ml-2 text-sm">
-                            <label>Xuất hóa đơn</label>
+                          <div className="ps-4">
+                            <div className="d-flex align-items-center mb-3">
+                              <input
+                                className="invoice fs-5"
+                                type="hidden"
+                                name="attributes[Xuất hóa đơn]"
+                                value="không"
+                              />
+                              <input
+                                className="invoice-checkbox form-checkbox fs-5"
+                                type="checkbox"
+                              />
+                              <div className="ms-2 text-sm ">
+                                <label>Xuất hóa đơn</label>
+                              </div>
+                            </div>
+                            <div className="form-group mb-3">
+                              <label className="label d-block mb-1">
+                                Tên công ty
+                              </label>
+                              <input
+                                type="text"
+                                className="form-input w-100 p-2 rounded outline-none border"
+                                name=""
+                                placeholder="Tên công ty"
+                              />
+                              <span className="error  text-error"></span>
+                            </div>
+                            <div className="form-group mb-3">
+                              <label className="label d-block mb-1">
+                                Mã số thuế
+                              </label>
+                              <input
+                                type="number"
+                                className="form-input w-100 p-2 rounded outline-none border"
+                                placeholder="Mã số thuế"
+                              />
+                              <span className="error text-error"></span>
+                            </div>
+                            <div className="form-group mb-3">
+                              <label className="label d-block mb-1">
+                                Địa chỉ công ty
+                              </label>
+                              <textarea
+                                className="form-textarea w-100 p-2 rounded outline-none border"
+                                placeholder="Địa chỉ công ty"
+                              ></textarea>
+                              <span className="error  text-error"></span>
+                            </div>
+                            <div className="form-group mb-3">
+                              <label className="label d-block mb-1">
+                                Email nhận hóa đơn
+                              </label>
+                              <input
+                                type="email"
+                                className="form-input w-100 p-2 rounded outline-none border"
+                                placeholder="Email nhận hóa đơn"
+                              />
+                              <span className="error  text-error"></span>
+                            </div>
                           </div>
-                        </div>
-                        <div className="form-group">
-                          <label className="label block mb-2">
-                            Tên công ty
-                          </label>
-                          <input
-                            type="text"
-                            className="form-input"
-                            name="attributes[Tên công ty]"
-                            value=""
-                            data-rules="['required']"
-                            data-messages="{'required':'Trường này không được bỏ trống' }"
-                            placeholder="Tên công ty"
-                          />
-                          <span className="error  text-error"></span>
-                        </div>
-                        <div className="form-group">
-                          <label className="label block mb-2">Mã số thuế</label>
-                          <input
-                            type="number"
-                            className="form-input"
-                            name="attributes[Mã số thuế]"
-                            value=""
-                            data-rules="['minLength:10','required']"
-                            data-messages="{ 'minLength:10': 'Số kí tự tối thiểu [size]', 'require':'Trường này không được bỏ trống' }"
-                            placeholder="Mã số thuế"
-                          />
-                          <span className="error text-error"></span>
-                        </div>
-                        <div className="form-group">
-                          <label className="label block mb-2">
-                            Địa chỉ công ty
-                          </label>
-                          <textarea
-                            className="form-textarea"
-                            data-rules="['required']"
-                            data-messages="{'required':'Trường này không được bỏ trống' }"
-                            name="attributes[Địa chỉ công ty]"
-                            placeholder="Địa chỉ công ty"
-                          ></textarea>
-                          <span className="error  text-error"></span>
-                        </div>
-                        <div className="form-group">
-                          <label className="label block mb-2">
-                            Email nhận hóa đơn
-                          </label>
-                          <input
-                            type="email"
-                            className="form-input"
-                            name="attributes[Email nhận hóa đơn]"
-                            value=""
-                            placeholder="Email nhận hóa đơn"
-                            data-rules="['required','email']"
-                            data-messages="{'required':'Trường này không được bỏ trống', 'email': 'Email không đúng định dạng' }"
-                          />
-                          <span className="error  text-error"></span>
+                          <div className="mx-5 mt-4">
+                            <button
+                              type="button"
+                              className="btn btn-success d-flex justify-content-center align-items-center rounded-5 py-2 px-4 mx-3 mb-4 text-white fw-semibold w-100"
+                            >
+                              Lưu thông tin
+                            </button>
+                          </div>
                         </div>
                       </div>
                       <portal-opener>
-                        <div
-                          className="cart-voucer text-secondary py-2 d-flex align-items-center justify-content-between w-100 py-3"
-                          data-portal="#cart-vat-drawer"
-                        >
+                        <div className="cart-voucer text-secondary py-2 d-flex align-items-center justify-content-between w-100 py-3">
                           <p className="d-flex align-items-center m-0 fs-6">
                             <i className="bi bi-receipt "></i>
                             <span className="line-clamp-1 ms-1">
@@ -312,6 +325,8 @@ const Cart = ({
                           </p>
                           <button
                             type="button"
+                            data-bs-toggle="modal"
+                            data-bs-target="#billInfoModal"
                             className="d-flex align-items-center border-0 bg-transparent text-secondary text-hover"
                           >
                             Thay đổi

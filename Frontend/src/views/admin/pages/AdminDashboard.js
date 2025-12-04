@@ -225,9 +225,9 @@ const AdminDashboard = ({ adminController }) => {
               </div>
               <div className="mb-5">
                 <p className="mb-2 fw-bold">Danh sách đơn hàng chưa xử lí</p>
-                <table className="table ">
-                  <thead className="table-success">
-                    <tr>
+                <table className="table border">
+                  <thead className="table-success ">
+                    <tr className="text-center">
                       <th>Đơn hàng</th>
                       <th>Trạng thái ĐH</th>
                       <th>Số tiền</th>
@@ -238,7 +238,7 @@ const AdminDashboard = ({ adminController }) => {
                     {stats.countPendingOrders > 0 ? (
                       pendingOrders.map((order) => {
                         return (
-                          <tr key={order._id}>
+                          <tr key={order._id} className="text-center">
                             <td>{order.orderId}</td>
                             <td className={getStatusClass(order.status)}>
                               {getStatusText(order.status)}

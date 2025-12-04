@@ -126,3 +126,14 @@ button:disabled {
     outline: none !important;
     box-shadow: none !important;
 }
+
+/* Ẩn modal khi chưa xuất hiện */
+.modal.fade .modal-dialog.slide-right {
+  transform: translateX(100%) !important;
+  transition: transform 0.4s ease !important;
+}
+
+/* Khi modal hiển thị */
+.modal.show .modal-dialog.slide-right {
+  transform: translateX(0%) !important;
+}
