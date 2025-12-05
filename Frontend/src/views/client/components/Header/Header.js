@@ -137,16 +137,16 @@ const Header = ({
         <div className="container">
           <ul className="navbar justify-content-center list-unstyled row ms-5 me-5 p-3 text-white mb-0">
             {[
-              "Giới thiệu",
-              "Khuyến mãi",
-              "Tin tức",
-              "Kiểm tra đơn hàng",
-              "Liên hệ",
-              "Hướng dẫn",
+              { name: "Giới thiệu", path: "/introduce" },
+              { name: "Khuyến mãi", path: "/flash-sale" },
+              { name: "Tin tức", path: "/news" },
+              { name: "Kiểm tra đơn hàng", path: "/check-order" },
+              { name: "Liên hệ", path: "/contact" },
+              { name: "Hướng dẫn", path: "/instruct" },
             ].map((item) => (
               <li className="nav-item hover col-2 text-center" key={item}>
-                <Link to="#" className="nav-link ">
-                  {item}
+                <Link to={item.path} className="nav-link ">
+                  {item.name}
                 </Link>
               </li>
             ))}

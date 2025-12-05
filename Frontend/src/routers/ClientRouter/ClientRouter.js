@@ -8,6 +8,7 @@ import OrderRouter from "./OrderRouter";
 
 // ===== Pages =====
 import Home from "../../views/client/pages/HomePage/Home";
+import Introduce from "../../views/client/pages/IntroducePage/Introduce";
 
 const ClientRouter = (props) => (
   <Routes>
@@ -23,6 +24,9 @@ const ClientRouter = (props) => (
         />
       }
     />
+
+    {/* Giới thiệu */}
+    <Route path="/introduce" element={<Introduce />} />
 
     {/* Auth */}
     <Route
