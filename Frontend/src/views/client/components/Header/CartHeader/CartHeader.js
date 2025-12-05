@@ -302,7 +302,7 @@ const CartHeader = ({
                             data-portal="#cart-vat-drawer"
                           >
                             <p
-                              className="d-flex align-items-center flex-column w-100 m-0 cursor-pointer"
+                              className="d-flex align-items-center flex-column w-100 m-0 cursor-pointer text-secondary"
                               onClick={toggleShowBillInfo}
                             >
                               <i className="bi bi-receipt"></i>
@@ -383,7 +383,7 @@ const CartHeader = ({
                             data-portal="#cart-delivery-drawer"
                           >
                             <p
-                              className="d-flex align-items-center flex-column w-100 m-0 cursor-pointer"
+                              className="d-flex align-items-center flex-column w-100 m-0 cursor-pointer text-secondary"
                               onClick={toggleShowTime}
                             >
                               <i className="bi bi-clock"></i>
@@ -439,7 +439,7 @@ const CartHeader = ({
                             data-portal="#cart-note-drawer"
                           >
                             <p
-                              className="d-flex align-items-center flex-column w-100 m-0 cursor-pointer"
+                              className="d-flex align-items-center flex-column w-100 m-0 cursor-pointer text-secondary"
                               onClick={toggleShowNote}
                             >
                               <i className="bi bi-stickies-fill"></i>
@@ -482,7 +482,7 @@ const CartHeader = ({
                             data-portal="#coupon-drawer"
                           >
                             <p
-                              className="d-flex align-items-center flex-column w-100 m-0 cursor-pointer"
+                              className="d-flex align-items-center flex-column w-100 m-0 cursor-pointer text-secondary"
                               onClick={toggleShowVocher}
                             >
                               <i class="bi bi-ticket-perforated"></i>

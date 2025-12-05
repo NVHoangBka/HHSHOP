@@ -235,7 +235,7 @@ const Cart = ({
                         aria-labelledby="billInfoModalLabel"
                         aria-hidden="true"
                       >
-                        <div className="bill-field modal-dialog slide-right position-absolute px-3 py-4 top-0 bg-white end-0 h-100 shadow-lg">
+                        <div className="bill-field modal-dialog slide-right position-absolute px-3 py-4 top-0 bg-white end-0 h-100 shadow-lg w-25 m-0">
                           <div className="me-5">
                             <div className="d-flex align-items-center mb-3">
                               <i className="bi bi-arrow-left fs-4 me-2"></i>
@@ -336,6 +336,67 @@ const Cart = ({
                       </portal-opener>
                     </div>
                     <div className="cart-opener-item border-bottom">
+                      <div
+                        className="modal fade"
+                        id="timeModal"
+                        tabIndex="-1"
+                        aria-labelledby="timeModalLabel"
+                        aria-hidden="true"
+                      >
+                        <div className="time-field modal-dialog slide-right position-absolute px-3 py-4 top-0 bg-white end-0 h-100 shadow-lg w-25 m-0">
+                          <div className="me-5">
+                            <div className="d-flex align-items-center mb-3">
+                              <i className="bi bi-arrow-left fs-4 me-2"></i>
+                              <h3 className="fw-bold m-0">Hẹn giờ nhận hàng</h3>
+                            </div>
+                          </div>
+                          <div className="ps-4">
+                            <div className="d-flex align-items-center mb-3">
+                              <input className="invoice fs-5" type="hidden" />
+                              <input
+                                className="invoice-checkbox form-checkbox fs-5"
+                                type="checkbox"
+                              />
+                              <div className="ms-2 text-sm ">
+                                <label>Hẹn giờ nhận hàng</label>
+                              </div>
+                            </div>
+                            <div className="form-group mb-3">
+                              <label className="label d-block mb-1">
+                                Ngày nhận hàng
+                              </label>
+                              <input
+                                type="date"
+                                className="form-input w-100 p-2 rounded outline-none border"
+                              />
+                              <span className="error  text-error"></span>
+                            </div>
+                            <div className="form-group mb-3">
+                              <label className="label d-block mb-1">
+                                Thời gian nhận hàng
+                              </label>
+                              <select
+                                class="form-select"
+                                aria-label="Default select example"
+                              >
+                                <option selected>-- Chọn thời gian --</option>
+                                <option value={1}>08h00 - 11h00</option>
+                                <option value={2}>14h00 - 18h00</option>
+                                <option value={3}>19h00 - 22h00</option>
+                              </select>
+                              <span className="error text-error"></span>
+                            </div>
+                          </div>
+                          <div className="mx-5 mt-4">
+                            <button
+                              type="button"
+                              className="btn btn-success d-flex justify-content-center align-items-center rounded-5 py-2 px-4 mx-3 mb-4 text-white fw-semibold w-100"
+                            >
+                              Lưu thông tin
+                            </button>
+                          </div>
+                        </div>
+                      </div>
                       <portal-opener>
                         <div
                           className="cart-voucer text-secondary py-2 d-flex align-items-center justify-content-between w-100 py-3"
@@ -350,29 +411,53 @@ const Cart = ({
                           <button
                             type="button"
                             className="d-flex align-items-center border-0 bg-transparent text-secondary text-hover"
+                            data-bs-toggle="modal"
+                            data-bs-target="#timeModal"
                           >
                             Thay đổi
                             <i className="bi bi-caret-right ms-2  d-flex align-items-center"></i>
                           </button>
-                          <input
-                            type="hidden"
-                            name="attributes[Hẹn giờ nhận hàng]"
-                            value=""
-                          />
-                          <input
-                            type="hidden"
-                            name="attributes[Ngày nhận hàng]"
-                            value=""
-                          />
-                          <input
-                            type="hidden"
-                            name="attributes[Thời gian nhận hàng]"
-                            value=""
-                          />
                         </div>
                       </portal-opener>
                     </div>
                     <div className="cart-opener-item border-bottom">
+                      <div
+                        className="modal fade"
+                        id="noteModal"
+                        tabIndex="-1"
+                        aria-labelledby="noteModalLabel"
+                        aria-hidden="true"
+                      >
+                        <div className="note-field modal-dialog slide-right position-absolute px-3 py-4 top-0 bg-white end-0 h-100 shadow-lg w-25 m-0">
+                          <div className="me-5">
+                            <div className="d-flex align-items-center mb-3">
+                              <i className="bi bi-arrow-left fs-4 me-2"></i>
+                              <h3 className="fw-bold m-0">Ghi chú đơn hàng</h3>
+                            </div>
+                          </div>
+                          <div className="ps-4">
+                            <div className="form-group mb-3">
+                              <label className="label d-block mb-1">
+                                Ghi chú
+                              </label>
+                              <textarea
+                                className="form-textarea w-100 p-2 rounded outline-none border "
+                                style={{ height: "100px" }}
+                                name="note"
+                              ></textarea>
+                              <span className="error  text-error"></span>
+                            </div>
+                          </div>
+                          <div className="mx-5 mt-4">
+                            <button
+                              type="button"
+                              className="btn btn-success d-flex justify-content-center align-items-center rounded-5 py-2 px-4 mx-3 mb-4 text-white fw-semibold w-100"
+                            >
+                              Lưu thông tin
+                            </button>
+                          </div>
+                        </div>
+                      </div>
                       <portal-opener>
                         <div
                           className="cart-voucer text-secondary py-2 d-flex align-items-center justify-content-between w-100 py-3 "
@@ -387,14 +472,12 @@ const Cart = ({
                           <button
                             type="button"
                             className="d-flex align-items-center border-0 bg-transparent text-secondary text-hover"
+                            data-bs-toggle="modal"
+                            data-bs-target="#noteModal"
                           >
                             Thay đổi
                             <i className="bi bi-caret-right ms-2  d-flex align-items-center"></i>
                           </button>
-                          <textarea
-                            className="form-textarea d-none"
-                            name="note"
-                          ></textarea>
                         </div>
                       </portal-opener>
                     </div>
