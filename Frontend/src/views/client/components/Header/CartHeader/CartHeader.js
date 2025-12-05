@@ -1,3 +1,4 @@
+import { set } from "lodash";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -11,6 +12,10 @@ const CartHeader = ({
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState(propCartItems || []);
   const [total, setTotal] = useState(cartController.getTotalPrice());
+  const [showBillInfo, setShowBillInfo] = useState(true);
+  const [showTime, setShowTime] = useState(true);
+  const [showNote, setShowNote] = useState(true);
+  const [showVocher, setShowVocher] = useState(true);
 
   // Đồng bộ state với props khi có thay đổi
   useEffect(() => {
@@ -56,9 +61,25 @@ const CartHeader = ({
     navigate(`/checkout`);
   };
 
+  const toggleShowBillInfo = () => {
+    setShowBillInfo(!showBillInfo);
+  };
+
+  const toggleShowTime = () => {
+    setShowTime(!showTime);
+  };
+
+  const toggleShowNote = () => {
+    setShowNote(!showNote);
+  };
+
+  const toggleShowVocher = () => {
+    setShowVocher(!showVocher);
+  };
+
   return (
-    <div className={`cart d-flex flex-column end-0`}>
-      <div className="cart-header d-flex justify-content-between align-items-center border-bottom">
+    <div className="d-flex flex-column end-0 h-100">
+      <div className="cart-header d-flex justify-content-between align-items-center border-bottom me-2">
         <h2 className="card-title text-black pb-3 pt-4 px-4">Giỏ hàng</h2>
         <button
           className="btn border rounded-circle px-2 py-0"
@@ -186,191 +207,289 @@ const CartHeader = ({
               <div className="cart-bottom pt-4">
                 <div className="cart-summary">
                   <div className="cart-summary-info">
-                    <div className="cart-opener-group  divide-dashed divide-y divide-neutral-50">
-                      <div
-                        className="cart-opener-item"
-                        style={{ display: "none" }}
-                      >
-                        <div className="bill-field  space-y-3 hidden ">
-                          <div className="flex items-center">
-                            <div className="flex items-center ">
+                    <div className="cart-opener-group row align-items-center mb-3 ">
+                      <div className="cart-opener-item col-3 ">
+                        <div
+                          className="bill-field slide-right position-absolute py-4 ps-3 top-0 bg-white end-0 h-100 shadow-lg w-100"
+                          hidden={showBillInfo}
+                        >
+                          <div className=" bill-header">
+                            <div className="d-flex align-items-center mb-3">
+                              <p
+                                className="cursor-pointer m-0"
+                                onClick={toggleShowBillInfo}
+                              >
+                                <i className="bi bi-arrow-left fs-4 me-2"></i>
+                              </p>
+                              <h3 className="fw-bold m-0">
+                                Xuất hoá đơn công ty
+                              </h3>
+                            </div>
+                          </div>
+                          <div className="px-4">
+                            <div className="d-flex align-items-center mb-3">
                               <input
-                                className="invoice"
+                                className="invoice fs-5"
                                 type="hidden"
                                 name="attributes[Xuất hóa đơn]"
                                 value="không"
                               />
                               <input
-                                className="invoice-checkbox form-checkbox"
+                                className="invoice-checkbox form-checkbox fs-5"
                                 type="checkbox"
                               />
+                              <div className="ms-2 text-sm ">
+                                <label>Xuất hóa đơn</label>
+                              </div>
                             </div>
-                            <div className="ml-2 text-sm">
-                              <label>Xuất hóa đơn</label>
+                            <div className="form-group mb-3">
+                              <label className="label d-block mb-1">
+                                Tên công ty
+                              </label>
+                              <input
+                                type="text"
+                                className="form-input w-100 p-2 rounded outline-none border"
+                                name=""
+                                placeholder="Tên công ty"
+                              />
+                              <span className="error  text-error"></span>
+                            </div>
+                            <div className="form-group mb-3">
+                              <label className="label d-block mb-1">
+                                Mã số thuế
+                              </label>
+                              <input
+                                type="number"
+                                className="form-input w-100 p-2 rounded outline-none border"
+                                placeholder="Mã số thuế"
+                              />
+                              <span className="error text-error"></span>
+                            </div>
+                            <div className="form-group mb-3">
+                              <label className="label d-block mb-1">
+                                Địa chỉ công ty
+                              </label>
+                              <textarea
+                                className="form-textarea w-100 p-2 rounded outline-none border"
+                                placeholder="Địa chỉ công ty"
+                              ></textarea>
+                              <span className="error  text-error"></span>
+                            </div>
+                            <div className="form-group mb-3">
+                              <label className="label d-block mb-1">
+                                Email nhận hóa đơn
+                              </label>
+                              <input
+                                type="email"
+                                className="form-input w-100 p-2 rounded outline-none border"
+                                placeholder="Email nhận hóa đơn"
+                              />
+                              <span className="error  text-error"></span>
                             </div>
                           </div>
-                          <div className="form-group">
-                            <label className="label block mb-2">
-                              Tên công ty
-                            </label>
-                            <input
-                              type="text"
-                              className="form-input"
-                              name="attributes[Tên công ty]"
-                              value=""
-                              data-rules="['required']"
-                              data-messages="{'required':'Trường này không được bỏ trống' }"
-                              placeholder="Tên công ty"
-                            />
-                            <span className="error  text-error"></span>
+                          <div className="mx-5 mt-4">
+                            <button
+                              type="button"
+                              className="btn btn-success d-flex justify-content-center align-items-center rounded-5 py-2 px-4 mx-3 mb-4 text-white fw-semibold w-100"
+                            >
+                              Lưu thông tin
+                            </button>
                           </div>
-                          <div className="form-group">
-                            <label className="label block mb-2">
-                              Mã số thuế
-                            </label>
-                            <input
-                              type="number"
-                              className="form-input"
-                              name="attributes[Mã số thuế]"
-                              value=""
-                              data-rules="['minLength:10','required']"
-                              data-messages="{ 'minLength:10': 'Số kí tự tối thiểu [size]', 'require':'Trường này không được bỏ trống' }"
-                              placeholder="Mã số thuế"
-                            />
-                            <span className="error text-error"></span>
+                        </div>
+                        <portal-opener>
+                          <div
+                            className="cart-voucer d-flex align-items-center justify-content-between w-100"
+                            data-portal="#cart-vat-drawer"
+                          >
+                            <p
+                              className="d-flex align-items-center flex-column w-100 m-0 cursor-pointer"
+                              onClick={toggleShowBillInfo}
+                            >
+                              <i className="bi bi-receipt"></i>
+                              <span className="line-clamp-1 text-truncate w-100 fs-7">
+                                Xuất hóa đơn
+                              </span>
+                            </p>
                           </div>
-                          <div className="form-group">
-                            <label className="label block mb-2">
-                              Địa chỉ công ty
-                            </label>
-                            <textarea
-                              className="form-textarea"
-                              data-rules="['required']"
-                              data-messages="{'required':'Trường này không được bỏ trống' }"
-                              name="attributes[Địa chỉ công ty]"
-                              placeholder="Địa chỉ công ty"
-                            ></textarea>
-                            <span className="error  text-error"></span>
+                        </portal-opener>
+                      </div>
+                      <div className="cart-opener-item col-3">
+                        <div
+                          className="time-field slide-right position-absolute py-4 ps-3 top-0 bg-white end-0 h-100 shadow-lg w-100"
+                          hidden={showTime}
+                        >
+                          <div className=" time-header">
+                            <div className="d-flex align-items-center mb-3">
+                              <p
+                                className="cursor-pointer m-0"
+                                onClick={toggleShowTime}
+                              >
+                                <i className="bi bi-arrow-left fs-4 me-2"></i>
+                              </p>
+                              <h3 className="fw-bold m-0">Hẹn giờ nhận hàng</h3>
+                            </div>
                           </div>
-                          <div className="form-group">
-                            <label className="label block mb-2">
-                              Email nhận hóa đơn
-                            </label>
-                            <input
-                              type="email"
-                              className="form-input"
-                              name="attributes[Email nhận hóa đơn]"
-                              value=""
-                              placeholder="Email nhận hóa đơn"
-                              data-rules="['required','email']"
-                              data-messages="{'required':'Trường này không được bỏ trống', 'email': 'Email không đúng định dạng' }"
-                            />
-                            <span className="error  text-error"></span>
+                          <div className="px-4">
+                            <div className="d-flex align-items-center mb-3">
+                              <input className="invoice fs-5" type="hidden" />
+                              <input
+                                className="invoice-checkbox form-checkbox fs-5"
+                                type="checkbox"
+                              />
+                              <div className="ms-2 text-sm ">
+                                <label>Hẹn giờ giao hàng</label>
+                              </div>
+                            </div>
+                            <div className="form-group mb-3">
+                              <label className="label d-block mb-1">
+                                Ngày nhận hàng
+                              </label>
+                              <input
+                                type="date"
+                                className="form-input w-100 p-2 rounded outline-none border"
+                                name=""
+                                placeholder="Tên công ty"
+                              />
+                              <span className="error  text-error"></span>
+                            </div>
+                            <div className="form-group mb-3">
+                              <label className="label d-block mb-1">
+                                Thời gian nhận hàng
+                              </label>
+                              <select
+                                class="form-select"
+                                aria-label="Default select example"
+                              >
+                                <option selected>---Chọn thời gian---</option>
+                                <option value="1">08h00 - 12h00</option>
+                                <option value="2">14h00 - 18h00</option>
+                                <option value="3">19h00 - 21h00</option>
+                              </select>
+                              <span className="error text-error"></span>
+                            </div>
+                          </div>
+                          <div className="mx-5 mt-4">
+                            <button
+                              type="button"
+                              className="btn btn-success d-flex justify-content-center align-items-center rounded-5 py-2 px-4 mx-3 mb-4 text-white fw-semibold w-100"
+                            >
+                              Lưu thông tin
+                            </button>
+                          </div>
+                        </div>
+                        <portal-opener>
+                          <div
+                            className="cart-voucer py-y d-flex align-items-center justify-content-between"
+                            data-portal="#cart-delivery-drawer"
+                          >
+                            <p
+                              className="d-flex align-items-center flex-column w-100 m-0 cursor-pointer"
+                              onClick={toggleShowTime}
+                            >
+                              <i className="bi bi-clock"></i>
+                              <span className="line-clamp-1 text-truncate w-100  fs-7">
+                                Hẹn giờ nhận hàng
+                              </span>
+                            </p>
+                          </div>
+                        </portal-opener>
+                      </div>
+                      <div className="cart-opener-item col-3">
+                        <div
+                          className="note-field slide-right position-absolute py-4 ps-3 top-0 bg-white end-0 h-100 shadow-lg w-100"
+                          hidden={showNote}
+                        >
+                          <div className=" note-header">
+                            <div className="d-flex align-items-center mb-3">
+                              <p
+                                className="cursor-pointer m-0"
+                                onClick={toggleShowNote}
+                              >
+                                <i className="bi bi-arrow-left fs-4 me-2"></i>
+                              </p>
+                              <h3 className="fw-bold m-0">Ghi chú đơn hàng</h3>
+                            </div>
+                          </div>
+                          <div className="px-4">
+                            <div className="form-group mb-3">
+                              <label className="label d-block mb-1">
+                                Ghi chú
+                              </label>
+                              <textarea
+                                className="form-textarea w-100 p-2 rounded outline-none border "
+                                style={{ height: "100px" }}
+                                name="note"
+                                placeholder="Ghi chú đơn hàng"
+                              ></textarea>
+                              <span className="error  text-error"></span>
+                            </div>
+                          </div>
+                          <div className="mx-5 mt-4">
+                            <button
+                              type="button"
+                              className="btn btn-success d-flex justify-content-center align-items-center rounded-5 py-2 px-4 mx-3 mb-4 text-white fw-semibold w-100"
+                            >
+                              Lưu thông tin
+                            </button>
                           </div>
                         </div>
                         <portal-opener>
                           <div
                             className="cart-voucer text-neutral-300 py-2 md:py-4 flex items-center justify-between w-full"
-                            data-portal="#cart-vat-drawer"
-                          >
-                            <p className="flex items-center gap-1">
-                              <i className="icon icon-receipt"></i>
-                              <span className="line-clamp-1">
-                                {" "}
-                                Xuất hóa đơn{" "}
-                              </span>
-                            </p>
-                            <button type="button" className="flex items-center">
-                              Thay đổi
-                              <i className="icon icon-carret-right ml-2  flex items-center"></i>
-                            </button>
-                          </div>
-                        </portal-opener>
-                      </div>
-                      <div
-                        className="cart-opener-item"
-                        style={{ display: "none" }}
-                      >
-                        <portal-opener>
-                          <div
-                            className="cart-voucer text-neutral-300 py-2 md:py-4 flex items-center justify-between w-full"
-                            data-portal="#cart-delivery-drawer"
-                          >
-                            <p className="flex items-center gap-1">
-                              <i className="icon icon-time"></i>
-                              <span className="line-clamp-1">
-                                Hẹn giờ nhận hàng{" "}
-                              </span>
-                            </p>
-                            <button type="button" className="flex items-center">
-                              Thay đổi
-                              <i className="icon icon-carret-right ml-2  flex items-center"></i>
-                            </button>
-                            <input
-                              type="hidden"
-                              name="attributes[Hẹn giờ nhận hàng]"
-                              value=""
-                            />
-                            <input
-                              type="hidden"
-                              name="attributes[Ngày nhận hàng]"
-                              value=""
-                            />
-                            <input
-                              type="hidden"
-                              name="attributes[Thời gian nhận hàng]"
-                              value=""
-                            />
-                          </div>
-                        </portal-opener>
-                      </div>
-                      <div
-                        className="cart-opener-item"
-                        style={{ display: "none" }}
-                      >
-                        <portal-opener>
-                          <div
-                            className="cart-voucer text-neutral-300 py-2 md:py-4 flex items-center justify-between w-full"
                             data-portal="#cart-note-drawer"
                           >
-                            <p className="flex items-center gap-1">
-                              <i className="icon icon-stickynote"></i>
-                              <span className="line-clamp-1">
-                                {" "}
-                                Ghi chú đơn hàng{" "}
+                            <p
+                              className="d-flex align-items-center flex-column w-100 m-0 cursor-pointer"
+                              onClick={toggleShowNote}
+                            >
+                              <i className="bi bi-stickies-fill"></i>
+                              <span className="line-clamp-1 text-truncate w-100 fs-7">
+                                Ghi chú đơn hàng
                               </span>
                             </p>
-                            <button type="button" className="flex items-center">
-                              Thay đổi
-                              <i className="icon icon-carret-right ml-2  flex items-center"></i>
-                            </button>
-                            <textarea
-                              className="form-textarea hidden"
-                              name="note"
-                            ></textarea>
                           </div>
                         </portal-opener>
                       </div>
-                      <div
-                        className="cart-opener-item"
-                        style={{ display: "none" }}
-                      >
+                      <div className="cart-opener-item col-3">
+                        <div
+                          className="vorcher-field slide-right position-absolute py-4 ps-3 top-0 bg-white end-0 h-100 shadow-lg w-100"
+                          hidden={showVocher}
+                        >
+                          <div className=" vorcher-header">
+                            <div className="d-flex align-items-center mb-3">
+                              <p
+                                className="cursor-pointer m-0"
+                                onClick={toggleShowVocher}
+                              >
+                                <i className="bi bi-arrow-left fs-4 me-2"></i>
+                              </p>
+                              <h3 className="fw-bold m-0">Chọn mã giảm giá</h3>
+                            </div>
+                          </div>
+                          <div className="px-4"></div>
+                          {/* <div className="mx-5 mt-4">
+                            <button
+                              type="button"
+                              className="btn btn-success d-flex justify-content-center align-items-center rounded-5 py-2 px-4 mx-3 mb-4 text-white fw-semibold w-100"
+                            >
+                              Lưu thông tin
+                            </button>
+                          </div> */}
+                        </div>
                         <portal-opener>
                           <div
-                            className="cart-voucer text-neutral-300 py-2 md:py-4 flex items-center justify-between w-full"
+                            className="cart-voucer text-neutral-300 py-2 d-flex align-items-center justify-content-between w-100"
                             data-portal="#coupon-drawer"
                           >
-                            <p className="flex items-center gap-1">
-                              <i className="icon icon-ticket-discount"></i>
-                              <span className="line-clamp-1">
-                                {" "}
-                                Mã giảm giá{" "}
+                            <p
+                              className="d-flex align-items-center flex-column w-100 m-0 cursor-pointer"
+                              onClick={toggleShowVocher}
+                            >
+                              <i class="bi bi-ticket-perforated"></i>
+                              <span className="line-clamp-1 text-truncate w-100 fs-7">
+                                Mã giảm giá
                               </span>
                             </p>
-                            <button type="button" className="flex items-center">
-                              Chọn
-                              <i className="icon icon-carret-right ml-2  flex items-center"></i>
-                            </button>
                           </div>
                         </portal-opener>
                       </div>

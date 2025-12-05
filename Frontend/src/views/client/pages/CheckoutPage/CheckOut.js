@@ -481,6 +481,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
                             id="shippingMethod"
                             value="40.000 VND"
                             data-bind="shippingMethod"
+                            checked
                           />
                         </div>
                         <label

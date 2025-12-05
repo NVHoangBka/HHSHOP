@@ -196,10 +196,8 @@ const Header = ({
         show={showCart}
         onHide={() => setShowCart(false)}
         placement="end"
+        className="w-25"
       >
-        <Offcanvas.Header closeButton>
-          <Offcanvas.Title>Giỏ hàng ({totalQuantity} sản phẩm)</Offcanvas.Title>
-        </Offcanvas.Header>
         <Offcanvas.Body className="p-0 d-flex flex-column">
           <div className="flex-grow-1 overflow-auto">
             <Cart
