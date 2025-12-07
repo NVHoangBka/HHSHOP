@@ -24,16 +24,16 @@ const Introduce = () => {
           </ul>
         </div>
       </div>
-      <section class="section main-page ">
+      <section class="section main-page pb-5">
         <div class="container">
-          <div class="grid grid-cols-1  lg:grid-cols-custom justify-center gap-gutter">
+          <div class="grid justify-content-center">
             <div>
-              <div class="bg-background rounded-lg px-3 py-4 md:px-6 md:py-6 mb-6">
-                <h1 class="text-h4 font-semibold mb-2">Giới thiệu</h1>
+              <div class="bg-white rounded-3 px-3 py-4 mx-5 ">
+                <h1 class="fw-semibold mb-4 fs-2">Giới thiệu</h1>
 
-                <div class="page-content ">
+                <div class="page-content ms-3">
                   <div class="rte">
-                    <div class="prose  text-base w-full max-w-full content ">
+                    <div class="prose w-100 content ">
                       <p>
                         <strong>1. Giới thiệu chung:</strong>
                       </p>

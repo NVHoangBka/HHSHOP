@@ -9,6 +9,7 @@ import OrderRouter from "./OrderRouter";
 // ===== Pages =====
 import Home from "../../views/client/pages/HomePage/Home";
 import Introduce from "../../views/client/pages/IntroducePage/Introduce";
+import CheckOrder from "../../views/client/pages/CheckOrderPage/CheckOrder";
 
 const ClientRouter = (props) => (
   <Routes>
@@ -27,6 +28,9 @@ const ClientRouter = (props) => (
 
     {/* Giới thiệu */}
     <Route path="/introduce" element={<Introduce />} />
+
+    {/* Kiểm tra đơn hàng */}
+    <Route path="/check-order" element={<CheckOrder />} />
 
     {/* Auth */}
     <Route
