@@ -12,6 +12,7 @@ const cartRouter = require("./Cart");
 const paymentRouter = require("./Payment");
 const adminRouter = require("./admin");
 const uploadRouter = require("./Upload");
+const userRouter = require("./User");
 
 router.use("/auth", authRouter);
 router.use("/addresses", addressRouter);
@@ -23,5 +24,6 @@ router.use("/cart", cartRouter);
 router.use("/payment", paymentRouter);
 router.use("/admin", adminRouter);
 router.use("/upload", uploadRouter);
+router.use("/users", userRouter);
 
 module.exports = router;

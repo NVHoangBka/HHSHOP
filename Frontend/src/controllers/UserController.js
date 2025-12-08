@@ -1,6 +1,13 @@
-import * as userService from "../services/userService";
+import UserService from "../services/UserService";
 
-export const getAllUsers = async () => {
-  const users = await userService.fetchUsers();
-  return users;
-};
+class UserController {
+  constructor() {
+    this.userService = new UserService();
+  }
+  async getAllUsers(userData) {
+    const users = await this.userService.getAllUsers(userData);
+    return users;
+  }
+}
+
+export default UserController;

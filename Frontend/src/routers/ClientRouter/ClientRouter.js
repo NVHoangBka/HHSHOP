@@ -30,7 +30,15 @@ const ClientRouter = (props) => (
     <Route path="/introduce" element={<Introduce />} />
 
     {/* Kiểm tra đơn hàng */}
-    <Route path="/check-order" element={<CheckOrder />} />
+    <Route
+      path="/check-order"
+      element={
+        <CheckOrder
+          orderController={props.orderController}
+          authController={props.authController}
+        />
+      }
+    />
 
     {/* Auth */}
     <Route
