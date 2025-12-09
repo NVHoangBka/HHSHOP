@@ -173,5 +173,27 @@ class OrderController {
       res.status(500).json({ message: error.message });
     }
   }
+
+  static async searchOrders(req, res) {
+    try {
+      const { userId } = req.query;
+      const orders = await Order.find({ userId })
+        .select(
+          "orderId totalAmount status paymentStatus createdAt items.name items.quantity items.price"
+        )
+        .populate("items.productId", "name image price discountPrice")
+        .sort({ createdAt: -1 });
+
+      if (!orders) {
+        return res.status(404).json({
+          success: false,
+          message: "Không tồn tại đơn hàng",
+        });
+      }
+      res.json({ success: true, orders });
+    } catch (error) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
 }
 module.exports = OrderController;

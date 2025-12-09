@@ -4,7 +4,10 @@ const router = express.Router();
 const OrderController = require("../controllers/OrderController");
 const { protect } = require("../middleware/auth");
 
-router.use(protect);
+// PUBLIC
+router.get("/search", OrderController.searchOrders);
+// Các route cần login
+// router.use(protect);
 // GET: LẤY DANH SÁCH ĐƠN HÀNG CỦA USER
 router.post("/", protect, OrderController.createOrder);
 router.get("/", protect, OrderController.getOrders);

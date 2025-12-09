@@ -10,6 +10,7 @@ import OrderRouter from "./OrderRouter";
 import Home from "../../views/client/pages/HomePage/Home";
 import Introduce from "../../views/client/pages/IntroducePage/Introduce";
 import CheckOrder from "../../views/client/pages/CheckOrderPage/CheckOrder";
+import Contact from "../../views/client/pages/ContactPage/Contact";
 
 const ClientRouter = (props) => (
   <Routes>
@@ -38,6 +39,12 @@ const ClientRouter = (props) => (
           authController={props.authController}
         />
       }
+    />
+
+    {/* Liên hệ */}
+    <Route
+      path="/contact"
+      element={<Contact authController={props.authController} />}
     />
 
     {/* Auth */}

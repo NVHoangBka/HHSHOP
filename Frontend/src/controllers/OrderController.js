@@ -64,6 +64,15 @@ class OrderController {
       };
     }
   }
+
+  async searchOrders(userId) {
+    try {
+      const orders = await this.orderService.searchOrders(userId);
+      return { success: true, orders };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  }
 }
 
 const orderController = new OrderController();

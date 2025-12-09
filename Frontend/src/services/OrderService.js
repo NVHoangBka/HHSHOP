@@ -51,6 +51,21 @@ class OrderService {
     }
   }
 
+  // === Tìm kiếm đơn hàng theo người dùng ===
+  async searchOrders(userId) {
+    try {
+      const response = await api.get("/orders/search", { params: { userId } });
+      return response.data.orders;
+    } catch (error) {
+      return {
+        success: false,
+        message:
+          error.response?.data?.message || "Lỗi hệ thống, vui lòng thử lại.",
+        status: error.response?.status || 500,
+      };
+    }
+  }
+
   // === HÀM XỬ LÝ LỖI 401 + TỰ ĐỘNG REFRESH TOKEN (DÙNG CHUNG) ===
   async handleAuthError(error, retryCallback) {
     const isAuthError =

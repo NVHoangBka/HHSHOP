@@ -10,38 +10,46 @@ const CheckOrder = ({ orderController }) => {
   const [emailAddress, setEmailAddress] = useState("");
   const [orders, setOrders] = useState([]);
   const [error, setError] = useState("");
-
-  // useEffect(() => {
-  //   const fetchCheckOrder = async () => {
-  //     try {
-  //       const result = await orderController.getOrders();
-  //       console.log(result);
-  //     } catch (error) {}
-  //   };
-  //   fetchCheckOrder();
-  // }, []);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setOrders([]);
     try {
-      const userData = {
-        email: emailAddress,
-        phoneNumber,
-      };
-      const result = await userController.getAllUsers(userData);
-      console.log(result);
-    } catch (error) {}
+      let userData = {};
 
-    // Ví dụ gọi API kiểm tra đơn hàng ở đây
-    // const result = await fetchCheckOrder({
-    //   checkType,
-    //   phoneNumber,
-    //   emailAddress,
-    // });
+      if (checkType === "1") {
+        userData = { phoneNumber };
+      } else if (checkType === "2") {
+        userData = { email: emailAddress };
+      } else if (checkType === "3") {
+        userData = { phoneNumber, email: emailAddress };
+      }
 
-    // Giả lập không tìm thấy
-    setError("Không tìm thấy dữ liệu đơn hàng");
+      const userResult = await userController.getAllUsers(userData);
+      if (!userResult.success) {
+        setError(
+          userResult.message || "Không tìm thấy người dùng với thông tin này"
+        );
+        setLoading(false);
+        return;
+      }
+
+      const userId = userResult.user.userId;
+
+      const ordersResult = await orderController.searchOrders(userId);
+      if (ordersResult.success) {
+        const orders = ordersResult.orders;
+        if (orders.length > 0) {
+          setOrders(orders);
+        } else {
+          setError("Không tìm thấy đơn hàng");
+        }
+      }
+    } catch (error) {
+      setError("Không tìm thấy dữ liệu đơn hàng");
+    }
   };
 
   return (
@@ -79,7 +87,7 @@ const CheckOrder = ({ orderController }) => {
                         <div class="row justify-content-center">
                           <div class="col-6 main-content bg-white p-4 rounded">
                             <div
-                              class="container ng-scope border p-3"
+                              class="container border p-3"
                               ng-app="checkOrderApp"
                               ng-controller="checkOrderCtrl"
                             >
@@ -198,23 +206,127 @@ const CheckOrder = ({ orderController }) => {
                                     <div class="clearfix"></div>
                                   </div>
                                 </div>
+                                <div id="show" className="mt-5">
+                                  {loading && (
+                                    <div className="text-center py-5">
+                                      <div
+                                        className="spinner-border text-success"
+                                        role="status"
+                                      >
+                                        <span className="visually-hidden">
+                                          Đang tìm...
+                                        </span>
+                                      </div>
+                                      <p className="mt-3">
+                                        Đang tìm kiếm đơn hàng...
+                                      </p>
+                                    </div>
+                                  )}
 
-                                <div id="show" class="">
-                                  <div
-                                    class="error"
-                                    ng-if="data.orders.length == 0"
-                                  >
-                                    <p id="error" class="text-danger"></p>
-                                    <p
-                                      id="empty-error"
-                                      class="text-danger empty-error"
-                                    >
-                                      <b>Không tìm thấy dữ liệu đơn hàng</b>
-                                    </p>
-                                    <p>
-                                      <i class="fa fa-credit-card text-muted"></i>
-                                    </p>
-                                  </div>
+                                  {error && !loading && (
+                                    <div className="alert alert-danger text-center">
+                                      <strong>{error}</strong>
+                                    </div>
+                                  )}
+                                  {!loading && !error && orders.length > 0 && (
+                                    <div>
+                                      <h4 className="fw-bold mb-4 text-center text-success">
+                                        Tìm thấy {orders.length} đơn hàng
+                                      </h4>
+                                      <div className="row g-4">
+                                        {orders.map((order) => (
+                                          <div
+                                            key={order._id}
+                                            className="col-12"
+                                          >
+                                            <div className="border rounded p-4 bg-light">
+                                              <div className="d-flex justify-content-between align-items-center mb-3">
+                                                <h5 className="m-0 fw-bold">
+                                                  Mã đơn: {order.orderId}
+                                                </h5>
+                                                <span
+                                                  className={`badge bg-${
+                                                    order.status === "completed"
+                                                      ? "success"
+                                                      : "warning"
+                                                  } fs-6`}
+                                                >
+                                                  {order.status === "pending"
+                                                    ? "Chờ xử lý"
+                                                    : order.status ===
+                                                      "confirmed"
+                                                    ? "Đã xác nhận"
+                                                    : order.status ===
+                                                      "delivered"
+                                                    ? "Đã giao"
+                                                    : order.status}
+                                                </span>
+                                              </div>
+                                              <p className="mb-1">
+                                                <strong>Ngày đặt:</strong>{" "}
+                                                {new Date(
+                                                  order.createdAt
+                                                ).toLocaleString("vi-VN")}
+                                              </p>
+                                              <p className="mb-1">
+                                                <strong>Tổng tiền:</strong>{" "}
+                                                {order.totalAmount.toLocaleString()}
+                                                ₫
+                                              </p>
+                                              <p className="mb-3">
+                                                <strong>Thanh toán:</strong>{" "}
+                                                {order.paymentStatus === "paid"
+                                                  ? "Đã thanh toán"
+                                                  : "Chưa thanh toán"}
+                                              </p>
+
+                                              <details className="mb-2">
+                                                <summary className="fw-semibold text-primary cursor-pointer">
+                                                  Xem chi tiết sản phẩm (
+                                                  {order.items.length})
+                                                </summary>
+                                                <ul className="list-group list-group-flush mt-2">
+                                                  {order.items.map(
+                                                    (item, idx) => (
+                                                      <li
+                                                        key={idx}
+                                                        className="list-group-item d-flex align-items-center py-3"
+                                                      >
+                                                        {item.productId
+                                                          ?.image && (
+                                                          <img
+                                                            src={
+                                                              item.productId
+                                                                .image
+                                                            }
+                                                            alt={item.name}
+                                                            width="50"
+                                                            className="me-3 rounded"
+                                                          />
+                                                        )}
+                                                        <div>
+                                                          <strong>
+                                                            {item.name}
+                                                          </strong>
+                                                          <br />
+                                                          <small>
+                                                            Số lượng:{" "}
+                                                            {item.quantity} ×{" "}
+                                                            {item.price.toLocaleString()}
+                                                            ₫
+                                                          </small>
+                                                        </div>
+                                                      </li>
+                                                    )
+                                                  )}
+                                                </ul>
+                                              </details>
+                                            </div>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                             </div>

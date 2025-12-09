@@ -5,11 +5,11 @@ class UserService {
 
   async getAllUsers(userData) {
     try {
-      console.log(userData);
-      const response = await api.get("/users/all", userData);
-      console.log(response);
+      const response = await api.get("/users/all", {
+        params: userData,
+      });
       const result = response.data;
-      return { success: true, result };
+      return result;
     } catch (error) {
       return {
         success: false,
