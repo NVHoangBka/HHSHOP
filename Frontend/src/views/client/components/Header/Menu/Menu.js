@@ -100,7 +100,11 @@ const Menu = ({ isOpen, menuRef, onClose, user, titleController }) => {
           </ul>
           <ul className="menu-list">
             <li>
-              <Link to="#" onClick={handleItemClick} className="menu-hover">
+              <Link
+                to="/introduce"
+                onClick={handleItemClick}
+                className="menu-hover"
+              >
                 Giới thiệu
               </Link>
             </li>
@@ -127,12 +131,16 @@ const Menu = ({ isOpen, menuRef, onClose, user, titleController }) => {
               </ul>
             </li>
             <li>
-              <Link to="#" onClick={handleItemClick} className="menu-hover">
+              <Link to="/news" onClick={handleItemClick} className="menu-hover">
                 Tin tức
               </Link>
             </li>
             <li>
-              <Link to="#" onClick={handleItemClick} className="menu-hover">
+              <Link
+                to="/check-order"
+                onClick={handleItemClick}
+                className="menu-hover"
+              >
                 Kiểm tra đơn hàng
               </Link>
             </li>

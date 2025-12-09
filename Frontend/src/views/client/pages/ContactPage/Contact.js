@@ -85,7 +85,7 @@ const Contact = ({ authController }) => {
                         class="fw-semibold link text-black"
                         href="mailto:support@sapo.vn"
                       >
-                        support@sapo.vn{" "}
+                        hoangdo.bka@gmail.com
                       </a>
                     </div>
                   </div>
@@ -108,8 +108,12 @@ const Contact = ({ authController }) => {
                             placeholder="Họ tên*"
                             type="text"
                             class="form-input w-100 p-2"
-                            required
                             name="FullName"
+                            value={fullName}
+                            onChange={(e) => {
+                              setFullName(e.target.value);
+                            }}
+                            required
                           />
                         </fieldset>
                         <fieldset class="form-group my-2 ">
@@ -117,10 +121,14 @@ const Contact = ({ authController }) => {
                             placeholder="Email*"
                             type="email"
                             pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
-                            required
                             id="email1"
                             class="form-input w-100 p-2"
+                            value={email}
+                            onChange={(e) => {
+                              setEmail(e.target.value);
+                            }}
                             name="Email"
+                            required
                           />
                         </fieldset>
                         <fieldset class="form-group my-2 ">
@@ -131,6 +139,10 @@ const Contact = ({ authController }) => {
                             required
                             pattern="\d+"
                             name="PhoneNumber"
+                            value={phoneNumber}
+                            onChange={(e) => {
+                              setPhoneNumber(e.target.value);
+                            }}
                           />
                         </fieldset>
                         <fieldset class="form-group my-2 ">
