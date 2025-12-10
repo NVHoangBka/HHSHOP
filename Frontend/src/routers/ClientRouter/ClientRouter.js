@@ -11,6 +11,7 @@ import Home from "../../views/client/pages/HomePage/Home";
 import Introduce from "../../views/client/pages/IntroducePage/Introduce";
 import CheckOrder from "../../views/client/pages/CheckOrderPage/CheckOrder";
 import Contact from "../../views/client/pages/ContactPage/Contact";
+import News from "../../views/client/pages/NewsPage/News";
 
 const ClientRouter = (props) => (
   <Routes>
@@ -35,6 +36,17 @@ const ClientRouter = (props) => (
       path="/check-order"
       element={
         <CheckOrder
+          orderController={props.orderController}
+          authController={props.authController}
+        />
+      }
+    />
+
+    {/* Tin tức */}
+    <Route
+      path="/news"
+      element={
+        <News
           orderController={props.orderController}
           authController={props.authController}
         />

@@ -145,7 +145,7 @@ const Header = ({
               { name: "Hướng dẫn", path: "/instruct" },
             ].map((item) => (
               <li className="nav-item hover col-2 text-center" key={item}>
-                <Link to={item.path} className="nav-link ">
+                <Link to={item.path} className="nav-link fw-semibold">
                   {item.name}
                 </Link>
               </li>

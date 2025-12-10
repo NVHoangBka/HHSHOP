@@ -74,25 +74,25 @@ const CheckOrder = ({ orderController }) => {
           </ul>
         </div>
       </div>
-      <section class="section main-page pb-5">
-        <div class="container">
-          <div class="grid justify-content-center mx-5">
+      <section className="section main-page pb-5">
+        <div className="container">
+          <div className="grid justify-content-center mx-5">
             <div>
-              <div class="bg-white rounded px-3 py-4 mb-5 mx-5">
-                <h1 class="fw-semibold mb-2 fs-3">Kiểm tra đơn hàng</h1>
-                <div class="page-content py-5 mx-1 bg-body-secondary">
-                  <div class="rte">
-                    <div class="prose w-100 content">
-                      <div class="container-fluid">
-                        <div class="row justify-content-center">
-                          <div class="col-6 main-content bg-white p-4 rounded">
+              <div className="bg-white rounded px-3 py-4 mb-5 mx-5">
+                <h1 className="fw-semibold mb-2 fs-3">Kiểm tra đơn hàng</h1>
+                <div className="page-content py-5 mx-1 bg-body-secondary">
+                  <div className="rte">
+                    <div className="prose w-100 content">
+                      <div className="container-fluid">
+                        <div className="row justify-content-center">
+                          <div className="col-6 main-content bg-white p-4 rounded">
                             <div
-                              class="container border p-3"
+                              className="container border p-3"
                               ng-app="checkOrderApp"
                               ng-controller="checkOrderCtrl"
                             >
-                              <div class="search-test">
-                                <div class="">
+                              <div className="search-test">
+                                <div className="">
                                   <div id="search-box-test ">
                                     <div className="d-flex fw-semibold border-bottom w-100 d-flex align-item-center pb-3 justify-content-center">
                                       <i className="bi bi-search me-1"></i>
@@ -100,14 +100,14 @@ const CheckOrder = ({ orderController }) => {
                                         Kiểm tra đơn hàng của bạn
                                       </p>
                                     </div>
-                                    <div class="title-text fs-7">
+                                    <div className="title-text fs-7">
                                       <form onSubmit={handleSubmit}>
                                         {/* Chọn loại kiểm tra */}
-                                        <div class="my-3">
-                                          <label class="form-label mb-2">
+                                        <div className="my-3">
+                                          <label className="form-label mb-2">
                                             <span>Kiểm tra bằng</span>
                                           </label>
-                                          <div class="radio-inline d-flex align-items-center">
+                                          <div className="radio-inline d-flex align-items-center">
                                             {[
                                               {
                                                 value: "1",
@@ -128,7 +128,7 @@ const CheckOrder = ({ orderController }) => {
                                                   id={`checkType${option.value}`}
                                                   value={option.value}
                                                   name="CheckType"
-                                                  class="me-1"
+                                                  className="me-1"
                                                   checked={
                                                     checkType === option.value
                                                   }
@@ -203,7 +203,7 @@ const CheckOrder = ({ orderController }) => {
                                         </div>
                                       </form>
                                     </div>
-                                    <div class="clearfix"></div>
+                                    <div className="clearfix"></div>
                                   </div>
                                 </div>
                                 <div id="show" className="mt-5">
@@ -330,11 +330,11 @@ const CheckOrder = ({ orderController }) => {
                                 </div>
                               </div>
                             </div>
-                            <div class="resize-sensor">
-                              <div class="resize-sensor-expand">
+                            <div className="resize-sensor">
+                              <div className="resize-sensor-expand">
                                 <div></div>
                               </div>
-                              <div class="resize-sensor-shrink">
+                              <div className="resize-sensor-shrink">
                                 <div></div>
                               </div>
                             </div>

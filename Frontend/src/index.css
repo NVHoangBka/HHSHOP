@@ -51,9 +51,6 @@ button:disabled {
   cursor: pointer;
 }
 
-.text-decoration-none {
-  text-decoration: none;
-}
 
 .text-hover:hover {
   color: rgb(255, 123, 0) !important;

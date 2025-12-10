@@ -50,7 +50,7 @@ const Contact = ({ authController }) => {
       </div>
       <section class="section main-page pb-5">
         <div class="container">
-          <div class="bg-white rounded p-3 mb-5">
+          <div class="bg-white rounded  mb-5 px-4 pt-2 pb-4">
             <div class="grid pt-4 row">
               <div className="col-6">
                 <h1 class="fw-semibold mb-2">TẬP ĐOÀN HHGROUP</h1>
