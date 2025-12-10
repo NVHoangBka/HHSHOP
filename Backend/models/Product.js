@@ -1,5 +1,6 @@
 // backend/models/Product.js → PHIÊN BẢN CUỐI CÙNG – ĐỈNH CAO THẬT SỰ
 const mongoose = require("mongoose");
+const updateTagCounts = require("../utils/updateTagCounts");
 
 const variantSchema = new mongoose.Schema(
   {
@@ -67,8 +68,13 @@ const productSchema = new mongoose.Schema(
 
     brand: { type: mongoose.Schema.Types.ObjectId, ref: "Brand", index: true },
     colors: [{ type: mongoose.Schema.Types.ObjectId, ref: "Color" }],
-    // tags: [{ type: mongoose.Schema.Types.ObjectId, ref: "Tag" }],
-    tags: [{ type: String, lowercase: true, trim: true }],
+    tags: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Tag",
+        index: true,
+      },
+    ],
     // Thuộc tính động (dung tích, kích thước, chất liệu...)
     attributes: [
       {
@@ -120,14 +126,20 @@ productSchema.virtual("stock").get(function () {
   return this.totalStock || 0;
 });
 
+productSchema.virtual("tagNames", {
+  ref: "Tag",
+  localField: "tags",
+  foreignField: "_id",
+  justOne: false,
+  options: { select: "name" },
+});
 // ==================== INDEX TÌM KIẾM SIÊU NHANH ====================
 productSchema.index({
   name: "text",
   description: "text",
   "highlightSections.title": "text",
   "highlightSections.content": "text",
-  tags: "text",
-  brand: "text",
+  "$**": "text",
 });
 
 // Index tìm kiếm nhanh
@@ -169,5 +181,8 @@ productSchema.statics.search = function (query) {
     score: { $meta: "textScore" },
   });
 };
+
+productSchema.post("save", () => updateTagCounts());
+productSchema.post("findOneAndDelete", () => updateTagCounts());
 
 module.exports = mongoose.model("Product", productSchema);
