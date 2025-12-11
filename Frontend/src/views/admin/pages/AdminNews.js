@@ -1,23 +1,26 @@
 // src/admin/pages/AdminNews.jsx
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { format } from "date-fns";
-import { vi } from "date-fns/locale";
 
-const AdminNews = () => {
+const AdminNews = ({ adminController }) => {
   const [news, setNews] = useState([]);
-  const [tags, setTags] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [toast, setToast] = useState({ show: false, message: "", type: "" });
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentId, setCurrentId] = useState(null);
+
   // TÌM KIẾM: CHỈ BẤM ENTER MỚI LỌC
   const [searchInput, setSearchInput] = useState(""); // ô nhập liệu
   const [searchTerm, setSearchTerm] = useState(""); // từ khoá tìm kiếm chính thức
 
-  // Form tạo/sửa
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingNews, setEditingNews] = useState(null);
+  // Phân trang
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalNews, setTotalNews] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [limit, setLimit] = useState(10); // backend mặc định 10
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -31,142 +34,133 @@ const AdminNews = () => {
     publishedAt: new Date().toISOString().slice(0, 16),
   });
 
-  // Load danh sách tin tức
+  const pagination = {
+    page: currentPage,
+    limit,
+    search: searchTerm || undefined,
+  };
+
   const fetchNews = async () => {
     try {
-      const res = await fetch(`/api/admin/news?page=${page}&search=${search}`, {
-        credentials: "include",
-      });
-      const data = await res.json();
-      if (data.success) {
-        setNews(data.data);
-        setTotalPages(data.pagination.totalPages);
+      setLoading(true);
+      const result = await adminController.getNewsAllAdmin(pagination);
+      if (result.success) {
+        setNews(result.news || []);
+        setTotalNews(result.paginationData.totalNews);
+        setTotalPages(result.paginationData.totalPages);
+        setCurrentPage(currentPage);
       }
     } catch (err) {
+      showToast("Lỗi tải tin tức", "danger");
     } finally {
       setLoading(false);
     }
   };
-
   // Load tags
   const fetchTags = async () => {
     try {
       const res = await fetch("/api/admin/tags", { credentials: "include" });
       const data = await res.json();
-      if (data.success) setTags(data.data);
+      // if (data.success) setTags(data.data);
     } catch (err) {
       console.error(err);
     }
   };
 
+  // Load lần đầu + khi search hoặc đổi trang
   useEffect(() => {
+    setCurrentPage(1);
     fetchNews();
     fetchTags();
-  }, [page, search]);
+  }, [searchTerm]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const url = editingNews
-      ? `/api/admin/news/${editingNews._id}`
-      : "/api/admin/news";
-    const method = editingNews ? "PUT" : "POST";
+  useEffect(() => {
+    fetchNews(currentPage);
+  }, [currentPage]);
 
-    try {
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(formData),
-      });
-      const result = await res.json();
-
-      if (result.success) {
-        setIsModalOpen(false);
-        resetForm();
-        fetchNews();
-      } else {
-      }
-    } catch (err) {}
+  const showToast = (msg, type = "success") => {
+    setToast({ show: true, message: msg, type });
+    setTimeout(() => setToast({ show: false, message: "", type: "" }), 3000);
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Xóa bài viết này?")) return;
-    try {
-      const res = await fetch(`/api/admin/news/${id}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
-      const result = await res.json();
-      if (result.success) {
-        fetchNews();
-      }
-    } catch (err) {}
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages && page !== currentPage) {
+      setCurrentPage(page);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
-  const openEdit = (item) => {
-    setEditingNews(item);
-    setFormData({
-      title: item.title,
-      description: item.description,
-      content: item.content,
-      thumbnail: item.thumbnail,
-      thumbnailAlt: item.thumbnailAlt || "",
-      tags: item.tags.map((t) => t._id || t),
-      isPublished: item.isPublished,
-      metaTitle: item.metaTitle || "",
-      metaDescription: item.metaDescription || "",
-      publishedAt: new Date(item.publishedAt).toISOString().slice(0, 16),
-    });
-    setIsModalOpen(true);
-  };
-
-  const resetForm = () => {
-    setEditingNews(null);
-    setFormData({
-      title: "",
-      description: "",
-      content: "",
-      thumbnail: "",
-      thumbnailAlt: "",
-      tags: [],
-      isPublished: true,
-      metaTitle: "",
-      metaDescription: "",
-      publishedAt: new Date().toISOString().slice(0, 16),
-    });
-  };
-
-  const openModal = (item = null) => {
-    if (item) {
+  const openModal = (newpaper = null) => {
+    if (newpaper) {
       setIsEditing(true);
-      setCurrentId(item._id);
-
-      setFormData({ ...item, gallery: galleryString });
+      setCurrentId(newpaper._id);
+      setFormData({ ...newpaper });
     } else {
       setIsEditing(false);
       setCurrentId(null);
       setFormData({
-        name: "",
-        price: "",
-        discountPrice: "",
-        image: "",
-        gallery: "",
-        shortDescription: "",
+        title: "",
         description: "",
-        types: [],
+        content: "",
+        thumbnail: "",
+        thumbnailAlt: "",
         tags: [],
-        brand: "",
-        colors: [],
-        titles: [],
-        subTitles: [],
-        inStock: true,
-        flashSale: false,
-        highlightSections: [
-          { title: "", content: "", icon: "bi-star-fill", order: 0 },
-        ],
+        isPublished: true,
+        metaTitle: "",
+        metaDescription: "",
+        publishedAt: new Date().toISOString().slice(0, 16),
       });
     }
     setModalOpen(true);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const data = {
+      ...formData,
+    };
+
+    try {
+      let result;
+      if (isEditing) {
+        result = await adminController.updateNewAdmin(currentId, data);
+      } else {
+        result = await adminController.createNewAdmin(data);
+      }
+
+      if (result.success) {
+        showToast(
+          isEditing ? "Cập nhật thành công!" : "Thêm tin tức thành công!",
+          "success"
+        );
+        setModalOpen(false);
+        // Reload danh sách
+
+        fetchNews();
+      }
+    } catch (err) {
+      showToast("Lỗi: " + (err.message || "Không thể lưu"), "danger");
+    }
+  };
+
+  const toggleArray = (arr, value) => {
+    return arr.includes(value)
+      ? arr.filter((i) => i !== value)
+      : [...arr, value];
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Xóa sản phẩm này? Không thể khôi phục!")) return;
+    try {
+      const result = await adminController.deleteNewAdmin(id);
+      if (result.success) {
+        showToast("Xóa thành công!", "success");
+        setNews((prev) => prev.filter((p) => p._id !== id));
+      }
+    } catch (err) {
+      showToast("Xóa thất bại", "danger");
+    }
   };
 
   // === LỌC KHI BẤM ENTER ===
@@ -185,6 +179,13 @@ const AdminNews = () => {
     setSearchInput("");
     setSearchTerm("");
   };
+
+  // Lọc chỉ theo tên sản phẩm (không phân biệt hoa thường)
+  const filteredNews = news.filter(
+    (newpaper) =>
+      searchTerm === "" ||
+      newpaper.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="new-admin py-4">
@@ -226,39 +227,13 @@ const AdminNews = () => {
           </button>
         </div>
       </div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">Quản lý Tin tức</h1>
-        <button
-          onClick={() => {
-            resetForm();
-            setIsModalOpen(true);
-          }}
-          className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition"
-        >
-          + Thêm bài viết
-        </button>
-      </div>
-
-      {/* Search */}
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Tìm kiếm tiêu đề..."
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-            setPage(1);
-          }}
-          className="w-full md:w-96 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
 
       {/* Table */}
       {loading ? (
         <div className="text-center py-10">Đang tải...</div>
       ) : (
         <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-          <table className="w-full table-auto">
+          <table className="w-100 table-auto">
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -301,9 +276,7 @@ const AdminNews = () => {
                     </div>
                   </td>
                   <td className="px-4 py-3 text-sm">
-                    {format(new Date(item.publishedAt), "dd/MM/yyyy", {
-                      locale: vi,
-                    })}
+                    {new Date(item.publishedAt)}
                   </td>
                   <td className="px-4 py-3">
                     <span
@@ -319,7 +292,7 @@ const AdminNews = () => {
                   <td className="px-4 py-3 text-center">{item.views}</td>
                   <td className="px-4 py-3 text-center">
                     <button
-                      onClick={() => openEdit(item)}
+                      onClick={() => openModal(item)}
                       className="text-blue-600 hover:underline mr-3"
                     >
                       Sửa
@@ -335,38 +308,51 @@ const AdminNews = () => {
               ))}
             </tbody>
           </table>
+          {/* PHÂN TRANG ĐẸP */}
+          {totalPages > 1 && (
+            <nav aria-label="Page navigation" className="mt-5">
+              <div className="pagination d-flex justify-content-center">
+                <button
+                  className="btn bg-white mx-1"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                >
+                  <i className="bi bi-chevron-left"></i>
+                </button>
 
-          {/* Pagination */}
-          <div className="px-4 py-3 bg-gray-50 flex justify-between items-center">
-            <div>
-              Trang {page} / {totalPages}
-            </div>
-            <div className="space-x-2">
-              <button
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page === 1}
-                className="px-3 py-1 border rounded disabled:opacity-50"
-              >
-                Trước
-              </button>
-              <button
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                disabled={page === totalPages}
-                className="px-3 py-1 border rounded disabled:opacity-50"
-              >
-                Sau
-              </button>
-            </div>
-          </div>
+                {[...Array(totalPages)].map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handlePageChange(index + 1)}
+                    className={`btn bg-white mx-1 ${
+                      currentPage === index + 1
+                        ? "btn-outline-danger text-danger"
+                        : "text-black"
+                    }`}
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+
+                <button
+                  className="btn bg-white mx-1"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                >
+                  <i className="bi bi-chevron-right"></i>
+                </button>
+              </div>
+            </nav>
+          )}
         </div>
       )}
 
       {/* Modal Form */}
-      {isModalOpen && (
+      {modalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg w-full max-w-4xl max-h-screen overflow-y-auto p-6">
             <h2 className="text-2xl font-bold mb-4">
-              {editingNews ? "Sửa bài viết" : "Thêm bài viết mới"}
+              {isEditing ? "Sửa bài viết" : "Thêm bài viết mới"}
             </h2>
             <form onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -428,7 +414,7 @@ const AdminNews = () => {
                 <div>
                   <label className="block text-sm font-medium mb-1">Tags</label>
                   <div className="space-y-2 max-h-48 overflow-y-auto border rounded p-2">
-                    {tags.map((tag) => (
+                    {/* {tags.map((tag) => (
                       <label key={tag._id} className="flex items-center gap-2">
                         <input
                           type="checkbox"
@@ -451,7 +437,7 @@ const AdminNews = () => {
                         />
                         <span>{tag.name}</span>
                       </label>
-                    ))}
+                    ))} */}
                   </div>
                 </div>
                 <div>
@@ -490,7 +476,7 @@ const AdminNews = () => {
               <div className="flex justify-end gap-3 mt-6">
                 <button
                   type="button"
-                  onClick={() => setIsModalOpen(false)}
+                  onClick={() => setModalOpen(false)}
                   className="px-5 py-2 border rounded hover:bg-gray-100"
                 >
                   Hủy
@@ -499,7 +485,7 @@ const AdminNews = () => {
                   type="submit"
                   className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
                 >
-                  {editingNews ? "Cập nhật" : "Tạo bài viết"}
+                  {isEditing ? "Cập nhật" : "Tạo bài viết"}
                 </button>
               </div>
             </form>
