@@ -9,7 +9,7 @@ const AdminLayout = ({ onLoginAdmin, onLogoutAdmin, adminController }) => {
   };
 
   return (
-    <div className="min-vh-100 bg-light">
+    <div className="h-100 bg-light ">
       <nav className="navbar navbar-dark bg-dark">
         <div className="container-fluid">
           <span className="navbar-brand">MINIMART – QUẢN TRỊ</span>
@@ -48,6 +48,18 @@ const AdminLayout = ({ onLoginAdmin, onLogoutAdmin, adminController }) => {
                 Người dùng
               </Link>
               <Link
+                to="/admin/news"
+                className="list-group-item list-group-item-action py-3 "
+              >
+                Tin tức
+              </Link>
+              <Link
+                to="/admin/tags"
+                className="list-group-item list-group-item-action py-3 "
+              >
+                Tags
+              </Link>
+              <Link
                 to="/admin/setting"
                 className="list-group-item list-group-item-action py-3 "
               >
@@ -56,7 +68,7 @@ const AdminLayout = ({ onLoginAdmin, onLogoutAdmin, adminController }) => {
             </div>
           </div>
 
-          <div className="col-10 p-4 bg-success-subtle">
+          <div className="col-10 p-4 bg-success-subtle h-100">
             <Outlet />
           </div>
         </div>

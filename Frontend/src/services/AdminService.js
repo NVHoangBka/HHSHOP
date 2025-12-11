@@ -6,6 +6,7 @@ class AdminService {
     this.adminModel = new AdminModel();
   }
 
+  // =============   AUTH ADMIN  ==================
   async loginAdmin(email, password) {
     try {
       const response = await api.post("/admin/login", { email, password });
@@ -74,6 +75,7 @@ class AdminService {
     return !!this.adminModel.getCurrentAdmin();
   }
 
+  // =============   USERS ADMIN  ==================
   async getUsersAllAdmin() {
     try {
       const res = await api.get("/admin/users");
@@ -163,6 +165,18 @@ class AdminService {
       return this.handleError(error);
     }
   }
+
+  // =============   NEWS ADMIN  ==================
+  async getNewsAllAdmin(pagination) {
+    try {
+      const res = await api.get("/admin/news", { params: pagination });
+      const news = res.data.news;
+      const paginationData = res.data.pagination;
+      return { success: true, news, paginationData };
+    } catch (error) {}
+  }
+
+  // =============   TAGS ADMIN  ==================
 
   // === XỬ LÝ LỖI CHUNG ===
   handleError(error) {

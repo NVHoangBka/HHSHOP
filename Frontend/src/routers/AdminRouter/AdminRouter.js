@@ -11,6 +11,8 @@ import AdminProducts from "../../views/admin/pages/AdminProducts";
 import AdminOrders from "../../views/admin/pages/AdminOrders";
 import AdminUsers from "../../views/admin/pages/AdminUsers";
 import AdminSetting from "../../views/admin/pages/AdminSetting";
+import AdminNews from "../../views/admin/pages/AdminNews";
+import AdminTags from "../../views/admin/pages/AdminTags";
 
 const AdminRouter = ({
   isAuthenticatedAdmin,
@@ -51,6 +53,15 @@ const AdminRouter = ({
           <Route
             path="users/*"
             element={<AdminUsers adminController={adminController} />}
+          />
+          <Route
+            path="news/*"
+            element={<AdminNews adminController={adminController} />}
+          />
+
+          <Route
+            path="tags/*"
+            element={<AdminTags adminController={adminController} />}
           />
           <Route path="setting" element={<AdminSetting />} />
 

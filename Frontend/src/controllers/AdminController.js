@@ -6,7 +6,7 @@ class AdminController {
     this.adminService = new AdminService();
     this.uploadService = new UploadService();
   }
-
+  // =============   AUTH ADMIN  ==================
   async loginAdmin(email, password) {
     try {
       const result = await this.adminService.loginAdmin(email, password);
@@ -50,7 +50,7 @@ class AdminController {
     }
   }
 
-  // =============   ORDERS  ==================
+  // =============   ORDERS ADMIN  ==================
 
   async getOrdersAllAdmin() {
     try {
@@ -85,7 +85,7 @@ class AdminController {
     }
   }
 
-  // =============   PRODUCTS  ==================
+  // =============   PRODUCTS ADMIN ==================
   async getProductsAllAdmin(pagination) {
     try {
       const result = await this.adminService.getProductsAllAdmin(pagination);
@@ -140,6 +140,16 @@ class AdminController {
       return result;
     } catch (error) {
       return { success: false, message: "Lỗi upload ảnh" };
+    }
+  }
+
+  // =============   NEWS ADMIN ==================
+  async getNewsAllAdmin(pagination) {
+    try {
+      const result = await this.adminService.getNewsAllAdmin(pagination);
+      return result;
+    } catch (error) {
+      return { success: false, message: "Lấy tin tức thất bại" };
     }
   }
 }

@@ -129,7 +129,6 @@ class ProductController {
     console.log("getBySlug called");
     try {
       const { slug } = req.params;
-      console.log("Fetching product with slug:", slug);
       const product = await Product.findOne({ slug }).lean();
       if (!product)
         return res

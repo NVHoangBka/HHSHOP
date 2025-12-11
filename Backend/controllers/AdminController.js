@@ -1,11 +1,16 @@
-// backend/controllers/AdminAuthController.js  (MỚI)
+// backend/controllers/AdminController.js  (MỚI)
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const Order = require("../models/Order");
 const Product = require("../models/Product");
 
-class AdminAuthController {
+const New = require("../models/New");
+const Tag = require("../models/Tag");
+const updateTagCounts = require("../utils/updateTagCounts");
+
+class AdminController {
+  // ==================== AUTH ADMIN ====================
   static async login(req, res) {
     try {
       const { email, password } = req.body;
@@ -168,6 +173,10 @@ class AdminAuthController {
       res.status(500).json({ success: false, message: "Lỗi hệ thống" });
     }
   }
+
+  //============================== END AUTH ADMIN ================================
+
+  // ============================== ORDERS ADMIN ================================
   // === LẤY TẤT CẢ Đơn hàng Order (ADMIN) ===
   static async getOrdersAllAdmin(req, res) {
     try {
@@ -226,6 +235,10 @@ class AdminAuthController {
       res.status(500).json({ success: false, message: error.message });
     }
   }
+
+  //============================== END ORDERS ADMIN ================================
+
+  // ============================== PRODUCTS ADMIN ================================
 
   // LẤY TẤT CẢ SẢN PHẨM CHO ADMIN (có phân trang + tìm kiếm)
   static async getProductsAllAdmin(req, res) {
@@ -301,6 +314,246 @@ class AdminAuthController {
       res.status(500).json({ success: false });
     }
   }
+  //============================== END PRODUCTS ADMIN ================================
+
+  // ==================== QUẢN LÝ TIN TỨC (NEWS) ADMIN ====================
+  // Danh sách tin tức (admin)
+  static async getNewsAdmin(req, res) {
+    try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const search = req.query.search?.trim();
+
+      let query = {};
+      if (search) {
+        query.$or = [
+          { title: new RegExp(search, "i") },
+          { description: new RegExp(search, "i") },
+        ];
+      }
+
+      const [news, total] = await Promise.all([
+        New.find(query)
+          .populate("tags", "name slug")
+          .sort({ createdAt: -1 })
+          .skip((page - 1) * limit)
+          .limit(limit)
+          .lean(),
+        New.countDocuments(query),
+      ]);
+
+      res.json({
+        success: true,
+        news,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit),
+        },
+      });
+    } catch (error) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
+  //===== TẠO TIN TỨC =====
+  static async createNew(req, res) {
+    try {
+      const {
+        title,
+        description,
+        content,
+        thumbnail,
+        thumbnailAlt,
+        tags,
+        isPublished,
+        metaTitle,
+        metaDescription,
+        publishedAt,
+      } = req.body;
+
+      const article = await New.create({
+        title: title.trim(),
+        description: description.trim(),
+        content,
+        thumbnail,
+        thumbnailAlt: thumbnailAlt || title,
+        tags,
+        isPublished: isPublished ?? true,
+        metaTitle: metaTitle || title,
+        metaDescription: metaDescription || description,
+        publishedAt: publishedAt ? new Date(publishedAt) : undefined,
+      });
+
+      await updateTagCounts();
+
+      res.status(201).json({
+        success: true,
+        message: "Tạo bài viết thành công",
+        data: article.populate("tags", "name slug"),
+      });
+    } catch (error) {
+      // Nếu bị trùng slug → Mongoose sẽ tự throw lỗi duplicate key
+      if (error.code === 11000 && error.keyPattern?.slug) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Tiêu đề tạo slug đã tồn tại. Vui lòng sửa tiêu đề một chút.",
+        });
+      }
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
+  //===== CẬP NHẬT TIN TỨC =====
+  static async updateNew(req, res) {
+    try {
+      const { id } = req.params;
+      const updates = req.body;
+
+      const article = await New.findById(id);
+
+      if (!article) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Bài viết không tồn tại" });
+      }
+
+      Object.keys(updates).forEach((key) => {
+        if (updates[key] !== undefined) {
+          article[key] = updates[key];
+        }
+      });
+
+      await article.save();
+      await updateTagCounts();
+
+      await article.populate("tags", "name slug");
+
+      res.json({
+        success: true,
+        message: "Cập nhật bài viết thành công",
+        data: article,
+      });
+    } catch (error) {
+      if (error.code === 11000 && error.keyPattern?.slug) {
+        return res.status(400).json({
+          success: false,
+          message: "Tiêu đề mới tạo slug trùng. Vui lòng sửa lại tiêu đề.",
+        });
+      }
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
+  //===== XOÁ TIN TỨC =====
+  static async deleteNew(req, res) {
+    try {
+      const { id } = req.params;
+      const article = await New.findByIdAndDelete(id);
+      if (!article)
+        return res
+          .status(404)
+          .json({ success: false, message: "Không tìm thấy" });
+
+      await updateTagCounts();
+      res.json({ success: true, message: "Xóa bài viết thành công" });
+    } catch (error) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
+  //============================== END NEWS ADMIN ================================
+
+  // ==================== QUẢN LÝ TAGS ADMIN ====================
+  static async getTagsAdmin(req, res) {
+    try {
+      const tags = await Tag.find().sort({ name: 1 });
+      res.json({ success: true, data: tags });
+    } catch (error) {
+      res.status(500).json({ success: false });
+    }
+  }
+
+  static async createTag(req, res) {
+    try {
+      const { name, type = "both", description, isActive = true } = req.body;
+
+      if (!name?.trim()) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Tên tag không được để trống" });
+      }
+
+      const tag = await Tag.create({
+        name: name.trim(),
+        type,
+        description,
+        isActive,
+      });
+
+      res.status(201).json({ success: true, data: tag });
+    } catch (error) {
+      if (error.code === 11000) {
+        const field = Object.keys(error.keyPattern)[0];
+        return res.status(400).json({
+          success: false,
+          message:
+            field === "slug"
+              ? "Tên tag tạo slug đã tồn tại"
+              : "Tên tag đã tồn tại",
+        });
+      }
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
+  // ======== CẬP NHẬT TAG ============
+  static async updateTag(req, res) {
+    try {
+      const { id } = req.params;
+      const { name, type, description, isActive } = req.body;
+      const tag = await Tag.findById(id);
+      if (!tag)
+        return res
+          .status(404)
+          .json({ success: false, message: "Tag không tồn tại" });
+
+      if (name !== undefined) tag.name = name.trim();
+      if (type) tag.type = type;
+      if (description !== undefined) tag.description = description;
+      if (isActive !== undefined) tag.isActive = isActive;
+
+      await tag.save();
+
+      res.json({ success: true, data: tag });
+    } catch (error) {
+      if (error.code === 11000) {
+        return res.status(400).json({
+          success: false,
+          message: "Tên tag mới tạo slug đã tồn tại",
+        });
+      }
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
+  //===== XOÁ TAG =====
+  static async deleteTag(req, res) {
+    try {
+      const { id } = req.params;
+      const tag = await Tag.findByIdAndDelete(id);
+      if (!tag)
+        return res
+          .status(404)
+          .json({ success: false, message: "Không tìm thấy" });
+
+      await updateTagCounts();
+      res.json({ success: true, message: "Xóa tag thành công" });
+    } catch (error) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
 }
 
-module.exports = AdminAuthController;
+module.exports = AdminController;

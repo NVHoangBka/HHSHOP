@@ -34,4 +34,16 @@ router.post("/products", AdminController.createProductAdmin);
 router.put("/products/:id", AdminController.updateProductAdmin);
 router.delete("/products/:id", AdminController.deleteProductAdmin);
 
+// ==================== QUẢN LÝ TIN TỨC (NEWS) ====================
+router.get("/news", AdminController.getNewsAdmin);
+router.post("/new", AdminController.createNew);
+router.put("/new/:id", AdminController.updateNew);
+router.delete("/new/:id", AdminController.deleteNew);
+
+// ==================== QUẢN LÝ TAG ====================
+router.get("/tags", AdminController.getTagsAdmin);
+router.post("/tags", AdminController.createTag);
+router.put("/tags/:id", AdminController.updateTag);
+router.delete("/tags/:id", AdminController.deleteTag);
+
 module.exports = router;

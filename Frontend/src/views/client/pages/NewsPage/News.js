@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const newsArr = [
@@ -71,6 +72,8 @@ const tagsArr = [
 ];
 
 const News = () => {
+  useEffect(() => {});
+
   return (
     <div className="bg-success-subtle">
       <div className="breadcrumbs">
