@@ -11,7 +11,6 @@ const newSchema = new mongoose.Schema(
     },
     slug: {
       type: String,
-      required: true,
       unique: true,
       lowercase: true,
     },
@@ -76,9 +75,10 @@ const newSchema = new mongoose.Schema(
 );
 
 // Tạo slug tự động
-newSchema.pre("save", function (next) {
+newSchema.pre("save", async function (next) {
+  // Chỉ tạo slug nếu chưa có hoặc title bị thay đổi
   if (!this.slug || this.isModified("title")) {
-    const baseSlug = this.title
+    let baseSlug = this.title
       .toLowerCase()
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
@@ -87,8 +87,21 @@ newSchema.pre("save", function (next) {
       .trim()
       .replace(/\s+/g, "-");
 
-    this.slug = baseSlug;
+    if (!baseSlug) baseSlug = "bai-viet";
+
+    let slug = baseSlug;
+    let counter = 1;
+    while (await this.constructor.findOne({ slug, _id: { $ne: this._id } })) {
+      slug = `${baseSlug}-${counter++}`;
+    }
+    this.slug = slug;
   }
+
+  // Tự động publishedAt
+  if (this.isPublished && !this.publishedAt) {
+    this.publishedAt = new Date();
+  }
+
   next();
 });
 

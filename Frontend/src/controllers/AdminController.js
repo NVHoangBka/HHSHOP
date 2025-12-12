@@ -152,6 +152,33 @@ class AdminController {
       return { success: false, message: "Lấy tin tức thất bại" };
     }
   }
+
+  async createNewAdmin(newData) {
+    try {
+      const result = await this.adminService.createNewAdmin(newData);
+      return result;
+    } catch (error) {
+      return { success: false, message: "Lấy đơn hàng thất bại" };
+    }
+  }
+
+  async updateNewAdmin(newId, newData) {
+    try {
+      const result = await this.adminService.updateNewAdmin(newId, newData);
+      return result;
+    } catch (error) {
+      return { success: false, message: "Lấy đơn hàng thất bại" };
+    }
+  }
+
+  async deleteNewAdmin(newId) {
+    try {
+      const result = await this.adminService.deleteNewAdmin(newId);
+      return result;
+    } catch (error) {
+      return { success: false, message: "Lấy đơn hàng thất bại" };
+    }
+  }
 }
 
 export default AdminController;

@@ -7,7 +7,7 @@ const Product = require("../models/Product");
 
 const New = require("../models/New");
 const Tag = require("../models/Tag");
-const updateTagCounts = require("../utils/updateTagCounts");
+const { updateTagCounts } = require("../utils/updateTagCounts");
 
 class AdminController {
   // ==================== AUTH ADMIN ====================
@@ -367,10 +367,10 @@ class AdminController {
         thumbnail,
         thumbnailAlt,
         tags,
-        isPublished,
+        isPublished = false,
+        publishedAt,
         metaTitle,
         metaDescription,
-        publishedAt,
       } = req.body;
 
       const article = await New.create({
@@ -380,10 +380,10 @@ class AdminController {
         thumbnail,
         thumbnailAlt: thumbnailAlt || title,
         tags,
-        isPublished: isPublished ?? true,
+        isPublished,
+        publishedAt: isPublished ? publishedAt || new Date() : null,
         metaTitle: metaTitle || title,
         metaDescription: metaDescription || description,
-        publishedAt: publishedAt ? new Date(publishedAt) : undefined,
       });
 
       await updateTagCounts();

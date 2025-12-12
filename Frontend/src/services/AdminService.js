@@ -176,6 +176,36 @@ class AdminService {
     } catch (error) {}
   }
 
+  async createNewAdmin(newData) {
+    try {
+      const res = await api.post("/admin/news", newData);
+      const news = res.data.news;
+      return { success: true, news };
+    } catch (error) {
+      console.error("Login error:", error);
+      return this.handleError(error);
+    }
+  }
+
+  async updateNewAdmin(newId, newData) {
+    try {
+      const res = await api.put(`/admin/news/${newId}`, newData);
+      const news = res.data.news;
+      return { success: true, news };
+    } catch (error) {
+      return this.handleError(error);
+    }
+  }
+
+  async deleteNewAdmin(newId) {
+    try {
+      const res = await api.delete(`/admin/news/${newId}`);
+      return { success: true, message: res.data.message };
+    } catch (error) {
+      return this.handleError(error);
+    }
+  }
+
   // =============   TAGS ADMIN  ==================
 
   // === XỬ LÝ LỖI CHUNG ===

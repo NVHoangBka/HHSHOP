@@ -36,9 +36,9 @@ router.delete("/products/:id", AdminController.deleteProductAdmin);
 
 // ==================== QUẢN LÝ TIN TỨC (NEWS) ====================
 router.get("/news", AdminController.getNewsAdmin);
-router.post("/new", AdminController.createNew);
-router.put("/new/:id", AdminController.updateNew);
-router.delete("/new/:id", AdminController.deleteNew);
+router.post("/news", AdminController.createNew);
+router.put("/news/:id", AdminController.updateNew);
+router.delete("/news/:id", AdminController.deleteNew);
 
 // ==================== QUẢN LÝ TAG ====================
 router.get("/tags", AdminController.getTagsAdmin);

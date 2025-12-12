@@ -21,7 +21,7 @@ const AdminLayout = ({ onLoginAdmin, onLogoutAdmin, adminController }) => {
 
       <div className="container-fluid">
         <div className="row">
-          <div className="col-2 bg-white shadow-sm  p-0">
+          <div className="col-2 bg-white shadow-sm p-0">
             <div className="list-group list-group-flush">
               <Link
                 to="/admin/dashboard"
@@ -68,7 +68,7 @@ const AdminLayout = ({ onLoginAdmin, onLogoutAdmin, adminController }) => {
             </div>
           </div>
 
-          <div className="col-10 p-4 bg-success-subtle h-100">
+          <div className="col-10 p-4 bg-success-subtle">
             <Outlet />
           </div>
         </div>
