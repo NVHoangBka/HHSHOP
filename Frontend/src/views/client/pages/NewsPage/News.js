@@ -1,5 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import newController from "../../../../controllers/NewController";
 
 const newsArr = [
   {
@@ -72,7 +73,20 @@ const tagsArr = [
 ];
 
 const News = () => {
-  useEffect(() => {});
+  const [news, setNews] = useState([]);
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const result = await newController.getNews();
+        if (result.success) {
+          setNews(result.news);
+        }
+      } catch (error) {}
+    };
+
+    fetchNews();
+  }, []);
 
   return (
     <div className="bg-success-subtle">
@@ -105,7 +119,7 @@ const News = () => {
               </div>
               <div className="article-list">
                 <div className="mt-2 row row-cols-lg-3">
-                  {newsArr.map((item, index) => (
+                  {news.map((item, index) => (
                     <div className="col p-2" key={index}>
                       <div className="card-article bg-white rounded group">
                         <div className="card-article__image aspect-video d-flex align-items-center justify-content-center overflow-hidden rounded-top">
@@ -113,7 +127,7 @@ const News = () => {
                             <img
                               loading="lazy"
                               className="aspect-video object-contain transition-transform duration-300"
-                              src={item.img}
+                              src={item.thumbnail}
                               alt={item.title}
                               width="331"
                               height="186"

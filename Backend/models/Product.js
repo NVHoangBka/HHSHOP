@@ -1,6 +1,6 @@
 // backend/models/Product.js → PHIÊN BẢN CUỐI CÙNG – ĐỈNH CAO THẬT SỰ
 const mongoose = require("mongoose");
-const updateTagCounts = require("../utils/updateTagCounts");
+const { updateTagCounts } = require("../utils/updateTagCounts");
 
 const variantSchema = new mongoose.Schema(
   {
@@ -182,7 +182,20 @@ productSchema.statics.search = function (query) {
   });
 };
 
-productSchema.post("save", () => updateTagCounts());
-productSchema.post("findOneAndDelete", () => updateTagCounts());
+productSchema.post("save", async function () {
+  try {
+    await updateTagCounts();
+  } catch (err) {
+    console.error("Error updating tag counts after save Product:", err);
+  }
+});
+
+productSchema.post("findOneAndDelete", async function () {
+  try {
+    await updateTagCounts();
+  } catch (err) {
+    console.error("Error updating tag counts after delete Product:", err);
+  }
+});
 
 module.exports = mongoose.model("Product", productSchema);

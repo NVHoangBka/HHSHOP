@@ -28,7 +28,7 @@ router.use("/payment", paymentRouter);
 router.use("/admin", adminRouter);
 router.use("/upload", uploadRouter);
 router.use("/users", userRouter);
-router.use("/new", newRouter);
+router.use("/news", newRouter);
 router.use("/tags", tagRouter);
 // router.use("/search", searchRouter);
 

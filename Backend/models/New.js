@@ -1,6 +1,7 @@
 // models/Article.js
 const mongoose = require("mongoose");
-const updateTagCounts = require("../utils/updateTagCounts.js");
+const mongooseLeanVirtuals = require("mongoose-lean-virtuals");
+const { updateTagCounts } = require("../utils/updateTagCounts");
 
 const newSchema = new mongoose.Schema(
   {
@@ -113,11 +114,37 @@ newSchema.methods.incrementViews = function () {
 
 // Virtual: format ngày đẹp (05/06/2024)
 newSchema.virtual("formattedDate").get(function () {
-  return this.publishedAt.toLocaleDateString("vi-VN");
+  if (!this.publishedAt) return "";
+  return new Date(this.publishedAt).toLocaleDateString("vi-VN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+});
+newSchema.plugin(mongooseLeanVirtuals);
+
+newSchema.post("save", async function () {
+  try {
+    await updateTagCounts();
+  } catch (err) {
+    console.error("Error updating tag counts after save Article:", err);
+  }
 });
 
-newSchema.post("save", () => updateTagCounts());
-newSchema.post("findOneAndDelete", () => updateTagCounts());
-newSchema.post("deleteMany", () => updateTagCounts());
+newSchema.post("findOneAndDelete", async function () {
+  try {
+    await updateTagCounts();
+  } catch (err) {
+    console.error("Error updating tag counts after delete Article:", err);
+  }
+});
+
+newSchema.post("deleteMany", async function () {
+  try {
+    await updateTagCounts();
+  } catch (err) {
+    console.error("Error updating tag counts after deleteMany Article:", err);
+  }
+});
 
 module.exports = mongoose.model("New", newSchema);

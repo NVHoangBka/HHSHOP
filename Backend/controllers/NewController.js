@@ -15,14 +15,16 @@ class NewController {
           .sort({ publishedAt: -1 })
           .skip(skip)
           .limit(limit)
-          .lean(),
+          .lean({ virtuals: true }),
 
         New.countDocuments({ isPublished: true }),
       ]);
 
+      console.log("Sample news item:", news[0]);
+
       res.json({
         success: true,
-        data: news,
+        news,
         pagination: {
           page,
           limit,
@@ -44,7 +46,7 @@ class NewController {
         .populate("tags", "name slug")
         .sort({ views: -1, publishedAt: -1 })
         .limit(limit)
-        .lean();
+        .lean({ virtuals: true });
 
       res.json({ success: true, data: featured });
     } catch (error) {
@@ -58,7 +60,7 @@ class NewController {
 
       const article = await New.findOne({ slug, isPublished: true })
         .populate("tags", "name slug")
-        .lean();
+        .lean({ virtuals: true });
 
       if (!article) {
         return res.status(404).json({
@@ -79,7 +81,7 @@ class NewController {
         .select("title slug thumbnail description formattedDate")
         .limit(6)
         .sort({ publishedAt: -1 })
-        .lean();
+        .lean({ virtuals: true });
 
       res.json({
         success: true,
@@ -117,7 +119,7 @@ class NewController {
           .sort({ publishedAt: -1 })
           .skip(skip)
           .limit(limit)
-          .lean(),
+          .lean({ virtuals: true }),
 
         New.countDocuments({ tags: tag._id, isPublished: true }),
       ]);
@@ -159,7 +161,7 @@ class NewController {
           .select("title slug thumbnail description formattedDate")
           .sort({ publishedAt: -1 })
           .limit(20)
-          .lean(),
+          .lean({ virtuals: true }),
 
         New.countDocuments({
           isPublished: true,

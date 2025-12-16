@@ -74,7 +74,7 @@ const AdminNews = ({ adminController }) => {
   }, [searchTerm]);
 
   useEffect(() => {
-    fetchNews(currentPage);
+    fetchNews();
   }, [currentPage]);
 
   const showToast = (msg, type = "success") => {
@@ -166,12 +166,6 @@ const AdminNews = ({ adminController }) => {
     }
   };
 
-  const toggleArray = (arr, value) => {
-    return arr.includes(value)
-      ? arr.filter((i) => i !== value)
-      : [...arr, value];
-  };
-
   const handleDelete = async (id) => {
     if (!window.confirm("Xóa sản phẩm này? Không thể khôi phục!")) return;
     try {
@@ -206,7 +200,7 @@ const AdminNews = ({ adminController }) => {
   const filteredNews = news.filter(
     (newpaper) =>
       searchTerm === "" ||
-      newpaper.name.toLowerCase().includes(searchTerm.toLowerCase())
+      newpaper.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -260,7 +254,7 @@ const AdminNews = ({ adminController }) => {
               <thead className="table-primary text-white text-center">
                 <tr>
                   <th>Ảnh</th>
-                  <th>Tiêu đề</th>
+                  <th>Thông tin</th>
                   <th>Tags</th>
                   <th>Ngày đăng</th>
                   <th>Trạng thái</th>
@@ -269,7 +263,7 @@ const AdminNews = ({ adminController }) => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {news.length === 0 ? (
+                {filteredNews.length === 0 ? (
                   <tr>
                     <td
                       colSpan="7"
@@ -281,21 +275,25 @@ const AdminNews = ({ adminController }) => {
                     </td>
                   </tr>
                 ) : (
-                  news.map((item) => (
+                  filteredNews.map((item) => (
                     <tr key={item._id} className="hover:bg-gray-50">
-                      <td className="px-4 py-3">
+                      <td style={{ width: "200px" }}>
                         <img
                           src={item.thumbnail}
                           alt=""
-                          className="w-16 h-16 object-cover rounded"
+                          className=" object-cover rounded w-100"
                         />
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="">
                         <div className="font-medium text-gray-900">
+                          <b>Tiêu đề: </b>
                           {item.title}
+                          <br />
+                          <b>Mô tả: </b>
+                          {item.description}
                         </div>
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="">
                         <div className="flex flex-wrap gap-1">
                           {item.tags?.map((tag) => (
                             <span
@@ -307,10 +305,10 @@ const AdminNews = ({ adminController }) => {
                           ))}
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-sm">
+                      <td className=" text-sm">
                         {new Date(item.publishedAt).toLocaleDateString("vi-VN")}
                       </td>
-                      <td className="px-4 py-3">
+                      <td>
                         <span
                           className={`px-2 py-1 text-xs rounded-full ${
                             item.isPublished
@@ -321,17 +319,17 @@ const AdminNews = ({ adminController }) => {
                           {item.isPublished ? "Đã đăng" : "Nháp"}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-center">{item.views}</td>
-                      <td className="px-4 py-3 text-center">
+                      <td className=" text-center">{item.views}</td>
+                      <td className=" text-center">
                         <button
                           onClick={() => openModal(item)}
-                          className="text-blue-600 hover:underline mr-3"
+                          className="btn btn-sm btn-success me-2"
                         >
                           Sửa
                         </button>
                         <button
                           onClick={() => handleDelete(item._id)}
-                          className="text-red-600 hover:underline"
+                          className="btn btn-sm btn-danger"
                         >
                           Xóa
                         </button>

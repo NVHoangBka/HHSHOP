@@ -386,7 +386,7 @@ class AdminController {
         metaDescription: metaDescription || description,
       });
 
-      await updateTagCounts();
+      // await updateTagCounts();
 
       res.status(201).json({
         success: true,
@@ -427,7 +427,7 @@ class AdminController {
       });
 
       await article.save();
-      await updateTagCounts();
+      // await updateTagCounts();
 
       await article.populate("tags", "name slug");
 
@@ -457,7 +457,7 @@ class AdminController {
           .status(404)
           .json({ success: false, message: "Không tìm thấy" });
 
-      await updateTagCounts();
+      // await updateTagCounts();
       res.json({ success: true, message: "Xóa bài viết thành công" });
     } catch (error) {
       res.status(500).json({ success: false, message: error.message });

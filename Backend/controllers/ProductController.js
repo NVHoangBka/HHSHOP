@@ -126,7 +126,6 @@ class ProductController {
 
   // Lấy theo slug (rất quan trọng cho trang chi tiết)
   static async getBySlug(req, res) {
-    console.log("getBySlug called");
     try {
       const { slug } = req.params;
       const product = await Product.findOne({ slug }).lean();
