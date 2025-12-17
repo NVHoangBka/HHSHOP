@@ -182,20 +182,20 @@ productSchema.statics.search = function (query) {
   });
 };
 
-productSchema.post("save", async function () {
-  try {
-    await updateTagCounts();
-  } catch (err) {
-    console.error("Error updating tag counts after save Product:", err);
-  }
-});
+// productSchema.post("save", async function () {
+//   try {
+//     await updateTagCounts();
+//   } catch (err) {
+//     console.error("Error updating tag counts after save Product:", err);
+//   }
+// });
 
-productSchema.post("findOneAndDelete", async function () {
-  try {
-    await updateTagCounts();
-  } catch (err) {
-    console.error("Error updating tag counts after delete Product:", err);
-  }
-});
+// productSchema.post("findOneAndDelete", async function () {
+//   try {
+//     await updateTagCounts();
+//   } catch (err) {
+//     console.error("Error updating tag counts after delete Product:", err);
+//   }
+// });
 
 module.exports = mongoose.model("Product", productSchema);

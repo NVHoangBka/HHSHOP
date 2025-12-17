@@ -469,7 +469,7 @@ class AdminController {
   static async getTagsAdmin(req, res) {
     try {
       const tags = await Tag.find().sort({ name: 1 });
-      res.json({ success: true, data: tags });
+      res.json({ success: true, tags });
     } catch (error) {
       res.status(500).json({ success: false });
     }
@@ -485,14 +485,14 @@ class AdminController {
           .json({ success: false, message: "Tên tag không được để trống" });
       }
 
-      const tag = await Tag.create({
+      const tags = await Tag.create({
         name: name.trim(),
         type,
         description,
         isActive,
       });
 
-      res.status(201).json({ success: true, data: tag });
+      res.status(201).json({ success: true, tags });
     } catch (error) {
       if (error.code === 11000) {
         const field = Object.keys(error.keyPattern)[0];

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 const AdminNews = ({ adminController }) => {
   const [news, setNews] = useState([]);
+  const [tagsNew, setTagsNew] = useState([]);
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState({ show: false, message: "", type: "" });
 
@@ -56,25 +57,32 @@ const AdminNews = ({ adminController }) => {
     }
   };
   // Load tags
-  // const fetchTags = async () => {
-  //   try {
-  //     const res = await fetch("/api/admin/tags", { credentials: "include" });
-  //     const data = await res.json();
-  //     // if (data.success) setTags(data.data);
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
+  const fetchTags = async () => {
+    try {
+      const result = await adminController.getTagsAllAdmin(pagination);
+      if (result.success) {
+        const tags = result.tags;
+        const tagsNew = tags.filter(
+          (tag) => tag.type === "article" || tag.type === "both"
+        );
+        setTagsNew(tagsNew || []);
+        setCurrentPage(currentPage);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   // Load lần đầu + khi search hoặc đổi trang
   useEffect(() => {
     setCurrentPage(1);
     fetchNews();
-    // fetchTags();
+    fetchTags();
   }, [searchTerm]);
 
   useEffect(() => {
     fetchNews();
+    fetchTags();
   }, [currentPage]);
 
   const showToast = (msg, type = "success") => {
@@ -136,6 +144,7 @@ const AdminNews = ({ adminController }) => {
       metaTitle,
       metaDescription,
     } = formData;
+
     const newData = {
       title,
       description,
@@ -196,7 +205,7 @@ const AdminNews = ({ adminController }) => {
     setSearchTerm("");
   };
 
-  // Lọc chỉ theo tên sản phẩm (không phân biệt hoa thường)
+  // Lọc chỉ theo tên tin tức (không phân biệt hoa thường)
   const filteredNews = news.filter(
     (newpaper) =>
       searchTerm === "" ||
@@ -252,7 +261,8 @@ const AdminNews = ({ adminController }) => {
           <div className="bg-white border-0">
             <table className="table table-hover mb-0 align-middle table-bordered">
               <thead className="table-primary text-white text-center">
-                <tr>
+                <tr className="align-middle">
+                  <th>STT</th>
                   <th>Ảnh</th>
                   <th>Thông tin</th>
                   <th>Tags</th>
@@ -266,7 +276,7 @@ const AdminNews = ({ adminController }) => {
                 {filteredNews.length === 0 ? (
                   <tr>
                     <td
-                      colSpan="7"
+                      colSpan="8"
                       className="text-center py-5 text-muted fs-4"
                     >
                       {searchTerm
@@ -275,16 +285,17 @@ const AdminNews = ({ adminController }) => {
                     </td>
                   </tr>
                 ) : (
-                  filteredNews.map((item) => (
+                  filteredNews.map((item, index) => (
                     <tr key={item._id} className="hover:bg-gray-50">
+                      <td className="text-center fw-bold">{index + 1}</td>
                       <td style={{ width: "200px" }}>
                         <img
                           src={item.thumbnail}
                           alt=""
-                          className=" object-cover rounded w-100"
+                          className="object-cover rounded w-100"
                         />
                       </td>
-                      <td className="">
+                      <td className="col-6">
                         <div className="font-medium text-gray-900">
                           <b>Tiêu đề: </b>
                           {item.title}
@@ -293,22 +304,22 @@ const AdminNews = ({ adminController }) => {
                           {item.description}
                         </div>
                       </td>
-                      <td className="">
-                        <div className="flex flex-wrap gap-1">
+                      <td className="col-1">
+                        <div className="d-flex flex-wrap gap-1">
                           {item.tags?.map((tag) => (
-                            <span
+                            <p
                               key={tag._id}
-                              className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded"
+                              className="fw-semibold px-2 py-1 rounded m-0"
                             >
                               {tag.name}
-                            </span>
+                            </p>
                           ))}
                         </div>
                       </td>
-                      <td className=" text-sm">
+                      <td className="fs-7">
                         {new Date(item.publishedAt).toLocaleDateString("vi-VN")}
                       </td>
-                      <td>
+                      <td className="fs-7">
                         <span
                           className={`px-2 py-1 text-xs rounded-full ${
                             item.isPublished
@@ -319,8 +330,8 @@ const AdminNews = ({ adminController }) => {
                           {item.isPublished ? "Đã đăng" : "Nháp"}
                         </span>
                       </td>
-                      <td className=" text-center">{item.views}</td>
-                      <td className=" text-center">
+                      <td className=" text-center fs-7">{item.views}</td>
+                      <td className=" text-center col-1">
                         <button
                           onClick={() => openModal(item)}
                           className="btn btn-sm btn-success me-2"
@@ -471,31 +482,34 @@ const AdminNews = ({ adminController }) => {
                     </div>
                     <div className="col-12 mb-2">
                       <label className="form-label fw-bold">Tags</label>
-                      <div className="space-y-2 max-h-48 overflow-y-auto border rounded p-2">
-                        {/* {tags.map((tag) => (
-                      <label key={tag._id} className="flex items-center gap-2">
-                        <input
-                          type="checkbox"
-                          checked={formData.tags.includes(tag._id)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setFormData({
-                                ...formData,
-                                tags: [...formData.tags, tag._id],
-                              });
-                            } else {
-                              setFormData({
-                                ...formData,
-                                tags: formData.tags.filter(
-                                  (t) => t !== tag._id
-                                ),
-                              });
-                            }
-                          }}
-                        />
-                        <span>{tag.name}</span>
-                      </label>
-                    ))} */}
+                      <div className="row border rounded p-2 d-flex row-cols-lg-5 g-2">
+                        {tagsNew.map((tag) => (
+                          <label
+                            key={tag._id}
+                            className="d-flex align-items-center gap-2"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={formData.tags.includes(tag._id)}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setFormData({
+                                    ...formData,
+                                    tags: [...formData.tags, tag._id],
+                                  });
+                                } else {
+                                  setFormData({
+                                    ...formData,
+                                    tags: formData.tags.filter(
+                                      (t) => t !== tag._id
+                                    ),
+                                  });
+                                }
+                              }}
+                            />
+                            <span>{tag.name}</span>
+                          </label>
+                        ))}
                       </div>
                     </div>
                     <div className="d-flex align-items-center mt-3">

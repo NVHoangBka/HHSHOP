@@ -132,6 +132,7 @@ const AdminOrders = ({ adminController }) => {
         <table className="table table-striped table-bordered table-hover align-middle">
           <thead className="table-primary  align-middle">
             <tr className="text-center">
+              <th>STT</th>
               <th>Mã đơn</th>
               <th>Tên khách hàng</th>
               <th>SDT</th>
@@ -144,8 +145,9 @@ const AdminOrders = ({ adminController }) => {
             </tr>
           </thead>
           <tbody>
-            {filteredOrders.map((order) => (
+            {filteredOrders.map((order, index) => (
               <tr key={order._id} className="text-center fs-7 align-middle">
+                <td>{index + 1}</td>
                 <td>
                   <strong>#{order.orderId}</strong>
                 </td>

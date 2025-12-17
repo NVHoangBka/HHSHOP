@@ -158,7 +158,7 @@ class AdminController {
       const result = await this.adminService.createNewAdmin(newData);
       return result;
     } catch (error) {
-      return { success: false, message: "Lấy đơn hàng thất bại" };
+      return { success: false, message: "Lấy tin tức thất bại" };
     }
   }
 
@@ -167,7 +167,7 @@ class AdminController {
       const result = await this.adminService.updateNewAdmin(newId, newData);
       return result;
     } catch (error) {
-      return { success: false, message: "Lấy đơn hàng thất bại" };
+      return { success: false, message: "Lấy tin tức thất bại" };
     }
   }
 
@@ -176,7 +176,44 @@ class AdminController {
       const result = await this.adminService.deleteNewAdmin(newId);
       return result;
     } catch (error) {
-      return { success: false, message: "Lấy đơn hàng thất bại" };
+      return { success: false, message: "Lấy tin tức thất bại" };
+    }
+  }
+
+  // =============   TAGS ADMIN ==================
+  async getTagsAllAdmin(pagination) {
+    try {
+      const result = await this.adminService.getTagsAllAdmin(pagination);
+      return result;
+    } catch (error) {
+      return { success: false, message: "Lấy tag thất bại" };
+    }
+  }
+
+  async createTagAdmin(tagData) {
+    try {
+      const result = await this.adminService.createTagAdmin(tagData);
+      return result;
+    } catch (error) {
+      return { success: false, message: "Lấy tag thất bại" };
+    }
+  }
+
+  async updateTagAdmin(tagId, tagData) {
+    try {
+      const result = await this.adminService.updateTagAdmin(tagId, tagData);
+      return result;
+    } catch (error) {
+      return { success: false, message: "Lấy tag thất bại" };
+    }
+  }
+
+  async deleteTagAdmin(tagId) {
+    try {
+      const result = await this.adminService.deleteTagAdmin(tagId);
+      return result;
+    } catch (error) {
+      return { success: false, message: "Lấy tag thất bại" };
     }
   }
 }

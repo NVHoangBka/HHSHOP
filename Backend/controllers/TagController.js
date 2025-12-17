@@ -15,7 +15,10 @@ class TagController {
         .sort({ totalCount: -1, name: 1 })
         .select("name slug newCount productCount type");
 
-      res.json(tags);
+      res.json({
+        success: true,
+        tags,
+      });
     } catch (err) {
       res.status(500).json({ message: err.message });
     }

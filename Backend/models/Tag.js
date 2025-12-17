@@ -11,13 +11,12 @@ const tagSchema = new mongoose.Schema(
     },
     slug: {
       type: String,
-      required: true,
       unique: true,
       lowercase: true,
     },
     type: {
       type: String,
-      enum: ["new", "product", "both"],
+      enum: ["article", "product", "both"],
       default: "both", // "both" = dùng được cho cả bài viết và sản phẩm
     },
     description: String,

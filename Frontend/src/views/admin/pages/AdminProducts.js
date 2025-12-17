@@ -1,8 +1,10 @@
 // src/admin/pages/Products.jsx → FORM THÊM/SỬA SẢN PHẨM ĐỈNH CAO NHẤT 2025
 import React, { useEffect, useState, useRef } from "react";
+import tagController from "../../../controllers/TagController";
 
 const AdminProducts = ({ adminController }) => {
   const [products, setProducts] = useState([]);
+  const [tagsProduct, setTagsProduct] = useState([]);
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState({ show: false, message: "", type: "" });
 
@@ -64,14 +66,30 @@ const AdminProducts = ({ adminController }) => {
     }
   };
 
+  const fetchTagsProduct = async () => {
+    try {
+      const result = await tagController.getAllTags();
+      if (result.success) {
+        const tags = result.tags;
+        const tagsProduct = tags.filter(
+          (tag) => tag.type === "product" || tag.type === "both"
+        );
+
+        setTagsProduct(tagsProduct);
+      }
+    } catch (error) {}
+  };
+
   // Load lần đầu + khi search hoặc đổi trang
   useEffect(() => {
     setCurrentPage(1);
     loadProducts();
+    fetchTagsProduct();
   }, [searchTerm]);
 
   useEffect(() => {
     loadProducts(currentPage);
+    fetchTagsProduct(currentPage);
   }, [currentPage]);
 
   const showToast = (msg, type = "success") => {
@@ -423,7 +441,7 @@ const AdminProducts = ({ adminController }) => {
                         </td>
                         <td className="text-center">
                           <button
-                            className="btn btn-sm btn-warning me-2"
+                            className="btn btn-sm btn-success me-2"
                             onClick={() => openModal(p)}
                           >
                             Sửa
@@ -771,7 +789,7 @@ const AdminProducts = ({ adminController }) => {
                         <label className="form-label fw-bold">
                           Loại sản phẩm
                         </label>
-                        <div className="d-flex mx-3">
+                        <div className="d-flex flex-wrap px-3 py-2 rounded border align-items-center">
                           {popularTypes.map((t) => (
                             <div key={t} className="col-3 form-check">
                               <input
@@ -795,7 +813,7 @@ const AdminProducts = ({ adminController }) => {
 
                       <div className="col-12 mb-2">
                         <label className="form-label fw-bold">Màu sắc</label>
-                        <div className="d-flex flex-wrap mx-3">
+                        <div className="d-flex flex-wrap px-3 py-2 rounded border align-items-center">
                           {popularColors.map((color, index) => (
                             <div key={index} className="col-3 form-check mb-2">
                               <input
@@ -818,48 +836,38 @@ const AdminProducts = ({ adminController }) => {
                       </div>
 
                       {/* TAGS */}
-                      <div className="col-12">
-                        <label className="form-label fw-bold">
-                          Tags (gõ rồi Enter)
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder="nước-giat, huu-co..."
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              e.preventDefault();
-                              const val = e.target.value.trim();
-                              if (val && !formData.tags.includes(val)) {
-                                formData.tags.push(val);
-                                e.target.value = "";
-                              }
-                            }
-                          }}
-                        />
-                        {/* <div className="mt-2">
-                          {formData.tags.map((tag, i) => (
-                            <span
-                              key={i}
-                              className="badge bg-secondary me-2 mb-2"
-                            >
-                              {tag}
-                              <button
-                                type="button"
-                                className="btn-close btn-close-white ms-2"
-                                onClick={() =>
-                                  (formData.tags = formData.tags.filter(
-                                    (_, j) => j !== i
-                                  ))
-                                }
-                              ></button>
-                            </span>
+                      <div className="col-12 ">
+                        <label className="form-label fw-bold">Tags</label>
+                        <div className="d-flex flex-wrap px-3 py-2 rounded border align-items-center">
+                          {tagsProduct.map((tag) => (
+                            <div key={tag._id} className="col-3 form-check ">
+                              <input
+                                className="form-check-input"
+                                type="checkbox"
+                                checked={formData.tags.includes(tag._id)}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setFormData({
+                                      ...formData,
+                                      tags: [...formData.tags, tag._id],
+                                    });
+                                  } else {
+                                    setFormData({
+                                      ...formData,
+                                      tags: formData.tags.filter(
+                                        (t) => t !== tag._id
+                                      ),
+                                    });
+                                  }
+                                }}
+                              />
+                              <span>{tag.name}</span>
+                            </div>
                           ))}
-                        </div> */}
+                        </div>
                       </div>
 
                       {/* CÁC TRƯỜNG KHÁC */}
-
                       <div className="col-md-6">
                         <label className="form-label fw-bold">Còn hàng?</label>
                         <select
@@ -901,12 +909,15 @@ const AdminProducts = ({ adminController }) => {
                   <div className="modal-footer">
                     <button
                       type="button"
-                      className="btn btn-secondary btn-lg"
+                      className="btn btn-secondary fw-semibold"
                       onClick={() => setModalOpen(false)}
                     >
                       Hủy
                     </button>
-                    <button type="submit" className="btn btn-success btn-lg">
+                    <button
+                      type="submit"
+                      className="btn btn-success fw-semibold"
+                    >
                       {isEditing ? "CẬP NHẬT" : "THÊM MỚI"}
                     </button>
                   </div>

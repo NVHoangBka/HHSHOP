@@ -208,6 +208,45 @@ class AdminService {
 
   // =============   TAGS ADMIN  ==================
 
+  async getTagsAllAdmin(pagination) {
+    try {
+      const res = await api.get("/admin/tags", { params: pagination });
+      const tags = res.data.tags;
+      const paginationData = res.data.pagination;
+      return { success: true, tags, paginationData };
+    } catch (error) {}
+  }
+
+  async createTagAdmin(tagData) {
+    try {
+      const res = await api.post("/admin/tags", tagData);
+      const tags = res.data.tags;
+      return { success: true, tags };
+    } catch (error) {
+      console.error("Login error:", error);
+      return this.handleError(error);
+    }
+  }
+
+  async updateTagAdmin(tagId, tagData) {
+    try {
+      const res = await api.put(`/admin/tags/${tagId}`, tagData);
+      const tags = res.data.tags;
+      return { success: true, tags };
+    } catch (error) {
+      return this.handleError(error);
+    }
+  }
+
+  async deleteTagAdmin(tagId) {
+    try {
+      const res = await api.delete(`/admin/tags/${tagId}`);
+      return { success: true, message: res.data.message };
+    } catch (error) {
+      return this.handleError(error);
+    }
+  }
+
   // === XỬ LÝ LỖI CHUNG ===
   handleError(error) {
     const message = error.response?.data?.message || "Lỗi hệ thống";

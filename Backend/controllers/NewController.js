@@ -10,7 +10,7 @@ class NewController {
 
       const [news, total] = await Promise.all([
         New.find({ isPublished: true })
-          .select("title slug thumbnail description formattedDate tags")
+          .select("title slug thumbnail description publishedAt tags")
           .populate("tags", "name slug")
           .sort({ publishedAt: -1 })
           .skip(skip)
@@ -19,8 +19,6 @@ class NewController {
 
         New.countDocuments({ isPublished: true }),
       ]);
-
-      console.log("Sample news item:", news[0]);
 
       res.json({
         success: true,
@@ -42,7 +40,7 @@ class NewController {
       const limit = parseInt(req.query.limit) || 5;
 
       const featured = await New.find({ isPublished: true })
-        .select("title slug thumbnail description formattedDate")
+        .select("title slug thumbnail description publishedAt")
         .populate("tags", "name slug")
         .sort({ views: -1, publishedAt: -1 })
         .limit(limit)
@@ -78,7 +76,7 @@ class NewController {
         _id: { $ne: article._id },
         isPublished: true,
       })
-        .select("title slug thumbnail description formattedDate")
+        .select("title slug thumbnail description publishedAt")
         .limit(6)
         .sort({ publishedAt: -1 })
         .lean({ virtuals: true });
@@ -114,7 +112,7 @@ class NewController {
 
       const [news, total] = await Promise.all([
         New.find({ tags: tag._id, isPublished: true })
-          .select("title slug thumbnail description formattedDate")
+          .select("title slug thumbnail description publishedAt")
           .populate("tags", "name slug")
           .sort({ publishedAt: -1 })
           .skip(skip)

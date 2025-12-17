@@ -121,30 +121,29 @@ newSchema.virtual("formattedDate").get(function () {
     year: "numeric",
   });
 });
-newSchema.plugin(mongooseLeanVirtuals);
 
-newSchema.post("save", async function () {
-  try {
-    await updateTagCounts();
-  } catch (err) {
-    console.error("Error updating tag counts after save Article:", err);
-  }
-});
+// newSchema.post("save", async function () {
+//   try {
+//     await updateTagCounts();
+//   } catch (err) {
+//     console.error("Error updating tag counts after save Article:", err);
+//   }
+// });
 
-newSchema.post("findOneAndDelete", async function () {
-  try {
-    await updateTagCounts();
-  } catch (err) {
-    console.error("Error updating tag counts after delete Article:", err);
-  }
-});
+// newSchema.post("findOneAndDelete", async function () {
+//   try {
+//     await updateTagCounts();
+//   } catch (err) {
+//     console.error("Error updating tag counts after delete Article:", err);
+//   }
+// });
 
-newSchema.post("deleteMany", async function () {
-  try {
-    await updateTagCounts();
-  } catch (err) {
-    console.error("Error updating tag counts after deleteMany Article:", err);
-  }
-});
+// newSchema.post("deleteMany", async function () {
+//   try {
+//     await updateTagCounts();
+//   } catch (err) {
+//     console.error("Error updating tag counts after deleteMany Article:", err);
+//   }
+// });
 
 module.exports = mongoose.model("New", newSchema);
