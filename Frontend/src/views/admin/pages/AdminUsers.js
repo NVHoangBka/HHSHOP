@@ -21,10 +21,6 @@ const AdminUsers = ({ adminController }) => {
     fetchUser();
   }, [adminController]);
 
-  const updatePaymentStatus = () => {};
-
-  const updateStatus = () => {};
-
   const openModal = () => {
     // Mở modal thêm người dùng
   };

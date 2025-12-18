@@ -251,12 +251,7 @@ class AdminService {
   handleError(error) {
     const message = error.response?.data?.message || "Lỗi hệ thống";
     const status = error.response?.status;
-
-    if (status === 401) {
-      this.logoutAdmin();
-      window.location.href = "/admin/login";
-    }
-
+    console.log(message);
     return { success: false, message, status };
   }
 }

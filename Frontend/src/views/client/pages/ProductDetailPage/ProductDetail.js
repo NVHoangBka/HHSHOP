@@ -186,10 +186,11 @@ const ProductDetail = ({ addToCart, productController }) => {
                             onClick={() => setMainImage(img)}
                           >
                             <img
-                              src={img}
-                              width="64"
-                              height="64"
                               className="object-contain"
+                              src={img}
+                              alt=""
+                              width="64px"
+                              height="64px"
                             />
                           </div>
                         ))}

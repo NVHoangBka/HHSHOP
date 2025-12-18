@@ -54,7 +54,7 @@ const ProductTabSection = ({ path, title, addToCart, productController }) => {
       }
     };
     fetchProducts();
-  }, [activeTab]);
+  }, [activeTab, productController]);
 
   return (
     <div className="section-product-tabs mt-5">
@@ -85,8 +85,8 @@ const ProductTabSection = ({ path, title, addToCart, productController }) => {
         <div className="tab-content mt-4">
           <div className="product-list row bg-white py-3 justify-content-center m-0">
             {filteredProducts.length > 0 ? (
-              filteredProducts.map((product) => (
-                <div className="col-2">
+              filteredProducts.map((product, index) => (
+                <div className="col-2" key={index}>
                   <ProductItem
                     key={product.id}
                     product={product}

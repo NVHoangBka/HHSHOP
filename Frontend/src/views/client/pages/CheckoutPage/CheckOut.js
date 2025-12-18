@@ -102,7 +102,13 @@ const Checkout = ({ cartController, orderController, authController }) => {
     };
 
     init();
-  }, [cartController, authController, navigate]);
+  }, [
+    cartController,
+    authController,
+    navigate,
+    location.state?.isQuickBuy,
+    location.state.checkoutItems,
+  ]);
 
   // Load tỉnh
   useEffect(() => {

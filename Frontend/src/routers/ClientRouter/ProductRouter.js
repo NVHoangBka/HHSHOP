@@ -1,24 +1,15 @@
 // src/routers/ProductRouter.js
 import React, { useState, useEffect } from "react";
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
 // =====VIEWS======
 import ProductDetail from "../../views/client/pages/ProductDetailPage/ProductDetail";
 import Product from "../../views/client/pages/ProductPage/Product";
 import SearchResults from "../../views/client/pages/SearchResultsPage/SearchResults";
 
-const ProductRouter = ({
-  isAuthenticated,
-  addToCart,
-  productController,
-  titleController,
-}) => {
+const ProductRouter = ({ addToCart, productController, titleController }) => {
   const [paths, setPaths] = useState(["all"]);
   const [loading, setLoading] = useState(true);
-
-  const ProtectedRoute = ({ children }) => {
-    return isAuthenticated ? children : <Navigate to="/login" />;
-  };
 
   useEffect(() => {
     async function loadPaths() {
@@ -36,7 +27,7 @@ const ProductRouter = ({
       }
     }
     loadPaths();
-  }, []);
+  }, [productController]);
 
   if (loading) {
     return <div>Đang tải danh mục...</div>; // Hoặc spinner
@@ -44,9 +35,9 @@ const ProductRouter = ({
 
   return (
     <Routes>
-      {paths.map((path) => (
+      {paths.map((path, index) => (
         <Route
-          key={path}
+          key={index}
           path={`/${path}/:subTitlePath?`}
           element={
             <Product

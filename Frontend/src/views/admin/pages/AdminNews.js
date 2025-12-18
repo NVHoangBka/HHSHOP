@@ -286,7 +286,7 @@ const AdminNews = ({ adminController }) => {
                   </tr>
                 ) : (
                   filteredNews.map((item, index) => (
-                    <tr key={item._id} className="hover:bg-gray-50">
+                    <tr key={index} className="hover:bg-gray-50">
                       <td className="text-center fw-bold">{index + 1}</td>
                       <td style={{ width: "200px" }}>
                         <img

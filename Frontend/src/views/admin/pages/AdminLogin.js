@@ -19,10 +19,12 @@ const AdminLogin = ({ onLoginAdmin }) => {
 
       if (result.success) {
         navigate("/admin/dashboard");
+      } else {
+        setError(result.message || "Tên đăng nhập hoặc mật khẩu không đúng.");
       }
+      setLoading(false);
     } catch (err) {
       setError(err.response?.data?.message || "Đăng nhập thất bại!");
-    } finally {
       setLoading(false);
     }
   };

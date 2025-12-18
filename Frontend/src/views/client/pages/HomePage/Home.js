@@ -31,7 +31,7 @@ const Home = ({
       }
     };
     fetchData();
-  }, []);
+  }, [bannerController, productController, titleController]);
 
   return (
     <>
@@ -57,8 +57,8 @@ const Home = ({
             </h2>
             <div className="product-flashsale-list row px-1 m-0 justify-content-center">
               {flashSaleProducts.length > 0 ? (
-                flashSaleProducts.slice(0, 6).map((product) => (
-                  <div className="col-2">
+                flashSaleProducts.slice(0, 6).map((product, index) => (
+                  <div className="col-2" key={index}>
                     <ProductItem
                       key={product.id}
                       product={product}

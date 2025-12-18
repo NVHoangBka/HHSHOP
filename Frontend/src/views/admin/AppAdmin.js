@@ -1,12 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import AdminRouter from "../../routers/AdminRouter/AdminRouter";
 import AdminController from "../../controllers/AdminController";
 import ToastMessage from "../client/components/ToastMessage/ToastMessage";
 
 const adminController = new AdminController();
 const AppAdmin = () => {
-  const navigator = useNavigate();
   // const adminController = useRef(new AdminController()).current;
   const [isAuthenticatedAdmin, setIsAuthenticatedAdmin] = useState(false);
   const [loading, setLoading] = useState(true);

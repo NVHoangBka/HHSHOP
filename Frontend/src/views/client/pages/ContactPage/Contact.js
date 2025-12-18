@@ -5,8 +5,8 @@ const Contact = ({ authController }) => {
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  // const [error, setError] = useState("");
+  // const [loading, setLoading] = useState(false);
 
   // Thông tin công ty
   const companyAddress = "Tạp Hoá Hải Xinh, Các Sơn, Thanh Hoá";

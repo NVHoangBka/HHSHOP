@@ -1,8 +1,6 @@
 import api from "./api";
 
 class NewService {
-  constructor() {}
-
   // === LẤY DANH SÁCH tin tức ===
   async getNews() {
     try {

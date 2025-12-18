@@ -1,0 +1,24 @@
+{
+    "header": {
+        "home": "Trang chủ",
+        "introduce": "Giới thiệu",
+        "flash_sale": "Khuyến mãi",
+        "news": "Tin tức",
+        "check_order": "Kiểm tra đơn hàng",
+        "contact": "Liên hệ",
+        "instruct": "Hướng dẫn",
+        "product_category": "Danh mục sản phẩm",
+        "products": "Sản phẩm",
+        "cart": "Giỏ hàng",
+        "login": "Đăng nhập",
+        "admin": "Quản trị"
+    },
+    "home": {
+        "welcome": "Chào mừng đến với HHSHOP!",
+        "slogan": "Mua sắm dễ dàng - Giao hàng nhanh chóng"
+    },
+    "common": {
+        "add_to_cart": "Thêm vào giỏ",
+        "price": "Giá: {{price}}₫"
+    }
+}

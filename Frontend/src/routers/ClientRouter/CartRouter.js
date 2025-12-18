@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Navigate, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Cart from "../../views/client/pages/CartPage/Cart";
 
 const CartRouter = ({

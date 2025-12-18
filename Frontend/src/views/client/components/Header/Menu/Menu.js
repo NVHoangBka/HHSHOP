@@ -14,7 +14,7 @@ const Menu = ({ isOpen, menuRef, onClose, user, titleController }) => {
       setLoading(false);
     }
     loadTitles();
-  }, []);
+  }, [titleController]);
 
   const handleItemClick = () => {
     onClose(false);

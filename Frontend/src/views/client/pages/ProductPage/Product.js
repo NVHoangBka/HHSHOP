@@ -32,7 +32,7 @@ const Product = ({ path, addToCart, productController, titleController }) => {
       setTitlesLoaded(true);
     }
     loadTitles();
-  }, []);
+  }, [titleController]);
 
   // === 1. CẬP NHẬT TITLE + activeTab ===
   useEffect(() => {
@@ -58,7 +58,7 @@ const Product = ({ path, addToCart, productController, titleController }) => {
       setTitle("Tất cả sản phẩm");
       setTitlePathConver("Tất cả sản phẩm");
     }
-  }, [titlePath, subTitlePath]);
+  }, [titlePath, subTitlePath, titleController]);
 
   const resetAllFilters = () => {
     setFilters({
@@ -203,7 +203,7 @@ const Product = ({ path, addToCart, productController, titleController }) => {
     return () => {
       isMounted = false;
     };
-  }, [activeTab, subTitlePath, filters]);
+  }, [activeTab, subTitlePath, filters, productController]);
 
   // tính toán vị trí sản phẩm
   const indexOfLastProduct = currentPage * productsPerPage;

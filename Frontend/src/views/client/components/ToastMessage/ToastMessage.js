@@ -64,10 +64,9 @@ const ToastMessage = ({
         </div>
         <button
           type="button"
-          className={`btn-close pe-4 m-auto`}
+          className={`btn-close pe-4 m-auto shadow-none `}
           data-bs-dismiss="toast"
           aria-label="Close"
-          shadow-none
         ></button>
       </div>
     </div>

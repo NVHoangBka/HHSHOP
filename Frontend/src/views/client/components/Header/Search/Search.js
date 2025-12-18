@@ -21,7 +21,7 @@ const Search = ({ isOpen, onClose, productController, titleController }) => {
     };
 
     fetchSubtitle();
-  }, []);
+  }, [titleController]);
 
   // Debounce search
   const debouncedSearch = useCallback(

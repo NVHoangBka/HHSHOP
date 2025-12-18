@@ -9,12 +9,12 @@ const { adminProtect } = require("../middleware/admin");
 // PUBLIC: Đăng nhập admin
 router.post("/login", AdminController.login);
 router.post("/logout", AdminController.logout);
+router.post("/refresh-token", AdminController.refreshToken);
 
 // PROTECTED: Chỉ admin mới vào được
 router.use(adminProtect);
 
 router.get("/me", AdminController.getCurrentAdmin);
-// router.post("/refresh-token", AdminController.refreshToken);
 router.get("/users", AdminController.getUsersAllAdmin);
 
 // // // Thống kê

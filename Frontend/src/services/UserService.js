@@ -1,8 +1,6 @@
 import api from "./api.js";
 
 class UserService {
-  constructor() {}
-
   async getAllUsers(userData) {
     try {
       const response = await api.get("/users/all", {

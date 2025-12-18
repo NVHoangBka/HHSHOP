@@ -121,7 +121,7 @@ const AppClient = () => {
         productController={productController}
         titleController={titleController}
       />
-      <div className="">
+      <div>
         <ClientRouter
           isAuthenticated={isAuthenticated}
           cartItems={cartItems}

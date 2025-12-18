@@ -1,4 +1,3 @@
-import { set } from "lodash";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -113,8 +112,8 @@ const CartHeader = ({
               <div className="cart-top pt-1 overflow-y-auto flex flex-col">
                 <div className="cart-table">
                   <div className="cart-items">
-                    {cartItems.map((item) => (
-                      <div className="cart-item py-3 border-bottom">
+                    {cartItems.map((item, index) => (
+                      <div key={index} className="cart-item py-3 border-bottom">
                         <div className="cart-product-col d-flex justify-content-between align-items-start">
                           <div className="d-flex">
                             <Link

@@ -11,7 +11,6 @@ const Cart = ({
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState(propCartItems || []);
   const [total, setTotal] = useState(cartController.getTotalPrice());
-  const [showBillInfo, setShowBillInfo] = useState(false);
 
   // Đồng bộ state với props khi có thay đổi
   useEffect(() => {
@@ -55,12 +54,6 @@ const Cart = ({
   const handleCheckout = (e) => {
     navigate(`/checkout`);
   };
-
-  const handleShowBillInfo = (e) => {
-    e.preventDefault();
-    setShowBillInfo(true);
-  };
-
   return (
     <div className="bg-success-subtle">
       <div className="breadcrumbs">

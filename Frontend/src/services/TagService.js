@@ -1,8 +1,6 @@
 import api from "./api";
 
 class TagService {
-  constructor() {}
-
   // === LẤY DANH SÁCH ===
   async getAllTags() {
     try {

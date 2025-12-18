@@ -1,5 +1,5 @@
 // src/admin/pages/Products.jsx → FORM THÊM/SỬA SẢN PHẨM ĐỈNH CAO NHẤT 2025
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import tagController from "../../../controllers/TagController";
 
 const AdminProducts = ({ adminController }) => {
@@ -98,13 +98,6 @@ const AdminProducts = ({ adminController }) => {
   };
 
   const popularTypes = ["hot", "new", "flashsale", "best-seller"];
-  const popularTags = [
-    "nước-giat",
-    "nuoc-rua-chen",
-    "huu-co",
-    "tiet-kiem",
-    "thom-lau",
-  ];
   const popularBrands = [
     "Sunlight",
     "Comfort",
@@ -790,8 +783,8 @@ const AdminProducts = ({ adminController }) => {
                           Loại sản phẩm
                         </label>
                         <div className="d-flex flex-wrap px-3 py-2 rounded border align-items-center">
-                          {popularTypes.map((t) => (
-                            <div key={t} className="col-3 form-check">
+                          {popularTypes.map((t, index) => (
+                            <div key={index} className="col-3 form-check">
                               <input
                                 className="form-check-input"
                                 type="checkbox"

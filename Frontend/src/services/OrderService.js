@@ -2,8 +2,6 @@ import api from "./api";
 import AuthService from "./AuthService.js";
 
 class OrderService {
-  constructor() {}
-
   // === LẤY DANH SÁCH ĐƠN HÀNG ===
   async getOrders() {
     try {

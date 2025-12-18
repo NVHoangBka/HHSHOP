@@ -13,11 +13,12 @@ import CheckOrder from "../../views/client/pages/CheckOrderPage/CheckOrder";
 import Contact from "../../views/client/pages/ContactPage/Contact";
 import News from "../../views/client/pages/NewsPage/News";
 
-const ClientRouter = (props) => (
+const ClientRouter = (props, index) => (
   <Routes>
     {/* trang chủ */}
     <Route
       path="/"
+      key={index}
       element={
         <Home
           addToCart={props.addToCart}
