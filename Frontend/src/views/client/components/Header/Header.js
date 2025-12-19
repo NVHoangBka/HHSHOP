@@ -104,7 +104,7 @@ const Header = ({
             >
               <i className="bi bi-list fs-5"></i>
             </button>
-            <span className="header-top-left-text ms-1">
+            <span className="header-top-left-text ms-1 	d-none d-xl-block">
               {t("header.product_category")}
             </span>
           </div>
@@ -117,12 +117,13 @@ const Header = ({
             <img
               src="https://www.canva.com/design/DAGwwkhPGJ4/TrjwaRAGmJSgLHZRKbYLGg/view"
               alt="logo"
-              className="header-logo h-75 w-50"
+              className="img-fluid"
+              style={{ maxHeight: "60px" }}
             />
           </div>
 
           {/* Right: Search, Account, Cart */}
-          <div className="header-top-right d-flex align-items-center">
+          <div className="d-flex align-items-center justify-content-end gap-2 order-md-3">
             <div className="dropdown m-3">
               <button
                 className="btn d-flex align-items-center justify-content-center"
@@ -199,7 +200,7 @@ const Header = ({
             </button>
 
             <button
-              className="btn btn-outline-secondary border rounded-circle m-3"
+              className="btn btn-outline-secondary border rounded-circle m-3 d-none d-md-block"
               onClick={goToAccount}
             >
               <i className="bi bi-person fs-5"></i>
@@ -210,7 +211,9 @@ const Header = ({
                 onClick={toggleCart}
               >
                 <i className="bi bi-cart4 fs-5"></i>
-                <span className="ms-1">{t("header.cart")}</span>
+                <span className="ms-1 d-none d-xl-block">
+                  {t("header.cart")}
+                </span>
                 <span
                   className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
                   style={{ fontSize: "0.6rem" }}
@@ -224,7 +227,7 @@ const Header = ({
       </div>
 
       {/* Header Bottom - Navigation */}
-      <div className="header-bottom bg-success">
+      <div className="header-bottom bg-success d-none d-lg-block">
         <div className="container">
           <ul className="navbar justify-content-center list-unstyled row ms-5 me-5 p-3 text-white mb-0">
             {[
@@ -262,6 +265,7 @@ const Header = ({
             onClose={() => setShowMenu(false)}
             user={currentUser}
             titleController={titleController}
+            useTranslation={useTranslation}
           />
         </Offcanvas.Body>
       </Offcanvas>

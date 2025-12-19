@@ -7,20 +7,30 @@
         "check_order": "Check Order",
         "contact": "Contact",
         "instruct": "Instruct",
-        "product_category": "Product Category",
-        "products": "Product",
-        "cart": "Cart",
+        "product_category": "Product Category"
+    },
+    "system": {
+        "account": "Account",
         "login": "Login",
         "logout": "Logout",
         "resgiter": "Resgiter",
         "admin": "Admin"
     },
+    "product": {
+        "product_all": "All Products",
+        "product": "Product",
+        "cart": "Cart"
+    },
+    "menu": {
+        "product_all": "All Products",
+        "take_care_of_family": "Take Care Of Family"
+    },
     "home": {
-        "welcome": "Chào mừng đến với HHSHOP!",
+        "welcome": "Welcome HHSHOP!",
         "slogan": "Mua sắm dễ dàng - Giao hàng nhanh chóng"
     },
     "common": {
-        "add_to_cart": "Thêm vào giỏ",
-        "price": "Giá: {{price}}₫"
+        "add_to_cart": "Add Cart",
+        "price": "Price: {{price}}₫"
     }
 }

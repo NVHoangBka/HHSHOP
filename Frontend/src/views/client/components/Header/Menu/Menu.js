@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const Menu = ({ isOpen, menuRef, onClose, user, titleController }) => {
+const Menu = ({
+  isOpen,
+  menuRef,
+  onClose,
+  user,
+  titleController,
+  useTranslation,
+}) => {
+  const { t, i18n } = useTranslation();
   const [titles, setTitles] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -39,8 +47,8 @@ const Menu = ({ isOpen, menuRef, onClose, user, titleController }) => {
               </div>
             ) : (
               <div className="lh-sm">
-                <p className="mb-1 fs-6">Tài khoản</p>
-                <span className="fw-bold fs-6">Đăng nhập</span>
+                <p className="mb-1 fs-6">{t("system.account")}</p>
+                <span className="fw-bold fs-6">{t("system.login")}</span>
               </div>
             )}
           </Link>
@@ -59,7 +67,7 @@ const Menu = ({ isOpen, menuRef, onClose, user, titleController }) => {
                 onClick={handleItemClick}
                 className="menu-hover"
               >
-                <span className="fw-medium">Tất cả sản phẩm</span>
+                <span className="fw-medium">{t("product.product_all")}</span>
               </Link>
             </li>
             {Array.isArray(titles) && titles.length > 0 ? (
