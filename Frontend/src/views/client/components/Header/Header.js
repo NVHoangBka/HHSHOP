@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Offcanvas } from "react-bootstrap";
+import { Dropdown, Offcanvas } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
 import Menu from "./Menu/Menu";
@@ -123,17 +123,12 @@ const Header = ({
           </div>
 
           {/* Right: Search, Account, Cart */}
-          <div className="d-flex align-items-center justify-content-end gap-2 order-md-3">
-            <div className="dropdown m-3">
-              <button
-                className="btn d-flex align-items-center justify-content-center"
-                type="button"
-                style={{
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "50%",
-                }}
-                onClick={() => setShowLangDropdown((prev) => !prev)} // Toggle state
+          <div className="d-flex align-items-center justify-content-end">
+            <Dropdown className="dropdown m-xl-2 m-sm-1 m-3">
+              <Dropdown.Toggle
+                variant="outline-secondary"
+                id="language-dropdown"
+                className="btn btn-outline-secondary d-flex align-items-center justify-content-center px-1 py-2 rounded border"
                 title="Chọn ngôn ngữ"
               >
                 <img
@@ -141,57 +136,42 @@ const Header = ({
                   alt={currentLang.toUpperCase()}
                   style={{
                     width: "36px",
-                    height: "36px",
-                    borderRadius: "50%",
+                    height: "28px",
                   }}
+                  className="me-1 rounded"
                 />
-              </button>
+              </Dropdown.Toggle>
 
               {/* Menu dropdown - dùng class "show" để hiển thị */}
-              <ul
-                className={`dropdown-menu dropdown-menu-end shadow ${
-                  showLangDropdown ? "show" : ""
-                }`}
-                style={{
-                  position: "absolute",
-                  top: "100%",
-                  right: 0,
-                  zIndex: 1050,
-                }}
-              >
+              <Dropdown.Menu className="mt-1">
                 {languages.map((language, index) => (
-                  <li key={index}>
-                    <button
-                      className={
-                        currentLang === language
-                          ? "dropdown-item d-flex align-items-center py-2 bg-secondary-subtle"
-                          : "dropdown-item d-flex align-items-center py-2"
-                      }
-                      onClick={() => {
-                        changeLanguage(language);
-                        setShowLangDropdown(false);
+                  <Dropdown.Item
+                    key={index}
+                    className={
+                      currentLang === language
+                        ? "py-2 bg-secondary-subtle"
+                        : "py-2"
+                    }
+                    onClick={() => {
+                      changeLanguage(language);
+                    }}
+                  >
+                    <img
+                      className="me-2"
+                      src={`/img/flags/${language}.png`}
+                      alt={language.toUpperCase()}
+                      style={{
+                        width: "28px",
+                        height: "22px",
                       }}
-                    >
-                      <img
-                        className="me-2"
-                        src={`/img/flags/${language}.png`}
-                        alt={language.toUpperCase()}
-                        style={{
-                          width: "28px",
-                          height: "28px",
-                          borderRadius: "50%",
-                        }}
-                      />
-                      <span
-                        className={currentLang === language ? "fw-bold" : ""}
-                      >
-                        {languageNames[language]}
-                      </span>
-                    </button>
-                  </li>
+                    />
+                    <span className={currentLang === language ? "fw-bold" : ""}>
+                      {languageNames[language]}
+                    </span>
+                  </Dropdown.Item>
                 ))}
-              </ul>
-            </div>
+              </Dropdown.Menu>
+            </Dropdown>
             <button
               className="btn btn-outline-secondary border rounded-circle m-3"
               onClick={toggleSearch}
@@ -207,7 +187,7 @@ const Header = ({
             </button>
             <div>
               <button
-                className="btn btn-outline-secondary border m-3 position-relative"
+                className="btn btn-outline-secondary border m-3 position-relative d-flex align-items-center"
                 onClick={toggleCart}
               >
                 <i className="bi bi-cart4 fs-5"></i>
@@ -227,7 +207,7 @@ const Header = ({
       </div>
 
       {/* Header Bottom - Navigation */}
-      <div className="header-bottom bg-success d-none d-lg-block">
+      <div className="header-bottom bg-success d-none d-xl-block">
         <div className="container">
           <ul className="navbar justify-content-center list-unstyled row ms-5 me-5 p-3 text-white mb-0">
             {[
