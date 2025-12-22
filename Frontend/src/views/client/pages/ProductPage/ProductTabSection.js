@@ -73,7 +73,7 @@ const ProductTabSection = ({ path, title, addToCart, productController }) => {
           {tabs.map((tab) => (
             <button
               key={tab.value}
-              className={`btn product-tab col-2 mx-3 ${
+              className={`btn product-tab col-2 col-lg-3 mx-3 ${
                 activeTab === tab.value ? "active" : "bg-white border"
               } hover`}
               onClick={() => setActiveTab(tab.value)}

@@ -271,7 +271,6 @@ const Header = ({
         show={showCart}
         onHide={() => setShowCart(false)}
         placement="end"
-        className="w-25"
       >
         <Offcanvas.Body className="p-0 d-flex flex-column">
           <div className="flex-grow-1 overflow-auto">

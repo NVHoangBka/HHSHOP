@@ -91,7 +91,7 @@ class AdminController {
       const result = await this.adminService.getProductsAllAdmin(pagination);
       return result;
     } catch (error) {
-      return { success: false, message: "Lấy đơn hàng thất bại" };
+      return { success: false, message: "Lấy sản phẩm thất bại" };
     }
   }
 
@@ -100,7 +100,7 @@ class AdminController {
       const result = await this.adminService.createProductAdmin(productData);
       return result;
     } catch (error) {
-      return { success: false, message: "Lấy đơn hàng thất bại" };
+      return { success: false, message: "Lấy sản phẩm thất bại" };
     }
   }
 
@@ -112,7 +112,7 @@ class AdminController {
       );
       return result;
     } catch (error) {
-      return { success: false, message: "Lấy đơn hàng thất bại" };
+      return { success: false, message: "Lấy sản phẩm thất bại" };
     }
   }
 
@@ -121,7 +121,7 @@ class AdminController {
       const result = await this.adminService.deleteProductAdmin(productId);
       return result;
     } catch (error) {
-      return { success: false, message: "Lấy đơn hàng thất bại" };
+      return { success: false, message: "Lấy sản phẩm thất bại" };
     }
   }
 

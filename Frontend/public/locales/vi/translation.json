@@ -8,12 +8,25 @@
         "contact": "Liên hệ",
         "instruct": "Hướng dẫn",
         "product_category": "Danh mục sản phẩm",
-        "account": "account",
-        "all_product": "Tất cả sản phẩm",
         "products": "Sản phẩm",
         "cart": "Giỏ hàng",
-        "login": "Đăng nhập",
         "admin": "Quản trị"
+    },
+    "system": {
+        "account": "Tài khoản",
+        "login": "Đăng nhập",
+        "logout": "Đăng xuất",
+        "resgiter": "Đăng ký",
+        "admin": "Admin"
+    },
+    "product": {
+        "product_all": "Tất cả sản phẩm",
+        "product": "Sản phẩm",
+        "cart": "Giỏ hàng"
+    },
+    "menu": {
+        "product_all": "Tất cả sản phẩm",
+        "take_care_of_family": "Chăm sóc gia đình"
     },
     "home": {
         "welcome": "Chào mừng đến với HHSHOP!",
