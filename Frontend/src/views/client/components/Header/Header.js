@@ -24,7 +24,6 @@ const Header = ({
   const [showCart, setShowCart] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
-  const [showLangDropdown, setShowLangDropdown] = useState(false);
 
   const totalQuantity = cartItems.reduce(
     (sum, item) => sum + (item.quantity || 0),
@@ -93,114 +92,116 @@ const Header = ({
   };
 
   return (
-    <header className="header">
-      <div className="header-top">
-        <div className="container d-flex justify-content-between align-items-center">
-          {/* Left: Menu */}
-          <div className="header-top-left d-flex align-items-center">
-            <button
-              className="btn btn-outline-secondary border rounded-circle"
-              onClick={toggleMenu}
-            >
-              <i className="bi bi-list fs-5"></i>
-            </button>
-            <span className="header-top-left-text ms-1 	d-none d-xl-block">
-              {t("header.product_category")}
-            </span>
-          </div>
-          {/* Center: Logo */}
-          <div
-            className="header-top-center text-center"
-            onClick={goHome}
-            style={{ background: "transparent", cursor: "pointer" }}
-          >
-            <img
-              src="https://www.canva.com/design/DAGwwkhPGJ4/TrjwaRAGmJSgLHZRKbYLGg/view"
-              alt="logo"
-              className="img-fluid"
-              style={{ maxHeight: "60px" }}
-            />
-          </div>
-
-          {/* Right: Search, Account, Cart */}
-          <div className="d-flex align-items-center justify-content-end">
-            <Dropdown className="dropdown m-xl-2 m-sm-1 m-3">
-              <Dropdown.Toggle
-                variant="outline-secondary"
-                id="language-dropdown"
-                className="btn btn-outline-secondary d-flex align-items-center justify-content-center px-1 py-2 rounded border"
-                title="Chọn ngôn ngữ"
-              >
-                <img
-                  src={`/img/flags/${currentLang}.png`}
-                  alt={currentLang.toUpperCase()}
-                  style={{
-                    width: "36px",
-                    height: "28px",
-                  }}
-                  className="me-1 rounded"
-                />
-              </Dropdown.Toggle>
-
-              {/* Menu dropdown - dùng class "show" để hiển thị */}
-              <Dropdown.Menu className="mt-1">
-                {languages.map((language, index) => (
-                  <Dropdown.Item
-                    key={index}
-                    className={
-                      currentLang === language
-                        ? "py-2 bg-secondary-subtle"
-                        : "py-2"
-                    }
-                    onClick={() => {
-                      changeLanguage(language);
-                    }}
-                  >
-                    <img
-                      className="me-2"
-                      src={`/img/flags/${language}.png`}
-                      alt={language.toUpperCase()}
-                      style={{
-                        width: "28px",
-                        height: "22px",
-                      }}
-                    />
-                    <span className={currentLang === language ? "fw-bold" : ""}>
-                      {languageNames[language]}
-                    </span>
-                  </Dropdown.Item>
-                ))}
-              </Dropdown.Menu>
-            </Dropdown>
-            <button
-              className="btn btn-outline-secondary border rounded-circle m-3"
-              onClick={toggleSearch}
-            >
-              <i className="bi bi-search fs-5"></i>
-            </button>
-
-            <button
-              className="btn btn-outline-secondary border rounded-circle m-3 d-none d-md-block"
-              onClick={goToAccount}
-            >
-              <i className="bi bi-person fs-5"></i>
-            </button>
-            <div>
+    <header className="header shadow-sm bg-white sticky-top">
+      <div className="header-top py-2 py-md-3">
+        <div className="container ">
+          <div className="d-flex justify-content-between align-items-center">
+            {/* Left: Menu */}
+            <div className="header-top-left d-flex align-items-center">
               <button
-                className="btn btn-outline-secondary border m-3 position-relative d-flex align-items-center"
-                onClick={toggleCart}
+                className="btn btn-outline-secondary border rounded-circle"
+                onClick={toggleMenu}
               >
-                <i className="bi bi-cart4 fs-5"></i>
-                <span className="ms-1 d-none d-xl-block">
-                  {t("header.cart")}
-                </span>
-                <span
-                  className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                  style={{ fontSize: "0.6rem" }}
-                >
-                  {totalQuantity}
-                </span>
+                <i className="bi bi-list fs-5"></i>
               </button>
+              <span className="header-top-left-text ms-1 	d-none d-xl-block">
+                {t("header.product_category")}
+              </span>
+            </div>
+            {/* Center: Logo */}
+            <div
+              className="header-top-center text-center"
+              onClick={goHome}
+              style={{ background: "transparent", cursor: "pointer" }}
+            >
+              <img
+                src={`/img/logo/LOGO.png`}
+                alt="logo"
+                class="img-fluid w-50 w-md-50 w-lg-75 p-3"
+              />
+            </div>
+
+            {/* Right: Search, Account, Cart */}
+            <div className="d-flex align-items-center justify-content-end">
+              <Dropdown className="dropdown m-xl-3 m-sm-2 my-2 mx-1 ">
+                <Dropdown.Toggle
+                  variant="outline-secondary"
+                  id="language-dropdown"
+                  className="btn btn-outline-secondary d-flex align-items-center justify-content-center px-1 py-2 rounded border"
+                  title="Chọn ngôn ngữ"
+                >
+                  <img
+                    src={`/img/flags/${currentLang}.png`}
+                    alt={currentLang.toUpperCase()}
+                    style={{
+                      width: "50%",
+                    }}
+                    className="me-1 rounded"
+                  />
+                </Dropdown.Toggle>
+
+                {/* Menu dropdown - dùng class "show" để hiển thị */}
+                <Dropdown.Menu className="mt-1 dropdown-menu-end">
+                  {languages.map((language, index) => (
+                    <Dropdown.Item
+                      key={index}
+                      className={
+                        currentLang === language
+                          ? "py-2 bg-secondary-subtle"
+                          : "py-2"
+                      }
+                      onClick={() => {
+                        changeLanguage(language);
+                      }}
+                    >
+                      <img
+                        className="me-2"
+                        src={`/img/flags/${language}.png`}
+                        alt={language.toUpperCase()}
+                        style={{
+                          width: "28px",
+                          height: "22px",
+                        }}
+                      />
+                      <span
+                        className={currentLang === language ? "fw-bold" : ""}
+                      >
+                        {languageNames[language]}
+                      </span>
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              </Dropdown>
+              <button
+                className="btn btn-outline-secondary border rounded-circle m-xl-3 m-sm-2 my-2 mx-1"
+                onClick={toggleSearch}
+              >
+                <i className="bi bi-search fs-5"></i>
+              </button>
+
+              <button
+                className="btn btn-outline-secondary border rounded-circle m-xl-3 m-sm-2 my-2 mx-1 d-none d-md-block"
+                onClick={goToAccount}
+              >
+                <i className="bi bi-person fs-5"></i>
+              </button>
+              <div>
+                <button
+                  className="btn btn-outline-secondary border m-xl-3 m-sm-2 my-2 mx-1 position-relative d-flex align-items-center"
+                  onClick={toggleCart}
+                >
+                  <i className="bi bi-cart4 fs-5"></i>
+                  <span className="ms-1 d-none d-xl-block">
+                    {t("header.cart")}
+                  </span>
+                  <span
+                    className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                    style={{ fontSize: "0.6rem" }}
+                  >
+                    {totalQuantity}
+                  </span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
