@@ -1,15 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { t } from "i18next";
 
-const Menu = ({
-  isOpen,
-  menuRef,
-  onClose,
-  user,
-  titleController,
-  useTranslation,
-}) => {
-  const { t, i18n } = useTranslation();
+const Menu = ({ isOpen, menuRef, onClose, user, titleController }) => {
   const [titles, setTitles] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -33,27 +26,27 @@ const Menu = ({
   return (
     <nav ref={menuRef} className={`menu ${isOpen ? "active" : ""}`}>
       <div className="menu-container">
-        <div className="menu-header d-flex justify-content-between py-3 px-4 align-items-center">
+        <div className="menu-header d-flex justify-content-between py-xl-3 px-xl-4 align-items-center">
           <Link
             to={"/account/login"}
-            className="header-icon-group text-reset d-flex text-decoration-none py-1 px-2 menu-hover"
+            className="header-icon-group text-reset d-flex text-decoration-none py-xl-1 px-xl-2 menu-hover"
           >
-            <div className="header-icon align-content-center me-2">
+            <div className="header-icon align-content-center me-xl-2">
               <i className="bi bi-person fs-3 border px-1"></i>
             </div>
             {user ? (
-              <div className="lh-sm d-flex align-items-center ms-1">
+              <div className="lh-sm d-flex align-items-center ms-xl-1">
                 <p className="fw-bold fs-6 m-0">{fullName}</p>
               </div>
             ) : (
               <div className="lh-sm">
-                <p className="mb-1 fs-6">{t("system.account")}</p>
+                <p className="mb-xl-1 fs-6">{t("system.account")}</p>
                 <span className="fw-bold fs-6">{t("system.login")}</span>
               </div>
             )}
           </Link>
           <button
-            className="btn border rounded-circle px-1 py-0 h-50"
+            className="btn border rounded-circle px-xl-1 py-xl-0 h-50"
             onClick={() => onClose(false)}
           >
             <i className="bi bi-x fs-4"></i>
@@ -159,14 +152,14 @@ const Menu = ({
             </li>
           </ul>
         </div>
-        <div className="menu-footer row mx-0 border-top pt-2">
-          <div className="col-6 py-4 menu-hover">
-            <i className="bi bi-shop border p-2"></i>
+        <div className="menu-footer row mx-xl-0 border-top pt-xl-2">
+          <div className="col-xl-6 py-xl-4 menu-hover">
+            <i className="bi bi-shop border p-xl-2"></i>
             <span className="ps-2">Hệ thống cửa hàng</span>
           </div>
-          <div className="col-6 py-4 menu-hover">
-            <i className="bi bi-telephone-outbound border p-2"></i>
-            <span className="ps-2">Holine: 0999999998</span>
+          <div className="col-xl-6 py-xl-4 menu-hover">
+            <i className="bi bi-telephone-outbound border p-xl-2"></i>
+            <span className="ps-xl-2">Holine: 0999999998</span>
           </div>
         </div>
       </div>

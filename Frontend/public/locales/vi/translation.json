@@ -24,6 +24,13 @@
         "product": "Sản phẩm",
         "cart": "Giỏ hàng"
     },
+    "search": {
+        "name": "Tìm kiếm",
+        "all-categories": "Tất cả danh mục",
+        "product-name": "Tìm theo tên Sản phẩm",
+        "no-product": "Không tìm thấy sản phẩm nào",
+        "popular-keywords": "Từ khoá phổ biến"
+    },
     "menu": {
         "product_all": "Tất cả sản phẩm",
         "take_care_of_family": "Chăm sóc gia đình"

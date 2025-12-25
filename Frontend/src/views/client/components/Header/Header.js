@@ -93,11 +93,11 @@ const Header = ({
 
   return (
     <header className="header shadow-sm bg-white sticky-top">
-      <div className="header-top py-2 py-md-3">
+      <div className="header-top py-xl-2">
         <div className="container ">
-          <div className="d-flex justify-content-between align-items-center">
+          <div className="d-flex justify-content-between align-items-center row py-xl-1">
             {/* Left: Menu */}
-            <div className="header-top-left d-flex align-items-center">
+            <div className="header-top-left d-flex align-items-center col-lg-3">
               <button
                 className="btn btn-outline-secondary border rounded-circle"
                 onClick={toggleMenu}
@@ -110,97 +110,103 @@ const Header = ({
             </div>
             {/* Center: Logo */}
             <div
-              className="header-top-center text-center"
+              className="header-top-center text-center col-lg-4 "
               onClick={goHome}
               style={{ background: "transparent", cursor: "pointer" }}
             >
               <img
                 src={`/img/logo/LOGO.png`}
                 alt="logo"
-                class="img-fluid w-50 w-md-50 w-lg-75 p-3"
+                class="img-fluid col-8"
               />
             </div>
 
             {/* Right: Search, Account, Cart */}
-            <div className="d-flex align-items-center justify-content-end">
-              <Dropdown className="dropdown m-xl-3 m-sm-2 my-2 mx-1 ">
-                <Dropdown.Toggle
-                  variant="outline-secondary"
-                  id="language-dropdown"
-                  className="btn btn-outline-secondary d-flex align-items-center justify-content-center px-1 py-2 rounded border"
-                  title="Chọn ngôn ngữ"
-                >
-                  <img
-                    src={`/img/flags/${currentLang}.png`}
-                    alt={currentLang.toUpperCase()}
-                    style={{
-                      width: "50%",
-                    }}
-                    className="me-1 rounded"
-                  />
-                </Dropdown.Toggle>
-
-                {/* Menu dropdown - dùng class "show" để hiển thị */}
-                <Dropdown.Menu className="mt-1 dropdown-menu-end">
-                  {languages.map((language, index) => (
-                    <Dropdown.Item
-                      key={index}
-                      className={
-                        currentLang === language
-                          ? "py-2 bg-secondary-subtle"
-                          : "py-2"
-                      }
-                      onClick={() => {
-                        changeLanguage(language);
-                      }}
+            <div className="d-flex align-items-center justify-content-end col-lg-5">
+              <div className="row justify-content-end align-items-center">
+                <div className="col-3">
+                  <Dropdown>
+                    <Dropdown.Toggle
+                      variant="outline-secondary"
+                      id="language-dropdown"
+                      className="btn btn-outline-secondary d-flex align-items-center justify-content-center rounded border "
+                      title="Chọn ngôn ngữ"
                     >
                       <img
-                        className="me-2"
-                        src={`/img/flags/${language}.png`}
-                        alt={language.toUpperCase()}
-                        style={{
-                          width: "28px",
-                          height: "22px",
-                        }}
+                        src={`/img/flags/${currentLang}.png`}
+                        alt={currentLang.toUpperCase()}
+                        className="me-1 rounded col-10"
                       />
-                      <span
-                        className={currentLang === language ? "fw-bold" : ""}
-                      >
-                        {languageNames[language]}
-                      </span>
-                    </Dropdown.Item>
-                  ))}
-                </Dropdown.Menu>
-              </Dropdown>
-              <button
-                className="btn btn-outline-secondary border rounded-circle m-xl-3 m-sm-2 my-2 mx-1"
-                onClick={toggleSearch}
-              >
-                <i className="bi bi-search fs-5"></i>
-              </button>
+                    </Dropdown.Toggle>
 
-              <button
-                className="btn btn-outline-secondary border rounded-circle m-xl-3 m-sm-2 my-2 mx-1 d-none d-md-block"
-                onClick={goToAccount}
-              >
-                <i className="bi bi-person fs-5"></i>
-              </button>
-              <div>
-                <button
-                  className="btn btn-outline-secondary border m-xl-3 m-sm-2 my-2 mx-1 position-relative d-flex align-items-center"
-                  onClick={toggleCart}
-                >
-                  <i className="bi bi-cart4 fs-5"></i>
-                  <span className="ms-1 d-none d-xl-block">
-                    {t("header.cart")}
-                  </span>
-                  <span
-                    className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                    style={{ fontSize: "0.6rem" }}
+                    {/* Menu dropdown - dùng class "show" để hiển thị */}
+                    <Dropdown.Menu className="mt-1 dropdown-menu-end">
+                      {languages.map((language, index) => (
+                        <Dropdown.Item
+                          key={index}
+                          className={
+                            currentLang === language
+                              ? "py-2 bg-secondary-subtle"
+                              : "py-2"
+                          }
+                          onClick={() => {
+                            changeLanguage(language);
+                          }}
+                        >
+                          <img
+                            className="me-2"
+                            src={`/img/flags/${language}.png`}
+                            alt={language.toUpperCase()}
+                            style={{
+                              width: "28px",
+                              height: "22px",
+                            }}
+                          />
+                          <span
+                            className={
+                              currentLang === language ? "fw-bold" : ""
+                            }
+                          >
+                            {languageNames[language]}
+                          </span>
+                        </Dropdown.Item>
+                      ))}
+                    </Dropdown.Menu>
+                  </Dropdown>
+                </div>
+                <div className="col-2">
+                  <button
+                    className="btn btn-outline-secondary border rounded-circle"
+                    onClick={toggleSearch}
                   >
-                    {totalQuantity}
-                  </span>
-                </button>
+                    <i className="bi bi-search fs-5"></i>
+                  </button>
+                </div>
+                <div className="col-2">
+                  <button
+                    className="btn btn-outline-secondary border rounded-circle  d-none d-md-block"
+                    onClick={goToAccount}
+                  >
+                    <i className="bi bi-person fs-5"></i>
+                  </button>
+                </div>
+                <div className="col-4">
+                  <button
+                    className="btn btn-outline-secondary border position-relative d-flex align-items-center"
+                    onClick={toggleCart}
+                  >
+                    <i className="bi bi-cart4 fs-5"></i>
+                    <span className="ms-1 d-none d-xl-block">
+                      {t("header.cart")}
+                    </span>
+                    <span
+                      className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                      style={{ fontSize: "0.6rem" }}
+                    >
+                      {totalQuantity}
+                    </span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -240,7 +246,7 @@ const Header = ({
             {currentUser ? `Xin chào, ${currentUser.firstName}` : "Menu"}
           </Offcanvas.Title>
         </Offcanvas.Header>
-        <Offcanvas.Body className="p-0">
+        <Offcanvas.Body className="p-xl-0">
           <Menu
             isOpen={showMenu}
             onClose={() => setShowMenu(false)}
@@ -257,7 +263,7 @@ const Header = ({
         onHide={() => setShowSearch(false)}
         placement="end"
       >
-        <Offcanvas.Body className="p-0">
+        <Offcanvas.Body className="p-xl-0">
           <Search
             isOpen={showSearch}
             onClose={() => setShowSearch(false)}
@@ -273,7 +279,7 @@ const Header = ({
         onHide={() => setShowCart(false)}
         placement="end"
       >
-        <Offcanvas.Body className="p-0 d-flex flex-column">
+        <Offcanvas.Body className="p-xl-0 d-flex flex-column">
           <div className="flex-grow-1 overflow-auto">
             <Cart
               isOpen={showCart}

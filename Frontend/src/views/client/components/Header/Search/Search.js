@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { debounce } from "lodash";
+import { t } from "i18next";
 
 const Search = ({ isOpen, onClose, productController, titleController }) => {
   const navigate = useNavigate();
@@ -13,16 +14,23 @@ const Search = ({ isOpen, onClose, productController, titleController }) => {
   const [loading, setLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [subTitles, setSubTitles] = useState([]);
+  const [titles, setTitles] = useState([]);
+
+  const fetchSubtitle = async () => {
+    const arrSubTitle = await titleController.getAllSubTitles();
+    setSubTitles(arrSubTitle);
+  };
+
+  const fetchTitle = async () => {
+    const arrTitles = await titleController.getAllTitles();
+    setTitles(arrTitles);
+  };
 
   useEffect(() => {
-    const fetchSubtitle = async () => {
-      const arrSubTitle = await titleController.getAllSubTitles();
-      setSubTitles(arrSubTitle);
-    };
-
     fetchSubtitle();
-  }, [titleController]);
 
+    fetchTitle();
+  }, [titleController]);
   // Debounce search
   const debouncedSearch = useCallback(
     debounce(async (searchQuery, category) => {
@@ -66,9 +74,10 @@ const Search = ({ isOpen, onClose, productController, titleController }) => {
 
   // Click gợi ý
   const handleSuggestionClick = (product) => {
+    console.log(product);
     setShowSuggestions(false);
     onClose();
-    navigate(`/products/${product.id}`); // hoặc /search?q=...
+    navigate(`/products/slug/${product.slug}`); // hoặc /search?q=...
   };
 
   // Focus input khi mở
@@ -81,44 +90,43 @@ const Search = ({ isOpen, onClose, productController, titleController }) => {
   if (!isOpen) return null;
 
   return (
-    <nav className={`search ${isOpen ? "active" : ""}`} ref={searchRef}>
+    <nav className="d-flex flex-column end-0 h-100" ref={searchRef}>
       <div className="container text-black">
         {/* Header */}
-        <div className="mt-3">
+        <div className="mt-xl-3">
           <div className="search-header d-flex align-items-center">
             <button onClick={onClose} className="btn">
               <i className="bi bi-arrow-left fs-4"></i>
             </button>
-            <h4 className="fw-bold m-0 px-3 fs-3">Tìm Kiếm</h4>
+            <h4 className="fw-bold m-xl-0 px-xl-3 fs-3">{t("search.name")}</h4>
           </div>
 
           {/* Search Bar */}
-          <form onSubmit={handleSearch} className="mb-4 mx-3">
-            <div className="input-group my-3">
+          <form onSubmit={handleSearch} className="mb-xl-4 mx-xl-3">
+            <div className="input-group my-xl-3">
               <select
                 ref={categoryRef}
-                className="form-select border-success py-2 ps-4 rounded-pill"
+                className="form-select border-success py-xl-2 ps-xl-4 rounded-pill"
                 defaultValue="all"
                 onChange={() => {
                   if (query) debouncedSearch(query, categoryRef.current.value);
                 }}
               >
-                <option value="all">Tất cả danh mục</option>
-                <option value="personal-care">Chăm sóc cá nhân</option>
-                <option value="baby-care">Chăm sóc bé</option>
-                <option value="household-cleaning">Vệ sinh nhà cửa</option>
-                <option value="food-beverages">Thực phẩm & Đồ uống</option>
+                <option value="all">{t("search.all-categories")}</option>
+                {titles?.map((title) => (
+                  <option value={title.value}>{title.name}</option>
+                ))}
               </select>
             </div>
-            <div className="input-group my-3">
+            <div className="input-group my-xl-3">
               <input
                 ref={inputRef}
                 type="text"
                 value={query}
                 onChange={handleInputChange}
                 onFocus={() => query && setShowSuggestions(true)}
-                className="form-control py-2 ps-4 rounded-start-pill"
-                placeholder="Tìm theo sản phẩm"
+                className="form-control py-xl-2 ps-xl-4 rounded-start-pill"
+                placeholder={t("search.product-name")}
               />
               <button
                 type="submit"
@@ -131,7 +139,7 @@ const Search = ({ isOpen, onClose, productController, titleController }) => {
             {/* GỢI Ý TÌM KIẾM */}
             {showSuggestions && (
               <div
-                className="position-absolute start-0 end-0 bg-white border rounded-bottom shadow-sm mt-1 mx-3"
+                className="position-absolute start-0 end-0 bg-white border rounded-bottom shadow-sm mt-xl-1 mx-xl-3"
                 style={{
                   zIndex: 1000,
                   maxHeight: "60vh",
@@ -141,7 +149,7 @@ const Search = ({ isOpen, onClose, productController, titleController }) => {
               >
                 {loading ? (
                   <div className="p-3 text-center text-muted">
-                    <span className="spinner-border spinner-border-sm me-2"></span>
+                    <span className="spinner-border spinner-border-sm me-xl-2"></span>
                     Đang tìm...
                   </div>
                 ) : suggestions.length > 0 ? (
@@ -151,13 +159,13 @@ const Search = ({ isOpen, onClose, productController, titleController }) => {
                     return (
                       <div
                         key={id}
-                        className="d-flex align-items-center p-3 border-bottom hover-bg-light cursor-pointer "
+                        className="d-flex align-items-center p-xl-3 border-bottom hover-bg-light cursor-pointer "
                         onClick={() => handleSuggestionClick(product)}
                       >
                         <img
                           src={image || "/placeholder.jpg"}
                           alt={name}
-                          className="me-3"
+                          className="me-xl-3"
                           style={{
                             width: 50,
                             height: 50,
@@ -177,8 +185,8 @@ const Search = ({ isOpen, onClose, productController, titleController }) => {
                     );
                   })
                 ) : query ? (
-                  <div className="p-3 text-center text-muted">
-                    Không tìm thấy sản phẩm nào
+                  <div className="p-xl-3 text-center text-muted">
+                    {t("search.no-product")}
                   </div>
                 ) : null}
               </div>
@@ -186,8 +194,10 @@ const Search = ({ isOpen, onClose, productController, titleController }) => {
           </form>
 
           {/* Hot Keywords */}
-          <div className="mx-3">
-            <p className="text-success fw-semibold mb-2">Từ khóa phổ biến</p>
+          <div className="mx-xl-3">
+            <p className="text-success fw-semibold mb-xl-2">
+              {t("search.popular-keywords")}
+            </p>
             <div className="d-flex flex-wrap gap-2">
               {subTitles
                 .filter((sub) => sub.regular === true)
@@ -198,7 +208,7 @@ const Search = ({ isOpen, onClose, productController, titleController }) => {
                       sub.name
                     )}&category=all`}
                     onClick={onClose}
-                    className="badge bg-light text-dark border px-3 py-2 text-decoration-none hover-bg-success hover-text-white transition btn"
+                    className="badge bg-light text-dark border px-xl-3 py-xl-2 text-decoration-none hover-bg-success hover-text-white transition btn"
                   >
                     {sub.name}
                   </Link>

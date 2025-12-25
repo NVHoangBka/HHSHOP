@@ -21,6 +21,13 @@
         "product": "Product",
         "cart": "Cart"
     },
+    "search": {
+        "name": "Search",
+        "all-categories": "All Categories",
+        "product-name": "Search product name",
+        "no-product": "No products found",
+        "popular-keywords": "Popular Keywords"
+    },
     "menu": {
         "product_all": "All Products",
         "take_care_of_family": "Take Care Of Family"

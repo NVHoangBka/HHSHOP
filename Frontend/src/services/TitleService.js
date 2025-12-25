@@ -1,3 +1,4 @@
+import api from "./api.js";
 import TitleModel from "../models/TitleModel.js";
 
 class TitleService {
@@ -5,8 +6,12 @@ class TitleService {
     this.titleModel = new TitleModel();
   }
 
+  // === LẤY DANH SÁCH ===
   async getAllTitles() {
-    return await this.titleModel.getAllTitles();
+    try {
+      const response = await api.get("/titles");
+      return response.data.titles;
+    } catch (error) {}
   }
 
   async getTitleById(id) {

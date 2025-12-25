@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const CartHeader = ({
-  isOpen,
   onClose,
   cartController,
   cartItems: propCartItems,
@@ -78,7 +77,7 @@ const CartHeader = ({
 
   return (
     <div className="d-flex flex-column end-0 h-100">
-      <div className="cart-header d-flex justify-content-between align-items-center border-bottom me-2">
+      <div className="cart-header d-flex justify-content-between align-items-center border-bottom me-xl-2">
         <h2 className="card-title text-black pb-3 pt-4 px-4">Giỏ hàng</h2>
         <button
           className="btn border rounded-circle px-2 py-0"
