@@ -2,11 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { t } from "i18next";
 
-const Menu = ({ isOpen, menuRef, onClose, user, titleController }) => {
+const Menu = ({ menuRef, onClose, titleController }) => {
   const [titles, setTitles] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const fullName = user ? `${user.firstName} ${user.lastName}` : null;
 
   useEffect(() => {
     async function loadTitles() {
@@ -21,37 +19,11 @@ const Menu = ({ isOpen, menuRef, onClose, user, titleController }) => {
     onClose(false);
   };
 
-  if (loading) return <div>Đang tải menu...</div>;
+  if (loading) return <div>{t("menu.loading")}</div>;
 
   return (
-    <nav ref={menuRef} className={`menu ${isOpen ? "active" : ""}`}>
+    <nav ref={menuRef} className="h-100">
       <div className="menu-container">
-        <div className="menu-header d-flex justify-content-between py-xl-3 px-xl-4 align-items-center">
-          <Link
-            to={"/account/login"}
-            className="header-icon-group text-reset d-flex text-decoration-none py-xl-1 px-xl-2 menu-hover"
-          >
-            <div className="header-icon align-content-center me-xl-2">
-              <i className="bi bi-person fs-3 border px-1"></i>
-            </div>
-            {user ? (
-              <div className="lh-sm d-flex align-items-center ms-xl-1">
-                <p className="fw-bold fs-6 m-0">{fullName}</p>
-              </div>
-            ) : (
-              <div className="lh-sm">
-                <p className="mb-xl-1 fs-6">{t("system.account")}</p>
-                <span className="fw-bold fs-6">{t("system.login")}</span>
-              </div>
-            )}
-          </Link>
-          <button
-            className="btn border rounded-circle px-xl-1 py-xl-0 h-50"
-            onClick={() => onClose(false)}
-          >
-            <i className="bi bi-x fs-4"></i>
-          </button>
-        </div>
         <div className="menu-content">
           <ul className="menu-list">
             <li>

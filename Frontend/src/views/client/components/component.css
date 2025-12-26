@@ -130,24 +130,6 @@
   color: black;
 }
 
-
-.search {
-  position: fixed;
-  top: 0;
-  right: -500px;
-  width: 500px;
-  height: 100%;
-  background-color: #f8f9fa !important;
-  transition: right 0.4s ease-in-out; 
-  z-index: 1060;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
-}
-
-.search.active {
-  right: 0; 
-}
-
-
 .search-keyword {
   color: var(--color-coupon-primary);
  text-decoration: none;

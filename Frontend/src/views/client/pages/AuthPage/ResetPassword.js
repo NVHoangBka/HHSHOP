@@ -1,8 +1,11 @@
 // src/pages/account/ResetPassword.jsx
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useParams, useNavigate } from "react-router-dom";
 
 const ResetPassword = ({ authController }) => {
+  const { t } = useTranslation();
+
   const { token } = useParams();
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
@@ -13,17 +16,17 @@ const ResetPassword = ({ authController }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      setError("Mật khẩu không khớp!");
+      setError(t("system.reset-pass.password-mismatch"));
       return;
     }
     if (password.length < 8) {
-      setError("Mật khẩu phải ít nhất 8 ký tự!");
+      setError(t("system.reset-pass.password-min-length"));
       return;
     }
 
     const result = await authController.resetPassword(token, password);
     if (result.success) {
-      setMessage("Đặt lại mật khẩu thành công! Đang chuyển về đăng nhập...");
+      setMessage(t("system.reset-pass.reset-password-success"));
       setTimeout(() => {
         window.location.href = "/account/login";
       }, 2000);
@@ -39,7 +42,7 @@ const ResetPassword = ({ authController }) => {
           <div className="col-md-5">
             <div className="card shadow-lg p-5 rounded-4 border-0 ">
               <h2 className="text-center mb-4 fw-bold fst-italic fs-3 mb-5">
-                Đặt lại mật khẩu
+                {t("system.reset-pass.title")}
               </h2>
               {error && <div className="alert alert-danger">{error}</div>}
               {message && <div className="alert alert-success">{message}</div>}
@@ -49,7 +52,7 @@ const ResetPassword = ({ authController }) => {
                   <input
                     type="password"
                     className="form-control form-control-lg fs-6 py-2"
-                    placeholder="Mật khẩu mới (tối thiểu 8 ký tự)"
+                    placeholder={t("system.reset-pass.password-min-length")}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -59,7 +62,7 @@ const ResetPassword = ({ authController }) => {
                   <input
                     type="password"
                     className="form-control form-control-lg fs-6 py-2"
-                    placeholder="Nhập lại mật khẩu"
+                    placeholder={t("system.confirm-password")}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
@@ -69,7 +72,7 @@ const ResetPassword = ({ authController }) => {
                   className="btn btn-success w-50 btn-lg rounded-pill mt-5 text-white fw-bold fs-6 text-uppercase text-center d-block mx-auto"
                   type="submit"
                 >
-                  Xác nhận
+                  {t("btn.confirm")}
                 </button>
               </form>
             </div>

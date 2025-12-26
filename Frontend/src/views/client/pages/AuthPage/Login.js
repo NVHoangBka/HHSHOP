@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 
 const Login = ({ onLogin, authController }) => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -16,7 +18,7 @@ const Login = ({ onLogin, authController }) => {
       onLogin(email, password);
       navigate("/");
     } else {
-      setError(result.message || "Tên đăng nhập hoặc mật khẩu không đúng.");
+      setError(result.message || t("system.login.error.invalid-credentials"));
     }
   };
 
@@ -39,10 +41,10 @@ const Login = ({ onLogin, authController }) => {
     setError("");
     const result = await authController.recoverPassword(recoverEmail);
     if (result.success) {
-      alert("Vui lòng kiểm tra email để đặt lại mật khẩu.");
+      alert(t("system.login.error.check-email-reset-password"));
       handleHideRecoverPassword();
     } else {
-      setError(result.message || "Gửi email đặt lại mật khẩu thất bại.");
+      setError(result.message || t("reset-password-email-failed"));
     }
   };
 
@@ -50,7 +52,7 @@ const Login = ({ onLogin, authController }) => {
     <div className="bg-success-subtle">
       <div className="container">
         <div className="row nav justify-content-start py-2 d-flex">
-          Trang chủ / Đăng nhập
+          {t("header.home")} / {t("system.login.title")}
         </div>
         <div className="row justify-content-center py-4">
           <div className="col-md-6">
@@ -58,16 +60,15 @@ const Login = ({ onLogin, authController }) => {
               <div className="login-card">
                 <div className="text-center my-3">
                   <h1 className="fs-2 fw-semibold mb-2 mt-4">
-                    Đăng nhập tài khoản
+                    {t("system.login.description")}
                   </h1>
                   <p className="text-center fst-normal fs-6 mb-0">
-                    Bạn chưa có tài khoản?
+                    {t("system.login.no-account")}
                     <Link
                       to="/account/register"
                       className="fst-italic text-reset"
                     >
-                      {" "}
-                      Đăng ký tại đây
+                      {t("system.login.sign-up")}
                     </Link>
                   </p>
                 </div>
@@ -97,14 +98,14 @@ const Login = ({ onLogin, authController }) => {
                         htmlFor="password"
                         className="form-label fs-6 opacity-75"
                       >
-                        Mật khẩu *
+                        {t("system.password")} *
                       </label>
                       <input
                         type="password"
                         className="form-control input-group-lg"
                         id="password"
                         value={password}
-                        placeholder="Mật khẩu"
+                        placeholder={t("system.password")}
                         onChange={(e) => setPassword(e.target.value)}
                         required
                       />
@@ -115,7 +116,7 @@ const Login = ({ onLogin, authController }) => {
                         style={{ cursor: "pointer" }}
                         onClick={handleShơwRecoverPassword}
                       >
-                        Quên mật khẩu?
+                        {t("system.forgot-pass")}
                       </p>
                     </div>
                     <div className="text-center mb-3 py-3">
@@ -123,7 +124,7 @@ const Login = ({ onLogin, authController }) => {
                         type="submit"
                         className="btn btn-lg w-50 bg-success text-white fw-semibold fs-6 rounded-pill"
                       >
-                        Đăng nhập
+                        {t("system.login.title")}
                       </button>
                     </div>
                   </form>
@@ -134,11 +135,10 @@ const Login = ({ onLogin, authController }) => {
                   class="form-signup page-login text-center"
                 >
                   <div class="mb-3">
-                    <h2 class="fw-semibold mb-2 fs-5">Đặt lại mật khẩu</h2>
-                    <p className="fs-6">
-                      Chúng tôi sẽ gửi cho bạn một email để kích hoạt việc đặt
-                      lại mật khẩu.
-                    </p>
+                    <h2 class="fw-semibold mb-2 fs-5">
+                      {t("system.reset-pass.title")}
+                    </h2>
+                    <p className="fs-6">{t("system.des-pass")}</p>
                   </div>
 
                   <form onSubmit={handleForgotPassword}>
@@ -159,10 +159,10 @@ const Login = ({ onLogin, authController }) => {
 
                     <div class="action_bottom my-3 d-flex justify-content-center align-items-center mt-5 flex-column">
                       <button
-                        class="btn bg-success text-white w-50 font-semibold "
+                        class="btn bg-success text-white w-50 fw-semibold "
                         type="submit"
                       >
-                        Lấy lại mật khẩu
+                        {t("system.recover-pass")}
                       </button>
                       <div className="d-flex align-items-center text-hover">
                         <i className="bi bi-arrow-left"></i>
@@ -170,14 +170,14 @@ const Login = ({ onLogin, authController }) => {
                           class="fs-6 mt-3 ms-1  text-decoration-underline"
                           onClick={handleHideRecoverPassword}
                         >
-                          Quay lại
+                          {t("btn.back")}
                         </p>
                       </div>
                     </div>
                   </form>
                 </div>
                 <div className="text-center mt-3 fs-6 text-danger fw-light">
-                  Hoặc đăng nhập bằng
+                  {t("system.or-sign-with")}
                 </div>
                 <div className="mt-2 mb-4 d-flex justify-content-center gap-3">
                   <button className="btn btn-primary social-btn">

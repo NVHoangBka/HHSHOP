@@ -1,4 +1,5 @@
 {
+    "introduce": {},
     "header": {
         "home": "Trang chủ",
         "introduce": "Giới thiệu",
@@ -13,11 +14,139 @@
         "admin": "Quản trị"
     },
     "system": {
-        "account": "Tài khoản",
-        "login": "Đăng nhập",
-        "logout": "Đăng xuất",
-        "resgiter": "Đăng ký",
-        "admin": "Admin"
+        "login": {
+            "title": "Đăng nhập",
+            "description": "Đăng nhập tài khoản",
+            "sign-up": "Đăng kí ở đây",
+            "no-account": "Bạn chưa có tài khoản?",
+            "error": {
+                "invalid-credentials": "Tên đăng nhập hoặc mật khẩu không đúng",
+                "check-email-reset-password": "Vui lòng kiểm tra email để đặt lại mật khẩu",
+                "reset-password-email-failed": "Gửi email đặt lại mật khẩu thất bại"
+            }
+        },
+        "resgiter": {
+            "title": "Đăng kí",
+            "description": "Đăng kí tài khoản",
+            "login": "Đăng nhập ở đây",
+            "account": "Bạn đã có tài khoản?",
+            "last-name": "Họ",
+            "first-name": "Tên",
+            "phone": "Số điện thoại",
+            "password": "Mật khẩu",
+            "confirm-password": "Xác nhận mật khẩu",
+            "address": "Địa chỉ",
+            "error": {
+                "invalid-email": "Email không hợp lệ",
+                "password-min-length": "Mật khẩu phải có ít nhất 8 ký tự",
+                "password-confirm-mismatch": "Mật khẩu xác nhận không khớp",
+                "full-name-required": "Họ và tên không được để trống"
+            }
+        },
+        "logout": {
+            "title": "Đăng xuất",
+            "error": "Đăng xuất thất bại"
+        },
+        "password": "Mật khẩu",
+        "forgot-pass": "Quên mật khẩu?",
+        "reset-pass": {
+            "title": "Đặt lại mật khẩu",
+            "password-mismatch": "Mật khẩu không khớp",
+            "password-min-length": "Mật khẩu phải có ít nhất 8 ký tự!",
+            "reset-password-success": "Đặt lại mật khẩu thành công! Đang chuyển về đăng nhập..."
+        },
+        "des-pass": "Chúng tôi sẽ gửi cho bạn một email để kích hoạt việc đặt lại mật khẩu..",
+        "recover-pass": "Lấy lại mật khẩu",
+        "or-sign-with": "Hoặc đăng nhập bằng",
+        "admin": "Quản trị",
+        "loading": "Đang tải...."
+    },
+    "account": {
+        "title": "Tài khoản",
+        "page": "Trang tài khoản",
+        "page-customer": "Trang khách hàng",
+        "info": {
+            "title": "Thông tin tài khoản",
+            "full-name": "Họ tên",
+            "phone": "Số điện thoại"
+        },
+        "orders": {
+            "title": "Đơn hàng của bạn",
+            "loading": "Đang tải đơn hàng....",
+            "order-id": "Mã đơn hàng",
+            "date": "Ngày",
+            "name": "Tên",
+            "phone": "Số điện thoại",
+            "address": "Địa chỉ",
+            "order-total": "Giá trị đơn hàng",
+            "payment-method": "Hình thức thanh toán",
+            "payment-status": "TT thanh toán",
+            "order-status": "TT đơn hàng",
+            "no-order": "Chưa có đơn hàng nào",
+            "unknown": "Không xác định",
+            "payment-status-values": {
+                "pending": "Đang chờ thanh toán",
+                "paid": "Đã thanh toán",
+                "failed": "Thanh toán thất bại",
+                "canceled": "Đã hoàn tiền"
+            },
+            "order-status-values": {
+                "pending": "Chờ xác nhận",
+                "confirmed": "Đã xác nhận",
+                "preparing": "Đang đóng gói",
+                "shipped": "Đã giao cho bên vận chuyển",
+                "delivered": "Đã giao thành công",
+                "canceled": "Đã huỷ",
+                "returned": "Khách trả hàng"
+            }
+        },
+        "change-password": {
+            "title": "Đổi mật khẩu",
+            "description": "Để đảm bảo tính bảo mật, vui lòng đặt mật khẩu với ít nhất 8 ký tự",
+            "old-password": "Mật khẩu cũ",
+            "new-password": "Mật khẩu mới",
+            "confirm-password": "Xác nhận lại mật khẩu",
+            "submit": "Đặt lại mật khẩu",
+            "loading": "Đang xử lý...",
+            "success": "Đổi mật khẩu thành công! Đang đăng xuất...",
+            "errors": {
+                "old-required": "Vui lòng nhập mật khẩu cũ",
+                "new-required": "Vui lòng nhập mật khẩu mới",
+                "min-length": "Mật khẩu phải có ít nhất 8 ký tự",
+                "mismatch": "Mật khẩu xác nhận không khớp",
+                "old-incorrect": "Mật khẩu cũ không đúng",
+                "common": "Đã có lỗi xảy ra. Vui lòng thử lại."
+            }
+        },
+        "address": {
+            "list": "Sổ địa chỉ",
+            "title": "Địa chỉ của bạn",
+            "address": "Địa chỉ",
+            "add": "Thêm địa chỉ",
+            "edit": "Sửa",
+            "full-name": "Họ tên",
+            "phone": "Số điện thoại",
+            "address-line": "Địa chỉ",
+            "city": "Tỉnh/Thành phố",
+            "district": "Quận/Huyện",
+            "ward": "Phường/Xã",
+            "select-city": "Chọn Tỉnh/Thành phố",
+            "select-district": "Chọn Quận/Huyện",
+            "select-ward": "Chọn Phường/Xã",
+            "set-default": "Đặt làm mặc định",
+            "default": "Mặc định",
+            "empty": "Chưa có địa chỉ nào. Vui lòng thêm địa chỉ."
+        }
+    },
+    "home": {
+        "flash-sale-title": "Chớp thời cơ. Giá như mơ",
+        "no-flash-sale": "Không có sản phẩm flash sale.",
+        "tabs": {
+            "family-care": "Chăm sóc gia đình",
+            "trending": "Sản phẩm được quan tâm",
+            "fresh-food": "Thực phẩm tươi sống",
+            "stationery": "Văn phòng phẩm"
+        }
     },
     "product": {
         "product_all": "Tất cả sản phẩm",
@@ -25,7 +154,7 @@
         "cart": "Giỏ hàng"
     },
     "search": {
-        "name": "Tìm kiếm",
+        "title": "Tìm kiếm",
         "all-categories": "Tất cả danh mục",
         "product-name": "Tìm theo tên Sản phẩm",
         "no-product": "Không tìm thấy sản phẩm nào",
@@ -33,14 +162,94 @@
     },
     "menu": {
         "product_all": "Tất cả sản phẩm",
-        "take_care_of_family": "Chăm sóc gia đình"
+        "take_care_of_family": "Chăm sóc gia đình",
+        "loading": "Đang tải menu...."
     },
-    "home": {
-        "welcome": "Chào mừng đến với HHSHOP!",
-        "slogan": "Mua sắm dễ dàng - Giao hàng nhanh chóng"
+    "cart": {
+        "title": "Giỏ hàng",
+        "no-cart": "Giỏ hàng chưa có gì",
+        "desription-no-cart": "Hãy tìm sản phẩm ứng ý và thêm vào giỏ hàng bạn nhé!",
+        "continue-shopping": "Tiếp tục mua sắm",
+        "issue-company-invoices": "Xuất hoá đơn công ty",
+        "issue-invoices": "Xuất hoá đơn",
+        "name-company": "Tên công ty",
+        "tax-code": "Mã số thuế",
+        "address-company": "Địa chỉ công ty",
+        "email-invoices": "Email nhận hoá đơn",
+        "schedule-receive-timer": "Hẹn giờ nhận hàng",
+        "schedule-delivery-timer": "Hẹn giờ giao hàng",
+        "receive-day": "Ngày nhận hàng",
+        "receive-time": "Thời gian nhận hàng",
+        "chose-time": "Chọn thời gian",
+        "note-order": "Ghi chú đơn hàng",
+        "note": "Ghi chú",
+        "choose-a-promo-code": "Chọn mã giảm giá",
+        "promo-code": "Mã giảm giá",
+        "total": "Tổng cộng",
+        "input-promo-code-checkout": "Nhập mã giảm giá ở trang thanh toán",
+        "payment": "Thanh toán"
+    },
+    "info": {
+        "name": "Siêu thị HUNG NHUNG",
+        "slogan": "Thương hiệu siêu thị uy tín và chất lượng, cam kết mang đến những trải nghiệm mua sắm tiện lợi, hiện đại và phong phú",
+        "tax-code": "Mã số thuế",
+        "address": "Địa chỉ",
+        "hotline": "Hotline",
+        "email": "Email"
+    },
+    "service-benefits": {
+        "fast-delivery": {
+            "title": "Giao hỏa tốc",
+            "description": "Nội thành TP. HCM trong 4h"
+        },
+        "free-returns": {
+            "title": "Đổi trả miễn phí",
+            "description": "Trong vòng 30 ngày miễn phí"
+        },
+        "support-24-7": {
+            "title": "Hỗ trợ 24/7",
+            "description": "Hỗ trợ khách hàng 24/7"
+        },
+        "hot-deals": {
+            "title": "Deal hot bùng nổ",
+            "description": "Flash sale giảm giá cực sốc"
+        }
+    },
+    "footer": {
+        "support": {
+            "title": "Hỗ trợ khách hàng",
+            "contact": "Liên hệ",
+            "store-locations": "Hệ thống cửa hàng",
+            "ask-question": "Câu hỏi thường gặp",
+            "affiliate-program": "Chương trình cộng tác viên"
+        },
+        "policy": {
+            "title": "Chính sách",
+            "warranty": "Chính sách bảo hành",
+            "return": "Chính sách đổi trả",
+            "privacy": "Chính sách bảo mật",
+            "terms-of-service": "Điều khoản dịch vụ"
+        },
+        "support-hotline": {
+            "title": "Tổng đài hỗ trợ",
+            "order": "Gọi mua hàng: 19006750 (8h-20h)",
+            "warranty": "Gọi bảo hành: 19006750 (8h-20h)"
+        },
+        "payment": {
+            "title": "Phương thức thanh toán"
+        }
     },
     "common": {
+        "loading": "Đang tải...",
         "add_to_cart": "Thêm vào giỏ",
         "price": "Giá: {{price}}₫"
+    },
+    "btn": {
+        "save": "Lưu",
+        "back": "Quay lại",
+        "confirm": "Xác nhận",
+        "cancel": "Hủy",
+        "update": "Cập nhật",
+        "delete": "Xóa"
     }
 }

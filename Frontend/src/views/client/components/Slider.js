@@ -1,8 +1,10 @@
+import { useTranslation } from "react-i18next";
 import sliderImg1 from "../../../assets/image/sliders/home_slider_1.webp";
 import sliderImg2 from "../../../assets/image/sliders/home_slider_2.jpg";
 import "./component.css";
 
 function Slider() {
+  const { t } = useTranslation();
   return (
     <>
       <div
@@ -42,29 +44,37 @@ function Slider() {
             <li className="section-police-item d-flex mt-3 col-3">
               <i className="bi bi-box-fill fs-5"></i>
               <div className="section-police-title ms-2">
-                <h5 className="m-0 fs-6">Giao hỏa tốc</h5>
-                <p>Nội thành TP. HCM trong 4h</p>
+                <h5 className="m-0 fs-6">
+                  {t("service-benefits.fast-delivery.title")}
+                </h5>
+                <p>{t("service-benefits.fast-delivery.description")}</p>
               </div>
             </li>
             <li className="section-police-item d-flex mt-3 col-3">
               <i className="bi bi-arrow-repeat fs-5"></i>
               <div className="section-police-title ms-2">
-                <h5 className="m-0 fs-6">Đổi trả miễn phí</h5>
-                <p>Trong vòng 30 ngày miễn phí</p>
+                <h5 className="m-0 fs-6">
+                  {t("service-benefits.free-returns.title")}
+                </h5>
+                <p>{t("service-benefits.free-returns.description")}</p>
               </div>
             </li>
             <li className="section-police-item d-flex mt-3 col-3">
               <i className="bi bi-hand-thumbs-up fs-5"></i>
               <div className="section-police-title ms-2">
-                <h5 className="m-0 fs-6">Hỗ trợ 24/7</h5>
-                <p>Hỗ trợ khách hàng 24/7</p>
+                <h5 className="m-0 fs-6">
+                  {t("service-benefits.support-24-7.title")}
+                </h5>
+                <p>{t("service-benefits.support-24-7.description")}</p>
               </div>
             </li>
             <li className="section-police-item d-flex mt-3 col-3">
               <i className="bi bi-ticket-perforated fs-5"></i>
               <div className="section-police-title ms-2">
-                <h5 className="m-0 fs-6">Deal hot bùng nổ</h5>
-                <p>Flash sale giảm giá cực sốc</p>
+                <h5 className="m-0 fs-6">
+                  {t("service-benefits.hot-deals.title")}
+                </h5>
+                <p>{t("service-benefits.hot-deals.description")}</p>
               </div>
             </li>
           </ul>

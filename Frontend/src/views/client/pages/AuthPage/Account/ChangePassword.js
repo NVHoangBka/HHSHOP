@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 // import { useNavigate } from "react-router-dom";
 import ToastMessage from "../../../components/ToastMessage/ToastMessage";
+import { useTranslation } from "react-i18next";
 
 const ChangePassword = ({ authController }) => {
   // const navigate = useNavigate();
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     oldPassword: "",
     newPassword: "",
@@ -25,15 +27,18 @@ const ChangePassword = ({ authController }) => {
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.oldPassword)
-      newErrors.oldPassword = "Vui lòng nhập mật khẩu cũ";
-    if (!formData.newPassword) {
-      newErrors.newPassword = "Vui lòng nhập mật khẩu mới";
-    } else if (formData.newPassword.length < 8) {
-      newErrors.newPassword = "Mật khẩu phải ít nhất 8 ký tự";
+    if (!formData.oldPassword) {
+      newErrors.oldPassword = t("account.change-password.errors.old-required");
     }
+
+    if (!formData.newPassword) {
+      newErrors.newPassword = t("account.change-password.errors.new-required");
+    } else if (formData.newPassword.length < 8) {
+      newErrors.newPassword = t("account.change-password.errors.min-length");
+    }
+
     if (formData.newPassword !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Mật khẩu xác nhận không khớp";
+      newErrors.confirmPassword = t("account.change-password.errors.mismatch");
     }
     return newErrors;
   };
@@ -57,17 +62,20 @@ const ChangePassword = ({ authController }) => {
 
       if (result.success) {
         setShowToast(true);
-        setToastMessage("Đổi mật khẩu thành công! Đang đăng xuất...");
+        setToastMessage(t("account.change-password.success"));
         setToastType("success");
         await authController.logout();
         setTimeout(() => {
           window.location.href = "/account/login";
         }, 1000);
       } else {
-        setErrors({ oldPassword: result.message || "Mật khẩu cũ không đúng" });
+        setErrors({
+          oldPassword:
+            result.message || t("account.change-password.errors.old-incorrect"),
+        });
       }
     } catch (err) {
-      setErrors({ oldPassword: "Đã có lỗi xảy ra. Vui lòng thử lại." });
+      setErrors({ oldPassword: t("account.change-password.errors.common") });
     } finally {
       setLoading(false);
     }
@@ -76,10 +84,11 @@ const ChangePassword = ({ authController }) => {
   return (
     <>
       <div className="bg-background rounded-lg px-3 mb-6 ">
-        <h1 className="fs-3 fw-semibold mb-3">Đổi mật khẩu</h1>
-        <p className="fs-7">
-          Để đảm bảo tính bảo mật vui lòng đặt mật khẩu với ít nhất 8 kí tự
-        </p>
+        <h1 className="fs-3 fw-semibold mb-3">
+          {" "}
+          {t("account.change-password.title")}
+        </h1>
+        <p className="fs-7">{t("account.change-password.description")}</p>
         <form onSubmit={handleSubmit} id="change_customer_password">
           <input
             name="FormType"
@@ -93,7 +102,8 @@ const ChangePassword = ({ authController }) => {
                 className="label d-block mb-1 fs-7 text-secondary mb-1"
                 for="oldPass"
               >
-                Mật khẩu cũ <span className="error">*</span>
+                {t("account.change-password.old-password")}{" "}
+                <span className="error">*</span>
               </label>
               <input
                 type="password"
@@ -113,7 +123,8 @@ const ChangePassword = ({ authController }) => {
                 className="label d-block mb-1 fs-7 text-secondary mb-1"
                 for="changePass"
               >
-                Mật khẩu mới <span className="error">*</span>
+                {t("account.change-password.new-password")}{" "}
+                <span className="error">*</span>
               </label>
               <input
                 type="password"
@@ -133,7 +144,8 @@ const ChangePassword = ({ authController }) => {
                 className="label d-block mb-1 fs-7 text-secondary mb-1"
                 for="confirmPass"
               >
-                Xác nhận lại mật khẩu <span className="error">*</span>
+                {t("account.change-password.confirm-password")}{" "}
+                <span className="error">*</span>
               </label>
               <input
                 type="password"
@@ -151,7 +163,9 @@ const ChangePassword = ({ authController }) => {
               )}
             </fieldset>
             <button className="mt-3 ms-2 btn btn bg-success text-white btn-more rounded-pill fs-7 px-3 py-2">
-              Đặt lại mật khẩu
+              {loading
+                ? t("account.change-password.loading")
+                : t("account.change-password.submit")}
             </button>
           </div>
         </form>

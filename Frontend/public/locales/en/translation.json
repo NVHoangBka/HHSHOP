@@ -7,14 +7,143 @@
         "check_order": "Check Order",
         "contact": "Contact",
         "instruct": "Instruct",
-        "product_category": "Product Category"
+        "product_category": "Product Category",
+        "cart": "Cart"
     },
     "system": {
-        "account": "Account",
-        "login": "Login",
-        "logout": "Logout",
-        "resgiter": "Resgiter",
-        "admin": "Admin"
+        "login": {
+            "title": "Login",
+            "description": "Login Account",
+            "sign-up": "Sign up here",
+            "no-account": "Don’t have an account yet?",
+            "error": {
+                "invalid-credentials": "Username or password is incorrect",
+                "check-email-reset-password": "Please check your email to reset your password",
+                "reset-password-email-failed": "Failed to send password reset email"
+            }
+        },
+        "resgiter": {
+            "title": "Resgiter",
+            "description": "Resgiter Account",
+            "login": "Login here",
+            "account": "Already have an account?",
+            "first-name": "First Name",
+            "last-name": "Last Name",
+            "phone": "Phone Number",
+            "password": "Password",
+            "confirm-password": "Confirm Password",
+            "address": "Address",
+            "error": {
+                "invalid-email": "Invalid email",
+                "password-min-length": "Password must be at least 8 characters long",
+                "password-confirm-mismatch": "Confirm password does not match",
+                "full-name-required": "Full name cannot be empty"
+            }
+        },
+        "logout": {
+            "title": "Logout",
+            "error": "Logout error"
+        },
+        "password": "Password",
+        "forgot-pass": "Forgot password?",
+        "reset-pass": {
+            "title": "Reset password",
+            "password-mismatch": "Passwords do not match",
+            "password-min-length": "Password must be at least 8 characters long!",
+            "reset-password-success": "Password reset successfully! Redirecting to login..."
+        },
+        "des-pass": "We will send you an email to activate your password reset.",
+        "recover-pass": "Recover Password",
+        "or-sign-with": "Or sign in with",
+        "admin": "Admin",
+        "loading": "Loading...."
+    },
+    "account": {
+        "title": "Account",
+        "page": "Account Page",
+        "page-customer": "Customer Page",
+        "info": {
+            "title": "Account Info",
+            "full-name": "Full Name",
+            "phone": "Phone Number"
+        },
+        "orders": {
+            "title": "Your Orders",
+            "loading": "Loading orders...",
+            "order-id": "Order ID",
+            "date": "Date",
+            "name": "Name",
+            "phone": "Phone Number",
+            "address": "Address",
+            "order-total": "Order Total",
+            "payment-method": "Payment Method",
+            "payment-status": "Payment Status",
+            "order-status": "Order Status",
+            "no-order": "No orders found",
+            "unknown": "Unknown",
+            "payment-status-values": {
+                "pending": "Pending",
+                "paid": "Paid",
+                "failed": "Failed",
+                "canceled": "Refunded"
+            },
+            "order-status-values": {
+                "pending": "Pending confirmation",
+                "confirmed": "Confirmed",
+                "preparing": "Preparing",
+                "shipped": "Shipped",
+                "delivered": "Delivered",
+                "canceled": "Canceled",
+                "returned": "Returned"
+            }
+        },
+        "change-password": {
+            "title": "Change Password",
+            "description": "For security reasons, your password must be at least 8 characters long",
+            "old-password": "Old Password",
+            "new-password": "New Password",
+            "confirm-password": "Confirm Password",
+            "submit": "Reset Password",
+            "loading": "Processing...",
+            "success": "Password changed successfully! Logging out...",
+            "errors": {
+                "old-required": "Please enter your old password",
+                "new-required": "Please enter a new password",
+                "min-length": "Password must be at least 8 characters long",
+                "mismatch": "Passwords do not match",
+                "old-incorrect": "Old password is incorrect",
+                "common": "An error occurred. Please try again."
+            }
+        },
+        "address": {
+            "list": "List Address",
+            "title": "Your Addresses",
+            "address": "Address",
+            "add": "Add Address",
+            "edit": "Edit",
+            "full-name": "Full Name",
+            "phone": "Phone Number",
+            "address-line": "Address",
+            "city": "City / Province",
+            "district": "District",
+            "ward": "Ward",
+            "select-city": "Select City / Province",
+            "select-district": "Select District",
+            "select-ward": "Select Ward",
+            "set-default": "Set as default",
+            "default": "Default",
+            "empty": "No addresses found. Please add a new address."
+        }
+    },
+    "home": {
+        "flash-sale-title": "Limited Time Deals. Dream Prices",
+        "no-flash-sale": "No flash sale products available.",
+        "tabs": {
+            "family-care": "Family Care",
+            "trending": "Trending Products",
+            "fresh-food": "Fresh Food",
+            "stationery": "Stationery"
+        }
     },
     "product": {
         "product_all": "All Products",
@@ -32,12 +161,91 @@
         "product_all": "All Products",
         "take_care_of_family": "Take Care Of Family"
     },
-    "home": {
-        "welcome": "Welcome HHSHOP!",
-        "slogan": "Mua sắm dễ dàng - Giao hàng nhanh chóng"
+    "cart": {
+        "title": "Cart",
+        "no-cart": "No product in cart",
+        "desription-no-cart": "Find the product you like and add it to your cart!",
+        "continue-shopping": "Continue shopping",
+        "issue-company-invoices": "Issue Company Invoices",
+        "issue-invoices": "Issue Invoices",
+        "name-company": "Name Company",
+        "tax-code": "Tax Code",
+        "address-company": "Address Company",
+        "email-invoices": "Email to receive invoice",
+        "schedule-receive-timer": "Schedule receive timer",
+        "schedule-delivery-timer": "Schedule delivery timer",
+        "receive-day": "Receive day",
+        "receive-time": "Receive-time",
+        "chose-time": "Chose time",
+        "note-order": "Order notes",
+        "note": "Note",
+        "choose-a-promo-code": "Choose a promo code",
+        "promo-code": "Promo code",
+        "total": "Total",
+        "input-promo-code-checkout": "Enter a promo code at checkout",
+        "payment": "Payment"
+    },
+    "info": {
+        "name": "HUNGNHUNG supermarket",
+        "slogan": "A reputable and high-quality supermarket brand, committed to providing convenient, modern, and diverse shopping experiences",
+        "tax-code": "Tax Code",
+        "address": "Address",
+        "hotline": "Hotline",
+        "email": "Email"
+    },
+    "service-benefits": {
+        "fast-delivery": {
+            "title": "Fast Delivery",
+            "description": "Within 4 hours in Ho Chi Minh City"
+        },
+        "free-returns": {
+            "title": "Free Returns",
+            "description": "Free within 30 days"
+        },
+        "support-24-7": {
+            "title": "24/7 Support",
+            "description": "Customer support available 24/7"
+        },
+        "hot-deals": {
+            "title": "Hot Deals",
+            "description": "Flash sales with huge discounts"
+        }
+    },
+    "footer": {
+        "support": {
+            "title": "Customer Support",
+            "contact": "Contact",
+            "store-locations": "Store Locations",
+            "ask-question": "Frequently Asked Questions",
+            "affiliate-program": "Affiliate Program"
+        },
+        "policy": {
+            "title": "Policies",
+            "warranty": "Warranty Policy",
+            "return": "Return Policy",
+            "privacy": "Privacy Policy",
+            "terms-of-service": "Terms of Service"
+        },
+        "support-hotline": {
+            "title": "Support Hotline",
+            "order": "Order Hotline: 19006750 (8 AM - 8 PM)",
+            "warranty": "Warranty Hotline: 19006750 (8 AM - 8 PM)"
+        },
+        "payment": {
+            "title": "Payment Method"
+        }
     },
     "common": {
+        "loading": "Loading...",
         "add_to_cart": "Add Cart",
         "price": "Price: {{price}}₫"
+    },
+    "btn": {
+        "save": "Save",
+        "back": "Go back",
+        "confirm": "Confirm",
+        "cancel": "Cancel",
+        "update": "Update",
+        "delete": "Delete"
     }
 }

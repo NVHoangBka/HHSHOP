@@ -98,7 +98,7 @@ const Search = ({ isOpen, onClose, productController, titleController }) => {
             <button onClick={onClose} className="btn">
               <i className="bi bi-arrow-left fs-4"></i>
             </button>
-            <h4 className="fw-bold m-xl-0 px-xl-3 fs-3">{t("search.name")}</h4>
+            <h4 className="fw-bold m-xl-0 px-xl-3 fs-3">{t("search.title")}</h4>
           </div>
 
           {/* Search Bar */}

@@ -1,7 +1,10 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 
 const Register = ({ onLogin, onRegister, authController }) => {
+  const { t } = useTranslation();
+
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -18,19 +21,19 @@ const Register = ({ onLogin, onRegister, authController }) => {
     const passwordRegex = /^.{8,}$/;
 
     if (!emailRegex.test(email)) {
-      setError("Email không hợp lệ");
+      setError(t("system.resgiter.error.invalid-email"));
       return false;
     }
     if (!passwordRegex.test(password)) {
-      setError("Mật khẩu phải có ít nhất 8 ký tự");
+      setError(t("system.resgiter.error.password-min-length"));
       return false;
     }
     if (password !== confirmPassword) {
-      setError("Mật khẩu xác nhận không khớp");
+      setError(t("system.resgiter.error.password-confirm-mismatch"));
       return false;
     }
     if (!firstName || !lastName) {
-      setError("Họ và tên không được để trống");
+      setError(t("system.resgiter.error.full-name-required"));
       return false;
     }
     return true;
@@ -85,7 +88,7 @@ const Register = ({ onLogin, onRegister, authController }) => {
     <div className="bg-success-subtle">
       <div className="container">
         <div className="row nav justify-content-start py-2 d-flex">
-          Trang chủ / Đăng Ký
+          {t("header.home")} / {t("system.resgiter.title")}
         </div>
         <div className="row justify-content-center py-4">
           <div className="col-md-6">
@@ -93,13 +96,12 @@ const Register = ({ onLogin, onRegister, authController }) => {
               <div className="login-card">
                 <div className="text-center my-3">
                   <h1 className="fs-2 fw-semibold mb-2 mt-4">
-                    Đăng ký tài khoản
+                    {t("system.resgiter.description")}
                   </h1>
                   <p className="text-center fst-normal fs-6 mb-0">
-                    Bạn đã có tài khoản?
+                    {t("system.resgiter.account")}
                     <Link to="/account/login" className="fst-italic text-reset">
-                      {" "}
-                      Đăng nhập tại đây
+                      {t("system.resgiter.login")}
                     </Link>
                   </p>
                 </div>
@@ -111,7 +113,7 @@ const Register = ({ onLogin, onRegister, authController }) => {
                       htmlFor="lastName"
                       className="form-label fs-6 opacity-75"
                     >
-                      Họ *
+                      {t("system.resgiter.last-name")} *
                     </label>
                     <input
                       type="text"
@@ -119,7 +121,7 @@ const Register = ({ onLogin, onRegister, authController }) => {
                       id="lastName"
                       value={lastName}
                       onChange={(e) => setLastName(e.target.value)}
-                      placeholder="Họ"
+                      placeholder={t("system.resgiter.last-name")}
                       required
                     />
                   </div>
@@ -128,7 +130,7 @@ const Register = ({ onLogin, onRegister, authController }) => {
                       htmlFor="firstName"
                       className="form-label fs-6 opacity-75"
                     >
-                      Tên *
+                      {t("system.resgiter.first-name")} *
                     </label>
                     <input
                       type="text"
@@ -136,7 +138,7 @@ const Register = ({ onLogin, onRegister, authController }) => {
                       id="firstName"
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
-                      placeholder="Tên"
+                      placeholder={t("system.resgiter.first-name")}
                       required
                     />
                   </div>
@@ -145,7 +147,7 @@ const Register = ({ onLogin, onRegister, authController }) => {
                       htmlFor="phoneNumber"
                       className="form-label fs-6 opacity-75"
                     >
-                      Số điện thoại *
+                      {t("system.resgiter.phone")} *
                     </label>
                     <input
                       type="text"
@@ -153,7 +155,7 @@ const Register = ({ onLogin, onRegister, authController }) => {
                       id="phoneNumber"
                       value={phoneNumber}
                       onChange={(e) => setPhoneNumber(e.target.value)}
-                      placeholder="Số điện thoại"
+                      placeholder={t("system.resgiter.phone")}
                       required
                     />
                   </div>
@@ -179,14 +181,14 @@ const Register = ({ onLogin, onRegister, authController }) => {
                       htmlFor="password"
                       className="form-label fs-6 opacity-75"
                     >
-                      Mật khẩu *
+                      {t("system.resgiter.password")} *
                     </label>
                     <input
                       type="password"
                       className="form-control input-group-lg"
                       id="password"
                       value={password}
-                      placeholder="Mật khẩu"
+                      placeholder={t("system.resgiter.password")}
                       onChange={(e) => setPassword(e.target.value)}
                       required
                     />
@@ -196,7 +198,7 @@ const Register = ({ onLogin, onRegister, authController }) => {
                       htmlFor="confirmPassword"
                       className="form-label fs-6 opacity-75"
                     >
-                      Xác nhận mật khẩu *
+                      {t("system.resgiter.confirm-password")} *
                     </label>
                     <input
                       type="password"
@@ -204,7 +206,7 @@ const Register = ({ onLogin, onRegister, authController }) => {
                       id="confirmPassword"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="Xác nhận mật khẩu"
+                      placeholder={t("system.resgiter.confirm-password")}
                       required
                     />
                   </div>
@@ -213,7 +215,7 @@ const Register = ({ onLogin, onRegister, authController }) => {
                       htmlFor="address"
                       className="form-label fs-6 opacity-75"
                     >
-                      Địa chỉ
+                      {t("system.resgiter.address")}
                     </label>
                     <input
                       type="text"
@@ -221,7 +223,7 @@ const Register = ({ onLogin, onRegister, authController }) => {
                       id="address"
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
-                      placeholder="Địa chỉ"
+                      placeholder={t("system.resgiter.address")}
                       required
                     />
                   </div>
@@ -231,13 +233,13 @@ const Register = ({ onLogin, onRegister, authController }) => {
                       className="btn btn-lg w-50 bg-success text-white fw-semibold fs-6 rounded-pill"
                       disabled={loading}
                     >
-                      {loading ? "Đang xử lý..." : "Đăng Ký"}
+                      {loading ? "Đang xử lý..." : t("system.resgiter.title")}
                     </button>
                   </div>
                 </form>
 
                 <div className="text-center mt-3 fs-6 text-danger fw-light">
-                  Hoặc đăng nhập bằng
+                  {t("system.or-sign-with")}
                 </div>
                 <div className="mt-2 mb-4 d-flex justify-content-center gap-3">
                   <button className="btn btn-primary social-btn">

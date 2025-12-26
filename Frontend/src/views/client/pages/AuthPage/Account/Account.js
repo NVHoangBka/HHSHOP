@@ -4,8 +4,10 @@ import AccountInfo from "./AccountInfo";
 import OrderList from "./OrderList";
 import ChangePassword from "./ChangePassword";
 import AddressList from "./AddressList";
+import { useTranslation } from "react-i18next";
 
 const Account = ({ onLogin, authController, orderController }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -43,14 +45,14 @@ const Account = ({ onLogin, authController, orderController }) => {
         window.location.href = "/account/login";
       }, 1000);
     } catch (err) {
-      setError("Đăng xuất thất bại");
+      setError(t("system.logout.error"));
     } finally {
       setLogoutLoading(false);
     }
   };
 
   if (loading) {
-    return <div className="text-center">Đang tải...</div>;
+    return <div className="text-center">{t("system.loading")}</div>;
   }
 
   if (!currentUser) {
@@ -61,20 +63,22 @@ const Account = ({ onLogin, authController, orderController }) => {
     <div className="bg-success-subtle">
       <div className="breadcrumbs">
         <div className="container">
-          <ul className="breadcrumb py-3 d-flex flex-wrap align-items-center">
+          <ul className="breadcrumb py-xl-3 d-flex flex-wrap align-items-center">
             <li className="home">
               <Link
                 className="link hover"
                 to="/"
-                title="Trang chủ"
+                title={t("header.home")}
                 style={{ textDecoration: "none", color: "inherit" }}
               >
-                Trang chủ
+                {t("header.home")}
               </Link>
-              <span className="mx-1 md:mx-2 inline-block">&nbsp;/&nbsp;</span>
+              <span className="mx-xl-1 inline-block">&nbsp;/&nbsp;</span>
             </li>
             <li>
-              <span className="text-secondary">Trang khách hàng</span>
+              <span className="text-secondary">
+                {t("account.page-customer")}
+              </span>
             </li>
           </ul>
         </div>
@@ -82,15 +86,15 @@ const Account = ({ onLogin, authController, orderController }) => {
       <section className="section section-main-account">
         <div className="container">
           <div>
-            <div className="row pb-5">
+            <div className="row pb-xl-5">
               {/* Sidebar */}
-              <div className="col-2 border-end border-secondary-subtle">
+              <div className="col-xl-2 border-end border-secondary-subtle">
                 <div className="block-account">
                   <h5
                     className="title-account font-semibold fs-4"
                     style={{ color: "var(--color-secondary)" }}
                   >
-                    Trang tài khoản
+                    {t("account.page")}
                   </h5>
                   <p>
                     Xin chào,{" "}
@@ -109,7 +113,7 @@ const Account = ({ onLogin, authController, orderController }) => {
                         }
                         to="/account/info"
                       >
-                        Thông tin tài khoản
+                        {t("account.info.title")}
                       </NavLink>
                     </li>
                     <li className="mt-2">
@@ -121,7 +125,7 @@ const Account = ({ onLogin, authController, orderController }) => {
                         }
                         to="/account/orders"
                       >
-                        Đơn hàng của bạn
+                        {t("account.orders.title")}
                       </NavLink>
                     </li>
                     <li className="mt-2">
@@ -133,7 +137,7 @@ const Account = ({ onLogin, authController, orderController }) => {
                         }
                         to="/account/changepassword"
                       >
-                        Đổi mật khẩu
+                        {t("account.change-password.title")}
                       </NavLink>
                     </li>
                     <li className="mt-2">
@@ -145,7 +149,7 @@ const Account = ({ onLogin, authController, orderController }) => {
                         }
                         to="/account/address"
                       >
-                        Sổ địa chỉ ({addressCount})
+                        {t("account.address.list")} ({addressCount})
                       </NavLink>
                     </li>
                     <li className="mt-2">
@@ -158,42 +162,46 @@ const Account = ({ onLogin, authController, orderController }) => {
                           padding: 0,
                         }}
                       >
-                        Đăng xuất
+                        {t("system.logout.title")}
                       </button>
                     </li>
                   </ul>
                 </div>
               </div>
-              <div className="col-9 bg-white rounded-4 px-3 py-4 mb-6 ms-3">
-                {error}
-                <Routes>
-                  <Route
-                    path="info"
-                    element={<AccountInfo currentUser={currentUser} />}
-                  />
-                  <Route
-                    path="orders"
-                    element={
-                      <OrderList
-                        authController={authController}
-                        orderController={orderController}
-                      />
-                    }
-                  />
-                  <Route
-                    path="changepassword"
-                    element={<ChangePassword authController={authController} />}
-                  />
-                  <Route
-                    path="address"
-                    element={<AddressList authController={authController} />}
-                  />
-                  {/* Default tab */}
-                  <Route
-                    index
-                    element={<AccountInfo currentUser={currentUser} />}
-                  />
-                </Routes>
+              <div className="col-xl-10 mb-xl-6">
+                <div className="bg-white px-xl-3 py-xl-4 rounded-4">
+                  {error}
+                  <Routes>
+                    <Route
+                      path="info"
+                      element={<AccountInfo currentUser={currentUser} />}
+                    />
+                    <Route
+                      path="orders"
+                      element={
+                        <OrderList
+                          authController={authController}
+                          orderController={orderController}
+                        />
+                      }
+                    />
+                    <Route
+                      path="changepassword"
+                      element={
+                        <ChangePassword authController={authController} />
+                      }
+                    />
+                    <Route
+                      path="address"
+                      element={<AddressList authController={authController} />}
+                    />
+                    {/* Default tab */}
+                    <Route
+                      index
+                      element={<AccountInfo currentUser={currentUser} />}
+                    />
+                  </Routes>
+                </div>
               </div>
             </div>
           </div>

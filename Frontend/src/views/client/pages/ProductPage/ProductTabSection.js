@@ -2,34 +2,52 @@ import React, { useEffect, useState } from "react";
 import ProductItem from "./ProductItem";
 import { Link } from "react-router-dom";
 
-const ProductTabSection = ({ path, title, addToCart, productController }) => {
+const ProductTabSection = ({
+  path,
+  value,
+  title,
+  addToCart,
+  productController,
+  titleController,
+}) => {
   // Lấy tất cả titles từ TitleModel
   // const titles = TitleModel.getTitlesByPath(path);
-  const tabSets = {
-    "Chăm sóc gia đình": [
-      { label: "Nước giặt quần áo", value: "nuoc-giat" },
-      { label: "Nước lau nhà", value: "nuoc-lau-nha" },
-      { label: "Xịt phòng, sáp thơm", value: "sap-thom" },
-    ],
-    "Sản phẩm được quan tâm": [
-      { label: "Hot nhất hè này", value: "hot" },
-      { label: "Săn deal sốc", value: "san-deal" },
-      { label: "Đồng giá 9k", value: "dong-gia-9k" },
-    ],
-    "Thực phẩm tươi sống": [
-      { label: "Rau củ", value: "rau-cu" },
-      { label: "Hoa quả", value: "hoa-quả" },
-    ],
-    "Văn phòng phẩm": [
-      { label: "Bút viết", value: "but-viet" },
-      { label: "Giấy và sổ tay", value: "giay-so-tay" },
-      { label: "Dụng cụ vẽ", value: "dung-cu-ve" },
-    ],
-  };
-
-  const tabs = tabSets[title] || [];
-  const [activeTab, setActiveTab] = useState(tabs[0]?.value || null);
+  // const tabSets = {
+  //   "Chăm sóc gia đình": [
+  //     { label: "Nước giặt quần áo", value: "nuoc-giat" },
+  //     { label: "Nước lau nhà", value: "nuoc-lau-nha" },
+  //     { label: "Xịt phòng, sáp thơm", value: "sap-thom" },
+  //   ],
+  //   "Sản phẩm được quan tâm": [
+  //     { label: "Hot nhất hè này", value: "hot" },
+  //     { label: "Săn deal sốc", value: "san-deal" },
+  //     { label: "Đồng giá 9k", value: "dong-gia-9k" },
+  //   ],
+  //   "Thực phẩm tươi sống": [
+  //     { label: "Rau củ", value: "rau-cu" },
+  //     { label: "Hoa quả", value: "hoa-quả" },
+  //   ],
+  //   "Văn phòng phẩm": [
+  //     { label: "Bút viết", value: "but-viet" },
+  //     { label: "Giấy và sổ tay", value: "giay-so-tay" },
+  //     { label: "Dụng cụ vẽ", value: "dung-cu-ve" },
+  //   ],
+  // };
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [titles, setTitles] = useState([]);
+
+  useEffect(() => {
+    const fetchTitle = async () => {
+      const titles = await titleController.getAllTitles();
+      setTitles(titles);
+    };
+    fetchTitle();
+  }, [titleController]);
+
+  const tabs = titles.filter((tab) => tab.value === value);
+  const subTiles = tabs.map((tab) => tab.subTiles);
+
+  const [activeTab, setActiveTab] = useState();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -56,6 +74,7 @@ const ProductTabSection = ({ path, title, addToCart, productController }) => {
     fetchProducts();
   }, [activeTab, productController]);
 
+  console.log(activeTab);
   return (
     <div className="section-product-tabs mt-5">
       <div className="container">
@@ -70,7 +89,7 @@ const ProductTabSection = ({ path, title, addToCart, productController }) => {
           </h2>
         </div>
         <div className="heading-tabs mx-5 mt-4 row justify-content-center">
-          {tabs.map((tab) => (
+          {/* {tabs.map((tab) => (
             <button
               key={tab.value}
               className={`btn product-tab col-2 col-lg-3 mx-3 ${
@@ -80,7 +99,7 @@ const ProductTabSection = ({ path, title, addToCart, productController }) => {
             >
               {tab.label}
             </button>
-          ))}
+          ))} */}
         </div>
         <div className="tab-content mt-4">
           <div className="product-list row bg-white py-3 justify-content-center m-0">

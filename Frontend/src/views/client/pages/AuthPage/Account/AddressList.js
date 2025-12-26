@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import countries from "i18n-iso-countries";
 import vietnamData from "../../../../../data/vietnam.json";
+import { useTranslation } from "react-i18next";
 
 // Đăng ký tiếng Việt
 countries.registerLocale(require("i18n-iso-countries/langs/vi.json"));
 
 const AddressList = ({ authController }) => {
+  const { t } = useTranslation();
   const modalRef = useRef(null);
   const [addresses, setAddresses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -162,16 +164,17 @@ const AddressList = ({ authController }) => {
   };
 
   return (
-    <div className=" rounded-lg px-3 mb-6">
+    <div className=" rounded-lg px-xl-3 mb-xl-6">
       <div className="d-flex justify-content-between align-items-center flex-wrap pb-4 border-bottom">
-        <h1 className="fs-4 fw-semibold mb-2">Địa chỉ của bạn</h1>
+        <h1 className="fs-4 fw-semibold mb-2"> {t("account.address.title")}</h1>
         <button
           type="button"
           className="fw-semibold d-flex align-items-center rounded-pill btn bg-success text-white btn-more px-4 py-2"
           data-bs-toggle="modal"
           data-bs-target="#addressModal"
         >
-          <i className="bi bi-plus-lg me-1"></i>Thêm địa chỉ
+          <i className="bi bi-plus-lg me-xl-1"></i>
+          {t("account.address.add")}
         </button>
       </div>
       <div
@@ -183,8 +186,9 @@ const AddressList = ({ authController }) => {
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header justify-content-between">
-              <h2 className="title_pop fs-6 fw-bold text-uppercase mb-0">
-                {isEdit ? "Sửa" : "Thêm"} địa chỉ
+              <h2 className="title_pop fs-6 fw-bold text-uppercase mb-xl-0">
+                {isEdit ? t("account.address.edit") : t("account.address.add")}{" "}
+                {t("account.address.address")}
               </h2>
               <div className="btn" data-bs-dismiss="modal">
                 <i className="bi bi-x-lg"></i>
@@ -196,9 +200,9 @@ const AddressList = ({ authController }) => {
                 <input name="utf8" type="hidden" value="true" />
                 <div className="pop_bottom">
                   <div className="form_address">
-                    <div className="field mb-3">
+                    <div className="field mb-xl-3">
                       <fieldset className="form-group">
-                        <label>Họ tên</label>
+                        <label>{t("account.address.full-name")}</label>
                         <input
                           required
                           type="text"
@@ -209,9 +213,9 @@ const AddressList = ({ authController }) => {
                       </fieldset>
                       <p className="error-msg"></p>
                     </div>
-                    <div className="field mb-3">
+                    <div className="field mb-xl-3">
                       <fieldset className="form-group">
-                        <label>Số điện thoại</label>
+                        <label>{t("account.address.phone")}</label>
                         <input
                           type="number"
                           className="form-control"
@@ -224,9 +228,9 @@ const AddressList = ({ authController }) => {
                         />
                       </fieldset>
                     </div>
-                    <div className="field mb-3">
+                    <div className="field mb-xl-3">
                       <fieldset className="form-group">
-                        <label>Địa chỉ</label>
+                        <label>{t("account.address.address-line")}</label>
                         <input
                           type="text"
                           className="form-control"
@@ -236,15 +240,17 @@ const AddressList = ({ authController }) => {
                         />
                       </fieldset>
                     </div>
-                    <div className="group-country row w-100 mb-3">
+                    <div className="group-country row w-100 mb-xl-3">
                       <fieldset className="form-group select-field col">
-                        <label>Tỉnh thành</label>
+                        <label>{t("account.address.city")}</label>
                         <select
                           className="form-control"
                           value={city}
                           onChange={(e) => setCity(e.target.value)}
                         >
-                          <option>Chọn Tỉnh/Thành phố</option>
+                          <option value="">
+                            {t("account.address.select-city")}
+                          </option>
                           {citys.map((p) => (
                             <option key={p.id} value={p.name}>
                               {p.name}
@@ -253,14 +259,16 @@ const AddressList = ({ authController }) => {
                         </select>
                       </fieldset>
                       <fieldset className="form-group select-field col">
-                        <label>Quận/Huyện</label>
+                        <label>{t("account.address.district")}</label>
                         <select
                           className="form-control"
                           value={district}
                           onChange={(e) => setDistrict(e.target.value)}
                           // disabled={isEdit ? false : !province}
                         >
-                          <option value="">Chọn Quận/Huyện</option>
+                          <option value="">
+                            {t("account.address.select-district")}
+                          </option>
                           {districts.map((d) => (
                             <option key={d.id} value={d.name}>
                               {d.name}
@@ -269,14 +277,16 @@ const AddressList = ({ authController }) => {
                         </select>
                       </fieldset>
                       <fieldset className="form-group select-field col">
-                        <label>Phường xã</label>
+                        <label>{t("account.address.ward")}</label>
                         <select
                           className="form-control"
                           value={ward}
                           onChange={(e) => setWard(e.target.value)}
                           // disabled={isEdit ? false : !district}
                         >
-                          <option value="">Chọn Phường/Xã</option>
+                          <option value="">
+                            {t("account.address.select-ward")}
+                          </option>
                           {wards.map((w) => (
                             <option key={w.id} value={w.name}>
                               {w.name}
@@ -294,7 +304,7 @@ const AddressList = ({ authController }) => {
                           onChange={(e) => setIsDefault(e.target.checked)}
                         />
                         <label className="form-check-label">
-                          Đặt làm mặc định
+                          {t("account.address.set-default")}
                         </label>
                       </div>
                     </div>
@@ -304,19 +314,19 @@ const AddressList = ({ authController }) => {
             </div>
             <div className="modal-footer">
               <button
-                className="btn btn-secondary px-4 btn-outline article-readmore"
+                className="btn btn-secondary px-xl-4 btn-outline article-readmore"
                 data-bs-dismiss="modal"
                 type="button"
               >
-                <span>Hủy</span>
+                <span>{t("btn.cancel")}</span>
               </button>
               <button
-                className="btn btn-success px-4 text-white font-semibold btn-submit"
+                className="btn btn-success px-xl-4 text-white font-semibold btn-submit"
                 type="submit"
                 onClick={handleSubmit}
                 data-bs-dismiss="modal"
               >
-                <span>Lưu</span>
+                <span>{t("btn.save")}</span>
               </button>
             </div>
           </div>
@@ -324,43 +334,42 @@ const AddressList = ({ authController }) => {
       </div>
 
       {/* Danh sách */}
-      <div className="row total_address mt-3 fs-7">
+      <div className="row total_address mt-xl-3 fs-7">
         <div
           id="view_address"
           className="customer_address col-xs-12 col-lg-12 col-md-12 col-xl-12"
         >
           {loading ? (
-            <p>Đang tải...</p>
+            <p>{t("common.loading")}</p>
           ) : addresses.length === 0 ? (
-            <div className="fs-7 text-center">
-              Chưa có địa chỉ nào. Vui lòng thêm địa chỉ.
-            </div>
+            <div className="fs-7 text-center">{t("account.address.empty")}</div>
           ) : (
             addresses.map((address, index) => (
               <div
                 key={index}
-                className="address_info d-flex justify-content-between py-3 border-bottom"
+                className="address_info d-flex justify-content-between py-xl-3 border-bottom"
               >
                 <div className="address-group">
                   <div className="address form-signup">
                     <p>
-                      <strong>Họ tên: </strong> {address.recipientName}
+                      <strong>{t("account.address.full-name")}:</strong>{" "}
+                      {address.recipientName}
                     </p>
                     <p>
-                      <strong>Địa chỉ: </strong>
+                      <strong>{t("account.address.address")}:</strong>
                       {address.ward && `${address.ward}, `}
                       {address.district && `${address.district}, `}
                       {address.city}
                     </p>
-
                     <p>
-                      <strong>Số điện thoại:</strong> {address.phoneNumber}
+                      <strong>{t("account.address.phone")}:</strong>{" "}
+                      {address.phoneNumber}
                     </p>
                   </div>
                   <div>
                     {address.isDefault ? (
-                      <span className="border py-1 px-2 text-danger border-danger">
-                        Mặc định
+                      <span className="border py-xl-1 px-xl-2 text-danger border-danger">
+                        {t("account.address.default")}
                       </span>
                     ) : (
                       ""
@@ -370,20 +379,20 @@ const AddressList = ({ authController }) => {
                 <div id="tool_address" className="btn-address">
                   <div className="btn-row d-flex">
                     <button
-                      className="btn-edit-addr btn btn-edit p-1 fw-semibold text-success border-0"
+                      className="btn-edit-addr btn btn-edit p-xl-1 fw-semibold text-success border-0"
                       type="button"
                       data-bs-toggle="modal"
                       data-bs-target="#addressModal"
                       onClick={() => openEdit(address)}
                     >
-                      <span>Cập nhật</span>
+                      <span>{t("btn.update")}</span>
                     </button>
                     <button
                       className="hidden btn btn-dark-address btn-edit-addr btn-delete text-danger"
                       type="button"
                       onClick={() => handleDelete(address._id)}
                     >
-                      <span>Xóa</span>
+                      <span>{t("btn.delete")}</span>
                     </button>
                   </div>
                 </div>

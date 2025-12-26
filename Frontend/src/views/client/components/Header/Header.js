@@ -97,20 +97,20 @@ const Header = ({
         <div className="container ">
           <div className="d-flex justify-content-between align-items-center row py-xl-1">
             {/* Left: Menu */}
-            <div className="header-top-left d-flex align-items-center col-lg-3">
+            <div className="header-top-left d-flex align-items-center col-xl-3">
               <button
                 className="btn btn-outline-secondary border rounded-circle"
                 onClick={toggleMenu}
               >
                 <i className="bi bi-list fs-5"></i>
               </button>
-              <span className="header-top-left-text ms-1 	d-none d-xl-block">
+              <span className="header-top-left-text ms-xl-1 	d-none d-xl-block">
                 {t("header.product_category")}
               </span>
             </div>
             {/* Center: Logo */}
             <div
-              className="header-top-center text-center col-lg-4 "
+              className="header-top-center text-center col-xl-4 "
               onClick={goHome}
               style={{ background: "transparent", cursor: "pointer" }}
             >
@@ -122,39 +122,39 @@ const Header = ({
             </div>
 
             {/* Right: Search, Account, Cart */}
-            <div className="d-flex align-items-center justify-content-end col-lg-5">
+            <div className="d-flex align-items-center justify-content-end col-xl-5">
               <div className="row justify-content-end align-items-center">
-                <div className="col-3">
+                <div className="col-xl-3">
                   <Dropdown>
                     <Dropdown.Toggle
                       variant="outline-secondary"
                       id="language-dropdown"
-                      className="btn btn-outline-secondary d-flex align-items-center justify-content-center rounded border "
+                      className="btn btn-outline-secondary d-flex align-items-center justify-content-center rounded border"
                       title="Chọn ngôn ngữ"
                     >
                       <img
                         src={`/img/flags/${currentLang}.png`}
                         alt={currentLang.toUpperCase()}
-                        className="me-1 rounded col-10"
+                        className="me-xl-1 rounded col-xl-10"
                       />
                     </Dropdown.Toggle>
 
                     {/* Menu dropdown - dùng class "show" để hiển thị */}
-                    <Dropdown.Menu className="mt-1 dropdown-menu-end">
+                    <Dropdown.Menu className="mt-xl-1 dropdown-menu-end">
                       {languages.map((language, index) => (
                         <Dropdown.Item
                           key={index}
                           className={
                             currentLang === language
-                              ? "py-2 bg-secondary-subtle"
-                              : "py-2"
+                              ? "py-xl-2 bg-secondary-subtle"
+                              : "py-xl-2"
                           }
                           onClick={() => {
                             changeLanguage(language);
                           }}
                         >
                           <img
-                            className="me-2"
+                            className="me-xl-2"
                             src={`/img/flags/${language}.png`}
                             alt={language.toUpperCase()}
                             style={{
@@ -174,7 +174,7 @@ const Header = ({
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>
-                <div className="col-2">
+                <div className="col-xl-2">
                   <button
                     className="btn btn-outline-secondary border rounded-circle"
                     onClick={toggleSearch}
@@ -182,15 +182,15 @@ const Header = ({
                     <i className="bi bi-search fs-5"></i>
                   </button>
                 </div>
-                <div className="col-2">
+                <div className="col-xl-2">
                   <button
-                    className="btn btn-outline-secondary border rounded-circle  d-none d-md-block"
+                    className="btn btn-outline-secondary border rounded-circle d-none d-md-block"
                     onClick={goToAccount}
                   >
                     <i className="bi bi-person fs-5"></i>
                   </button>
                 </div>
-                <div className="col-4">
+                <div className="col-xl-4">
                   <button
                     className="btn btn-outline-secondary border position-relative d-flex align-items-center"
                     onClick={toggleCart}
@@ -216,7 +216,7 @@ const Header = ({
       {/* Header Bottom - Navigation */}
       <div className="header-bottom bg-success d-none d-xl-block">
         <div className="container">
-          <ul className="navbar justify-content-center list-unstyled row ms-5 me-5 p-3 text-white mb-0">
+          <ul className="navbar justify-content-center list-unstyled row ms-xl-5 me-xl-5 p-xl-3 text-white mb-xl-0">
             {[
               { name: t("header.introduce"), path: "/introduce" },
               { name: t("header.flash_sale"), path: "/flash-sale" },
@@ -225,7 +225,7 @@ const Header = ({
               { name: t("header.contact"), path: "/contact" },
               { name: t("header.instruct"), path: "/instruct" },
             ].map((item, index) => (
-              <li key={index} className="nav-item hover col-2 text-center">
+              <li key={index} className="nav-item hover col-xl-2 text-center">
                 <Link to={item.path} className="nav-link fw-semibold">
                   {item.name}
                 </Link>
@@ -243,7 +243,24 @@ const Header = ({
       >
         <Offcanvas.Header closeButton>
           <Offcanvas.Title>
-            {currentUser ? `Xin chào, ${currentUser.firstName}` : "Menu"}
+            <Link
+              to={"/account/login"}
+              className="header-icon-group text-reset d-flex align-items-center text-decoration-none py-xl-1 px-xl-2 menu-hover"
+            >
+              <div className="header-icon align-content-center me-xl-2">
+                <i className="bi bi-person fs-3 border px-1"></i>
+              </div>
+              {currentUser ? (
+                <div>
+                  {`Xin chào, ${currentUser.firstName} ${currentUser.lastName}`}
+                </div>
+              ) : (
+                <div className="lh-sm">
+                  <p className="mb-xl-1 fs-6">{t("system.account")}</p>
+                  <span className="fw-bold fs-6">{t("system.login")}</span>
+                </div>
+              )}
+            </Link>
           </Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body className="p-xl-0">

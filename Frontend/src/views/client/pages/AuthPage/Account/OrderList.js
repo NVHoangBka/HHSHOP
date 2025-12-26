@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 const OrderList = ({ orderController }) => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const { t } = useTranslation();
 
   useEffect(() => {
     async function fetchOrders() {
@@ -27,32 +29,32 @@ const OrderList = ({ orderController }) => {
   }, [orderController]);
 
   if (loading) {
-    return <div className="text-center">Đang tải đơn hàng...</div>;
+    return <div className="text-center">{t("account.orders.loading")}</div>;
   }
 
   return (
-    <div className="px-2 pt-1">
-      <h1 className="fs-3 fw-semibold mb-3">Đơn hàng của bạn</h1>
+    <div className="px-xl-2 pt-xl-1">
+      <h1 className="fs-3 fw-semibold mb-3">{t("account.orders.title")}</h1>
       {error && <div className="alert alert-danger">{error}</div>}
       <div className="table-responsive">
         <table className="table table-bordered">
           <thead>
             <tr className="text-center border-bottom align-middle">
-              <th>Mã đơn hàng</th>
-              <th>Ngày</th>
-              <th>Tên</th>
-              <th>SDT</th>
-              <th>Địa chỉ</th>
-              <th>Giá trị đơn hàng</th>
-              <th>Hình thức thanh toán</th>
-              <th>TT thanh toán</th>
-              <th>TT đơn hàng</th>
+              <th>{t("account.orders.order-id")}</th>
+              <th>{t("account.orders.date")}</th>
+              <th>{t("account.orders.name")}</th>
+              <th>{t("account.orders.phone")}</th>
+              <th>{t("account.orders.address")}</th>
+              <th>{t("account.orders.order-total")}</th>
+              <th>{t("account.orders.payment-method")}</th>
+              <th>{t("account.orders.payment-status")}</th>
+              <th>{t("account.orders.order-status")}</th>
             </tr>
           </thead>
           <tbody>
             {orders.length === 0 ? (
               <tr className="text-center">
-                <td colSpan={9}>Chưa đơn hàng nào.</td>
+                <td colSpan={9}>{t("account.orders.no-order")}</td>
               </tr>
             ) : (
               orders.map((order) => (
@@ -72,31 +74,25 @@ const OrderList = ({ orderController }) => {
                         `${order.shippingAddress.addressList}`
                       : "Không có địa chỉ"}
                   </td>
-                  <td>{order.totalAmount.toLocaleString("vi-VN")} VNĐ</td>
+                  <td>{order.totalAmount.toLocaleString("vi-VN")} đ</td>
                   <td>
                     {{
                       COD: "COD",
-                      BANK: "Chuyển Khoản",
+                      BANK: "BANK",
                     }[order.paymentMethod] || "Không xác định"}
                   </td>
                   <td>
-                    {{
-                      pending: "Đang chờ thanh toán",
-                      paid: "Đã thanh toán",
-                      failed: "Thanh toán thất bại",
-                      canceled: "Đã hoàn tiền",
-                    }[order.paymentStatus] || "Không xác định"}
+                    {t(
+                      `account.orders.payment-status-values.${order.paymentStatus}`,
+                      {
+                        defaultValue: t("account.orders.unknown"),
+                      }
+                    )}
                   </td>
                   <td>
-                    {{
-                      pending: "Chờ xác nhận",
-                      confirmed: "Đã xác nhận",
-                      preparing: "Đang đóng gói",
-                      shipped: "Đã giao cho bên vận chuyển",
-                      delivered: "Đã giao thành công",
-                      canceled: "Đã huỷ",
-                      returned: "Khách trả hàng",
-                    }[order.status] || "Không xác định"}
+                    {t(`account.orders.order-status-values.${order.status}`, {
+                      defaultValue: t("account.orders.unknown"),
+                    })}
                   </td>
                 </tr>
               ))

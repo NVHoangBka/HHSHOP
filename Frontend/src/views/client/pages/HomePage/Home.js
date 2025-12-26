@@ -3,6 +3,7 @@ import Slider from "../../components/Slider";
 import ProductItem from "../ProductPage/ProductItem";
 import ProductTabSection from "../ProductPage/ProductTabSection";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const Home = ({
   addToCart,
@@ -10,6 +11,7 @@ const Home = ({
   titleController,
   bannerController,
 }) => {
+  const { t } = useTranslation();
   const [flashSaleProducts, setFlashSaleProducts] = useState([]);
   const [bannerHome, setBannerHome] = useState([]);
   const [titlesHome, setTitlesHome] = useState([]);
@@ -53,7 +55,7 @@ const Home = ({
           </div>
           <div className="section-flashsale mt-5 bg-danger rounded-4 pb-3">
             <h2 className="text-white ps-3 py-4 m-0">
-              Chớp thời cơ. Giá như mơ
+              {t("home.flash-sale-title")}
             </h2>
             <div className="product-flashsale-list row px-1 m-0 justify-content-center">
               {flashSaleProducts.length > 0 ? (
@@ -68,7 +70,7 @@ const Home = ({
                 ))
               ) : (
                 <p className="text-center text-white">
-                  Không có sản phẩm flash sale.
+                  {t("home.no-flash-sale")}
                 </p>
               )}
             </div>
@@ -101,27 +103,35 @@ const Home = ({
         </div>
         <ProductTabSection
           path="cham-soc-gia-dinh"
-          title="Chăm sóc gia đình"
+          title={t("home.tabs.family-care")}
+          value="family-care"
           addToCart={addToCart}
           productController={productController}
+          titleController={titleController}
         />
         <ProductTabSection
           path=""
-          title="Sản phẩm được quan tâm"
+          title={t("home.tabs.trending")}
+          value=""
           addToCart={addToCart}
           productController={productController}
+          titleController={titleController}
         />
         <ProductTabSection
           path="thuc-pham-tuoi-song"
-          title="Thực phẩm tươi sống"
+          title={t("home.tabs.fresh-food")}
+          value="fresh-food"
           addToCart={addToCart}
           productController={productController}
+          titleController={titleController}
         />
         <ProductTabSection
           path="van-phong-pham"
-          title="Văn phòng phẩm"
+          title={t("home.tabs.stationery")}
+          value="stationery"
           addToCart={addToCart}
           productController={productController}
+          titleController={titleController}
         />
       </div>
     </>
