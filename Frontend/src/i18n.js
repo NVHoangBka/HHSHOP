@@ -10,7 +10,7 @@ i18n
   .init({
     fallbackLng: "vi",
     supportedLngs: ["vi", "en"],
-    debug: true,
+    debug: false,
     interpolation: {
       escapeValue: false, // React đã bảo vệ XSS
     },

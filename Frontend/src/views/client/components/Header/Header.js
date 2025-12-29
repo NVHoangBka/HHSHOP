@@ -256,8 +256,10 @@ const Header = ({
                 </div>
               ) : (
                 <div className="lh-sm">
-                  <p className="mb-xl-1 fs-6">{t("system.account")}</p>
-                  <span className="fw-bold fs-6">{t("system.login")}</span>
+                  <p className="mb-xl-1 fs-6">{t("account.title")}</p>
+                  <span className="fw-bold fs-6">
+                    {t("system.login.title")}
+                  </span>
                 </div>
               )}
             </Link>

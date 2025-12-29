@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 
 const Cart = ({
@@ -9,6 +10,7 @@ const Cart = ({
   onCartChange,
 }) => {
   const navigate = useNavigate();
+  const [t, i18n] = useTranslation;
   const [cartItems, setCartItems] = useState(propCartItems || []);
   const [total, setTotal] = useState(cartController.getTotalPrice());
 
@@ -58,7 +60,7 @@ const Cart = ({
     <div className="bg-success-subtle">
       <div className="breadcrumbs">
         <div className="container">
-          <ul className="breadcrumb py-3 d-flex flex-wrap align-items-center">
+          <ul className="breadcrumb py-xl-3 d-flex flex-wrap align-items-center">
             <li className="home">
               <Link
                 className="link hover"
@@ -66,12 +68,12 @@ const Cart = ({
                 title="Trang chủ"
                 style={{ textDecoration: "none", color: "inherit" }}
               >
-                Trang chủ
+                {t("header.home")}
               </Link>
               <span className="mx-1 md:mx-2 inline-block">&nbsp;/&nbsp;</span>
             </li>
             <li>
-              <span className="text-secondary">Giỏ hàng</span>
+              <span className="text-secondary">{t("cart.title")}</span>
             </li>
           </ul>
         </div>
@@ -82,7 +84,7 @@ const Cart = ({
             <div className="cart-left col-8">
               <div className="cart-header d-flex justify-content-between align-items-center">
                 <h2 className="card-title text-black pb-3 pt-4 px-1 fw-bold">
-                  Giỏ hàng
+                  {t("cart.title")}
                 </h2>
               </div>
               <div className="card-body">
@@ -90,16 +92,16 @@ const Cart = ({
                   <table class="table align-middle">
                     <thead>
                       <tr className="text-center">
-                        <th style={{ width: "50%" }}>Sản phẩm</th>
-                        <th style={{ width: "15%" }}>Đơn giá</th>
-                        <th style={{ width: "15%" }}>Số Lượng</th>
-                        <th style={{ width: "15%" }}>Tạm tính</th>
+                        <th style={{ width: "50%" }}>{t("cart.product")}</th>
+                        <th style={{ width: "15%" }}>{t("cart.unit-price")}</th>
+                        <th style={{ width: "15%" }}>{t("cart.quantity")}</th>
+                        <th style={{ width: "15%" }}>{t("cart.subtotal")}</th>
                         <th style={{ width: "10%" }}></th>
                       </tr>
                     </thead>
                     {cartItems.length === 0 ? (
                       <tbody>
-                        <tr>Chưa có sản phẩm nào</tr>
+                        <tr>{t("cart.no-cart")}</tr>
                       </tbody>
                     ) : (
                       <tbody>
@@ -233,7 +235,7 @@ const Cart = ({
                             <div className="d-flex align-items-center mb-3">
                               <i className="bi bi-arrow-left fs-4 me-2"></i>
                               <h3 className="fw-bold m-0">
-                                Xuất hoá đơn công ty
+                                {t("cart.issue-company-invoices")}
                               </h3>
                             </div>
                           </div>
@@ -250,50 +252,50 @@ const Cart = ({
                                 type="checkbox"
                               />
                               <div className="ms-2 text-sm ">
-                                <label>Xuất hóa đơn</label>
+                                <label>{t("cart.issue-invoices")}</label>
                               </div>
                             </div>
                             <div className="form-group mb-3">
                               <label className="label d-block mb-1">
-                                Tên công ty
+                                {t("cart.name-company")}
                               </label>
                               <input
                                 type="text"
                                 className="form-input w-100 p-2 rounded outline-none border"
                                 name=""
-                                placeholder="Tên công ty"
+                                placeholder={t("cart.name-company")}
                               />
                               <span className="error  text-error"></span>
                             </div>
                             <div className="form-group mb-3">
                               <label className="label d-block mb-1">
-                                Mã số thuế
+                                {t("cart.tax-code")}
                               </label>
                               <input
                                 type="number"
                                 className="form-input w-100 p-2 rounded outline-none border"
-                                placeholder="Mã số thuế"
+                                placeholder={t("cart.tax-code")}
                               />
                               <span className="error text-error"></span>
                             </div>
                             <div className="form-group mb-3">
                               <label className="label d-block mb-1">
-                                Địa chỉ công ty
+                                {t("cart.address-company")}
                               </label>
                               <textarea
                                 className="form-textarea w-100 p-2 rounded outline-none border"
-                                placeholder="Địa chỉ công ty"
+                                placeholder={t("cart.address-company")}
                               ></textarea>
                               <span className="error  text-error"></span>
                             </div>
                             <div className="form-group mb-3">
                               <label className="label d-block mb-1">
-                                Email nhận hóa đơn
+                                {t("cart.email-invoices")}
                               </label>
                               <input
                                 type="email"
                                 className="form-input w-100 p-2 rounded outline-none border"
-                                placeholder="Email nhận hóa đơn"
+                                placeholder={t("cart.email-invoices")}
                               />
                               <span className="error  text-error"></span>
                             </div>
@@ -303,7 +305,7 @@ const Cart = ({
                               type="button"
                               className="btn btn-success d-flex justify-content-center align-items-center rounded-5 py-2 px-4 mx-3 mb-4 text-white fw-semibold w-100"
                             >
-                              Lưu thông tin
+                              {t("btn.save")}
                             </button>
                           </div>
                         </div>
@@ -313,7 +315,7 @@ const Cart = ({
                           <p className="d-flex align-items-center m-0 fs-6">
                             <i className="bi bi-receipt "></i>
                             <span className="line-clamp-1 ms-1">
-                              Xuất hóa đơn
+                              {t("cart.issue-invoices")}
                             </span>
                           </p>
                           <button
@@ -322,7 +324,7 @@ const Cart = ({
                             data-bs-target="#billInfoModal"
                             className="d-flex align-items-center border-0 bg-transparent text-secondary text-hover"
                           >
-                            Thay đổi
+                            {t("cart.change")}
                             <i className="bi bi-caret-right ms-2  d-flex align-items-center"></i>
                           </button>
                         </div>
@@ -340,7 +342,9 @@ const Cart = ({
                           <div className="me-5">
                             <div className="d-flex align-items-center mb-3">
                               <i className="bi bi-arrow-left fs-4 me-2"></i>
-                              <h3 className="fw-bold m-0">Hẹn giờ nhận hàng</h3>
+                              <h3 className="fw-bold m-0">
+                                {t("cart.schedule-receive-timer")}
+                              </h3>
                             </div>
                           </div>
                           <div className="ps-4">
@@ -351,12 +355,15 @@ const Cart = ({
                                 type="checkbox"
                               />
                               <div className="ms-2 text-sm ">
-                                <label>Hẹn giờ nhận hàng</label>
+                                <label>
+                                  {" "}
+                                  {t("cart.schedule-receive-timer")}
+                                </label>
                               </div>
                             </div>
                             <div className="form-group mb-3">
                               <label className="label d-block mb-1">
-                                Ngày nhận hàng
+                                {t("cart.receive-day")}
                               </label>
                               <input
                                 type="date"
@@ -366,13 +373,15 @@ const Cart = ({
                             </div>
                             <div className="form-group mb-3">
                               <label className="label d-block mb-1">
-                                Thời gian nhận hàng
+                                {t("cart.receive-time")}
                               </label>
                               <select
                                 class="form-select"
                                 aria-label="Default select example"
                               >
-                                <option selected>-- Chọn thời gian --</option>
+                                <option selected>
+                                  -- {t("cart.chose-time")} --
+                                </option>
                                 <option value={1}>08h00 - 11h00</option>
                                 <option value={2}>14h00 - 18h00</option>
                                 <option value={3}>19h00 - 22h00</option>
@@ -385,7 +394,7 @@ const Cart = ({
                               type="button"
                               className="btn btn-success d-flex justify-content-center align-items-center rounded-5 py-2 px-4 mx-3 mb-4 text-white fw-semibold w-100"
                             >
-                              Lưu thông tin
+                              {t("btn.save")}
                             </button>
                           </div>
                         </div>
@@ -398,7 +407,7 @@ const Cart = ({
                           <p className="d-flex align-items-center m-0 fs-6">
                             <i className="bi bi-clock"></i>
                             <span className="line-clamp-1 ms-1">
-                              Hẹn giờ nhận hàng
+                              {t("cart.schedule-receive-timer")}
                             </span>
                           </p>
                           <button
@@ -407,7 +416,7 @@ const Cart = ({
                             data-bs-toggle="modal"
                             data-bs-target="#timeModal"
                           >
-                            Thay đổi
+                            {t("cart.change")}
                             <i className="bi bi-caret-right ms-2  d-flex align-items-center"></i>
                           </button>
                         </div>
@@ -425,13 +434,16 @@ const Cart = ({
                           <div className="me-5">
                             <div className="d-flex align-items-center mb-3">
                               <i className="bi bi-arrow-left fs-4 me-2"></i>
-                              <h3 className="fw-bold m-0">Ghi chú đơn hàng</h3>
+                              <h3 className="fw-bold m-0">
+                                {" "}
+                                {t("cart.note-order")}
+                              </h3>
                             </div>
                           </div>
                           <div className="ps-4">
                             <div className="form-group mb-3">
                               <label className="label d-block mb-1">
-                                Ghi chú
+                                {t("cart.note")}
                               </label>
                               <textarea
                                 className="form-textarea w-100 p-2 rounded outline-none border "
@@ -446,7 +458,7 @@ const Cart = ({
                               type="button"
                               className="btn btn-success d-flex justify-content-center align-items-center rounded-5 py-2 px-4 mx-3 mb-4 text-white fw-semibold w-100"
                             >
-                              Lưu thông tin
+                              {t("btn.save")}
                             </button>
                           </div>
                         </div>
@@ -459,7 +471,7 @@ const Cart = ({
                           <p className="d-flex align-items-center m-0 fs-6">
                             <i className="bi bi-sticky"></i>
                             <span className="line-clamp-1 ms-1">
-                              Ghi chú đơn hàng
+                              {t("cart.note-order")}
                             </span>
                           </p>
                           <button
@@ -468,7 +480,7 @@ const Cart = ({
                             data-bs-toggle="modal"
                             data-bs-target="#noteModal"
                           >
-                            Thay đổi
+                            {t("cart.change")}
                             <i className="bi bi-caret-right ms-2  d-flex align-items-center"></i>
                           </button>
                         </div>
@@ -483,14 +495,14 @@ const Cart = ({
                           <p className="d-flex align-items-center m-0 fs-6">
                             <i className="bi bi-ticket-perforated"></i>
                             <span className="line-clamp-1 ms-1">
-                              Mã giảm giá
+                              {t("cart.promo-code")}
                             </span>
                           </p>
                           <button
                             type="button"
                             className="d-flex align-items-center border-0 bg-transparent text-secondary text-hover"
                           >
-                            Chọn
+                            {t("cart.choose")}
                             <i className="bi bi-caret-right ms-2  d-flex align-items-center"></i>
                           </button>
                         </div>
@@ -499,13 +511,16 @@ const Cart = ({
                   </div>
                   <div className="mt-3">
                     <div className="cart-total py-3 d-flex align-items-start justify-content-between w-100 ">
-                      <p className="fw-semibold text-black">TỔNG CỘNG</p>
+                      <p className="fw-semibold text-black">
+                        {" "}
+                        {t("cart.total")}
+                      </p>
                       <div className="d-flex flex-column align-items-end">
                         <div className="price text-active fw-semibold">
                           {total.toLocaleString("vi-VN")}₫
                         </div>
                         <div className="fs-7 text-secondary cart-vat-note">
-                          Nhập mã giảm giá ở trang thanh toán
+                          {t("cart.input-promo-code-checkout")}
                         </div>
                       </div>
                     </div>
@@ -515,7 +530,7 @@ const Cart = ({
                         className="btn w-75 btn fw-semibold  bg-success text-white d-flex justify-content-center align-items-center rounded-5 py-2"
                         onClick={handleCheckout}
                       >
-                        THANH TOÁN
+                        {t("cart.payment")}
                         <i className="bi bi-arrow-bar-right ms-1"></i>
                       </button>
                     </div>

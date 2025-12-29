@@ -148,7 +148,9 @@
     "product": {
         "product_all": "All Products",
         "product": "Product",
-        "cart": "Cart"
+        "cart": "Cart",
+        "empty-category": "No products in this category.",
+        "not-found": "Product not found"
     },
     "search": {
         "name": "Search",
@@ -164,6 +166,10 @@
     "cart": {
         "title": "Cart",
         "no-cart": "No product in cart",
+        "product": "Product",
+        "unit-price": "Unit Price",
+        "quantity": "Quantity",
+        "subtotal": "Subtotal",
         "desription-no-cart": "Find the product you like and add it to your cart!",
         "continue-shopping": "Continue shopping",
         "issue-company-invoices": "Issue Company Invoices",
@@ -179,7 +185,9 @@
         "chose-time": "Chose time",
         "note-order": "Order notes",
         "note": "Note",
+        "change": "Change",
         "choose-a-promo-code": "Choose a promo code",
+        "choose": "Choose",
         "promo-code": "Promo code",
         "total": "Total",
         "input-promo-code-checkout": "Enter a promo code at checkout",
@@ -238,7 +246,8 @@
     "common": {
         "loading": "Loading...",
         "add_to_cart": "Add Cart",
-        "price": "Price: {{price}}₫"
+        "price": "Price: {{price}}₫",
+        "view-all": "View All"
     },
     "btn": {
         "save": "Save",

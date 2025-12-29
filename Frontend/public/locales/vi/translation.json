@@ -151,7 +151,9 @@
     "product": {
         "product_all": "Tất cả sản phẩm",
         "product": "Sản phẩm",
-        "cart": "Giỏ hàng"
+        "cart": "Giỏ hàng",
+        "empty-category": "Không có sản phẩm nào trong danh mục này.",
+        "not-found": "Sản phẩm không tồn tại"
     },
     "search": {
         "title": "Tìm kiếm",
@@ -167,7 +169,11 @@
     },
     "cart": {
         "title": "Giỏ hàng",
-        "no-cart": "Giỏ hàng chưa có gì",
+        "no-cart": "Giỏ hàng không có sản phẩm nào",
+        "product": "Sản phẩm",
+        "unit-price": "Đơn giá",
+        "quantity": "Số lượng",
+        "subtotal": "Tạm tính",
         "desription-no-cart": "Hãy tìm sản phẩm ứng ý và thêm vào giỏ hàng bạn nhé!",
         "continue-shopping": "Tiếp tục mua sắm",
         "issue-company-invoices": "Xuất hoá đơn công ty",
@@ -183,7 +189,9 @@
         "chose-time": "Chọn thời gian",
         "note-order": "Ghi chú đơn hàng",
         "note": "Ghi chú",
+        "change": "Thay đổi",
         "choose-a-promo-code": "Chọn mã giảm giá",
+        "choose": "Chọn",
         "promo-code": "Mã giảm giá",
         "total": "Tổng cộng",
         "input-promo-code-checkout": "Nhập mã giảm giá ở trang thanh toán",
@@ -242,7 +250,8 @@
     "common": {
         "loading": "Đang tải...",
         "add_to_cart": "Thêm vào giỏ",
-        "price": "Giá: {{price}}₫"
+        "price": "Giá: {{price}}₫",
+        "view-all": "Xem tất cả"
     },
     "btn": {
         "save": "Lưu",

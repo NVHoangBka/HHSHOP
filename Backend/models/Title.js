@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 
 const subTitleSchema = new mongoose.Schema({
   name: { type: String, required: true },
+  nameVn: { type: String, required: true },
+  nameEn: { type: String, required: true },
   value: { type: String, required: true },
   regular: { type: Boolean, require: true },
 });
@@ -10,6 +12,8 @@ const subTitleSchema = new mongoose.Schema({
 const titleSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
+    nameVn: { type: String, required: true },
+    nameEn: { type: String, required: true },
     image: { type: String },
     type: { type: String },
     path: { type: String, required: true, unique: true },

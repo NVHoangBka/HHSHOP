@@ -112,7 +112,7 @@ const Home = ({
         <ProductTabSection
           path=""
           title={t("home.tabs.trending")}
-          value=""
+          value="trending"
           addToCart={addToCart}
           productController={productController}
           titleController={titleController}

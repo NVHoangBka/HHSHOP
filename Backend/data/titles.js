@@ -3,22 +3,56 @@ module.exports = {
     {
       id: 1,
       name: "Chăm sóc gia đình",
+      nameVn: "Chăm sóc gia đình",
+      nameEn: "Family Care",
       image:
         "https://bizweb.dktcdn.net/thumb/small/100/518/448/themes/953339/assets/coll_1.png?1733201190476",
       type: "h1",
       path: "cham-soc-gia-dinh",
       value: "family-care",
       subTitles: [
-        { name: "Nước giặt", value: "nuoc-giat", regular: true },
-        { name: "Dầu gội-sữa tắm", value: "dau-goi-sua-tam", regular: true },
-        { name: "Chất tẩy rửa", value: "chat-tay-rua", regular: false },
-        { name: "Đồ gia dụng", value: "do-gia-dung", regular: false },
-        { name: "Sáp thơm", value: "sap-thom", regular: false },
+        {
+          name: "Nước giặt",
+          nameVn: "Nước giặt",
+          nameEn: "Laundry Detergent",
+          value: "nuoc-giat",
+          regular: true,
+        },
+        {
+          name: "Dầu gội-sữa tắm",
+          nameVn: "Dầu gội - sữa tắm",
+          nameEn: "Shampoo & Body Wash",
+          value: "dau-goi-sua-tam",
+          regular: true,
+        },
+        {
+          name: "Chất tẩy rửa",
+          nameVn: "Chất tẩy rửa",
+          nameEn: "Cleaning Agents",
+          value: "chat-tay-rua",
+          regular: false,
+        },
+        {
+          name: "Đồ gia dụng",
+          nameVn: "Đồ gia dụng",
+          nameEn: "Household Items",
+          value: "do-gia-dung",
+          regular: false,
+        },
+        {
+          name: "Sáp thơm",
+          nameVn: "Sáp thơm",
+          nameEn: "Scented Wax / Air Freshener",
+          value: "sap-thom",
+          regular: false,
+        },
       ],
     },
     {
       id: 2,
       name: "Đồ dùng mẹ & bé",
+      nameVn: "Đồ dùng mẹ & bé",
+      nameEn: "Mom & Baby Essentials",
       image:
         "https://bizweb.dktcdn.net/thumb/small/100/518/448/themes/953339/assets/coll_2.png?1733201190476",
       type: "h1",
@@ -29,21 +63,49 @@ module.exports = {
     {
       id: 3,
       name: "Thực phẩm tươi sống",
+      nameVn: "Thực phẩm tươi sống",
+      nameEn: "Fresh Food",
       image:
         "https://bizweb.dktcdn.net/thumb/small/100/518/448/themes/953339/assets/coll_3.png?1733201190476",
       type: "h1",
       path: "thuc-pham-tuoi-song",
       value: "fresh-food",
       subTitles: [
-        { name: "Rau củ", value: "rau-cu", regular: false },
-        { name: "Hoa quả", value: "hoa-qua", regular: true },
-        { name: "Thịt các loại", value: "thit", regular: false },
-        { name: "Thủy hải sản", value: "thuy-hai-san", regular: false },
+        {
+          name: "Rau củ",
+          nameVn: "Rau củ",
+          nameEn: "Vegetables",
+          value: "rau-cu",
+          regular: false,
+        },
+        {
+          name: "Hoa quả",
+          nameVn: "Hoa quả",
+          nameEn: "Fruits",
+          value: "hoa-qua",
+          regular: true,
+        },
+        {
+          name: "Thịt các loại",
+          nameVn: "Thịt các loại",
+          nameEn: "Meat & Poultry",
+          value: "thit",
+          regular: false,
+        },
+        {
+          name: "Thủy hải sản",
+          nameVn: "Thủy hải sản",
+          nameEn: "Seafood",
+          value: "thuy-hai-san",
+          regular: false,
+        },
       ],
     },
     {
       id: 4,
       name: "Thực phẩm khô",
+      nameVn: "Thực phẩm khô",
+      nameEn: "Dry Food & Groceries",
       image:
         "https://bizweb.dktcdn.net/thumb/small/100/518/448/themes/953339/assets/coll_4.png?1733201190476",
       type: "h1",
@@ -54,6 +116,8 @@ module.exports = {
     {
       id: 5,
       name: "Đồ dùng nhà bếp",
+      nameVn: "Đồ dùng nhà bếp",
+      nameEn: "Kitchen Utensils & Appliances",
       image:
         "https://bizweb.dktcdn.net/thumb/small/100/518/448/themes/953339/assets/coll_5.png?1733201190476",
       type: "h1",
@@ -64,6 +128,8 @@ module.exports = {
     {
       id: 6,
       name: "Sữa các loại",
+      nameVn: "Sữa các loại",
+      nameEn: "Milk & Dairy Products",
       image:
         "https://bizweb.dktcdn.net/thumb/small/100/518/448/themes/953339/assets/coll_6.png?1733201190476",
       type: "h1",
@@ -74,15 +140,35 @@ module.exports = {
     {
       id: 7,
       name: "Văn phòng phẩm",
+      nameVn: "Văn phòng phẩm",
+      nameEn: "Stationery & Office Supplies",
       image:
         "https://bizweb.dktcdn.net/thumb/small/100/518/448/themes/953339/assets/coll_6.png?1733201190476",
       type: "h1",
       path: "van-phong-pham",
       value: "stationery",
       subTitles: [
-        { name: "Bút viết", value: "but-viet", regular: false },
-        { name: "Giấy và sổ tay", value: "giay-so-tay", regular: false },
-        { name: "Dụng cụ vẽ", value: "dung-cu-ve", regular: false },
+        {
+          name: "Bút viết",
+          nameVn: "Bút viết",
+          nameEn: "Pens & Writing Instruments",
+          value: "but-viet",
+          regular: false,
+        },
+        {
+          name: "Giấy và sổ tay",
+          nameVn: "Giấy và sổ tay",
+          nameEn: "Paper & Notebooks",
+          value: "giay-so-tay",
+          regular: false,
+        },
+        {
+          name: "Dụng cụ vẽ",
+          nameVn: "Dụng cụ vẽ",
+          nameEn: "Drawing & Art Supplies",
+          value: "dung-cu-ve",
+          regular: false,
+        },
       ],
     },
   ],

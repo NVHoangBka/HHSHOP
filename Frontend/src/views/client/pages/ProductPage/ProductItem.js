@@ -1,12 +1,16 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 const ProductItem = ({ product, addToCart }) => {
   const navigate = useNavigate();
+  const [t, i18n] = useTranslation();
 
   if (!product) {
     return (
-      <div className="product-item p-3 border mx-2">Sản phẩm không tồn tại</div>
+      <div className="product-item p-3 border mx-2">
+        {t("product.not-found")}
+      </div>
     );
   }
 
@@ -47,26 +51,26 @@ const ProductItem = ({ product, addToCart }) => {
 
   return (
     <div
-      className="product-item w-100 p-3 border mx-2 bg-white h-100 rounded-4 cursor-pointer hover"
+      className="product-item w-100 p-xl-3 border mx-xl-2 bg-white h-100 rounded-4 cursor-pointer hover"
       onClick={handleShowProductDetail}
     >
       <img src={image} className="img-fluid rounded-start w-100" alt={name} />
-      <p className="mt-3 line-clamp-2 fs-body fw-semibold text-hover fixed-two-lines">
+      <p className="mt-xl-3 line-clamp-2 fs-body fw-semibold text-hover fixed-two-lines">
         {name}
       </p>
-      <div className="more d-flex justify-content-between mx-1">
+      <div className="more d-flex justify-content-between mx-xl-1">
         <div className="price">
-          <p className="price-current m-0 text-danger fw-bold">
+          <p className="price-current m-xl-0 text-danger fw-bold">
             {formatPrice(discountPrice || price)}
           </p>
           {discountPrice && (
-            <p className="price-old text-decoration-line-through m-0">
+            <p className="price-old text-decoration-line-through m-xl-0">
               {formatPrice(price)}
             </p>
           )}
         </div>
         <button
-          className="text-danger border px-2 py-1 rounded-circle bg-warning-subtle hover"
+          className="text-danger border px-xl-2 py-xl-1 rounded-circle bg-warning-subtle hover"
           onClick={handleAddToCart}
           aria-label={`Add ${name} to cart`}
         >
