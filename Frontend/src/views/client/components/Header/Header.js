@@ -92,7 +92,10 @@ const Header = ({
   };
 
   return (
-    <header className="header shadow-sm bg-white sticky-top">
+    <header
+      className="header shadow-sm bg-white sticky-top "
+      style={{ zIndex: "2000" }}
+    >
       <div className="header-top py-xl-2">
         <div className="container ">
           <div className="d-flex justify-content-between align-items-center row py-xl-1">

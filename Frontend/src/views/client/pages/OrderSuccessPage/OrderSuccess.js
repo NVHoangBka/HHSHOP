@@ -1,8 +1,10 @@
 // src/views/pages/OrderSuccess.jsx
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
 
 const OrderSuccess = () => {
+  const { t } = useTranslation();
   const { state } = useLocation();
 
   // BẮT BUỘC LẤY DATA TỪ CHECKOUT TRUYỀN QUA → KHÔNG ĐỂ NULL
@@ -21,7 +23,7 @@ const OrderSuccess = () => {
     const timer = setInterval(() => {
       const diff = new Date(expiredAt) - new Date();
       if (diff <= 0) {
-        setTimeLeft("ĐÃ HẾT HẠN");
+        setTimeLeft(t("orderSuccess.bankTransfer.expired"));
         clearInterval(timer);
       } else {
         const m = Math.floor(diff / 60000);
@@ -31,17 +33,17 @@ const OrderSuccess = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [expiredAt, paymentMethod]);
+  }, [expiredAt, paymentMethod, t]);
 
   // NẾU KHÔNG CÓ ĐƠN HÀNG → HIỆN LỖI
   if (!order) {
     return (
       <div className="container py-5 text-center">
         <div className="alert alert-danger">
-          Không tìm thấy thông tin đơn hàng! Vui lòng đặt hàng lại.
+          {t("orderSuccess.errorNoOrder")}
         </div>
         <Link to="/" className="btn btn-success">
-          Về trang chủ
+          {t("orderSuccess.backHome")}
         </Link>
       </div>
     );
@@ -55,9 +57,11 @@ const OrderSuccess = () => {
           className="bi bi-check-circle-fill text-success"
           style={{ fontSize: "80px" }}
         ></i>
-        <h1 className="mt-3 text-success fw-bold">ĐẶT HÀNG THÀNH CÔNG!</h1>
+        <h1 className="mt-3 text-success fw-bold">
+          {t("orderSuccess.pageTitle")}
+        </h1>
         <p className="lead text-muted">
-          Mã đơn hàng:{" "}
+          {t("orderSuccess.orderId")}:{" "}
           <strong className="text-danger">#{order.orderId || order.id}</strong>
         </p>
         <p className="fs-3 text-danger fw-bold">
@@ -72,13 +76,15 @@ const OrderSuccess = () => {
             <div className="card shadow-lg border-0 mb-4">
               <div className="card-header bg-danger text-white text-center">
                 <h4 className="mb-0">
-                  <i className="bi bi-qr-code-scan"></i> THANH TOÁN CHUYỂN KHOẢN
+                  <i className="bi bi-qr-code-scan"></i>
+                  {t("orderSuccess.bankTransfer.title")}
                 </h4>
               </div>
               <div className="card-body text-center p-4">
                 {/* Đếm ngược */}
                 <div className="alert alert-warning fw-bold fs-5 mb-4">
-                  <i className="bi bi-clock"></i> Thời gian còn lại:
+                  <i className="bi bi-clock"></i>{" "}
+                  {t("orderSuccess.bankTransfer.timeLeft")}:
                   <span className="text-danger ms-2">
                     {timeLeft || "Đang tải..."}
                   </span>
@@ -89,42 +95,46 @@ const OrderSuccess = () => {
                   <div className="d-inline-block p-4 bg-white rounded shadow">
                     <img
                       src={qrImage}
-                      alt="QR Thanh toán"
+                      alt={t("orderSuccess.bankTransfer.qrTitle")}
                       className="img-fluid rounded"
                       style={{ maxWidth: "300px", border: "10px solid white" }}
                     />
                   </div>
                 ) : (
                   <div className="alert alert-danger">
-                    Lỗi: Không tải được mã QR. Vui lòng liên hệ shop!
+                    {t("orderSuccess.bankTransfer.errorQr")}
                   </div>
                 )}
 
                 {/* Thông tin chuyển khoản */}
                 <div className="mt-4 p-4 bg-light rounded border">
                   <p className="mb-2">
-                    <strong>Ngân hàng:</strong>{" "}
+                    <strong>{t("orderSuccess.bankTransfer.bank")}:</strong>{" "}
                     <span className="text-primary">
                       {bankInfo?.bank || "Vietcombank"}
                     </span>
                   </p>
                   <p className="mb-2">
-                    <strong>Chủ tài khoản:</strong>{" "}
+                    <strong>
+                      {t("orderSuccess.bankTransfer.accountName")}:
+                    </strong>{" "}
                     {bankInfo?.accountName || "NGUYỄN VĂN HOÀNG"}
                   </p>
                   <p className="mb-2">
-                    <strong>Số tài khoản:</strong>{" "}
+                    <strong>
+                      {t("orderSuccess.bankTransfer.accountNumber")}:
+                    </strong>{" "}
                     <code>{bankInfo?.accountNumber || "0385421799"}</code>
                   </p>
                   <p className="mb-0 text-danger fw-bold fs-5">
-                    Nội dung:{" "}
+                    {t("orderSuccess.bankTransfer.transferContent")}:{" "}
                     {bankInfo?.content || `Thanh toan don ${order.orderId}`}
                   </p>
                 </div>
 
                 <div className="alert alert-danger mt-4">
-                  <strong>QUAN TRỌNG:</strong> Vui lòng chuyển khoản{" "}
-                  <u>đúng nội dung</u> để đơn được xử lý tự động!
+                  <strong>{t("orderSuccess.bankTransfer.important")}:</strong>{" "}
+                  {t("orderSuccess.bankTransfer.importantNote")}
                 </div>
               </div>
             </div>
@@ -139,10 +149,10 @@ const OrderSuccess = () => {
                   style={{ fontSize: "4rem" }}
                 ></i>
                 <h4 className="mt-3 text-success fw-bold">
-                  THANH TOÁN KHI NHẬN HÀNG
+                  {t("orderSuccess.cod.title")}
                 </h4>
                 <p className="text-muted">
-                  Bạn sẽ thanh toán trực tiếp cho shipper khi nhận hàng
+                  {t("orderSuccess.cod.description")}
                 </p>
               </div>
             </div>
@@ -153,18 +163,19 @@ const OrderSuccess = () => {
       {/* Nút điều hướng */}
       <div className="text-center mt-5">
         <Link to="/products/all" className="btn btn-success btn-lg px-5 me-3">
-          Tiếp tục mua sắm
+          {t("orderSuccess.continueShopping")}
         </Link>
         <Link
           to="/account/orders"
           className="btn btn-outline-success btn-lg px-5"
         >
-          Xem chi tiết đơn hàng
+          {t("orderSuccess.viewOrderDetails")}
         </Link>
       </div>
 
       <div className="text-center mt-4 text-muted small">
-        Có vấn đề? Liên hệ ngay: <strong>0385421799</strong> (Zalo/Facebook)
+        {t("orderSuccess.support")}{" "}
+        <strong>{t("orderSuccess.supportPhone")}</strong>
       </div>
     </div>
   );

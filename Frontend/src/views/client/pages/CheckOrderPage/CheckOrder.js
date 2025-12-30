@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import UserController from "../../../../controllers/UserController";
+import { useTranslation } from "react-i18next";
 
 const userController = new UserController();
 
 const CheckOrder = ({ orderController }) => {
+  const [t] = useTranslation();
   const [checkType, setCheckType] = useState("1");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [emailAddress, setEmailAddress] = useState("");
@@ -19,14 +21,27 @@ const CheckOrder = ({ orderController }) => {
     try {
       let userData = {};
 
-      if (checkType === "1") {
-        userData = { phoneNumber };
-      } else if (checkType === "2") {
-        userData = { email: emailAddress };
-      } else if (checkType === "3") {
-        userData = { phoneNumber, email: emailAddress };
+      switch (checkType) {
+        case "1":
+          userData = { phoneNumber };
+          break;
+        case "2":
+          userData = { email: emailAddress };
+          break;
+        case "3":
+          userData = { phoneNumber, email: emailAddress };
+          break;
+        default:
+          userData = { phoneNumber, email: emailAddress };
+          break;
       }
-
+      // if (checkType === "1") {
+      //   userData = { phoneNumber };
+      // } else if (checkType === "2") {
+      //   userData = { email: emailAddress };
+      // } else if (checkType === "3") {
+      //   userData = { phoneNumber, email: emailAddress };
+      // }
       const userResult = await userController.getAllUsers(userData);
       if (!userResult.success) {
         setError(
@@ -44,11 +59,11 @@ const CheckOrder = ({ orderController }) => {
         if (orders.length > 0) {
           setOrders(orders);
         } else {
-          setError("Không tìm thấy đơn hàng");
+          setError(t("order.checkOrder.noOrdersFound"));
         }
       }
     } catch (error) {
-      setError("Không tìm thấy dữ liệu đơn hàng");
+      setError(t("order.checkOrder.errorNotFound"));
     }
   };
 
@@ -56,67 +71,82 @@ const CheckOrder = ({ orderController }) => {
     <div className="bg-success-subtle">
       <div className="breadcrumbs">
         <div className="container">
-          <ul className="breadcrumb py-3 d-flex flex-wrap align-items-center">
+          <ul className="breadcrumb py-xl-3 d-flex flex-wrap align-items-center">
             <li className="home">
               <Link
                 className="link hover"
                 to="/"
-                title="Trang chủ"
+                title={t("header.home")}
                 style={{ textDecoration: "none", color: "inherit" }}
               >
-                Trang chủ
+                {t("header.home")}
               </Link>
-              <span className="mx-1 md:mx-2 inline-block">&nbsp;/&nbsp;</span>
+              <span className="mx-xl-1 inline-block">&nbsp;/&nbsp;</span>
             </li>
             <li>
-              <span className="text-secondary">Kiểm tra đơn hàng</span>
+              <span className="text-secondary">
+                {t("order.checkOrder.pageTitle")}
+              </span>
             </li>
           </ul>
         </div>
       </div>
-      <section className="section main-page pb-5">
+      <section className="section main-page pb-xl-5">
         <div className="container">
-          <div className="grid justify-content-center mx-5">
+          <div className="grid justify-content-center mx-xl-5">
             <div>
-              <div className="bg-white rounded px-3 py-4 mb-5 mx-5">
-                <h1 className="fw-semibold mb-2 fs-3">Kiểm tra đơn hàng</h1>
-                <div className="page-content py-5 mx-1 bg-body-secondary">
+              <div className="bg-white rounded px-xl-3 py-xl-4 mb-xl-5 mx-xl-5">
+                <h1 className="fw-semibold mb-xl-2 fs-3">
+                  {t("order.checkOrder.pageTitle")}
+                </h1>
+                <div className="page-content py-xl-5 mx-xl-1 bg-body-secondary">
                   <div className="rte">
                     <div className="prose w-100 content">
                       <div className="container-fluid">
                         <div className="row justify-content-center">
-                          <div className="col-6 main-content bg-white p-4 rounded">
+                          <div className="col-xl-6 main-content bg-white p-xl-4 rounded">
                             <div
-                              className="container border p-3"
+                              className="container border p-xl-3"
                               ng-app="checkOrderApp"
                               ng-controller="checkOrderCtrl"
                             >
                               <div className="search-test">
                                 <div className="">
                                   <div id="search-box-test ">
-                                    <div className="d-flex fw-semibold border-bottom w-100 d-flex align-item-center pb-3 justify-content-center">
+                                    <div className="d-flex fw-semibold border-bottom w-100 d-flex align-item-center pb-xl-3 justify-content-center">
                                       <i className="bi bi-search me-1"></i>
                                       <p className="m-0">
-                                        Kiểm tra đơn hàng của bạn
+                                        {t("order.checkOrder.searchTitle")}
                                       </p>
                                     </div>
                                     <div className="title-text fs-7">
                                       <form onSubmit={handleSubmit}>
                                         {/* Chọn loại kiểm tra */}
-                                        <div className="my-3">
-                                          <label className="form-label mb-2">
-                                            <span>Kiểm tra bằng</span>
+                                        <div className="my-xl-3">
+                                          <label className="form-label mb-xl-2">
+                                            <span>
+                                              {t("order.checkOrder.checkBy")}
+                                            </span>
                                           </label>
                                           <div className="radio-inline d-flex align-items-center">
                                             {[
                                               {
                                                 value: "1",
-                                                label: "Số điện thoại",
+                                                label: t(
+                                                  "order.checkOrder.byPhone"
+                                                ),
                                               },
-                                              { value: "2", label: "Email" },
+                                              {
+                                                value: "2",
+                                                label: t(
+                                                  "order.checkOrder.byEmail"
+                                                ),
+                                              },
                                               {
                                                 value: "3",
-                                                label: "Số điện thoại và Email",
+                                                label: t(
+                                                  "order.checkOrder.byPhoneAndEmail"
+                                                ),
                                               },
                                             ].map((option) => (
                                               <div
@@ -149,18 +179,22 @@ const CheckOrder = ({ orderController }) => {
 
                                         {/* Input Số điện thoại - hiện trừ khi chỉ chọn Email */}
                                         {checkType !== "2" && (
-                                          <div className="mb-3 fs-7">
+                                          <div className="mb-xl-3 fs-7">
                                             <label
                                               htmlFor="phoneNumber"
                                               className="form-label"
                                             >
-                                              Số điện thoại
+                                              {t(
+                                                "order.checkOrder.phoneNumber"
+                                              )}
                                             </label>
                                             <input
                                               type="text"
                                               className="form-control fs-7"
                                               id="phoneNumber"
-                                              placeholder="0909 xxx xxx"
+                                              placeholder={t(
+                                                "order.checkOrder.phonePlaceholder"
+                                              )}
                                               value={phoneNumber}
                                               onChange={(e) =>
                                                 setPhoneNumber(e.target.value)
@@ -172,18 +206,22 @@ const CheckOrder = ({ orderController }) => {
 
                                         {/* Input Email - hiện trừ khi chỉ chọn Số điện thoại */}
                                         {checkType !== "1" && (
-                                          <div className="mb-4">
+                                          <div className="mb-xl-4">
                                             <label
                                               htmlFor="emailAddress"
                                               className="form-label"
                                             >
-                                              Địa chỉ Email
+                                              {t(
+                                                "order.checkOrder.emailAddress"
+                                              )}
                                             </label>
                                             <input
                                               type="email"
                                               className="form-control fs-7"
                                               id="emailAddress"
-                                              placeholder="Email@gmail.com"
+                                              placeholder={t(
+                                                "order.checkOrder.emailPlaceholder"
+                                              )}
                                               value={emailAddress}
                                               onChange={(e) =>
                                                 setEmailAddress(e.target.value)
@@ -198,7 +236,7 @@ const CheckOrder = ({ orderController }) => {
                                             type="submit"
                                             className="btn btn-success fs-7"
                                           >
-                                            Kiểm tra
+                                            {t("btn.check")}
                                           </button>
                                         </div>
                                       </form>
@@ -206,19 +244,19 @@ const CheckOrder = ({ orderController }) => {
                                     <div className="clearfix"></div>
                                   </div>
                                 </div>
-                                <div id="show" className="mt-5">
+                                <div id="show" className="mt-xl-5">
                                   {loading && (
-                                    <div className="text-center py-5">
+                                    <div className="text-center py-xl-5">
                                       <div
                                         className="spinner-border text-success"
                                         role="status"
                                       >
                                         <span className="visually-hidden">
-                                          Đang tìm...
+                                          {t("order.checkOrder.loadingText")}
                                         </span>
                                       </div>
-                                      <p className="mt-3">
-                                        Đang tìm kiếm đơn hàng...
+                                      <p className="mt-xl-3">
+                                        {t("order.checkOrder.loading")}
                                       </p>
                                     </div>
                                   )}
@@ -230,19 +268,24 @@ const CheckOrder = ({ orderController }) => {
                                   )}
                                   {!loading && !error && orders.length > 0 && (
                                     <div>
-                                      <h4 className="fw-bold mb-4 text-center text-success">
-                                        Tìm thấy {orders.length} đơn hàng
+                                      <h4 className="fw-bold mb-xl-4 text-center text-success">
+                                        {t("order.checkOrder.foundOrders", {
+                                          count: orders.length,
+                                        })}
                                       </h4>
                                       <div className="row g-4">
                                         {orders.map((order) => (
                                           <div
                                             key={order._id}
-                                            className="col-12"
+                                            className="col-xl-12"
                                           >
-                                            <div className="border rounded p-4 bg-light">
-                                              <div className="d-flex justify-content-between align-items-center mb-3">
+                                            <div className="border rounded p-xl-4 bg-light">
+                                              <div className="d-flex justify-content-between align-items-center mb-xl-3">
                                                 <h5 className="m-0 fw-bold">
-                                                  Mã đơn: {order.orderId}
+                                                  {t(
+                                                    "order.checkOrder.orderCode"
+                                                  )}
+                                                  : {order.orderId}
                                                 </h5>
                                                 <span
                                                   className={`badge bg-${
@@ -251,46 +294,61 @@ const CheckOrder = ({ orderController }) => {
                                                       : "warning"
                                                   } fs-6`}
                                                 >
-                                                  {order.status === "pending"
-                                                    ? "Chờ xử lý"
-                                                    : order.status ===
-                                                      "confirmed"
-                                                    ? "Đã xác nhận"
-                                                    : order.status ===
-                                                      "delivered"
-                                                    ? "Đã giao"
-                                                    : order.status}
+                                                  {t(
+                                                    `order.checkOrder.status.${order.status}`
+                                                  ) || order.status}
                                                 </span>
                                               </div>
                                               <p className="mb-1">
-                                                <strong>Ngày đặt:</strong>{" "}
+                                                <strong>
+                                                  {t(
+                                                    "order.checkOrder.orderDate"
+                                                  )}
+                                                  :
+                                                </strong>{" "}
                                                 {new Date(
                                                   order.createdAt
                                                 ).toLocaleString("vi-VN")}
                                               </p>
                                               <p className="mb-1">
-                                                <strong>Tổng tiền:</strong>{" "}
+                                                <strong>
+                                                  {t(
+                                                    "order.checkOrder.totalAmount"
+                                                  )}
+                                                  :
+                                                </strong>{" "}
                                                 {order.totalAmount.toLocaleString()}
                                                 ₫
                                               </p>
-                                              <p className="mb-3">
-                                                <strong>Thanh toán:</strong>{" "}
+                                              <p className="mb-xl-3">
+                                                <strong>
+                                                  {t(
+                                                    "order.checkOrder.paymentStatus"
+                                                  )}
+                                                  :
+                                                </strong>{" "}
                                                 {order.paymentStatus === "paid"
-                                                  ? "Đã thanh toán"
-                                                  : "Chưa thanh toán"}
+                                                  ? t("order.checkOrder.paid")
+                                                  : t(
+                                                      "order.checkOrder.unpaid"
+                                                    )}
                                               </p>
 
-                                              <details className="mb-2">
+                                              <details className="mb-xl-2">
                                                 <summary className="fw-semibold text-primary cursor-pointer">
-                                                  Xem chi tiết sản phẩm (
-                                                  {order.items.length})
+                                                  {t(
+                                                    "order.checkOrder.viewDetails",
+                                                    {
+                                                      count: order.items.length,
+                                                    }
+                                                  )}
                                                 </summary>
-                                                <ul className="list-group list-group-flush mt-2">
+                                                <ul className="list-group list-group-flush mt-xl-2">
                                                   {order.items.map(
                                                     (item, idx) => (
                                                       <li
                                                         key={idx}
-                                                        className="list-group-item d-flex align-items-center py-3"
+                                                        className="list-group-item d-flex align-items-center py-xl-3"
                                                       >
                                                         {item.productId
                                                           ?.image && (
@@ -301,7 +359,7 @@ const CheckOrder = ({ orderController }) => {
                                                             }
                                                             alt={item.name}
                                                             width="50"
-                                                            className="me-3 rounded"
+                                                            className="me-xl-3 rounded"
                                                           />
                                                         )}
                                                         <div>
@@ -310,10 +368,17 @@ const CheckOrder = ({ orderController }) => {
                                                           </strong>
                                                           <br />
                                                           <small>
-                                                            Số lượng:{" "}
-                                                            {item.quantity} ×{" "}
-                                                            {item.price.toLocaleString()}
-                                                            ₫
+                                                            {t(
+                                                              "order.checkOrder.quantityTimesPrice",
+                                                              {
+                                                                quantity:
+                                                                  item.quantity,
+                                                                price:
+                                                                  item.price.toLocaleString(
+                                                                    "vi-VN"
+                                                                  ),
+                                                              }
+                                                            )}
                                                           </small>
                                                         </div>
                                                       </li>

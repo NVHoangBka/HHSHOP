@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import vietnamData from "../../../../data/vietnam.json";
+import { useTranslation } from "react-i18next";
 
 const Checkout = ({ cartController, orderController, authController }) => {
   const navigate = useNavigate();
   const location = useLocation();
-
+  const [t, i18n] = useTranslation();
   const [cartItems, setCartItems] = useState([]);
   const [user, setUser] = useState(null);
   const [addressList, setAddressList] = useState([]);
@@ -55,7 +56,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
       } else {
         // ƯU TIÊN 2: Nếu không có → lấy giỏ hàng bình thường
         if (cartData.length === 0) {
-          alert("Giỏ hàng trống!");
+          alert(t("checkout.emptyCart"));
           navigate("/cart");
           return;
         }
@@ -102,13 +103,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
     };
 
     init();
-  }, [
-    cartController,
-    authController,
-    navigate,
-    location.state?.isQuickBuy,
-    location.state.checkoutItems,
-  ]);
+  }, [cartController, authController, navigate]);
 
   // Load tỉnh
   useEffect(() => {
@@ -119,11 +114,12 @@ const Checkout = ({ cartController, orderController, authController }) => {
   useEffect(() => {
     if (city) {
       const citys = vietnamData.find((p) => p.name === city);
+      console.log(citys);
+
       setDistricts(citys?.districts || []);
     } else {
       setDistricts([]);
     }
-    setDistrict("");
     setWard("");
   }, [city]);
 
@@ -152,12 +148,12 @@ const Checkout = ({ cartController, orderController, authController }) => {
     const code = voucherCode.trim().toUpperCase();
     if (code === "GIAM10") {
       setVoucherDiscount(subTotal * 0.1);
-      alert("Áp dụng GIAM10 – Giảm 10%");
+      alert(t("checkout.alert.voucherSuccess10"));
     } else if (code === "FREESHIP") {
       setVoucherDiscount(shippingFee);
-      alert("Miễn phí vận chuyển!");
+      alert(t("checkout.alert.voucherFreeShip"));
     } else {
-      alert("Mã không hợp lệ");
+      alert(t("checkout.alert.voucherInvalid"));
       setVoucherDiscount(0);
     }
   };
@@ -190,7 +186,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
       !formData.phone ||
       (!formData.address && !city && !district && !ward)
     ) {
-      alert("Vui lòng điền đầy đủ thông tin nhận hàng");
+      alert(t("checkout.alert.emptyRequired"));
       return;
     }
 
@@ -244,20 +240,20 @@ const Checkout = ({ cartController, orderController, authController }) => {
         } else {
           // COD → hiện thông báo thành công
           alert(
-            `Đặt hàng thành công! Mã đơn: #${
-              result.order.orderId || result.order.id
-            }`
+            t("checkout.alert.orderSuccess", {
+              orderId: result.order.orderId || result.order.id,
+            })
           );
           navigate("/checkout/order-success", {
             state: { order: result.order, paymentMethod: "COD" },
           });
         }
       } else {
-        alert("Đặt hàng thất bại: " + result.message);
+        alert(t("checkout.alert.orderFailed", { message: result.message }));
       }
     } catch (err) {
       console.error(err);
-      alert("Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại!");
+      alert(t("checkout.alert.errorOccurred"));
     } finally {
       setSubmitting(false);
     }
@@ -265,9 +261,9 @@ const Checkout = ({ cartController, orderController, authController }) => {
 
   if (loading) {
     return (
-      <div className="container py-5 text-center">
+      <div className="container py-xl-5 text-center">
         <div className="spinner-border text-success" role="status">
-          <span className="visually-hidden">Loading...</span>
+          <span className="visually-hidden">{t("checkout.loading")}</span>
         </div>
       </div>
     );
@@ -275,31 +271,33 @@ const Checkout = ({ cartController, orderController, authController }) => {
 
   if (cartItems.length === 0) {
     return (
-      <div className="container py-5 text-center">
-        <h3>Giỏ hàng trống</h3>
+      <div className="container py-xl-5 text-center">
+        <h3>{t("checkout.emptyCart")}</h3>
         <Link to="/products/all" className="btn btn-success">
-          Tiếp tục mua sắm
+          {t("checkout.continueShopping")}
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="container py-5">
-      <h2 className="mb-4 fw-bold">Trang thanh toán</h2>
+    <div className="container py-xl-5">
+      <h2 className="mb-4 fw-bold">{t("checkout.pageTitle")}</h2>
 
       <div className="row">
         {/* Form thanh toán */}
-        <div className="row col-8">
-          <div className="col-6">
+        <div className="row col-xl-8">
+          <div className="col-xl-6">
             <div className="card shadow-sm sticky-top" style={{ top: 20 }}>
-              <div className="card-body p-4">
-                <h5 className="mb-4 fw-semibold">Thông tin nhận hàng</h5>
+              <div className="card-body p-xl-4">
+                <h5 className="mb-xl-4 fw-semibold">
+                  {t("checkout.customerInfo")}
+                </h5>
 
                 <form onSubmit={handleSubmit}>
-                  <div className="mb-3">
+                  <div className="mb-xl-3">
                     <label for="customer-address" class="field__label">
-                      Sổ địa chỉ
+                      {t("checkout.addressBook")}
                     </label>
                     <select
                       id="customer-address"
@@ -315,7 +313,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
                         >
                           {addr.recipientName} • {addr.phoneNumber} •{" "}
                           {addr.ward} • {addr.district} • {addr.city}
-                          {addr.isDefault && " (Mặc định)"}
+                          {addr.isDefault && t("checkout.defaultAddress")}
                         </option>
                       ))}
                     </select>
@@ -323,8 +321,8 @@ const Checkout = ({ cartController, orderController, authController }) => {
                       <i class="fa fa-caret-down"></i>
                     </div>
                   </div>
-                  <div className="mb-3">
-                    <label className="form-label">Email</label>
+                  <div className="mb-xl-3">
+                    <label className="form-label">{t("checkout.email")}</label>
                     <input
                       type="email"
                       className="form-control"
@@ -335,8 +333,13 @@ const Checkout = ({ cartController, orderController, authController }) => {
                       disabled
                     />
                   </div>
-                  <div className="mb-3">
-                    <label className="form-label">Họ và tên *</label>
+                  <div className="mb-xl-3">
+                    <label className="form-label">
+                      {t("checkout.fullName")}{" "}
+                      <span className="text-danger">
+                        {t("checkout.required")}
+                      </span>
+                    </label>
                     <input
                       type="text"
                       className="form-control"
@@ -347,8 +350,13 @@ const Checkout = ({ cartController, orderController, authController }) => {
                       required
                     />
                   </div>
-                  <div className="mb-3">
-                    <label className="form-label">Số điện thoại *</label>
+                  <div className="mb-xl-3">
+                    <label className="form-label">
+                      {t("checkout.phone")}{" "}
+                      <span className="text-danger">
+                        {t("checkout.required")}
+                      </span>
+                    </label>
                     <input
                       type="tel"
                       className="form-control"
@@ -359,9 +367,9 @@ const Checkout = ({ cartController, orderController, authController }) => {
                       required
                     />
                   </div>
-                  <div className="mb-3">
+                  <div className="mb-xl-3">
                     <label className="form-label">
-                      Địa chỉ nhận hàng (tuỳ chọn)
+                      {t("checkout.addressOptional")}
                     </label>
                     <textarea
                       className="form-control"
@@ -372,16 +380,17 @@ const Checkout = ({ cartController, orderController, authController }) => {
                       }
                     />
                   </div>
-                  <div className="mb-3">
-                    <label className="form-label">Tỉnh</label>
+                  <div className="mb-xl-3">
+                    <label className="form-label">
+                      {t("checkout.province")}
+                    </label>
                     <select
                       id="city-address"
                       className="form-select form-select-lg"
-                      onChange={(e) =>
-                        setFormData({ ...formData, city: e.target.value })
-                      }
+                      onChange={(e) => ({ ...formData, city: e.target.value })}
                       value={formData.city}
                     >
+                      <option value="">{t("checkout.province")}...</option>
                       {citys.map((city) => (
                         <option
                           key={city.id}
@@ -393,8 +402,10 @@ const Checkout = ({ cartController, orderController, authController }) => {
                       ))}
                     </select>
                   </div>
-                  <div className="mb-3">
-                    <label className="form-label">Quận/huyện</label>
+                  <div className="mb-xl-3">
+                    <label className="form-label">
+                      {t("checkout.district")}
+                    </label>
                     <select
                       id="district-address"
                       className="form-select form-select-lg"
@@ -403,6 +414,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
                       }
                       value={formData.district}
                     >
+                      <option value="">{t("checkout.district")}...</option>
                       {districts.map((district) => (
                         <option
                           key={district.id}
@@ -414,8 +426,8 @@ const Checkout = ({ cartController, orderController, authController }) => {
                       ))}
                     </select>
                   </div>
-                  <div className="mb-3">
-                    <label className="form-label">Phường/Xã</label>
+                  <div className="mb-xl-3">
+                    <label className="form-label">{t("checkout.ward")}</label>
                     <select
                       id="ward-address"
                       className="form-select form-select-lg"
@@ -424,6 +436,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
                       }
                       value={formData.ward}
                     >
+                      <option value="">{t("checkout.ward")}...</option>
                       {wards.map((ward) => (
                         <option
                           key={ward.id}
@@ -436,12 +449,12 @@ const Checkout = ({ cartController, orderController, authController }) => {
                     </select>
                   </div>
 
-                  <div className="mb-4">
-                    <label className="form-label">Ghi chú</label>
+                  <div className="mb-xl-4">
+                    <label className="form-label">{t("checkout.note")}</label>
                     <textarea
                       className="form-control"
                       rows="2"
-                      placeholder="Giao giờ hành chính, để trước cửa..."
+                      placeholder={t("checkout.notePlaceholder")}
                       value={formData.note}
                       onChange={(e) =>
                         setFormData({ ...formData, note: e.target.value })
@@ -452,14 +465,16 @@ const Checkout = ({ cartController, orderController, authController }) => {
               </div>
             </div>
           </div>
-          <div className="col-6">
-            <div className="border p-4 shadow-sm rounded-3">
+          <div className="col-xl-6">
+            <div className="border p-xl-4 shadow-sm rounded-3">
               {/* Vận chuyển */}
-              <div class="section mb-4">
-                <div class="section__header">
-                  <h5 className="mb-2 fw-semibold">Vận chuyển</h5>
+              <div class="section mb-xl-4">
+                <div class="header">
+                  <h5 className="mb-xl-2 fw-semibold">
+                    {t("checkout.shipping.title")}
+                  </h5>
                 </div>
-                <div class="section__content" id="shippingMethodList">
+                <div class="content" id="shippingMethodList">
                   <div class="alert alert--loader spinner spinner--active d-none">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -471,13 +486,13 @@ const Checkout = ({ cartController, orderController, authController }) => {
 
                   <div class="alert alert-retry alert--danger d-none">
                     <span data-bind="loadingShippingErrorMessage">
-                      Không thể load phí vận chuyển. Vui lòng thử lại
+                      {t("checkout.shipping.loadingError")}
                     </span>{" "}
                     <i class="fa fa-refresh"></i>
                   </div>
 
                   <div class="content-box">
-                    <div class="content-box border rounded-2 py-2 px-3">
+                    <div class="content-box border rounded-2 py-xl-2 px-xl-3">
                       <div class="radio-wrapper d-flex w-100 align-items-center">
                         <div class="radio__input">
                           <input
@@ -492,10 +507,10 @@ const Checkout = ({ cartController, orderController, authController }) => {
                         </div>
                         <label
                           for="shippingMethod"
-                          class="radio__label d-flex ms-2 justify-content-between align-items-center fs-7 w-100"
+                          class="radio__label d-flex ms-xl-2 justify-content-between align-items-center fs-7 w-100"
                         >
                           <span class="radio__label__primary">
-                            <span>Giao hàng tận nơi</span>
+                            <span>{t("checkout.shipping.method")}</span>
                           </span>
                           <span class="radio__label__accessory">
                             <span class="content-box__emphasis price fw-semibold">
@@ -506,16 +521,14 @@ const Checkout = ({ cartController, orderController, authController }) => {
                       </div>
                     </div>
                   </div>
-
-                  <div class="alert alert--info d-none">
-                    Vui lòng nhập thông tin giao hàng
-                  </div>
                 </div>
               </div>
               {/* Thanh Toán */}
               <div class="section">
                 <div class="section__header">
-                  <h5 className="mb-2 fw-semibold">Thanh toán</h5>
+                  <h5 className="mb-xl-2 fw-semibold">
+                    {t("checkout.payment.title")}
+                  </h5>
                 </div>
                 <div class="section__content" id="shippingMethodList">
                   <div class="alert alert--loader spinner spinner--active d-none">
@@ -527,7 +540,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
                     </svg>
                   </div>
                   <div class="content-box">
-                    <div class="content-box border rounded-2 py-2 px-3 mb-1">
+                    <div class="content-box border rounded-2 py-xl-2 px-xl-3 mb-xl-1">
                       <div class="radio-wrapper d-flex align-items-center w-100">
                         <div class="radio__input">
                           <input
@@ -542,18 +555,18 @@ const Checkout = ({ cartController, orderController, authController }) => {
                         </div>
                         <label
                           for="paymentMethodBank"
-                          class="radio__label d-flex ms-2 justify-content-between align-items-center fs-7 w-100"
+                          class="radio__label d-flex ms-xl-2 justify-content-between align-items-center fs-7 w-100"
                         >
                           <span class="radio__label__primary">
-                            <span>Chuyển khoản</span>
+                            <span>{t("checkout.payment.bankTransfer")}</span>
                           </span>
-                          <span class="radio__label__accessory me-2">
+                          <span class="radio__label__accessory me-xl-2">
                             <i class="bi bi-cash text-primary fs-4"></i>
                           </span>
                         </label>
                       </div>
                     </div>
-                    <div class="content-box border rounded-2 py-2 px-3">
+                    <div class="content-box border rounded-2 py-xl-2 px-xl-3">
                       <div class="radio-wrapper d-flex w-100 align-items-center">
                         <div class="radio__input">
                           <input
@@ -570,12 +583,12 @@ const Checkout = ({ cartController, orderController, authController }) => {
                         </div>
                         <label
                           for="paymentMethodCOD"
-                          class="radio__label d-flex ms-2 justify-content-between align-items-center fs-7 w-100"
+                          class="radio__label d-flex ms-xl-2 justify-content-between align-items-center fs-7 w-100"
                         >
                           <span class="radio__label__primary">
-                            <span>Thu hộ (COD)</span>
+                            <span>{t("checkout.payment.cod")}</span>
                           </span>
-                          <span class="radio__label__accessory me-2">
+                          <span class="radio__label__accessory me-xl-2">
                             <i class="bi bi-cash text-primary fs-4"></i>
                           </span>
                         </label>
@@ -589,28 +602,37 @@ const Checkout = ({ cartController, orderController, authController }) => {
         </div>
 
         {/* Danh sách sản phẩm */}
-        <div className="col-4">
-          <div className="card border-bottom mb-4">
+        <div className="col-xl-4">
+          <div className="card border-bottom mb-xl-4">
             <div className="cart-content">
-              <h5 className="card-title mb-4 fw-semibold p-3 border-bottom">
-                Giỏ hàng ({cartItems.length} sản phẩm)
+              <h5 className="card-title mb-xl-4 fw-semibold p-xl-3 border-bottom">
+                {t("checkout.cartSummary.title")}{" "}
+                {t("checkout.cartSummary.productCount", {
+                  count: cartItems.length,
+                })}
               </h5>
               {cartItems.map((item) => (
-                <div key={item.id} className="d-flex py-3 px-4">
+                <div key={item.id} className="d-flex py-xl-3 px-xl-4">
                   <img
                     src={item.image || "/placeholder.jpg"}
                     alt={item.name}
-                    className="rounded me-3"
+                    className="rounded me-xl-3"
                     style={{ width: 80, height: 80, objectFit: "cover" }}
                   />
                   <div className="flex-grow-1">
                     <p className="mb-1 fs-6">{item.name}</p>
                     {item.size && (
-                      <small className="text-muted">Size: {item.size}</small>
+                      <small className="text-muted">
+                        {t("checkout.cartSummary.size", { size: item.size })}
+                      </small>
                     )}
-                    <span className="ms-2 text-muted">× {item.quantity}</span>
+                    <span className="ms-xl-2 text-muted">
+                      {t("checkout.cartSummary.quantity", {
+                        quantity: item.quantity,
+                      })}
+                    </span>
                   </div>
-                  <div className="text-danger fw-bold text-end ms-2 ">
+                  <div className="text-danger fw-bold text-end ms-xl-2">
                     {(
                       (item.discountPrice || item.price) * item.quantity
                     ).toLocaleString("vi-VN")}
@@ -622,12 +644,12 @@ const Checkout = ({ cartController, orderController, authController }) => {
           </div>
           <div>
             {/* Mã giảm giá */}
-            <div className="mb-4">
+            <div className="mb-xl-4">
               <div className="input-group">
                 <input
                   type="text"
-                  className="form-control py-2"
-                  placeholder="Nhập mã giảm giá"
+                  className="form-control py-xl-2"
+                  placeholder={t("checkout.cartSummary.voucher.placeholder")}
                   value={voucherCode}
                   onChange={(e) => setVoucherCode(e.target.value)}
                   onFocus={() => setIsFocused(true)}
@@ -639,50 +661,54 @@ const Checkout = ({ cartController, orderController, authController }) => {
                   disabled={!isFocused}
                   onClick={handleApplyVoucher}
                 >
-                  Áp dụng
+                  {t("checkout.cartSummary.voucher.apply")}
                 </button>
               </div>
               {voucherDiscount > 0 && (
-                <div className="text-success mt-2 small">
-                  Đã giảm: -{voucherDiscount.toLocaleString("vi-VN")}₫
+                <div className="text-success mt-xl-2 small">
+                  {t("checkout.cartSummary.voucher.applied", {
+                    amount: voucherDiscount.toLocaleString("vi-VN"),
+                  })}
                 </div>
               )}
             </div>
 
             {/* Tổng tiền */}
-            <div className="border-top pt-3">
-              <div className="d-flex justify-content-between mb-2">
-                <span>Tạm tính</span>
+            <div className="border-top pt-xl-3">
+              <div className="d-flex justify-content-between mb-xl-2">
+                <span>{t("checkout.cartSummary.subtotal")}</span>
                 <span>{subTotal.toLocaleString("vi-VN")}₫</span>
               </div>
-              <div className="d-flex justify-content-between mb-2">
-                <span>Phí vận chuyển</span>
+              <div className="d-flex justify-content-between mb-xl-2">
+                <span>{t("checkout.cartSummary.shippingFee")}</span>
                 <span>{shippingFee.toLocaleString("vi-VN")}₫</span>
               </div>
               {voucherDiscount > 0 && (
-                <div className="d-flex justify-content-between text-success mb-2">
-                  <span>Giảm giá</span>
+                <div className="d-flex justify-content-between text-success mb-xl-2">
+                  <span>{t("checkout.cartSummary.discount")}</span>
                   <span>-{voucherDiscount.toLocaleString("vi-VN")}₫</span>
                 </div>
               )}
-              <div className="d-flex justify-content-between fw-bold fs-4 text-danger border-top mt-3 pt-2">
-                <span>Tổng cộng</span>
+              <div className="d-flex justify-content-between fw-bold fs-4 text-danger border-top mt-xl-3 pt-xl-2">
+                <span>{t("checkout.cartSummary.total")}</span>
                 <span>{totalAmount.toLocaleString("vi-VN")}₫</span>
               </div>
             </div>
-            <div className="d-flex justify-content-between align-items-center mt-4">
+            <div className="d-flex justify-content-between align-items-center mt-xl-4">
               <div className="text-center">
                 <Link to="/cart" className="text-muted text-hover">
-                  ← Quay lại giỏ hàng
+                  {t("checkout.cartSummary.backToCart")}
                 </Link>
               </div>
               <button
                 type="button"
                 disabled={submitting}
-                className="btn btn-success w-50 py-3 fw-bold text-white"
+                className="btn btn-success w-50 py-xl-3 fw-bold text-white"
                 onClick={handleSubmit}
               >
-                {submitting ? "Đang gửi đơn hàng..." : "ĐẶT HÀNG"}
+                {submitting
+                  ? t("checkout.cartSummary.placingOrder")
+                  : t("checkout.cartSummary.placeOrder")}
               </button>
             </div>
           </div>

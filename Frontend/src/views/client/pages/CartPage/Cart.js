@@ -65,7 +65,7 @@ const Cart = ({
               <Link
                 className="link hover"
                 to="/"
-                title="Trang chủ"
+                title={t("header.home")}
                 style={{ textDecoration: "none", color: "inherit" }}
               >
                 {t("header.home")}

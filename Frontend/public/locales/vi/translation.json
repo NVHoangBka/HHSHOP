@@ -153,7 +153,52 @@
         "product": "Sản phẩm",
         "cart": "Giỏ hàng",
         "empty-category": "Không có sản phẩm nào trong danh mục này.",
-        "not-found": "Sản phẩm không tồn tại"
+        "not-found": "Sản phẩm không tồn tại",
+        "breadcrumb": {
+            "home": "Trang chủ"
+        },
+        "loading": "Đang tải...",
+        "notFound": "Sản phẩm không tồn tại.",
+        "backHome": "Quay về trang chủ",
+        "brand": "Thương hiệu",
+        "sku": "Mã sản phẩm",
+        "lowStock": "Chỉ còn {{count}} sản phẩm!",
+        "price": {
+            "discount": "Giảm {{percent}}%"
+        },
+        "promo": {
+            "title": "Quà tặng khuyến mãi",
+            "item1": "Nhập mã EGANY thêm 5% đơn hàng",
+            "item2": "Giảm giá 10% khi mua từ 5 sản phẩm",
+            "item3": "Giảm giá 20% khi mua từ 10 sản phẩm",
+            "item4": "Tặng phiếu mua hàng khi mua từ 500k"
+        },
+        "coupon": {
+            "title": "Mã giảm giá"
+        },
+        "variant": {
+            "label": "Dung tích"
+        },
+        "quantity": {
+            "label": "Số lượng"
+        },
+        "buttons": {
+            "buyNow": "Mua ngay",
+            "addToCart": "Thêm vào giỏ",
+            "outOfStock": "HẾT HÀNG"
+        },
+        "policies": {
+            "freeShipping": "Giao hàng miễn phí trong 24h (chỉ áp dụng khu vực nội thành)",
+            "installment": "Trả góp lãi suất 0% qua thẻ tín dụng Visa, Master, JCB",
+            "return": "Đổi trả miễn phí trong 30 ngày"
+        },
+        "features": {
+            "title": "Đặc điểm nổi bật",
+            "showMore": "Xem thêm",
+            "showLess": "Thu gọn",
+            "noContent": "Đang cập nhật thông tin chi tiết..."
+        },
+        "share": "Chia sẻ"
     },
     "search": {
         "title": "Tìm kiếm",
@@ -197,13 +242,181 @@
         "input-promo-code-checkout": "Nhập mã giảm giá ở trang thanh toán",
         "payment": "Thanh toán"
     },
+    "order": {
+        "checkOrder": {
+            "pageTitle": "Kiểm tra đơn hàng",
+            "checkBy": "Kiểm tra bằng",
+            "byPhone": "Số điện thoại",
+            "byEmail": "Email",
+            "byPhoneAndEmail": "Số điện thoại và Email",
+            "phoneNumber": "Số điện thoại",
+            "phonePlaceholder": "0909 xxx xxx",
+            "emailAddress": "Địa chỉ Email",
+            "emailPlaceholder": "Email@gmail.com",
+            "searchTitle": "Kiểm tra đơn hàng của bạn",
+            "loading": "Đang tìm kiếm đơn hàng...",
+            "loadingText": "Đang tìm...",
+            "foundOrders": "Tìm thấy {{count}} đơn hàng",
+            "orderCode": "Mã đơn",
+            "orderDate": "Ngày đặt",
+            "totalAmount": "Tổng tiền",
+            "paymentStatus": "Thanh toán",
+            "paid": "Đã thanh toán",
+            "unpaid": "Chưa thanh toán",
+            "status": {
+                "pending": "Chờ xử lý",
+                "confirmed": "Đã xác nhận",
+                "delivered": "Đã giao",
+                "completed": "Hoàn thành",
+                "cancelled": "Đã hủy"
+            },
+            "viewDetails": "Xem chi tiết sản phẩm ({{count}})",
+            "quantityTimesPrice": "Số lượng: {{quantity}} × {{price}}₫",
+            "noOrdersFound": "Không tìm thấy đơn hàng nào",
+            "errorNotFound": "Không tìm thấy thông tin đơn hàng. Vui lòng kiểm tra lại thông tin!"
+        }
+    },
+    "checkout": {
+        "pageTitle": "Trang thanh toán",
+        "loading": "Đang tải...",
+        "emptyCart": "Giỏ hàng trống",
+        "continueShopping": "Tiếp tục mua sắm",
+        "customerInfo": "Thông tin nhận hàng",
+        "addressBook": "Sổ địa chỉ",
+        "defaultAddress": " (Mặc định)",
+        "email": "Email",
+        "fullName": "Họ và tên",
+        "phone": "Số điện thoại",
+        "addressOptional": "Địa chỉ nhận hàng (tuỳ chọn)",
+        "province": "Tỉnh/Thành phố",
+        "district": "Quận/Huyện",
+        "ward": "Phường/Xã",
+        "note": "Ghi chú",
+        "notePlaceholder": "Giao giờ hành chính, để trước cửa...",
+        "required": "*",
+        "shipping": {
+            "title": "Vận chuyển",
+            "method": "Giao hàng tận nơi",
+            "fee": "40.000₫",
+            "loadingError": "Không thể load phí vận chuyển. Vui lòng thử lại"
+        },
+        "payment": {
+            "title": "Thanh toán",
+            "bankTransfer": "Chuyển khoản",
+            "cod": "Thu hộ (COD)"
+        },
+        "cartSummary": {
+            "title": "Giỏ hàng",
+            "productCount": "({{count}} sản phẩm)",
+            "size": "Size: {{size}}",
+            "quantity": "× {{quantity}}",
+            "voucher": {
+                "placeholder": "Nhập mã giảm giá",
+                "apply": "Áp dụng",
+                "applied": "Đã giảm: -{{amount}}₫"
+            },
+            "subtotal": "Tạm tính",
+            "shippingFee": "Phí vận chuyển",
+            "discount": "Giảm giá",
+            "total": "Tổng cộng",
+            "backToCart": "← Quay lại giỏ hàng",
+            "placeOrder": "ĐẶT HÀNG",
+            "placingOrder": "Đang gửi đơn hàng..."
+        },
+        "alert": {
+            "emptyRequired": "Vui lòng điền đầy đủ thông tin nhận hàng",
+            "voucherSuccess10": "Áp dụng GIAM10 – Giảm 10%",
+            "voucherFreeShip": "Miễn phí vận chuyển!",
+            "voucherInvalid": "Mã không hợp lệ",
+            "orderSuccess": "Đặt hàng thành công! Mã đơn: #{{orderId}}",
+            "orderFailed": "Đặt hàng thất bại: {{message}}",
+            "errorOccurred": "Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại!"
+        }
+    },
+    "orderSuccess": {
+        "pageTitle": "Đặt hàng thành công!",
+        "orderId": "Mã đơn hàng",
+        "totalAmount": "Tổng tiền",
+        "bankTransfer": {
+            "title": "THANH TOÁN CHUYỂN KHOẢN",
+            "timeLeft": "Thời gian còn lại",
+            "expired": "ĐÃ HẾT HẠN",
+            "qrTitle": "QR Thanh toán",
+            "errorQr": "Lỗi: Không tải được mã QR. Vui lòng liên hệ shop!",
+            "bank": "Ngân hàng",
+            "accountName": "Chủ tài khoản",
+            "accountNumber": "Số tài khoản",
+            "transferContent": "Nội dung chuyển khoản",
+            "important": "QUAN TRỌNG",
+            "importantNote": "Vui lòng chuyển khoản đúng nội dung để đơn được xử lý tự động!"
+        },
+        "cod": {
+            "title": "THANH TOÁN KHI NHẬN HÀNG",
+            "description": "Bạn sẽ thanh toán trực tiếp cho shipper khi nhận hàng"
+        },
+        "errorNoOrder": "Không tìm thấy thông tin đơn hàng! Vui lòng đặt hàng lại.",
+        "backHome": "Về trang chủ",
+        "continueShopping": "Tiếp tục mua sắm",
+        "viewOrderDetails": "Xem chi tiết đơn hàng",
+        "support": "Có vấn đề? Liên hệ ngay:",
+        "supportPhone": "0385427179 (Zalo/Facebook)"
+    },
     "info": {
         "name": "Siêu thị HUNG NHUNG",
         "slogan": "Thương hiệu siêu thị uy tín và chất lượng, cam kết mang đến những trải nghiệm mua sắm tiện lợi, hiện đại và phong phú",
         "tax-code": "Mã số thuế",
         "address": "Địa chỉ",
         "hotline": "Hotline",
-        "email": "Email"
+        "email": "Email",
+        "fullName": "Họ tên",
+        "phoneNumber": "Số điện thoại",
+        "contact": {
+            "pageTitle": "Liên hệ với chúng tôi",
+            "header": "Gửi liên hệ của bạn",
+            "sendMessage": "Gửi tin nhắn",
+            "map": {
+                "instruction": "Nhấn vào bản đồ để xem chỉ đường",
+                "zoomTip": "Phóng to/thu nhỏ hoặc kéo để khám phá"
+            },
+            "faq": {
+                "title": "Câu hỏi thường gặp",
+                "questions": [
+                    {
+                        "q": "Thời gian giao hàng mất bao lâu?",
+                        "a": "Giao hàng tiêu chuẩn trong Việt Nam thường mất 2-5 ngày làm việc."
+                    },
+                    {
+                        "q": "Quý công ty chấp nhận những hình thức thanh toán nào?",
+                        "a": "Chúng tôi chấp nhận Thanh toán khi nhận hàng (COD), Chuyển khoản ngân hàng và Thẻ tín dụng/thẻ ghi nợ."
+                    }
+                ]
+            }
+        }
+    },
+    "news": {
+        "pageTitle": "Tin tức",
+        "breadcrumb": {
+            "home": "Trang chủ",
+            "current": "Tin tức"
+        },
+        "heading": "Tin tức",
+        "loading": "Đang tải...",
+        "noArticles": "Chưa có bài viết nào",
+        "readMore": "Xem chi tiết",
+        "publishedOn": "Ngày đăng",
+        "sidebar": {
+            "categories": {
+                "title": "DANH MỤC",
+                "tips": "Mẹo hay",
+                "recipes": "Món ngon",
+                "news": "Tin tức",
+                "promotions": "Tin khuyến mãi"
+            },
+            "featured": {
+                "title": "TIN TỨC NỔI BẬT"
+            },
+            "tags": "Tags"
+        }
     },
     "service-benefits": {
         "fast-delivery": {
@@ -259,6 +472,7 @@
         "confirm": "Xác nhận",
         "cancel": "Hủy",
         "update": "Cập nhật",
-        "delete": "Xóa"
+        "delete": "Xóa",
+        "check": "Kiểm tra"
     }
 }

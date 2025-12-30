@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import newController from "../../../../controllers/NewController";
 import tagController from "../../../../controllers/TagController";
+import { useTranslation } from "react-i18next";
 
 const News = () => {
+  const { t } = useTranslation();
   const [news, setNews] = useState([]);
   const [tagsNew, setTagsNew] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -50,15 +52,17 @@ const News = () => {
               <Link
                 className="link hover"
                 to="/"
-                title="Trang chủ"
+                title={t("news.breadcrumb.home")}
                 style={{ textDecoration: "none", color: "inherit" }}
               >
-                Trang chủ
+                {t("news.breadcrumb.home")}
               </Link>
               <span className="mx-1 md:mx-2 inline-block">&nbsp;/&nbsp;</span>
             </li>
             <li>
-              <span className="text-secondary">Tin tức</span>
+              <span className="text-secondary">
+                {t("news.breadcrumb.current")}
+              </span>
             </li>
           </ul>
         </div>
@@ -68,14 +72,20 @@ const News = () => {
           <div className="row">
             <div className="col-9">
               <div className=" text-left">
-                <h1 className="heading fw-semibold text-success">Tin tức</h1>
+                <h1 className="heading fw-semibold text-success">
+                  {t("news.heading")}
+                </h1>
               </div>
               {/* Loading hoặc danh sách tin */}
               {loading ? (
                 <div className="text-center py-5">
                   <div className="spinner-border text-success" role="status">
-                    <span className="visually-hidden">Đang tải...</span>
+                    <span className="visually-hidden">{t("news.loading")}</span>
                   </div>
+                </div>
+              ) : news.length === 0 ? (
+                <div className="text-center py-5 text-muted">
+                  {t("news.noArticles")}
                 </div>
               ) : (
                 <div className="article-list">
@@ -123,10 +133,10 @@ const News = () => {
 
                               <a
                                 href={item.slug}
-                                title="Xem chi tiết"
+                                title={t("news.readMore")}
                                 className="btn fw-semibold  text-danger border border-danger  whitespace-nowrap px-3 py-2 fs-7 rounded-5"
                               >
-                                Xem chi tiết
+                                {t("news.readMore")}
                               </a>
                             </div>
                           </div>
@@ -143,7 +153,7 @@ const News = () => {
                 <aside className="aside-item blog-sidebar aside-item py-4">
                   <div className="aside-title">
                     <h2 className="title-head mt-0 fs-6 fw-semibold mb-3">
-                      <span>DANH MỤC</span>
+                      {t("news.sidebar.categories.title")}
                     </h2>
                   </div>
                   <div className="aside-content">
@@ -154,7 +164,7 @@ const News = () => {
                             className="nav-link link text-hover"
                             href="/meo-hay"
                           >
-                            Mẹo hay
+                            {t("news.sidebar.categories.tips")}
                           </a>
                         </li>
 
@@ -163,7 +173,7 @@ const News = () => {
                             className="nav-link link text-hover"
                             href="/mon-ngon"
                           >
-                            Món ngon
+                            {t("news.sidebar.categories.recipes")}
                           </a>
                         </li>
 
@@ -172,7 +182,7 @@ const News = () => {
                             className="nav-link link text-hover"
                             href="/meo-hay"
                           >
-                            Tin tức
+                            {t("news.sidebar.categories.news")}{" "}
                           </a>
                         </li>
 
@@ -181,7 +191,7 @@ const News = () => {
                             className="nav-link link text-hover"
                             href="/meo-hay"
                           >
-                            Tin khuyến mãi
+                            {t("news.sidebar.categories.promotions")}
                           </a>
                         </li>
                       </ul>
@@ -196,9 +206,9 @@ const News = () => {
                         <a
                           className="link text-black text-decoration-none text-hover"
                           href="meo-hay"
-                          title="TIN TỨC NỔI BẬT"
+                          title={t("news.sidebar.featured.title")}
                         >
-                          TIN TỨC NỔI BẬT
+                          {t("news.sidebar.featured.title")}
                         </a>
                       </span>
                     </h2>
@@ -244,7 +254,7 @@ const News = () => {
                 <aside className="blog-aside aside-item blog-aside-article aside-item py-4 border-top border-neutral-50">
                   <div className="aside-title">
                     <h2 className="title-head mt-0 fs-6 fw-semibold mb-3">
-                      Tags
+                      {t("news.sidebar.tags")}
                     </h2>
                   </div>
                   <div className="aside-content-article aside-content mt-3 ">

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useParams, Link, useNavigate } from "react-router-dom";
 
 const ProductDetail = ({ addToCart, productController }) => {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const [t, i18n] = useTranslation();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
@@ -103,7 +105,7 @@ const ProductDetail = ({ addToCart, productController }) => {
     return (
       <div className="container py-5 text-center">
         <div className="spinner-border text-success" role="status">
-          <span className="visually-hidden">Đang tải...</span>
+          <span className="visually-hidden">{t("product.loading")}</span>
         </div>
       </div>
     );
@@ -111,10 +113,10 @@ const ProductDetail = ({ addToCart, productController }) => {
 
   if (!product) {
     return (
-      <div className="container py-5 text-center">
-        <p className="text-muted">Sản phẩm không tồn tại.</p>
+      <div className="container py-xl-5 text-center">
+        <p className="text-muted">{t("product.notFound")}</p>
         <Link to="/" className="btn btn-outline-success">
-          Quay về trang chủ
+          {t("product.backHome")}
         </Link>
       </div>
     );
@@ -127,6 +129,9 @@ const ProductDetail = ({ addToCart, productController }) => {
     product.price;
   const originalPrice = selectedVariant?.price || product.price;
   const hasDiscount = currentPrice < originalPrice;
+  const discountPercent = hasDiscount
+    ? Math.round(100 - (currentPrice / originalPrice) * 100)
+    : 0;
 
   const allImages = product?.gallery || [product?.image];
 
@@ -141,10 +146,10 @@ const ProductDetail = ({ addToCart, productController }) => {
                 <Link
                   className="link hover fs-7"
                   to="/"
-                  title="Trang chủ"
+                  title={t("product.breadcrumb.home")}
                   style={{ textDecoration: "none", color: "black" }}
                 >
-                  <span>Trang chủ</span>
+                  {t("product.breadcrumb.home")}
                 </Link>
                 <span className="mx-1 md:mx-2 inline-block">/</span>
               </li>
@@ -202,7 +207,7 @@ const ProductDetail = ({ addToCart, productController }) => {
                 {/* Chia sẻ */}
                 <div class="mb-3">
                   <div class="share-group d-flex justify-content-center align-items-center mt-5">
-                    <p class="share-group__heading m-0">Chia sẻ</p>
+                    <p class="share-group__heading m-0">{t("product.share")}</p>
                     <div class="share-group__list d-flex ms-3">
                       <Link
                         title="facebook-share"
@@ -260,7 +265,7 @@ const ProductDetail = ({ addToCart, productController }) => {
 
                     <div class="group-status  d-flex flex-wrap pb-2 align-items-center">
                       <div class="status status-vendor col-4">
-                        <span class="fs-7 me-1">Thương hiệu:</span>
+                        <span class="fs-7 me-1">{t("product.brand")}</span>
 
                         <span className="fs-7 fw-semibold text-black">
                           {Array.isArray(product.brands)
@@ -269,15 +274,15 @@ const ProductDetail = ({ addToCart, productController }) => {
                         </span>
                       </div>
                       <div class="status status-sku  col-4">
-                        <span class="fs-7">Mã sản phẩm:</span>
+                        <span className="fs-7">{t("product.sku")}:</span>
                         <span class="fs-7">
                           {product._id?.slice(-8).toUpperCase() || "N/A"}
                         </span>
                       </div>
                       {product.stock !== undefined && product.stock < 10 && (
                         <div class="text-danger fs-7">
-                          <i class="bi bi-exclamation-triangle"></i> Chỉ còn{" "}
-                          {product.stock} sản phẩm!
+                          <i className="bi bi-exclamation-triangle"></i>{" "}
+                          {t("product.lowStock", { count: product.stock })}
                         </div>
                       )}
                     </div>
@@ -290,9 +295,16 @@ const ProductDetail = ({ addToCart, productController }) => {
                             {formatPrice(currentPrice)}
                           </span>
                           {hasDiscount && (
-                            <del className="text-muted ms-2 fs-6">
-                              {formatPrice(originalPrice)}
-                            </del>
+                            <>
+                              <del className="text-muted ms-2 fs-6">
+                                {formatPrice(originalPrice)}
+                              </del>
+                              <span className="ms-2 badge bg-danger">
+                                {t("product.price.discount", {
+                                  percent: discountPercent,
+                                })}
+                              </span>
+                            </>
                           )}
                         </div>
                       </div>
@@ -305,22 +317,22 @@ const ProductDetail = ({ addToCart, productController }) => {
                       <div class="promo-box__header d-flex align-items-center px-4 py-1 bg-success-subtle text-success">
                         <i class="bi bi-gift"></i>
                         <div class="promo-box__header-title ms-2">
-                          Quà tặng khuyến mãi
+                          {t("product.promo.title")}
                         </div>
                       </div>
 
                       <div class="promo-box__body px-5 bg-background py-3">
-                        <div class="promo-box__body-item">
-                          1. Nhập mã EGANY thêm 5% đơn hàng
+                        <div className="promo-box__body-item">
+                          1. {t("product.promo.item1")}
                         </div>
-                        <div class="promo-box__body-item">
-                          2. Giảm giá 10% khi mua từ 5 sản phẩm
+                        <div className="promo-box__body-item">
+                          2. {t("product.promo.item2")}
                         </div>
-                        <div class="promo-box__body-item">
-                          3. Giảm giá 20% khi mua từ 10 sản phẩm
+                        <div className="promo-box__body-item">
+                          3. {t("product.promo.item3")}
                         </div>
-                        <div class="promo-box__body-item">
-                          4. Tặng phiếu mua hàng khi mua từ 500k
+                        <div className="promo-box__body-item">
+                          4. {t("product.promo.item4")}
                         </div>
                       </div>
                     </div>
@@ -328,7 +340,9 @@ const ProductDetail = ({ addToCart, productController }) => {
 
                   <div class="coupon-box mb-4">
                     <div class="coupon-group d-flex align-items-center justify-content-between">
-                      <div class="coupon-group-header col-2">Mã giảm giá</div>
+                      <div class="coupon-group-header col-2">
+                        {t("product.coupon.title")}
+                      </div>
                       <div class="d-flex" data-portal="#coupon-drawer">
                         <div class="d-flex align-items-center cursor-pointer">
                           <div class="coupon-group-item overflow-hidden d-flex align-items-center px-3 py-2 fs-7 bg-warning-subtle mx-1 text-active rounded-3 col-3">
@@ -364,7 +378,9 @@ const ProductDetail = ({ addToCart, productController }) => {
                     <div class="mb-4">
                       <div class="variant-picker d-flex">
                         <div class="variant-picker__input d-flex align-items-center w-100">
-                          <div class="mb-1 col-2">Dung tích</div>
+                          <div class="mb-1 col-2">
+                            {t("product.variant.label")}
+                          </div>
                           <div
                             class="fieldset d-flex flex-wrap selected"
                             data-option="dung-tich"
@@ -403,14 +419,14 @@ const ProductDetail = ({ addToCart, productController }) => {
                   {product.stock === 0 ? (
                     <div>
                       <div class="d-none btn fw-semibold mt-2 btn w-100">
-                        HẾT HÀNG
+                        {t("product.buttons.outOfStock")}
                       </div>
                       <input type="hidden" name="variantId" value="118468360" />
                     </div>
                   ) : (
                     <div>
                       <div class="d-flex align-items-center mb-4 ">
-                        <div class="col-2"> Số lượng </div>
+                        <div class="col-2"> {t("product.quantity.label")} </div>
                         <quantity-input>
                           <div class="custom-number-input product-quantity">
                             <div class="d-flex border rounded-1 w-50">
@@ -450,7 +466,7 @@ const ProductDetail = ({ addToCart, productController }) => {
                           name="buynow"
                           class=" fw-semibold btn border border-danger btn-buynow w-100 py-2 text-danger col mx-2 rounded-5"
                         >
-                          <span> Mua ngay </span>
+                          <span> {t("product.buttons.buyNow")} </span>
                           <span class="loading-icon hidden align-items-center justify-content-center">
                             <span class="rounded-full animate-pulse"></span>
 
@@ -465,7 +481,7 @@ const ProductDetail = ({ addToCart, productController }) => {
                           class=" fw-semibold btn btn-add-to-cart w-100 bg-danger text-white py-2 col mx-2 rounded-5"
                           onClick={handleAddToCart}
                         >
-                          <span> Thêm vào giỏ</span>
+                          <span> {t("product.buttons.addToCart")}</span>
                           <span class="loading-icon  hidden align-items-center justify-content-center">
                             <span class="rounded-full animate-pulse"></span>
 
@@ -491,12 +507,11 @@ const ProductDetail = ({ addToCart, productController }) => {
                         width="20"
                         height="20"
                         src="//bizweb.dktcdn.net/100/518/448/themes/953339/assets/policy_product_image_1.png?1760435339581"
-                        alt="Giao hàng miễn phí trong 24h (chỉ áp dụng khu vực nội thành)"
+                        alt={t("product.policies.freeShipping")}
                       />
                     </div>
                     <div class="fs-7 ms-2">
-                      Giao hàng miễn phí trong 24h (chỉ áp dụng khu vực nội
-                      thành)
+                      {t("product.policies.freeShipping")}
                     </div>
                   </li>
 
@@ -508,11 +523,11 @@ const ProductDetail = ({ addToCart, productController }) => {
                         width="20"
                         height="20"
                         src="//bizweb.dktcdn.net/100/518/448/themes/953339/assets/policy_product_image_2.png?1760435339581"
-                        alt="Trả góp lãi suất 0% qua thẻ tín dụng Visa, Master, JCB"
+                        alt={t("product.policies.installment")}
                       />
                     </div>
                     <div class="fs-7 ms-2">
-                      Trả góp lãi suất 0% qua thẻ tín dụng Visa, Master, JCB
+                      {t("product.policies.installment")}
                     </div>
                   </li>
 
@@ -524,10 +539,10 @@ const ProductDetail = ({ addToCart, productController }) => {
                         width="20"
                         height="20"
                         src="//bizweb.dktcdn.net/100/518/448/themes/953339/assets/policy_product_image_3.png?1760435339581"
-                        alt="Đổi trả miễn phí trong 30 ngày"
+                        alt={t("product.policies.return")}
                       />
                     </div>
-                    <div class="fs-7 ms-2">Đổi trả miễn phí trong 30 ngày</div>
+                    <div class="fs-7 ms-2">{t("product.policies.return")}</div>
                   </li>
                 </ul>
               </div>
@@ -543,14 +558,14 @@ const ProductDetail = ({ addToCart, productController }) => {
               class="tab-btn btn rounded-0 active fw-semibold "
               aria-controls="product-content"
             >
-              Đặc điểm nổi bật
+              {t("product.features.title")}
             </button>
           </div>
 
           <div class="tab-content  bg-white py-5" id="product-content">
             <div className="bg-success-subtle pb-4">
               <h3 class="fs-5 text-center block py-3 fw-semibold text-success m-0">
-                Đặc điểm nổi bật
+                {t("product.features.title")}
               </h3>
               <div className=" bg-white pb-4 mb-4">
                 <div class="container">
@@ -581,7 +596,7 @@ const ProductDetail = ({ addToCart, productController }) => {
                     </div>
                   ) : (
                     <p className="text-center text-muted py-5">
-                      Đang cập nhật thông tin chi tiết...
+                      {t("product.features.noContent")}
                     </p>
                   )}
                   {product.highlightContent && (
@@ -590,7 +605,9 @@ const ProductDetail = ({ addToCart, productController }) => {
                       id="btn-showmore"
                       onClick={handleShowMore}
                     >
-                      {showMore ? "Thu gọn" : "Xem thêm"}
+                      {showMore
+                        ? t("product.features.showLess")
+                        : t("product.features.showMore")}
                       <i class="bi bi-chevron-down"></i>
                     </button>
                   )}

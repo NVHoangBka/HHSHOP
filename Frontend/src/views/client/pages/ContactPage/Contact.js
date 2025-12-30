@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 const Contact = ({ authController }) => {
+  const [t, i18n] = useTranslation();
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -30,44 +32,46 @@ const Contact = ({ authController }) => {
     <div className="bg-success-subtle">
       <div className="breadcrumbs">
         <div className="container">
-          <ul className="breadcrumb py-3 d-flex flex-wrap align-items-center">
+          <ul className="breadcrumb py-xl-3 d-flex flex-wrap align-items-center">
             <li className="home">
               <Link
                 className="link hover"
                 to="/"
-                title="Trang chủ"
+                title={t("header.home")}
                 style={{ textDecoration: "none", color: "inherit" }}
               >
-                Trang chủ
+                {t("header.home")}
               </Link>
-              <span className="mx-1 md:mx-2 inline-block">&nbsp;/&nbsp;</span>
+              <span className="mx-1 inline-block">&nbsp;/&nbsp;</span>
             </li>
             <li>
-              <span className="text-secondary">Liên hệ</span>
+              <span className="text-secondary">
+                {t("info.contact.pageTitle")}
+              </span>
             </li>
           </ul>
         </div>
       </div>
-      <section class="section main-page pb-5">
+      <section class="section main-page pb-xl-5">
         <div class="container">
-          <div class="bg-white rounded  mb-5 px-4 pt-2 pb-4">
-            <div class="grid pt-4 row">
-              <div className="col-6">
-                <h1 class="fw-semibold mb-2">TẬP ĐOÀN HHGROUP</h1>
-                <div class="d-flex align-items-start mb-2    ms-4">
+          <div class="bg-white rounded  mb-xl-5 px-xl-4 pt-xl-2 pb-xl-4">
+            <div class="grid pt-xl-4 row">
+              <div className="col-xl-6">
+                <h1 class="fw-semibold mb-xl-2">{t("info.name")}</h1>
+                <div class="d-flex align-items-start mb-xl-2 ms-xl-4">
                   <i class="bi bi-geo-alt text-secondary"></i>
-                  <div class="ms-1">
-                    <p class="text-forground m-0">Địa chỉ</p>
+                  <div class="ms-xl-1">
+                    <p class="text-forground m-0">{t("info.address")}</p>
                     <p class="fw-semibold mb-1">
                       <span>{companyAddress}</span>
                     </p>
                   </div>
                 </div>
-                <div class="grid justify-content-between ms-4">
-                  <div class="d-flex align-items-start mb-2">
+                <div class="grid justify-content-between ms-xl-4">
+                  <div class="d-flex align-items-start mb-xl-2">
                     <i class="bi bi-telephone text-secondary"></i>
                     <div class="ms-1">
-                      <p class="text-forground m-0">Hotline</p>
+                      <p class="text-forground m-0">{t("info.hotline")}</p>
                       <a
                         class="fw-semibold text-success link "
                         href="tel:19006750"
@@ -80,7 +84,7 @@ const Contact = ({ authController }) => {
                   <div class="d-flex align-items-start">
                     <i class="bi bi-envelope text-secondary"></i>
                     <div class="ms-1">
-                      <p class="text-forground m-0">Email</p>
+                      <p class="text-forground m-0">{t("info.email")}</p>
                       <a
                         class="fw-semibold link text-black"
                         href="mailto:support@sapo.vn"
@@ -90,8 +94,10 @@ const Contact = ({ authController }) => {
                     </div>
                   </div>
                 </div>
-                <div class="py-4 ms-4 ">
-                  <h2 class="fw-semibold mb-2 fs-4">Liên hệ với chúng tôi</h2>
+                <div class="py-xl-4 ms-xl-4 ">
+                  <h2 class="fw-semibold mb-xl-2 fs-4">
+                    {t("info.contact.pageTitle")}
+                  </h2>
                   <form
                     method="post"
                     action="/postcontact"
@@ -103,11 +109,11 @@ const Contact = ({ authController }) => {
 
                     <div class="form-signup clearfix">
                       <div class="group_contact ">
-                        <fieldset class="form-group my-2 ">
+                        <fieldset class="form-group my-xl-2 ">
                           <input
-                            placeholder="Họ tên*"
+                            placeholder={t("info.fullName")}
                             type="text"
-                            class="form-input w-100 p-2"
+                            class="form-input w-100 p-xl-2"
                             name="FullName"
                             value={fullName}
                             onChange={(e) => {
@@ -116,13 +122,13 @@ const Contact = ({ authController }) => {
                             required
                           />
                         </fieldset>
-                        <fieldset class="form-group my-2 ">
+                        <fieldset class="form-group my-xl-2 ">
                           <input
                             placeholder="Email*"
                             type="email"
                             pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
                             id="email1"
-                            class="form-input w-100 p-2"
+                            class="form-input w-100 p-xl-2"
                             value={email}
                             onChange={(e) => {
                               setEmail(e.target.value);
@@ -131,11 +137,11 @@ const Contact = ({ authController }) => {
                             required
                           />
                         </fieldset>
-                        <fieldset class="form-group my-2 ">
+                        <fieldset class="form-group my-xl-2 ">
                           <input
-                            placeholder="Số điện thoại*"
+                            placeholder={t("info.phoneNumber")}
                             type="text"
-                            class="form-input w-100 p-2"
+                            class="form-input w-100 p-xl-2"
                             required
                             pattern="\d+"
                             name="PhoneNumber"
@@ -145,12 +151,12 @@ const Contact = ({ authController }) => {
                             }}
                           />
                         </fieldset>
-                        <fieldset class="form-group my-2 ">
+                        <fieldset class="form-group my-xl-2 ">
                           <textarea
                             placeholder="Nhập nội dung*"
                             name="Body"
                             id="comment"
-                            class="form-textarea w-100 p-2"
+                            class="form-textarea w-100 p-xl-2"
                             rows="5"
                             required
                           ></textarea>
@@ -158,9 +164,9 @@ const Contact = ({ authController }) => {
                         <div class="">
                           <button
                             type="submit"
-                            class="btn bg-success text-white fw-semibold py-2 px-4 rounded-5"
+                            class="btn bg-success text-white fw-semibold py-xl-2 px-xl-4 rounded-5"
                           >
-                            Gửi liên hệ của bạn
+                            {t("info.contact.header")}
                           </button>
                         </div>
                       </div>
@@ -168,7 +174,7 @@ const Contact = ({ authController }) => {
                   </form>
                 </div>
               </div>
-              <div className="col-6">
+              <div className="col-xl-6">
                 <div className="position-sticky top-0">
                   <div className="ratio ratio-1x1 rounded overflow-hidden shadow-lg">
                     <iframe
@@ -182,9 +188,9 @@ const Contact = ({ authController }) => {
                       title="Bản đồ HHGroup"
                     ></iframe>
                   </div>
-                  <p className="text-center mt-3 text-muted small">
-                    <i className="bi bi-geo-alt-fill"></i> Nhấn vào bản đồ để
-                    xem chỉ đường
+                  <p className="text-center mt-xl-3 text-muted small">
+                    <i className="bi bi-geo-alt-fill"></i>{" "}
+                    {t("info.contact.map.instruction")}
                   </p>
                 </div>
               </div>

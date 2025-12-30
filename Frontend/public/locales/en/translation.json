@@ -150,7 +150,52 @@
         "product": "Product",
         "cart": "Cart",
         "empty-category": "No products in this category.",
-        "not-found": "Product not found"
+        "not-found": "Product not found",
+        "breadcrumb": {
+            "home": "Home"
+        },
+        "loading": "Loading...",
+        "notFound": "Product not found.",
+        "backHome": "Back to Home",
+        "brand": "Brand",
+        "sku": "Product Code",
+        "lowStock": "Only {{count}} left in stock!",
+        "price": {
+            "discount": "-{{percent}}%"
+        },
+        "promo": {
+            "title": "Promotional Gifts",
+            "item1": "Enter code EGANY for extra 5% off",
+            "item2": "10% off when buying 5 or more items",
+            "item3": "20% off when buying 10 or more items",
+            "item4": "Gift voucher for orders from 500k"
+        },
+        "coupon": {
+            "title": "Discount Codes"
+        },
+        "variant": {
+            "label": "Size/Volume"
+        },
+        "quantity": {
+            "label": "Quantity"
+        },
+        "buttons": {
+            "buyNow": "Buy Now",
+            "addToCart": "Add to Cart",
+            "outOfStock": "OUT OF STOCK"
+        },
+        "policies": {
+            "freeShipping": "Free delivery within 24h (inner city only)",
+            "installment": "0% interest installment via Visa, Master, JCB",
+            "return": "Free return within 30 days"
+        },
+        "features": {
+            "title": "Key Features",
+            "showMore": "Show More",
+            "showLess": "Show Less",
+            "noContent": "Product details are being updated..."
+        },
+        "share": "Share"
     },
     "search": {
         "name": "Search",
@@ -193,13 +238,183 @@
         "input-promo-code-checkout": "Enter a promo code at checkout",
         "payment": "Payment"
     },
+    "order": {
+        "checkOrder": {
+            "pageTitle": "Order Checking",
+            "breadcrumb": "Order Checking",
+            "checkBy": "Check by",
+            "byPhone": "Phone Number",
+            "byEmail": "Email",
+            "byPhoneAndEmail": "Phone Number and Email",
+            "phoneNumber": "Phone Number",
+            "phonePlaceholder": "0909 xxx xxx",
+            "emailAddress": "Email Address",
+            "emailPlaceholder": "example@gmail.com",
+            "searchTitle": "Check Your Order",
+            "loading": "Searching for your orders...",
+            "loadingText": "Loading...",
+            "foundOrders": "Found {{count}} order",
+            "noOrdersFound": "No orders found. Please check your information and try again.",
+            "errorNotFound": "No order information found. Please verify your details!",
+            "orderCode": "Order ID",
+            "orderDate": "Order Date",
+            "totalAmount": "Total Amount",
+            "paymentStatus": "Payment Status",
+            "paid": "Paid",
+            "unpaid": "Unpaid",
+            "status": {
+                "pending": "Pending",
+                "confirmed": "Confirmed",
+                "delivered": "Delivered",
+                "completed": "Completed",
+                "cancelled": "Cancelled"
+            },
+            "viewDetails": "View product details ({{count}} item)",
+            "quantityTimesPrice": "Quantity: {{quantity}} × {{price}}₫"
+        }
+    },
+    "checkout": {
+        "pageTitle": "Checkout",
+        "loading": "Loading...",
+        "emptyCart": "Your cart is empty",
+        "continueShopping": "Continue Shopping",
+        "customerInfo": "Shipping Information",
+        "addressBook": "Address Book",
+        "defaultAddress": " (Default)",
+        "email": "Email",
+        "fullName": "Full Name",
+        "phone": "Phone Number",
+        "addressOptional": "Shipping Address (optional)",
+        "province": "Province/City",
+        "district": "District",
+        "ward": "Ward/Commune",
+        "note": "Order Note",
+        "notePlaceholder": "Delivery during office hours, leave at the door...",
+        "required": "*",
+        "shipping": {
+            "title": "Shipping",
+            "method": "Standard Delivery",
+            "fee": "40,000₫",
+            "loadingError": "Unable to load shipping fee. Please try again"
+        },
+        "payment": {
+            "title": "Payment Method",
+            "bankTransfer": "Bank Transfer",
+            "cod": "Cash on Delivery (COD)"
+        },
+        "cartSummary": {
+            "title": "Your Order",
+            "productCount_one": "({{count}} item)",
+            "productCount_other": "({{count}} items)",
+            "size": "Size: {{size}}",
+            "quantity": "× {{quantity}}",
+            "voucher": {
+                "placeholder": "Enter discount code",
+                "apply": "Apply",
+                "applied": "Applied: -{{amount}}₫"
+            },
+            "subtotal": "Subtotal",
+            "shippingFee": "Shipping Fee",
+            "discount": "Discount",
+            "total": "Total",
+            "backToCart": "← Back to Cart",
+            "placeOrder": "PLACE ORDER",
+            "placingOrder": "Processing your order..."
+        },
+        "alert": {
+            "emptyRequired": "Please fill in all required shipping information",
+            "voucherSuccess10": "GIAM10 applied – 10% off",
+            "voucherFreeShip": "Free shipping applied!",
+            "voucherInvalid": "Invalid discount code",
+            "orderSuccess": "Order placed successfully! Order ID: #{{orderId}}",
+            "orderFailed": "Order placement failed: {{message}}",
+            "errorOccurred": "An error occurred while placing the order. Please try again!"
+        }
+    },
+    "orderSuccess": {
+        "pageTitle": "Order Placed Successfully!",
+        "orderId": "Order ID",
+        "totalAmount": "Total Amount",
+        "bankTransfer": {
+            "title": "BANK TRANSFER PAYMENT",
+            "timeLeft": "Time remaining",
+            "expired": "EXPIRED",
+            "qrTitle": "Payment QR Code",
+            "errorQr": "Error: Unable to load QR code. Please contact support!",
+            "bank": "Bank",
+            "accountName": "Account Holder",
+            "accountNumber": "Account Number",
+            "transferContent": "Transfer Content",
+            "important": "IMPORTANT",
+            "importantNote": "Please transfer with the exact content to process your order automatically!"
+        },
+        "cod": {
+            "title": "CASH ON DELIVERY",
+            "description": "You will pay directly to the delivery person upon receipt"
+        },
+        "errorNoOrder": "No order information found! Please place your order again.",
+        "backHome": "Back to Home",
+        "continueShopping": "Continue Shopping",
+        "viewOrderDetails": "View Order Details",
+        "support": "Having issues? Contact us immediately:",
+        "supportPhone": "0385421799 (Zalo/Facebook)"
+    },
     "info": {
         "name": "HUNGNHUNG supermarket",
         "slogan": "A reputable and high-quality supermarket brand, committed to providing convenient, modern, and diverse shopping experiences",
         "tax-code": "Tax Code",
         "address": "Address",
         "hotline": "Hotline",
-        "email": "Email"
+        "email": "Email",
+        "fullName": "Full Name",
+        "phoneNumber": "Ph",
+        "contact": {
+            "pageTitle": "Contact Us",
+            "header": "Get in Touch",
+            "sendMessage": "Send Your Message",
+            "map": {
+                "instruction": "Click on the map to view directions",
+                "zoomTip": "Zoom in/out or drag to explore"
+            },
+            "faq": {
+                "title": "Frequently Asked Questions",
+                "questions": [
+                    {
+                        "q": "How long does shipping take?",
+                        "a": "Standard shipping within Vietnam usually takes 2-5 business days."
+                    },
+                    {
+                        "q": "What payment methods do you accept?",
+                        "a": "We accept Cash on Delivery (COD), Bank Transfer, and Credit/Debit Cards."
+                    }
+                ]
+            }
+        }
+    },
+    "news": {
+        "pageTitle": "News",
+        "breadcrumb": {
+            "home": "Home",
+            "current": "News"
+        },
+        "heading": "News & Articles",
+        "loading": "Loading...",
+        "noArticles": "No articles available at the moment",
+        "readMore": "Read More",
+        "publishedOn": "Published on",
+        "sidebar": {
+            "categories": {
+                "title": "CATEGORIES",
+                "tips": "Useful Tips",
+                "recipes": "Delicious Recipes",
+                "news": "News",
+                "promotions": "Promotions"
+            },
+            "featured": {
+                "title": "FEATURED NEWS"
+            },
+            "tags": "Tags"
+        }
     },
     "service-benefits": {
         "fast-delivery": {
@@ -255,6 +470,7 @@
         "confirm": "Confirm",
         "cancel": "Cancel",
         "update": "Update",
-        "delete": "Delete"
+        "delete": "Delete",
+        "check": "Check"
     }
 }
