@@ -82,13 +82,14 @@ const Header = ({
 
   const currentLang = i18n.language || "vi";
 
-  const languages = (i18n.options.supportedLngs || ["vi", "en"]).filter(
+  const languages = (i18n.options.supportedLngs || ["vi", "en", "cz"]).filter(
     (lng) => lng !== "cimode"
   );
 
   const languageNames = {
-    vi: "Tiếng Việt",
-    en: "English",
+    vi: t("language.vi"),
+    en: t("language.en"),
+    cz: t("language.cz"),
   };
 
   return (
@@ -127,7 +128,7 @@ const Header = ({
             {/* Right: Search, Account, Cart */}
             <div className="d-flex align-items-center justify-content-end col-xl-5">
               <div className="row justify-content-end align-items-center">
-                <div className="col-xl-3">
+                <div className="col-xl-2">
                   <Dropdown>
                     <Dropdown.Toggle
                       variant="outline-secondary"
@@ -136,9 +137,12 @@ const Header = ({
                       title="Chọn ngôn ngữ"
                     >
                       <img
-                        src={`/img/flags/${currentLang}.png`}
+                        src={
+                          `/img/flags/${currentLang}.png` ||
+                          `/img/flags/${currentLang}.jpg`
+                        }
                         alt={currentLang.toUpperCase()}
-                        className="me-xl-1 rounded col-xl-10"
+                        className="me-xl-1 rounded col-xl-12"
                       />
                     </Dropdown.Toggle>
 

@@ -1,7 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const ProductCard = ({ product, addToCart }) => {
+  const { t } = useTranslation();
   return (
     <div className="card h-100">
       <img
@@ -24,7 +26,7 @@ const ProductCard = ({ product, addToCart }) => {
           onClick={() => addToCart(product)}
           className="btn btn-primary mt-auto"
         >
-          Thêm vào giỏ
+          {t("product.buttons.addToCart")}
         </button>
       </div>
     </div>

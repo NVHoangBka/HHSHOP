@@ -1,8 +1,10 @@
 // src/admin/pages/Dashboard.jsx
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 const AdminDashboard = ({ adminController }) => {
+  const [t, i18n] = useTranslation();
   const [pendingOrders, setPendingOrders] = useState([]);
   const [stats, setStats] = useState({
     totalOrders: 0,
@@ -111,19 +113,19 @@ const AdminDashboard = ({ adminController }) => {
   const getStatusText = (status) => {
     switch (status) {
       case "pending":
-        return "Chờ xử lý";
+        return t("admin.orders.status.pending");
       case "confirmed":
-        return "Đã xác nhận";
+        return t("admin.orders.status.confirmed");
       case "preparing":
-        return "Đang chuẩn bị";
+        return t("admin.orders.status.preparing");
       case "shipped":
-        return "Đang giao hàng";
+        return t("admin.orders.status.shipped");
       case "delivered":
-        return "Đã giao hàng";
+        return t("admin.orders.status.delivered");
       case "canceled":
-        return "Đã hủy";
+        return t("admin.orders.status.canceled");
       case "returned":
-        return "Đã trả hàng";
+        return t("admin.orders.status.returned");
       default:
         return "Không xác định";
     }
@@ -160,7 +162,7 @@ const AdminDashboard = ({ adminController }) => {
             <div className="col">
               <div className="card border-0 shadow-lg text-white bg-success">
                 <div className="card-body">
-                  <h5>Tổng đơn hàng</h5>
+                  <h5>{t("admin.orders.total")}</h5>
                   <h2 className="fw-bold">{stats.totalOrders}</h2>
                 </div>
               </div>
@@ -168,7 +170,7 @@ const AdminDashboard = ({ adminController }) => {
             <div className="col">
               <div className="card border-0 shadow-lg text-white bg-success">
                 <div className="card-body">
-                  <h5>Đơn đã giao</h5>
+                  <h5>{t("admin.orders.status.delivered")}</h5>
                   <h2 className="fw-bold">{stats.countSuccessOrders}</h2>
                 </div>
               </div>
@@ -176,7 +178,7 @@ const AdminDashboard = ({ adminController }) => {
             <div className="col">
               <div className="card border-0 shadow-lg text-white bg-warning">
                 <div className="card-body">
-                  <h5>Đơn chờ xử lý</h5>
+                  <h5>{t("admin.orders.status.pending")}</h5>
                   <h2 className="fw-bold">{stats.countPendingOrders}</h2>
                 </div>
               </div>
@@ -188,7 +190,7 @@ const AdminDashboard = ({ adminController }) => {
             <div className="col">
               <div className="card border-0 shadow-lg text-white bg-primary">
                 <div className="card-body">
-                  <h5>Tổng doanh thu</h5>
+                  <h5>{t("admin.orders.totalRevenue")}</h5>
                   <h2 className="fw-bold">
                     {stats.totalRevenue.toLocaleString("vi-VN")}₫
                   </h2>
@@ -198,7 +200,7 @@ const AdminDashboard = ({ adminController }) => {
             <div className="col">
               <div className="card border-0 shadow-lg text-white bg-danger">
                 <div className="card-body">
-                  <h5>Doanh thu hôm nay</h5>
+                  <h5>{t("admin.orders.todayRevenue")}</h5>
                   <h2 className="fw-bold">
                     {stats.todayOrders.toLocaleString("vi-VN")}₫
                   </h2>
@@ -213,25 +215,29 @@ const AdminDashboard = ({ adminController }) => {
         <div className="col-md-6">
           <div className="card shadow-lg">
             <div className="card-header bg-success text-white">
-              <h5 className="mb-0">ĐƠN HÀNG CHƯA XỬ LÍ</h5>
+              <h5 className="mb-0 text-uppercase">
+                {t("admin.orders.status.pending")}
+              </h5>
             </div>
             <div
               className="card-body d-flex justify-content-between flex-column"
               style={{ minHeight: "350px" }}
             >
               <div className="mb-2">
-                <strong>Số đơn chờ xử lí: </strong>
+                <strong>{t("admin.orders.status.pendingCount")}: </strong>
                 <b className="fst-italic">{stats.countPendingOrders || 0}</b>
               </div>
               <div className="mb-5">
-                <p className="mb-2 fw-bold">Danh sách đơn hàng chưa xử lí</p>
+                <p className="mb-2 fw-bold">
+                  {t("admin.orders.status.pendingList")}
+                </p>
                 <table className="table border">
                   <thead className="table-success ">
                     <tr className="text-center">
-                      <th>Đơn hàng</th>
-                      <th>Trạng thái ĐH</th>
-                      <th>Số tiền</th>
-                      <th>Ngày tạo</th>
+                      <th>{t("admin.orders.orderId")}</th>
+                      <th>{t("admin.orders.status.title")}</th>
+                      <th>{t("admin.orders.totalAmount")}</th>
+                      <th>{t("admin.orders.createdAt")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -257,7 +263,7 @@ const AdminDashboard = ({ adminController }) => {
                     ) : (
                       <tr>
                         <td colSpan="4" className="text-center">
-                          Không có đơn hàng nào.
+                          {t("admin.orders.noOrders")}
                         </td>
                       </tr>
                     )}
@@ -268,7 +274,7 @@ const AdminDashboard = ({ adminController }) => {
                 to="/admin/orders"
                 className="btn btn-outline-success w-100"
               >
-                Xem tất cả đơn hàng →
+                {t("admin.orders.status.viewAllPendingOrders")} →
               </Link>
             </div>
           </div>
@@ -276,33 +282,39 @@ const AdminDashboard = ({ adminController }) => {
         <div className="col-md-6">
           <div className="card shadow-lg">
             <div className="card-header bg-danger text-white">
-              <h5 className="mb-0">THANH TOÁN CHỜ XÁC NHẬN</h5>
+              <h5 className="mb-0 text-uppercase">
+                {t("admin.orders.paymentStatus.pendingPayment")}
+              </h5>
             </div>
             <div
               className="card-body d-flex justify-content-between flex-column"
               style={{ minHeight: "350px" }}
             >
               <div className="mb-2">
-                <strong>Số đơn chờ thanh toán: </strong>
+                <strong>
+                  {t("admin.orders.paymentStatus.pendingCount")}:{" "}
+                </strong>
                 <b className="fst-italic">{pendingPaymentOrders.length || 0}</b>
               </div>
               <div className="mb-2">
-                <strong>Tổng số tiền chờ thanh toán: </strong>
+                <strong>
+                  {t("admin.orders.paymentStatus.pendingTotal")}:{" "}
+                </strong>
                 <b className="fst-italic">
                   {pendingPaymentOrdersNew.totalAmount || 0} VNĐ
                 </b>
               </div>
               <div className="mb-5">
                 <p className="mb-2 fw-bold">
-                  Danh sách đơn hàng chưa thanh toán
+                  {t("admin.orders.paymentStatus.pendingList")}
                 </p>
                 <table className="table ">
                   <thead className="table-success">
                     <tr>
-                      <th>Đơn hàng</th>
-                      <th>Phương thức TT</th>
-                      <th>Số tiền</th>
-                      <th>Ngày tạo</th>
+                      <th>{t("admin.orders.orderId")}</th>
+                      <th>{t("admin.orders.paymentMethods.title")}</th>
+                      <th>{t("admin.orders.totalAmount")}</th>
+                      <th>{t("admin.orders.createdAt")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -311,8 +323,8 @@ const AdminDashboard = ({ adminController }) => {
                         <td>{order.orderId}</td>
                         <td>
                           {order.paymentMethod === "COD"
-                            ? "Thanh toán khi nhận hàng"
-                            : "Chuyển khoản"}
+                            ? t("admin.orders.paymentMethods.cod")
+                            : t("admin.orders.paymentMethods.bankTransfer")}
                         </td>
                         <td>{order.totalAmount.toLocaleString("vi-VN")} ₫</td>
                         <td>
@@ -329,7 +341,7 @@ const AdminDashboard = ({ adminController }) => {
                 to="/admin/payments"
                 className="btn btn-outline-danger w-100"
               >
-                Xem QR chờ xác nhận →
+                {t("admin.orders.paymentStatus.viewAllQRPayments")} →
               </Link>
             </div>
           </div>

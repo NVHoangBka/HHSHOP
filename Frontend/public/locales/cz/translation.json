@@ -1,0 +1,824 @@
+{
+    "language": {
+        "vi": "Vietnamština",
+        "en": "Angličtina",
+        "cz": "Čeština"
+    },
+    "header": {
+        "home": "Domů",
+        "introduce": "O nás",
+        "flash_sale": "Bleskový výprodej",
+        "news": "Novinky",
+        "check_order": "Kontrola objednávky",
+        "contact": "Kontakt",
+        "instruct": "Návod",
+        "product_category": "Kategorie produktů",
+        "products": "Produkty",
+        "cart": "Košík",
+        "admin": "Administrace"
+    },
+    "system": {
+        "login": {
+            "title": "Přihlásit se",
+            "description": "Přihlášení k účtu",
+            "sign-up": "Registrujte se zde",
+            "no-account": "Ještě nemáte účet?",
+            "error": {
+                "invalid-credentials": "Uživatelské jméno nebo heslo je nesprávné",
+                "check-email-reset-password": "Zkontrolujte svůj e-mail pro reset hesla",
+                "reset-password-email-failed": "Nepodařilo se odeslat e-mail pro reset hesla"
+            }
+        },
+        "register": {
+            "title": "Registrace",
+            "description": "Vytvoření účtu",
+            "login": "Přihlásit se zde",
+            "account": "Již máte účet?",
+            "last-name": "Příjmení",
+            "first-name": "Jméno",
+            "phone": "Telefonní číslo",
+            "password": "Heslo",
+            "confirm-password": "Potvrzení hesla",
+            "address": "Adresa",
+            "error": {
+                "invalid-email": "Neplatný e-mail",
+                "password-min-length": "Heslo musí mít alespoň 8 znaků",
+                "password-confirm-mismatch": "Potvrzení hesla se neshoduje",
+                "full-name-required": "Celé jméno nemůže být prázdné"
+            }
+        },
+        "logout": {
+            "title": "Odhlásit se",
+            "error": "Chyba při odhlašování"
+        },
+        "password": "Heslo",
+        "forgot-pass": "Zapomenuté heslo?",
+        "reset-pass": {
+            "title": "Reset hesla",
+            "password-mismatch": "Hesla se neshodují",
+            "password-min-length": "Heslo musí mít alespoň 8 znaků!",
+            "reset-password-success": "Heslo bylo úspěšně resetováno! Přesměrováváme na přihlášení..."
+        },
+        "des-pass": "Zašleme vám e-mail pro aktivaci resetu hesla.",
+        "recover-pass": "Obnovit heslo",
+        "or-sign-with": "Nebo se přihlaste pomocí",
+        "admin": "Administrace",
+        "loading": "Načítání..."
+    },
+    "account": {
+        "title": "Účet",
+        "page": "Stránka účtu",
+        "page-customer": "Stránka zákazníka",
+        "info": {
+            "title": "Informace o účtu",
+            "full-name": "Celé jméno",
+            "phone": "Telefonní číslo"
+        },
+        "orders": {
+            "title": "Vaše objednávky",
+            "loading": "Načítání objednávek...",
+            "order-id": "Číslo objednávky",
+            "date": "Datum",
+            "name": "Jméno",
+            "phone": "Telefonní číslo",
+            "address": "Adresa",
+            "order-total": "Celková částka objednávky",
+            "payment-method": "Způsob platby",
+            "payment-status": "Stav platby",
+            "order-status": "Stav objednávky",
+            "no-order": "Žádné objednávky nenalezeny",
+            "unknown": "Neznámý",
+            "payment-status-values": {
+                "pending": "Čeká na platbu",
+                "paid": "Zaplaceno",
+                "failed": "Platba selhala",
+                "canceled": "Vráceno"
+            },
+            "order-status-values": {
+                "pending": "Čeká na potvrzení",
+                "confirmed": "Potvrzeno",
+                "preparing": "Příprava",
+                "shipped": "Odesláno",
+                "delivered": "Doručeno",
+                "canceled": "Zrušeno",
+                "returned": "Vráceno"
+            }
+        },
+        "change-password": {
+            "title": "Změna hesla",
+            "description": "Z bezpečnostních důvodů musí mít heslo alespoň 8 znaků",
+            "old-password": "Staré heslo",
+            "new-password": "Nové heslo",
+            "confirm-password": "Potvrzení hesla",
+            "submit": "Změnit heslo",
+            "loading": "Zpracovávání...",
+            "success": "Heslo bylo úspěšně změněno! Odhlašování...",
+            "errors": {
+                "old-required": "Zadejte staré heslo",
+                "new-required": "Zadejte nové heslo",
+                "min-length": "Heslo musí mít alespoň 8 znaků",
+                "mismatch": "Hesla se neshodují",
+                "old-incorrect": "Staré heslo je nesprávné",
+                "common": "Došlo k chybě. Zkuste to znovu."
+            }
+        },
+        "address": {
+            "list": "Seznam adres",
+            "title": "Vaše adresy",
+            "address": "Adresa",
+            "add": "Přidat adresu",
+            "edit": "Upravit",
+            "full-name": "Celé jméno",
+            "phone": "Telefonní číslo",
+            "address-line": "Adresa",
+            "city": "Město / Kraj",
+            "district": "Okres",
+            "ward": "Obec",
+            "select-city": "Vyberte město / kraj",
+            "select-district": "Vyberte okres",
+            "select-ward": "Vyberte obec",
+            "set-default": "Nastavit jako výchozí",
+            "default": "Výchozí",
+            "empty": "Žádné adresy nenalezeny. Přidejte novou adresu."
+        }
+    },
+    "home": {
+        "flash-sale-title": "Časově omezené nabídky. Senzace ceny",
+        "no-flash-sale": "Žádné produkty v bleskovém výprodeji.",
+        "tabs": {
+            "family-care": "Péče o rodinu",
+            "trending": "Trendové produkty",
+            "fresh-food": "Čerstvé potraviny",
+            "stationery": "Papírnictví"
+        }
+    },
+    "product": {
+        "breadcrumb": {
+            "home": "Domů"
+        },
+        "allProducts": "Všechny produkty",
+        "loading": "Načítání produktů...",
+        "noProducts": "V této kategorii nebyly nalezeny žádné produkty.",
+        "sort": {
+            "label": "Řadit podle",
+            "default": "Výchozí",
+            "nameAsc": "Název A → Z",
+            "nameDesc": "Název Z → A",
+            "priceAsc": "Cena vzestupně",
+            "priceDesc": "Cena sestupně",
+            "newest": "Nejnovější",
+            "oldest": "Nejstarší"
+        },
+        "filter": {
+            "title": "Filtr",
+            "price": "Cena",
+            "brand": "Značka",
+            "type": "Typ produktu",
+            "color": "Barva",
+            "tag": "Štítky",
+            "resetAll": "Vymazat vše",
+            "priceRanges": {
+                "under1m": "Do 1 000 000 Kč",
+                "1m-2m": "1 000 000 Kč - 2 000 000 Kč",
+                "2m-3m": "2 000 000 Kč - 3 000 000 Kč",
+                "3m-5m": "3 000 000 Kč - 5 000 000 Kč",
+                "5m-7m": "5 000 000 Kč - 7 000 000 Kč",
+                "7m-10m": "7 000 000 Kč - 10 000 000 Kč",
+                "over10m": "Nad 10 000 000 Kč"
+            }
+        },
+        "pagination": {
+            "previous": "Předchozí",
+            "next": "Další"
+        },
+        "product": "Produkt",
+        "cart": "Košík",
+        "not-found": "Produkt nebyl nalezen",
+        "notFound": "Produkt nebyl nalezen.",
+        "backHome": "Zpět na domovskou stránku",
+        "brand": "Značka",
+        "sku": "Kód produktu",
+        "lowStock": "Zbývá pouze {{count}} kusů!",
+        "price": {
+            "discount": "Sleva {{percent}}%"
+        },
+        "promo": {
+            "title": "Propagační dárky",
+            "item1": "Zadejte kód EGANY pro extra 5 % slevu",
+            "item2": "10% sleva při nákupu 5 a více kusů",
+            "item3": "20% sleva při nákupu 10 a více kusů",
+            "item4": "Dárkový poukaz při nákupu od 500 Kč"
+        },
+        "coupon": {
+            "title": "Slevové kódy"
+        },
+        "variant": {
+            "label": "Velikost/Objem"
+        },
+        "quantity": {
+            "label": "Množství"
+        },
+        "buttons": {
+            "buyNow": "Koupit ihned",
+            "addToCart": "Přidat do košíku",
+            "outOfStock": "VYPRODÁNO"
+        },
+        "policies": {
+            "freeShipping": "Doprava zdarma do 24 hodin (pouze vnitřní město)",
+            "installment": "0% splátky přes Visa, Master, JCB",
+            "return": "Vrácení zdarma do 30 dnů"
+        },
+        "features": {
+            "title": "Klíčové vlastnosti",
+            "showMore": "Zobrazit více",
+            "showLess": "Zobrazit méně",
+            "noContent": "Podrobnosti o produktu se aktualizují..."
+        },
+        "share": "Sdílet"
+    },
+    "search": {
+        "title": "Hledat",
+        "all-categories": "Všechny kategorie",
+        "product-name": "Hledat název produktu",
+        "no-product": "Žádné produkty nenalezeny",
+        "popular-keywords": "Populární klíčová slova",
+        "searchResults": {
+            "breadcrumb": {
+                "home": "Domů",
+                "current": "Výsledky hledání"
+            },
+            "title": "Výsledky hledání pro",
+            "loading": "Hledání...",
+            "noKeyword": "Zadejte prosím klíčové slovo k hledání.",
+            "noResults": "Žádné produkty nenalezeny.",
+            "backHome": "Zpět na domovskou stránku",
+            "continueShopping": "Pokračovat v nákupu",
+            "inCategory": "v",
+            "categoryNames": {
+                "personal-care": "Osobní péče",
+                "baby-care": "Dětská péče",
+                "household-cleaning": "Čištění domácnosti",
+                "food-beverages": "Potraviny a nápoje",
+                "all": "Všechny kategorie"
+            }
+        }
+    },
+    "menu": {
+        "product_all": "Všechny produkty",
+        "take_care_of_family": "Péče o rodinu",
+        "loading": "Načítání menu..."
+    },
+    "cart": {
+        "title": "Košík",
+        "no-cart": "Košík je prázdný",
+        "product": "Produkt",
+        "unit-price": "Jednotková cena",
+        "quantity": "Množství",
+        "subtotal": "Mezisoučet",
+        "desription-no-cart": "Najděte produkt, který se vám líbí, a přidejte ho do košíku!",
+        "continue-shopping": "Pokračovat v nákupu",
+        "issue-company-invoices": "Vystavit firemní fakturu",
+        "issue-invoices": "Vystavit fakturu",
+        "name-company": "Název firmy",
+        "tax-code": "DIČ",
+        "address-company": "Adresa firmy",
+        "email-invoices": "E-mail pro zaslání faktury",
+        "schedule-receive-timer": "Plánovaný čas převzetí",
+        "schedule-delivery-timer": "Plánovaný čas doručení",
+        "receive-day": "Den převzetí",
+        "receive-time": "Čas převzetí",
+        "chose-time": "Vybrat čas",
+        "note-order": "Poznámka k objednávce",
+        "note": "Poznámka",
+        "change": "Změnit",
+        "choose-a-promo-code": "Vybrat slevový kód",
+        "choose": "Vybrat",
+        "promo-code": "Slevový kód",
+        "total": "Celkem",
+        "input-promo-code-checkout": "Zadejte slevový kód při platbě",
+        "payment": "Platba"
+    },
+    "order": {
+        "checkOrder": {
+            "pageTitle": "Kontrola objednávky",
+            "checkBy": "Kontrolovat podle",
+            "byPhone": "Telefonní číslo",
+            "byEmail": "E-mail",
+            "byPhoneAndEmail": "Telefonní číslo a e-mail",
+            "phoneNumber": "Telefonní číslo",
+            "phonePlaceholder": "0909 xxx xxx",
+            "emailAddress": "E-mailová adresa",
+            "emailPlaceholder": "priklad@email.cz",
+            "searchTitle": "Zkontrolovat vaši objednávku",
+            "loading": "Hledání vašich objednávek...",
+            "loadingText": "Načítání...",
+            "foundOrders": "Nalezeno {{count}} objednávek",
+            "orderCode": "Číslo objednávky",
+            "orderDate": "Datum objednávky",
+            "totalAmount": "Celková částka",
+            "paymentStatus": "Stav platby",
+            "paid": "Zaplaceno",
+            "unpaid": "Nezaplaceno",
+            "status": {
+                "pending": "Čeká na zpracování",
+                "confirmed": "Potvrzeno",
+                "delivered": "Doručeno",
+                "completed": "Dokončeno",
+                "cancelled": "Zrušeno"
+            },
+            "viewDetails": "Zobrazit detaily produktů ({{count}})",
+            "quantityTimesPrice": "Množství: {{quantity}} × {{price}} Kč",
+            "noOrdersFound": "Žádné objednávky nenalezeny",
+            "errorNotFound": "Informace o objednávce nenalezeny. Ověřte prosím údaje!"
+        }
+    },
+    "checkout": {
+        "pageTitle": "Pokladna",
+        "loading": "Načítání...",
+        "emptyCart": "Váš košík je prázdný",
+        "continueShopping": "Pokračovat v nákupu",
+        "customerInfo": "Doručovací údaje",
+        "addressBook": "Adresář",
+        "defaultAddress": " (Výchozí)",
+        "email": "E-mail",
+        "fullName": "Celé jméno",
+        "phone": "Telefonní číslo",
+        "addressOptional": "Doručovací adresa (volitelné)",
+        "province": "Kraj / Město",
+        "district": "Okres",
+        "ward": "Obec",
+        "note": "Poznámka k objednávce",
+        "notePlaceholder": "Doručení v pracovní době, nechat před dveřmi...",
+        "required": "*",
+        "shipping": {
+            "title": "Doprava",
+            "method": "Standardní doručení",
+            "fee": "40 000 Kč",
+            "loadingError": "Nepodařilo se načíst poplatek za dopravu. Zkuste to prosím znovu"
+        },
+        "payment": {
+            "title": "Způsob platby",
+            "bankTransfer": "Bankovní převod",
+            "cod": "Dobírka"
+        },
+        "cartSummary": {
+            "title": "Vaše objednávka",
+            "productCount": "({{count}} produktů)",
+            "size": "Velikost: {{size}}",
+            "quantity": "× {{quantity}}",
+            "voucher": {
+                "placeholder": "Zadejte slevový kód",
+                "apply": "Použít",
+                "applied": "Použito: -{{amount}} Kč"
+            },
+            "subtotal": "Mezisoučet",
+            "shippingFee": "Poplatek za dopravu",
+            "discount": "Sleva",
+            "total": "Celkem",
+            "backToCart": "← Zpět do košíku",
+            "placeOrder": "DOKONČIT OBJEDNÁVKU",
+            "placingOrder": "Zpracovávání objednávky..."
+        },
+        "alert": {
+            "emptyRequired": "Vyplňte prosím všechny povinné doručovací údaje",
+            "voucherSuccess10": "Kód GIAM10 použit – 10% sleva",
+            "voucherFreeShip": "Doprava zdarma aktivována!",
+            "voucherInvalid": "Neplatný slevový kód",
+            "orderSuccess": "Objednávka úspěšně vytvořena! Číslo objednávky: #{{orderId}}",
+            "orderFailed": "Vytvoření objednávky selhalo: {{message}}",
+            "errorOccurred": "Při vytváření objednávky došlo k chybě. Zkuste to prosím znovu!"
+        }
+    },
+    "orderSuccess": {
+        "pageTitle": "Objednávka úspěšně dokončena!",
+        "orderId": "Číslo objednávky",
+        "totalAmount": "Celková částka",
+        "bankTransfer": {
+            "title": "PLATBA BANKOVNÍM PŘEVODEM",
+            "timeLeft": "Zbývající čas",
+            "expired": "VYPRŠELO",
+            "qrTitle": "QR kód pro platbu",
+            "errorQr": "Chyba: Nepodařilo se načíst QR kód. Kontaktujte prosím podporu!",
+            "bank": "Banka",
+            "accountName": "Majitel účtu",
+            "accountNumber": "Číslo účtu",
+            "transferContent": "Variabilní symbol / Poznamenejte si",
+            "important": "DŮLEŽITÉ",
+            "importantNote": "Prosím proveďte platbu s přesným variabilním symbolem pro automatické zpracování!"
+        },
+        "cod": {
+            "title": "PLATBA NA DOBÍRKU",
+            "description": "Platbu provedete přímo kurýrovi při převzetí zásilky"
+        },
+        "errorNoOrder": "Informace o objednávce nebyly nalezeny! Proveďte objednávku znovu.",
+        "backHome": "Zpět na domovskou stránku",
+        "continueShopping": "Pokračovat v nákupu",
+        "viewOrderDetails": "Zobrazit podrobnosti objednávky",
+        "support": "Máte problém? Kontaktujte nás okamžitě:",
+        "supportPhone": "0385427179 (Zalo/Facebook)"
+    },
+    "info": {
+        "name": "Supermarket HUNG NHUNG",
+        "slogan": "Spolehlivá a kvalitní značka supermarketu, která se zavazuje poskytovat pohodlné, moderní a rozmanité nakupování",
+        "tax-code": "DIČ",
+        "address": "Adresa",
+        "hotline": "Horká linka",
+        "email": "E-mail",
+        "fullName": "Celé jméno",
+        "phoneNumber": "Telefonní číslo",
+        "contact": {
+            "pageTitle": "Kontaktujte nás",
+            "header": "Spojte se s námi",
+            "sendMessage": "Odeslat zprávu",
+            "map": {
+                "instruction": "Klikněte na mapu pro zobrazení trasy",
+                "zoomTip": "Přibližte/oddalte nebo posouvejte pro prozkoumání"
+            },
+            "faq": {
+                "title": "Často kladené otázky",
+                "questions": [
+                    {
+                        "q": "Jak dlouho trvá doručení?",
+                        "a": "Standardní doručení v ČR obvykle trvá 2-5 pracovních dnů."
+                    },
+                    {
+                        "q": "Jaké způsoby platby přijímáte?",
+                        "a": "Přijímáme dobírku, bankovní převod a platební karty."
+                    }
+                ]
+            }
+        }
+    },
+    "news": {
+        "pageTitle": "Novinky",
+        "breadcrumb": {
+            "home": "Domů",
+            "current": "Novinky"
+        },
+        "heading": "Novinky",
+        "loading": "Načítání...",
+        "noArticles": "Momentálně nejsou k dispozici žádné články",
+        "readMore": "Číst dále",
+        "publishedOn": "Publikováno",
+        "sidebar": {
+            "categories": {
+                "title": "KATEGORIE",
+                "tips": "Užitečné tipy",
+                "recipes": "Chutné recepty",
+                "news": "Novinky",
+                "promotions": "Akce"
+            },
+            "featured": {
+                "title": "VYBRANÉ NOVINKY"
+            },
+            "tags": "Štítky"
+        }
+    },
+    "service-benefits": {
+        "fast-delivery": {
+            "title": "Rychlé doručení",
+            "description": "Do 4 hodin v Praze"
+        },
+        "free-returns": {
+            "title": "Vrácení zdarma",
+            "description": "Zdarma do 30 dnů"
+        },
+        "support-24-7": {
+            "title": "Podpora 24/7",
+            "description": "Zákaznická podpora k dispozici nonstop"
+        },
+        "hot-deals": {
+            "title": "Horké nabídky",
+            "description": "Bleskové výprodeje s obrovskými slevami"
+        }
+    },
+    "footer": {
+        "support": {
+            "title": "Zákaznická podpora",
+            "contact": "Kontakt",
+            "store-locations": "Prodejny",
+            "ask-question": "Často kladené otázky",
+            "affiliate-program": "Affiliate program"
+        },
+        "policy": {
+            "title": "Zásady",
+            "warranty": "Záruka",
+            "return": "Vrácení zboží",
+            "privacy": "Ochrana osobních údajů",
+            "terms-of-service": "Obchodní podmínky"
+        },
+        "support-hotline": {
+            "title": "Horká linka podpory",
+            "order": "Objednávky: 19006750 (8:00–20:00)",
+            "warranty": "Záruka: 19006750 (8:00–20:00)"
+        },
+        "payment": {
+            "title": "Způsoby platby"
+        }
+    },
+    "common": {
+        "loading": "Načítání...",
+        "add_to_cart": "Přidat do košíku",
+        "price": "Cena: {{price}} Kč",
+        "view-all": "Zobrazit vše"
+    },
+    "btn": {
+        "save": "Uložit",
+        "back": "Zpět",
+        "confirm": "Potvrdit",
+        "cancel": "Zrušit",
+        "update": "Aktualizovat",
+        "delete": "Smazat",
+        "check": "Zkontrolovat",
+        "edit": "Upravit"
+    },
+    "admin": {
+        "login": {
+            "title": "Přihlášení administrátora",
+            "description": "Správa obchodu",
+            "email": "E-mail",
+            "password": "Heslo",
+            "loading": "Přihlašování...",
+            "loginButton": "PŘIHLÁSIT SE JAKO ADMIN"
+        },
+        "welcome": "Vítejte",
+        "logout": "Odhlásit se",
+        "dashboard": "Přehled",
+        "products": {
+            "title": "Správa produktů",
+            "searchPlaceholder": "Hledat produkt podle názvu nebo...",
+            "addProduct": "Přidat nový produkt",
+            "editProduct": "Upravit produkt",
+            "loading": "Načítání produktů...",
+            "noResults": "Žádné produkty nenalezeny.",
+            "noProducts": "Žádné produkty nejsou k dispozici.",
+            "table": {
+                "stt": "Č.",
+                "image": "Obrázek",
+                "info": "Informace o produktu",
+                "name": "Název produktu",
+                "description": "Popis",
+                "category": "Kategorie",
+                "price": "Cena",
+                "stock": "Sklad",
+                "unit": "Ks",
+                "tags": "Štítky",
+                "createdAt": "Datum vytvoření",
+                "actions": "Akce"
+            },
+            "form": {
+                "name": "Název produktu",
+                "category": "Kategorie",
+                "selectCategory": "Vyberte kategorii",
+                "price": "Původní cena",
+                "priceSale": "Akční cena",
+                "priceDiscountPercent": "Procentní sleva",
+                "priceSaleHint": "Nechte prázdné, pokud není sleva",
+                "brand": "Značka",
+                "selectBrand": "Vyberte značku",
+                "image": "Obrázek produktu",
+                "imagePlaceholderLink": "Zadejte URL obrázku",
+                "or": "nebo",
+                "uploadFromComputer": "Nahrát z počítače",
+                "imageLoadError": "Chyba při načítání obrázku. Zkuste to znovu.",
+                "imagePreview": "Aktuální náhled obrázku",
+                "removeImage": "Odebrat obrázek",
+                "galleryPlaceholder": "Vložte více URL obrázků, každý na nový řádek...\nNEBO použijte tlačítko níže k nahrání z počítače.",
+                "galleryUploadFromComputer": "Nahrát obrázky z počítače",
+                "selectTags": "Vyberte štítky",
+                "description": "Podrobný popis (HTML)",
+                "shortDescription": "Krátký popis",
+                "type": "Typ produktu",
+                "color": "Barva",
+                "tags": "Štítky",
+                "isStock": "Skladem?",
+                "inStock": "Skladem",
+                "outOfStock": "Vyprodáno",
+                "flashSale": "Produkt ve flash výprodeji?"
+            },
+            "toast": {
+                "loading": "Zpracovávání...",
+                "error": "Došlo k chybě. Zkuste to znovu!",
+                "addSuccess": "Produkt úspěšně přidán!",
+                "updateSuccess": "Produkt úspěšně aktualizován!",
+                "confirmDelete": "Opravdu chcete smazat produkt? Tato akce je nevratná!",
+                "deleteSuccess": "Produkt úspěšně smazán!",
+                "deleteFailed": "Smazání produktu selhalo!",
+                "uploadImageSuccess": "Obrázek úspěšně nahrán!",
+                "uploadImageFailed": "Nahrání obrázku selhalo!",
+                "errorLoadingProducts": "Chyba při načítání produktů. Zkuste to znovu!"
+            }
+        },
+        "users": {
+            "title": "Správa uživatelů",
+            "searchPlaceholder": "Hledat uživatele podle jména nebo e-mailu...",
+            "loading": "Načítání uživatelů...",
+            "noResults": "Žádní uživatelé nenalezeni.",
+            "noUsers": "Žádní uživatelé nejsou k dispozici.",
+            "addUser": "Přidat nového uživatele",
+            "editUser": "Upravit uživatele",
+            "table": {
+                "stt": "Č.",
+                "name": "Jméno uživatele",
+                "email": "E-mail",
+                "phone": "Telefonní číslo",
+                "address": "Adresa",
+                "registeredAt": "Datum registrace",
+                "totalOrders": "Celkem objednávek",
+                "totalSpent": "Celkové výdaje",
+                "actions": "Akce"
+            },
+            "role": {
+                "admin": "Administrátor",
+                "customer": "Zákazník"
+            },
+            "form": {
+                "fullName": "Celé jméno",
+                "email": "E-mail",
+                "phone": "Telefonní číslo",
+                "password": "Heslo",
+                "confirmPassword": "Potvrzení hesla",
+                "role": "Role"
+            },
+            "toast": {
+                "loading": "Zpracovávání...",
+                "error": "Došlo k chybě. Zkuste to znovu!",
+                "addSuccess": "Uživatel úspěšně přidán!",
+                "updateSuccess": "Uživatel úspěšně aktualizován!",
+                "confirmDelete": "Opravdu chcete smazat uživatele? Tato akce je nevratná!",
+                "deleteSuccess": "Uživatel úspěšně smazán!",
+                "deleteFailed": "Smazání uživatele selhalo!",
+                "errorLoadingUsers": "Chyba při načítání uživatelů. Zkuste to znovu!"
+            }
+        },
+        "tags": {
+            "title": "Správa štítků",
+            "searchPlaceholder": "Hledat štítek podle názvu...",
+            "addTag": "Přidat nový štítek",
+            "editTag": "Upravit štítek",
+            "loading": "Načítání štítků...",
+            "noResults": "Žádné štítky nenalezeny.",
+            "noTags": "Žádné štítky nejsou k dispozici.",
+            "table": {
+                "stt": "Č.",
+                "name": "Název štítku",
+                "type": "Typ štítku",
+                "description": "Popis",
+                "status": "Stav",
+                "createdAt": "Datum vytvoření",
+                "actions": "Akce"
+            },
+            "type": {
+                "article": "Pouze články",
+                "product": "Pouze produkty",
+                "both": "Produkty i články"
+            },
+            "status": {
+                "active": "Aktivní",
+                "inactive": "Neaktivní"
+            },
+            "form": {
+                "name": "Název štítku",
+                "description": "Popis",
+                "type": "Typ štítku"
+            },
+            "toast": {
+                "loading": "Zpracovávání...",
+                "error": "Došlo k chybě. Zkuste to znovu!",
+                "addSuccess": "Štítek úspěšně přidán!",
+                "updateSuccess": "Štítek úspěšně aktualizován!",
+                "confirmDelete": "Opravdu chcete smazat štítek? Tato akce je nevratná!",
+                "deleteSuccess": "Štítek úspěšně smazán!",
+                "deleteFailed": "Smazání štítku selhalo!",
+                "errorLoadingTags": "Chyba při načítání štítků. Zkuste to znovu!"
+            }
+        },
+        "settings": "Nastavení",
+        "orders": {
+            "title": "Správa objednávek",
+            "searchPlaceholder": "Hledat objednávku podle čísla...",
+            "total": "Celkem objednávek",
+            "totalRevenue": "Celkové příjmy",
+            "todayRevenue": "Dnešní příjmy",
+            "orderId": "Číslo objednávky",
+            "totalAmount": "Celková částka",
+            "createdAt": "Datum vytvoření",
+            "noOrders": "Žádné objednávky nenalezeny.",
+            "viewOrder": "Zobrazit objednávku",
+            "editOrder": "Upravit objednávku",
+            "updateSuccess": "Objednávka úspěšně aktualizována!",
+            "updateFailed": "Aktualizace objednávky selhala!",
+            "status": {
+                "title": "Stav objednávky",
+                "pending": "Objednávka čeká na zpracování",
+                "confirmed": "Objednávka potvrzena",
+                "preparing": "Objednávka se připravuje",
+                "shipped": "Objednávka odeslána přepravci",
+                "delivered": "Objednávka doručena",
+                "canceled": "Objednávka zrušena",
+                "returned": "Objednávka vrácena",
+                "pendingCount": "Počet objednávek čekajících na zpracování",
+                "pendingList": "Seznam objednávek čekajících na zpracování",
+                "viewAllPendingOrders": "Zobrazit všechny objednávky čekající na zpracování"
+            },
+            "paymentMethods": {
+                "title": "Způsob platby",
+                "cod": "Platba na dobírku (COD)",
+                "bankTransfer": "Bankovní převod"
+            },
+            "paymentStatus": {
+                "title": "Stav platby",
+                "pendingPayment": "PLATBA ČEKÁ NA POTVRZENÍ",
+                "pendingCount": "Počet objednávek čekajících na platbu",
+                "pendingTotal": "Celková částka čekající na platbu",
+                "pendingList": "Seznam objednávek čekajících na platbu",
+                "pending": "Čeká na platbu",
+                "paid": "Zaplaceno",
+                "failed": "Platba selhala",
+                "canceled": "Vráceno",
+                "viewAllQRPayments": "Zobrazit všechny objednávky čekající na potvrzení"
+            },
+            "table": {
+                "stt": "Č.",
+                "orderId": "Číslo objednávky",
+                "customer": "Zákazník",
+                "phone": "Telefonní číslo",
+                "email": "E-mail",
+                "address": "Adresa",
+                "totalAmount": "Celková částka",
+                "paymentMethod": "Způsob platby",
+                "paymentStatus": "Stav platby",
+                "orderStatus": "Stav objednávky",
+                "createdAt": "Datum vytvoření",
+                "actions": "Akce"
+            }
+        },
+        "news": {
+            "title": "Správa novinek",
+            "searchPlaceholder": "Hledat novinky...",
+            "addNews": "Přidat novou novinku",
+            "editNews": "Upravit novinku",
+            "table": {
+                "stt": "Č.",
+                "image": "Obrázek",
+                "info": "Informace",
+                "tags": "Štítky",
+                "publishedAt": "Datum publikace",
+                "status": "Stav",
+                "views": "Zobrazení",
+                "actions": "Akce",
+                "createdAt": "Datum vytvoření",
+                "title": "Název",
+                "description": "Popis"
+            },
+            "form": {
+                "title": "Název novinky",
+                "tags": "Štítky",
+                "selectTags": "Vyberte štítky",
+                "thumbnailURL": "URL náhledového obrázku",
+                "shortDescription": "Krátký popis",
+                "content": "Obsah novinky",
+                "status": "Stav"
+            },
+            "loading": "Načítání novinek...",
+            "noResults": "Žádné novinky nenalezeny.",
+            "noNews": "Žádné novinky nejsou k dispozici.",
+            "createdAt": "Datum vytvoření",
+            "actions": "Akce",
+            "edit": "Upravit",
+            "delete": "Smazat",
+            "deleting": "Mazání...",
+            "addButton": "PŘIDAT NOVOU NOVINKU",
+            "saveButton": "ULOŽIT NOVINKU",
+            "updateButton": "AKTUALIZOVAT NOVINKU",
+            "status": {
+                "published": "Publikováno",
+                "draft": "Koncept",
+                "archived": "Archivováno"
+            },
+            "toast": {
+                "error": "Došlo k chybě. Zkuste to znovu!",
+                "createSuccess": "Novinka úspěšně přidána!",
+                "updateSuccess": "Novinka úspěšně aktualizována!",
+                "confirmDelete": "Opravdu chcete smazat novinku? Tato akce je nevratná!",
+                "deleteSuccess": "Novinka úspěšně smazána!",
+                "deleteFailed": "Smazání novinky selhalo!",
+                "errorLoadingNews": "Chyba při načítání novinek. Zkuste to znovu!"
+            }
+        },
+        "payments": {
+            "title": "Potvrzení bankovních plateb",
+            "loading": "Načítání plateb čekajících na potvrzení...",
+            "content": "Obsah",
+            "customer": "Zákazník",
+            "noPayments": "Žádné bankovní platby čekající na potvrzení.",
+            "confirmPayment": "Potvrdit platbu",
+            "confirming": "Potvrzování...",
+            "confirmPaid": "Potvrdit jako zaplaceno",
+            "toast": {
+                "confirmSuccess": "Platba úspěšně potvrzena!",
+                "confirmFailed": "Potvrzení platby selhalo!"
+            }
+        }
+    }
+}

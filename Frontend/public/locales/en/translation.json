@@ -1,69 +1,77 @@
 {
+    "language": {
+        "vi": "Vietnamese",
+        "en": "English",
+        "cz": "Czech"
+    },
+    "introduce": {},
     "header": {
         "home": "Home",
-        "introduce": "Introduce",
+        "introduce": "About Us",
         "flash_sale": "Flash Sale",
         "news": "News",
-        "check_order": "Check Order",
+        "check_order": "Track Order",
         "contact": "Contact",
-        "instruct": "Instruct",
-        "product_category": "Product Category",
-        "cart": "Cart"
+        "instruct": "Instructions",
+        "product_category": "Product Categories",
+        "products": "Products",
+        "cart": "Cart",
+        "admin": "Admin"
     },
     "system": {
         "login": {
             "title": "Login",
-            "description": "Login Account",
+            "description": "Sign in to your account",
             "sign-up": "Sign up here",
-            "no-account": "Don’t have an account yet?",
+            "no-account": "Don't have an account yet?",
             "error": {
                 "invalid-credentials": "Username or password is incorrect",
                 "check-email-reset-password": "Please check your email to reset your password",
                 "reset-password-email-failed": "Failed to send password reset email"
             }
         },
-        "resgiter": {
-            "title": "Resgiter",
-            "description": "Resgiter Account",
+        "register": {
+            "title": "Register",
+            "description": "Create your account",
             "login": "Login here",
             "account": "Already have an account?",
-            "first-name": "First Name",
             "last-name": "Last Name",
+            "first-name": "First Name",
             "phone": "Phone Number",
             "password": "Password",
             "confirm-password": "Confirm Password",
             "address": "Address",
             "error": {
                 "invalid-email": "Invalid email",
-                "password-min-length": "Password must be at least 8 characters long",
-                "password-confirm-mismatch": "Confirm password does not match",
-                "full-name-required": "Full name cannot be empty"
+                "password-min-length": "Password must be at least 8 characters",
+                "password-confirm-mismatch": "Passwords do not match",
+                "full-name-required": "Full name is required"
             }
         },
         "logout": {
             "title": "Logout",
-            "error": "Logout error"
+            "error": "Logout failed"
         },
         "password": "Password",
         "forgot-pass": "Forgot password?",
         "reset-pass": {
-            "title": "Reset password",
+            "title": "Reset Password",
             "password-mismatch": "Passwords do not match",
-            "password-min-length": "Password must be at least 8 characters long!",
-            "reset-password-success": "Password reset successfully! Redirecting to login..."
+            "password-min-length": "Password must be at least 8 characters!",
+            "reset-password-success": "Password reset successful! Redirecting to login..."
         },
-        "des-pass": "We will send you an email to activate your password reset.",
+        "des-pass": "We will send you an email to activate the password reset.",
         "recover-pass": "Recover Password",
         "or-sign-with": "Or sign in with",
         "admin": "Admin",
-        "loading": "Loading...."
+        "loading": "Loading..."
     },
     "account": {
         "title": "Account",
         "page": "Account Page",
         "page-customer": "Customer Page",
         "info": {
-            "title": "Account Info",
+            "title": "Account Information",
             "full-name": "Full Name",
             "phone": "Phone Number"
         },
@@ -88,7 +96,7 @@
                 "canceled": "Refunded"
             },
             "order-status-values": {
-                "pending": "Pending confirmation",
+                "pending": "Awaiting Confirmation",
                 "confirmed": "Confirmed",
                 "preparing": "Preparing",
                 "shipped": "Shipped",
@@ -109,14 +117,14 @@
             "errors": {
                 "old-required": "Please enter your old password",
                 "new-required": "Please enter a new password",
-                "min-length": "Password must be at least 8 characters long",
+                "min-length": "Password must be at least 8 characters",
                 "mismatch": "Passwords do not match",
                 "old-incorrect": "Old password is incorrect",
                 "common": "An error occurred. Please try again."
             }
         },
         "address": {
-            "list": "List Address",
+            "list": "Address Book",
             "title": "Your Addresses",
             "address": "Address",
             "add": "Add Address",
@@ -130,13 +138,13 @@
             "select-city": "Select City / Province",
             "select-district": "Select District",
             "select-ward": "Select Ward",
-            "set-default": "Set as default",
+            "set-default": "Set as Default",
             "default": "Default",
             "empty": "No addresses found. Please add a new address."
         }
     },
     "home": {
-        "flash-sale-title": "Limited Time Deals. Dream Prices",
+        "flash-sale-title": "Flash Sale - Grab the Deals",
         "no-flash-sale": "No flash sale products available.",
         "tabs": {
             "family-care": "Family Care",
@@ -146,15 +154,47 @@
         }
     },
     "product": {
-        "product_all": "All Products",
-        "product": "Product",
-        "cart": "Cart",
-        "empty-category": "No products in this category.",
-        "not-found": "Product not found",
         "breadcrumb": {
             "home": "Home"
         },
-        "loading": "Loading...",
+        "allProducts": "All Products",
+        "loading": "Loading products...",
+        "noProducts": "No products found in this category.",
+        "sort": {
+            "label": "Sort by",
+            "default": "Default",
+            "nameAsc": "Name A → Z",
+            "nameDesc": "Name Z → A",
+            "priceAsc": "Price Low to High",
+            "priceDesc": "Price High to Low",
+            "newest": "Newest",
+            "oldest": "Oldest"
+        },
+        "filter": {
+            "title": "Filter",
+            "price": "Price",
+            "brand": "Brand",
+            "type": "Product Type",
+            "color": "Color",
+            "tag": "Tags",
+            "resetAll": "Clear All",
+            "priceRanges": {
+                "under1m": "Under 1,000,000₫",
+                "1m-2m": "1,000,000₫ - 2,000,000₫",
+                "2m-3m": "2,000,000₫ - 3,000,000₫",
+                "3m-5m": "3,000,000₫ - 5,000,000₫",
+                "5m-7m": "5,000,000₫ - 7,000,000₫",
+                "7m-10m": "7,000,000₫ - 10,000,000₫",
+                "over10m": "Over 10,000,000₫"
+            }
+        },
+        "pagination": {
+            "previous": "Previous",
+            "next": "Next"
+        },
+        "product": "Product",
+        "cart": "Cart",
+        "not-found": "Product not found",
         "notFound": "Product not found.",
         "backHome": "Back to Home",
         "brand": "Brand",
@@ -198,50 +238,70 @@
         "share": "Share"
     },
     "search": {
-        "name": "Search",
+        "title": "Search",
         "all-categories": "All Categories",
-        "product-name": "Search product name",
+        "product-name": "Search by Product Name",
         "no-product": "No products found",
-        "popular-keywords": "Popular Keywords"
+        "popular-keywords": "Popular Keywords",
+        "searchResults": {
+            "breadcrumb": {
+                "home": "Home",
+                "current": "Search"
+            },
+            "title": "Search results for",
+            "loading": "Searching...",
+            "noKeyword": "Please enter a search keyword.",
+            "noResults": "No products found.",
+            "backHome": "Back to Home",
+            "continueShopping": "Continue Shopping",
+            "inCategory": "in",
+            "categoryNames": {
+                "personal-care": "Personal Care",
+                "baby-care": "Baby Care",
+                "household-cleaning": "Household Cleaning",
+                "food-beverages": "Food & Beverages",
+                "all": "All Categories"
+            }
+        }
     },
     "menu": {
         "product_all": "All Products",
-        "take_care_of_family": "Take Care Of Family"
+        "take_care_of_family": "Family Care",
+        "loading": "Loading menu..."
     },
     "cart": {
-        "title": "Cart",
-        "no-cart": "No product in cart",
+        "title": "Shopping Cart",
+        "no-cart": "Your cart is empty",
         "product": "Product",
         "unit-price": "Unit Price",
         "quantity": "Quantity",
         "subtotal": "Subtotal",
-        "desription-no-cart": "Find the product you like and add it to your cart!",
-        "continue-shopping": "Continue shopping",
-        "issue-company-invoices": "Issue Company Invoices",
-        "issue-invoices": "Issue Invoices",
-        "name-company": "Name Company",
+        "desription-no-cart": "Find products you like and add them to your cart!",
+        "continue-shopping": "Continue Shopping",
+        "issue-company-invoices": "Issue Company Invoice",
+        "issue-invoices": "Issue Invoice",
+        "name-company": "Company Name",
         "tax-code": "Tax Code",
-        "address-company": "Address Company",
-        "email-invoices": "Email to receive invoice",
-        "schedule-receive-timer": "Schedule receive timer",
-        "schedule-delivery-timer": "Schedule delivery timer",
-        "receive-day": "Receive day",
-        "receive-time": "Receive-time",
-        "chose-time": "Chose time",
-        "note-order": "Order notes",
+        "address-company": "Company Address",
+        "email-invoices": "Email for Invoice",
+        "schedule-receive-timer": "Schedule Pickup Time",
+        "schedule-delivery-timer": "Schedule Delivery Time",
+        "receive-day": "Pickup Date",
+        "receive-time": "Pickup Time",
+        "chose-time": "Select Time",
+        "note-order": "Order Notes",
         "note": "Note",
         "change": "Change",
-        "choose-a-promo-code": "Choose a promo code",
-        "choose": "Choose",
-        "promo-code": "Promo code",
+        "choose-a-promo-code": "Choose Promo Code",
+        "choose": "Select",
+        "promo-code": "Promo Code",
         "total": "Total",
-        "input-promo-code-checkout": "Enter a promo code at checkout",
+        "input-promo-code-checkout": "Enter promo code at checkout",
         "payment": "Payment"
     },
     "order": {
         "checkOrder": {
-            "pageTitle": "Order Checking",
-            "breadcrumb": "Order Checking",
+            "pageTitle": "Order Tracking",
             "checkBy": "Check by",
             "byPhone": "Phone Number",
             "byEmail": "Email",
@@ -249,13 +309,11 @@
             "phoneNumber": "Phone Number",
             "phonePlaceholder": "0909 xxx xxx",
             "emailAddress": "Email Address",
-            "emailPlaceholder": "example@gmail.com",
-            "searchTitle": "Check Your Order",
+            "emailPlaceholder": "Email@gmail.com",
+            "searchTitle": "Track Your Order",
             "loading": "Searching for your orders...",
             "loadingText": "Loading...",
-            "foundOrders": "Found {{count}} order",
-            "noOrdersFound": "No orders found. Please check your information and try again.",
-            "errorNotFound": "No order information found. Please verify your details!",
+            "foundOrders": "Found {{count}} orders",
             "orderCode": "Order ID",
             "orderDate": "Order Date",
             "totalAmount": "Total Amount",
@@ -267,10 +325,12 @@
                 "confirmed": "Confirmed",
                 "delivered": "Delivered",
                 "completed": "Completed",
-                "cancelled": "Cancelled"
+                "cancelled": "Canceled"
             },
-            "viewDetails": "View product details ({{count}} item)",
-            "quantityTimesPrice": "Quantity: {{quantity}} × {{price}}₫"
+            "viewDetails": "View product details ({{count}})",
+            "quantityTimesPrice": "Quantity: {{quantity}} × {{price}}₫",
+            "noOrdersFound": "No orders found",
+            "errorNotFound": "No order information found. Please check your details!"
         }
     },
     "checkout": {
@@ -287,7 +347,7 @@
         "addressOptional": "Shipping Address (optional)",
         "province": "Province/City",
         "district": "District",
-        "ward": "Ward/Commune",
+        "ward": "Ward",
         "note": "Order Note",
         "notePlaceholder": "Delivery during office hours, leave at the door...",
         "required": "*",
@@ -304,12 +364,11 @@
         },
         "cartSummary": {
             "title": "Your Order",
-            "productCount_one": "({{count}} item)",
-            "productCount_other": "({{count}} items)",
+            "productCount": "({{count}} products)",
             "size": "Size: {{size}}",
             "quantity": "× {{quantity}}",
             "voucher": {
-                "placeholder": "Enter discount code",
+                "placeholder": "Enter promo code",
                 "apply": "Apply",
                 "applied": "Applied: -{{amount}}₫"
             },
@@ -325,7 +384,7 @@
             "emptyRequired": "Please fill in all required shipping information",
             "voucherSuccess10": "GIAM10 applied – 10% off",
             "voucherFreeShip": "Free shipping applied!",
-            "voucherInvalid": "Invalid discount code",
+            "voucherInvalid": "Invalid promo code",
             "orderSuccess": "Order placed successfully! Order ID: #{{orderId}}",
             "orderFailed": "Order placement failed: {{message}}",
             "errorOccurred": "An error occurred while placing the order. Please try again!"
@@ -340,13 +399,13 @@
             "timeLeft": "Time remaining",
             "expired": "EXPIRED",
             "qrTitle": "Payment QR Code",
-            "errorQr": "Error: Unable to load QR code. Please contact support!",
+            "errorQr": "Error: Unable to load QR code. Please contact us!",
             "bank": "Bank",
             "accountName": "Account Holder",
             "accountNumber": "Account Number",
             "transferContent": "Transfer Content",
             "important": "IMPORTANT",
-            "importantNote": "Please transfer with the exact content to process your order automatically!"
+            "importantNote": "Please include the exact transfer content for automatic processing!"
         },
         "cod": {
             "title": "CASH ON DELIVERY",
@@ -356,18 +415,18 @@
         "backHome": "Back to Home",
         "continueShopping": "Continue Shopping",
         "viewOrderDetails": "View Order Details",
-        "support": "Having issues? Contact us immediately:",
-        "supportPhone": "0385421799 (Zalo/Facebook)"
+        "support": "Having issues? Contact us now:",
+        "supportPhone": "0385427179 (Zalo/Facebook)"
     },
     "info": {
-        "name": "HUNGNHUNG supermarket",
-        "slogan": "A reputable and high-quality supermarket brand, committed to providing convenient, modern, and diverse shopping experiences",
+        "name": "HUNG NHUNG Supermarket",
+        "slogan": "A trusted and high-quality supermarket brand, committed to providing convenient, modern, and diverse shopping experiences",
         "tax-code": "Tax Code",
         "address": "Address",
         "hotline": "Hotline",
         "email": "Email",
         "fullName": "Full Name",
-        "phoneNumber": "Ph",
+        "phoneNumber": "Phone Number",
         "contact": {
             "pageTitle": "Contact Us",
             "header": "Get in Touch",
@@ -397,7 +456,7 @@
             "home": "Home",
             "current": "News"
         },
-        "heading": "News & Articles",
+        "heading": "News",
         "loading": "Loading...",
         "noArticles": "No articles available at the moment",
         "readMore": "Read More",
@@ -418,7 +477,7 @@
     },
     "service-benefits": {
         "fast-delivery": {
-            "title": "Fast Delivery",
+            "title": "Express Delivery",
             "description": "Within 4 hours in Ho Chi Minh City"
         },
         "free-returns": {
@@ -431,7 +490,7 @@
         },
         "hot-deals": {
             "title": "Hot Deals",
-            "description": "Flash sales with huge discounts"
+            "description": "Flash sales with massive discounts"
         }
     },
     "footer": {
@@ -451,26 +510,316 @@
         },
         "support-hotline": {
             "title": "Support Hotline",
-            "order": "Order Hotline: 19006750 (8 AM - 8 PM)",
-            "warranty": "Warranty Hotline: 19006750 (8 AM - 8 PM)"
+            "order": "Order Hotline: 19006750 (8:00 - 20:00)",
+            "warranty": "Warranty Hotline: 19006750 (8:00 - 20:00)"
         },
         "payment": {
-            "title": "Payment Method"
+            "title": "Payment Methods"
         }
     },
     "common": {
         "loading": "Loading...",
-        "add_to_cart": "Add Cart",
+        "add_to_cart": "Add to Cart",
         "price": "Price: {{price}}₫",
         "view-all": "View All"
     },
     "btn": {
         "save": "Save",
-        "back": "Go back",
+        "back": "Back",
         "confirm": "Confirm",
         "cancel": "Cancel",
         "update": "Update",
         "delete": "Delete",
-        "check": "Check"
+        "check": "Check",
+        "edit": "Edit"
+    },
+    "admin": {
+        "login": {
+            "title": "Admin Login",
+            "description": "Store Management",
+            "email": "Email",
+            "password": "Password",
+            "loading": "Logging in...",
+            "loginButton": "ADMIN LOGIN"
+        },
+        "welcome": "Welcome",
+        "logout": "Logout",
+        "dashboard": "Dashboard",
+        "products": {
+            "title": "Product Management",
+            "searchPlaceholder": "Search products by name or...",
+            "addProduct": "Add New Product",
+            "editProduct": "Edit Product",
+            "loading": "Loading products...",
+            "noResults": "No products found.",
+            "noProducts": "No products available.",
+            "table": {
+                "stt": "No.",
+                "image": "Image",
+                "info": "Product Information",
+                "name": "Product Name",
+                "description": "Description",
+                "category": "Category",
+                "price": "Price",
+                "stock": "Stock",
+                "unit": "Unit",
+                "tags": "Tags",
+                "createdAt": "Created Date",
+                "actions": "Actions"
+            },
+            "form": {
+                "name": "Product Name",
+                "category": "Category",
+                "selectCategory": "Select Category",
+                "price": "Original Price",
+                "priceSale": "Sale Price",
+                "priceDiscountPercent": "Discount Percentage",
+                "priceSaleHint": "Leave blank if no promotion",
+                "brand": "Brand",
+                "selectBrand": "Select Brand",
+                "image": "Product Image",
+                "imagePlaceholderLink": "Enter image URL",
+                "or": "or",
+                "uploadFromComputer": "Upload from Computer",
+                "imageLoadError": "Failed to load image. Please try again.",
+                "imagePreview": "Current Image Preview",
+                "removeImage": "Remove Image",
+                "galleryPlaceholder": "Paste multiple image URLs, one per line...\nOR use the upload button below.",
+                "galleryUploadFromComputer": "Upload Images from Computer",
+                "selectTags": "Select Tags",
+                "description": "Detailed Description (HTML)",
+                "shortDescription": "Short Description",
+                "type": "Product Type",
+                "color": "Color",
+                "tags": "Tags",
+                "isStock": "In Stock?",
+                "inStock": "In Stock",
+                "outOfStock": "Out of Stock",
+                "flashSale": "Flash Sale Product?"
+            },
+            "toast": {
+                "loading": "Processing...",
+                "error": "An error occurred. Please try again!",
+                "addSuccess": "Product added successfully!",
+                "updateSuccess": "Product updated successfully!",
+                "confirmDelete": "Confirm delete product? This action cannot be undone!",
+                "deleteSuccess": "Product deleted successfully!",
+                "deleteFailed": "Failed to delete product!",
+                "uploadImageSuccess": "Image uploaded successfully!",
+                "uploadImageFailed": "Failed to upload image!",
+                "errorLoadingProducts": "Error loading products. Please try again!"
+            }
+        },
+        "users": {
+            "title": "User Management",
+            "searchPlaceholder": "Search users by name or email...",
+            "loading": "Loading users...",
+            "noResults": "No users found.",
+            "noUsers": "No users available.",
+            "addUser": "Add New User",
+            "editUser": "Edit User",
+            "table": {
+                "stt": "No.",
+                "name": "User Name",
+                "email": "Email",
+                "phone": "Phone Number",
+                "address": "Address",
+                "registeredAt": "Registration Date",
+                "totalOrders": "Total Orders",
+                "totalSpent": "Total Spent",
+                "actions": "Actions"
+            },
+            "role": {
+                "admin": "Administrator",
+                "customer": "Customer"
+            },
+            "form": {
+                "fullName": "Full Name",
+                "email": "Email",
+                "phone": "Phone Number",
+                "password": "Password",
+                "confirmPassword": "Confirm Password",
+                "role": "Role"
+            },
+            "toast": {
+                "loading": "Processing...",
+                "error": "An error occurred. Please try again!",
+                "addSuccess": "User added successfully!",
+                "updateSuccess": "User updated successfully!",
+                "confirmDelete": "Confirm delete user? This action cannot be undone!",
+                "deleteSuccess": "User deleted successfully!",
+                "deleteFailed": "Failed to delete user!",
+                "errorLoadingUsers": "Error loading users. Please try again!"
+            }
+        },
+        "tags": {
+            "title": "Tag Management",
+            "searchPlaceholder": "Search tags by name...",
+            "addTag": "Add New Tag",
+            "editTag": "Edit Tag",
+            "loading": "Loading tags...",
+            "noResults": "No tags found.",
+            "noTags": "No tags available.",
+            "table": {
+                "stt": "No.",
+                "name": "Tag Name",
+                "type": "Tag Type",
+                "description": "Description",
+                "status": "Status",
+                "createdAt": "Created Date",
+                "actions": "Actions"
+            },
+            "type": {
+                "article": "Articles Only",
+                "product": "Products Only",
+                "both": "Products & Articles"
+            },
+            "status": {
+                "active": "Active",
+                "inactive": "Inactive"
+            },
+            "form": {
+                "name": "Tag Name",
+                "description": "Description",
+                "type": "Tag Type"
+            },
+            "toast": {
+                "loading": "Processing...",
+                "error": "An error occurred. Please try again!",
+                "addSuccess": "Tag added successfully!",
+                "updateSuccess": "Tag updated successfully!",
+                "confirmDelete": "Confirm delete tag? This action cannot be undone!",
+                "deleteSuccess": "Tag deleted successfully!",
+                "deleteFailed": "Failed to delete tag!",
+                "errorLoadingTags": "Error loading tags. Please try again!"
+            }
+        },
+        "settings": "Settings",
+        "orders": {
+            "title": "Order Management",
+            "searchPlaceholder": "Search order by ID...",
+            "total": "Total Orders",
+            "totalRevenue": "Total Revenue",
+            "todayRevenue": "Today's Revenue",
+            "orderId": "Order ID",
+            "totalAmount": "Total Amount",
+            "createdAt": "Created Date",
+            "noOrders": "No orders found.",
+            "viewOrder": "View Order",
+            "editOrder": "Edit Order",
+            "updateSuccess": "Order updated successfully!",
+            "updateFailed": "Failed to update order!",
+            "status": {
+                "title": "Order Status",
+                "pending": "Pending Processing",
+                "confirmed": "Confirmed",
+                "preparing": "Preparing",
+                "shipped": "Shipped",
+                "delivered": "Delivered",
+                "canceled": "Canceled",
+                "returned": "Returned",
+                "pendingCount": "Pending Orders Count",
+                "pendingList": "Pending Orders List",
+                "viewAllPendingOrders": "View All Pending Orders"
+            },
+            "paymentMethods": {
+                "title": "Payment Method",
+                "cod": "Cash on Delivery (COD)",
+                "bankTransfer": "Bank Transfer"
+            },
+            "paymentStatus": {
+                "title": "Payment Status",
+                "pendingPayment": "PAYMENT AWAITING CONFIRMATION",
+                "pendingCount": "Pending Payment Count",
+                "pendingTotal": "Total Pending Amount",
+                "pendingList": "Pending Payment Orders List",
+                "pending": "Pending",
+                "paid": "Paid",
+                "failed": "Failed",
+                "canceled": "Refunded",
+                "viewAllQRPayments": "View All Awaiting Confirmation"
+            },
+            "table": {
+                "stt": "No.",
+                "orderId": "Order ID",
+                "customer": "Customer",
+                "phone": "Phone Number",
+                "email": "Email",
+                "address": "Address",
+                "totalAmount": "Total Amount",
+                "paymentMethod": "Payment Method",
+                "paymentStatus": "Payment Status",
+                "orderStatus": "Order Status",
+                "createdAt": "Created Date",
+                "actions": "Actions"
+            }
+        },
+        "news": {
+            "title": "News Management",
+            "searchPlaceholder": "Search news...",
+            "addNews": "Add New News",
+            "editNews": "Edit News",
+            "table": {
+                "stt": "No.",
+                "image": "Image",
+                "info": "Information",
+                "tags": "Tags",
+                "publishedAt": "Published Date",
+                "status": "Status",
+                "views": "Views",
+                "actions": "Actions",
+                "createdAt": "Created Date",
+                "title": "Title",
+                "description": "Description"
+            },
+            "form": {
+                "title": "News Title",
+                "tags": "Tags",
+                "selectTags": "Select Tags",
+                "thumbnailURL": "Thumbnail URL",
+                "shortDescription": "Short Description",
+                "content": "News Content",
+                "status": "Status"
+            },
+            "loading": "Loading news...",
+            "noResults": "No news found.",
+            "noNews": "No news available.",
+            "createdAt": "Created Date",
+            "actions": "Actions",
+            "edit": "Edit",
+            "delete": "Delete",
+            "deleting": "Deleting...",
+            "addButton": "ADD NEW NEWS",
+            "saveButton": "SAVE NEWS",
+            "updateButton": "UPDATE NEWS",
+            "status": {
+                "published": "Published",
+                "draft": "Draft",
+                "archived": "Archived"
+            },
+            "toast": {
+                "error": "An error occurred. Please try again!",
+                "createSuccess": "News created successfully!",
+                "updateSuccess": "News updated successfully!",
+                "confirmDelete": "Confirm delete news? This action cannot be undone!",
+                "deleteSuccess": "News deleted successfully!",
+                "deleteFailed": "Failed to delete news!",
+                "errorLoadingNews": "Error loading news. Please try again!"
+            }
+        },
+        "payments": {
+            "title": "Bank Transfer Confirmation",
+            "loading": "Loading pending payments...",
+            "content": "Content",
+            "customer": "Customer",
+            "noPayments": "No pending bank transfer payments.",
+            "confirmPayment": "Confirm Payment",
+            "confirming": "Confirming...",
+            "confirmPaid": "Confirm as Paid",
+            "toast": {
+                "confirmSuccess": "Payment confirmed successfully!",
+                "confirmFailed": "Failed to confirm payment!"
+            }
+        }
     }
 }

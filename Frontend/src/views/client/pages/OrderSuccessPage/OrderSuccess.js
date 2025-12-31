@@ -50,14 +50,14 @@ const OrderSuccess = () => {
   }
 
   return (
-    <div className="container py-5">
+    <div className="container py-xl-5">
       {/* Header thành công */}
-      <div className="text-center mb-5">
+      <div className="text-center mb-xl-5">
         <i
           className="bi bi-check-circle-fill text-success"
           style={{ fontSize: "80px" }}
         ></i>
-        <h1 className="mt-3 text-success fw-bold">
+        <h1 className="mt-xl-3 text-success fw-bold">
           {t("orderSuccess.pageTitle")}
         </h1>
         <p className="lead text-muted">
@@ -73,16 +73,16 @@ const OrderSuccess = () => {
         <div className="col-lg-6">
           {/* ================== CHUYỂN KHOẢN – BẮT BUỘC HIỆN QR ================== */}
           {paymentMethod === "BANK" && (
-            <div className="card shadow-lg border-0 mb-4">
+            <div className="card shadow-lg border-0 mb-xl-4">
               <div className="card-header bg-danger text-white text-center">
                 <h4 className="mb-0">
                   <i className="bi bi-qr-code-scan"></i>
                   {t("orderSuccess.bankTransfer.title")}
                 </h4>
               </div>
-              <div className="card-body text-center p-4">
+              <div className="card-body text-center p-xl-4">
                 {/* Đếm ngược */}
-                <div className="alert alert-warning fw-bold fs-5 mb-4">
+                <div className="alert alert-warning fw-bold fs-5 mb-xl-4">
                   <i className="bi bi-clock"></i>{" "}
                   {t("orderSuccess.bankTransfer.timeLeft")}:
                   <span className="text-danger ms-2">
@@ -92,7 +92,7 @@ const OrderSuccess = () => {
 
                 {/* QR CODE – BẮT BUỘC HIỆN */}
                 {qrImage ? (
-                  <div className="d-inline-block p-4 bg-white rounded shadow">
+                  <div className="d-inline-block p-xl-4 bg-white rounded shadow">
                     <img
                       src={qrImage}
                       alt={t("orderSuccess.bankTransfer.qrTitle")}
@@ -107,20 +107,20 @@ const OrderSuccess = () => {
                 )}
 
                 {/* Thông tin chuyển khoản */}
-                <div className="mt-4 p-4 bg-light rounded border">
-                  <p className="mb-2">
+                <div className="mt-xl-4 p-xl-4 bg-light rounded border">
+                  <p className="mb-xl-2">
                     <strong>{t("orderSuccess.bankTransfer.bank")}:</strong>{" "}
                     <span className="text-primary">
                       {bankInfo?.bank || "Vietcombank"}
                     </span>
                   </p>
-                  <p className="mb-2">
+                  <p className="mb-xl-2">
                     <strong>
                       {t("orderSuccess.bankTransfer.accountName")}:
                     </strong>{" "}
                     {bankInfo?.accountName || "NGUYỄN VĂN HOÀNG"}
                   </p>
-                  <p className="mb-2">
+                  <p className="mb-xl-2">
                     <strong>
                       {t("orderSuccess.bankTransfer.accountNumber")}:
                     </strong>{" "}
@@ -132,7 +132,7 @@ const OrderSuccess = () => {
                   </p>
                 </div>
 
-                <div className="alert alert-danger mt-4">
+                <div className="alert alert-danger mt-xl-4">
                   <strong>{t("orderSuccess.bankTransfer.important")}:</strong>{" "}
                   {t("orderSuccess.bankTransfer.importantNote")}
                 </div>
@@ -142,13 +142,13 @@ const OrderSuccess = () => {
 
           {/* ================== COD ================== */}
           {paymentMethod === "COD" && (
-            <div className="card shadow-lg border-0 mb-4">
-              <div className="card-body text-center py-5">
+            <div className="card shadow-lg border-0 mb-xl-4">
+              <div className="card-body text-center py-xl-5">
                 <i
                   className="bi bi-truck text-success"
                   style={{ fontSize: "4rem" }}
                 ></i>
-                <h4 className="mt-3 text-success fw-bold">
+                <h4 className="mt-xl-3 text-success fw-bold">
                   {t("orderSuccess.cod.title")}
                 </h4>
                 <p className="text-muted">
@@ -161,19 +161,22 @@ const OrderSuccess = () => {
       </div>
 
       {/* Nút điều hướng */}
-      <div className="text-center mt-5">
-        <Link to="/products/all" className="btn btn-success btn-lg px-5 me-3">
+      <div className="text-center mt-xl-5">
+        <Link
+          to="/products/all"
+          className="btn btn-success btn-lg px-xl-5 me-xl-3"
+        >
           {t("orderSuccess.continueShopping")}
         </Link>
         <Link
           to="/account/orders"
-          className="btn btn-outline-success btn-lg px-5"
+          className="btn btn-outline-success btn-lg px-xl-5"
         >
           {t("orderSuccess.viewOrderDetails")}
         </Link>
       </div>
 
-      <div className="text-center mt-4 text-muted small">
+      <div className="text-center mt-xl-4 text-muted small">
         {t("orderSuccess.support")}{" "}
         <strong>{t("orderSuccess.supportPhone")}</strong>
       </div>

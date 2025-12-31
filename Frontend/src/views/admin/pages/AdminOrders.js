@@ -1,7 +1,9 @@
 // src/admin/pages/Orders.jsx
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const AdminOrders = ({ adminController }) => {
+  const [t, i18n] = useTranslation();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState({});
@@ -51,9 +53,9 @@ const AdminOrders = ({ adminController }) => {
       await adminController.updateOrderPaymentStatus(orderId, newPaymentStatus);
       await adminController.updateOrderStatus(orderId, newOrderStatus);
 
-      alert("Cập nhật đơn hàng thành công!");
+      alert(t("admin.orders.updateSuccess"));
     } catch (error) {
-      console.error("Cập nhật đơn hàng thất bại:", error);
+      console.error(t("admin.orders.updateFailed"), error);
     }
   };
 
@@ -102,7 +104,7 @@ const AdminOrders = ({ adminController }) => {
     <div className="order-admin py-4">
       <div className="order-admin_header d-flex justify-content-between mb-4 align-items-center">
         <h2 className="fw-bold text-uppercase text-success">
-          Quản lý đơn hàng
+          {t("admin.orders.title")}
         </h2>
         <div
           className="me-3 position-relative border rounded-pill py-1 bg-white py-2"
@@ -111,7 +113,7 @@ const AdminOrders = ({ adminController }) => {
           <input
             type="text"
             className="input-group border-0 mx-1 px-3 fs-6 outline-0 no-focus"
-            placeholder="Tìm sản phẩm..."
+            placeholder={t("admin.orders.searchPlaceholder")}
             value={searchInput}
             style={{ maxWidth: "230px" }}
             onChange={(e) => setSearchInput(e.target.value)}
@@ -132,16 +134,16 @@ const AdminOrders = ({ adminController }) => {
         <table className="table table-striped table-bordered table-hover align-middle">
           <thead className="table-primary  align-middle">
             <tr className="text-center">
-              <th>STT</th>
-              <th>Mã đơn</th>
-              <th>Tên khách hàng</th>
-              <th>SDT</th>
-              <th>Địa chỉ</th>
-              <th>Tổng tiền</th>
-              <th>Hình thức TT</th>
-              <th>Trạng thái TT</th>
-              <th>Trạng thái ĐH</th>
-              <th>Hành động</th>
+              <th>{t("admin.orders.table.stt")}</th>
+              <th>{t("admin.orders.table.orderId")}</th>
+              <th>{t("admin.orders.table.customer")}</th>
+              <th>{t("admin.orders.table.phone")}</th>
+              <th>{t("admin.orders.table.address")}</th>
+              <th>{t("admin.orders.table.totalAmount")}</th>
+              <th>{t("admin.orders.table.paymentMethod")}</th>
+              <th>{t("admin.orders.table.paymentStatus")}</th>
+              <th>{t("admin.orders.table.orderStatus")}</th>
+              <th>{t("admin.orders.table.actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -179,10 +181,18 @@ const AdminOrders = ({ adminController }) => {
                       handlePaymentChange(order._id, e.target.value);
                     }}
                   >
-                    <option value="pending">Đang chờ thanh toán</option>
-                    <option value="paid">Đã thanh toán</option>
-                    <option value="failed">Thanh toán thất bại</option>
-                    <option value="refunded">Đã hoàn tiền</option>
+                    <option value="pending">
+                      {t("admin.orders.paymentStatus.pending")}
+                    </option>
+                    <option value="paid">
+                      {t("admin.orders.paymentStatus.paid")}
+                    </option>
+                    <option value="failed">
+                      {t("admin.orders.paymentStatus.failed")}
+                    </option>
+                    <option value="refunded">
+                      {t("admin.orders.paymentStatus.canceled")}
+                    </option>
                   </select>
                 </td>
                 <td>
@@ -193,13 +203,27 @@ const AdminOrders = ({ adminController }) => {
                       handleOrderStatusChange(order._id, e.target.value)
                     }
                   >
-                    <option value="pending">Chờ xử lý</option>
-                    <option value="confirmed">Đã xác nhận</option>
-                    <option value="preparing">Đang chuẩn bị</option>
-                    <option value="shipped">Đang giao hàng</option>
-                    <option value="delivered">Đã giao hàng</option>
-                    <option value="canceled">Đã hủy</option>
-                    <option value="returned">Đã trả hàng</option>
+                    <option value="pending">
+                      {t("admin.orders.status.pending")}
+                    </option>
+                    <option value="confirmed">
+                      {t("admin.orders.status.confirmed")}
+                    </option>
+                    <option value="preparing">
+                      {t("admin.orders.status.preparing")}
+                    </option>
+                    <option value="shipped">
+                      {t("admin.orders.status.shipped")}
+                    </option>
+                    <option value="delivered">
+                      {t("admin.orders.status.delivered")}
+                    </option>
+                    <option value="canceled">
+                      {t("admin.orders.status.canceled")}
+                    </option>
+                    <option value="returned">
+                      {t("admin.orders.status.returned")}
+                    </option>
                   </select>
                 </td>
 

@@ -1,8 +1,10 @@
 // src/admin/pages/AdminNews.jsx
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 const AdminNews = ({ adminController }) => {
+  const [t, i18n] = useTranslation();
   const [news, setNews] = useState([]);
   const [tagsNew, setTagsNew] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -164,7 +166,9 @@ const AdminNews = ({ adminController }) => {
 
       if (result.success) {
         showToast(
-          isEditing ? "Cập nhật thành công!" : "Thêm tin tức thành công!",
+          isEditing
+            ? t("admin.news.toast.updateSuccess")
+            : t("admin.news.toast.createSuccess"),
           "success"
         );
         setModalOpen(false);
@@ -176,15 +180,15 @@ const AdminNews = ({ adminController }) => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Xóa sản phẩm này? Không thể khôi phục!")) return;
+    if (!window.confirm(t("admin.news.toast.confirmDelete"))) return;
     try {
       const result = await adminController.deleteNewAdmin(id);
       if (result.success) {
-        showToast("Xóa thành công!", "success");
+        showToast(t("admin.news.toast.deleteSuccess"), "success");
         setNews((prev) => prev.filter((p) => p._id !== id));
       }
     } catch (err) {
-      showToast("Xóa thất bại", "danger");
+      showToast(t("admin.news.toast.deleteFailed"), "danger");
     }
   };
 
@@ -218,7 +222,7 @@ const AdminNews = ({ adminController }) => {
         <div className="new-admin_header d-flex justify-content-between align-items-center mb-4">
           <div>
             <h2 className="fw-bold text-uppercase text-success">
-              Quản lý Tin Tức
+              {t("admin.news.title")}
             </h2>
           </div>
           <div className="d-flex justify-content-between align-items-center">
@@ -229,7 +233,7 @@ const AdminNews = ({ adminController }) => {
               <input
                 type="text"
                 className="input-group border-0 mx-1 px-3 fs-6 outline-0 no-focus"
-                placeholder="Tìm tin tức..."
+                placeholder={t("admin.news.searchPlaceholder")}
                 value={searchInput}
                 style={{ maxWidth: "230px" }}
                 onChange={(e) => setSearchInput(e.target.value)}
@@ -249,27 +253,27 @@ const AdminNews = ({ adminController }) => {
               className="btn btn-success shadow "
               onClick={() => openModal()}
             >
-              + Thêm tin tức mới
+              + {t("admin.news.addNews")}
             </button>
           </div>
         </div>
 
         {/* Table */}
         {loading ? (
-          <div className="text-center py-10">Đang tải...</div>
+          <div className="text-center py-10">{t("admin.news.loading")}</div>
         ) : (
           <div className="bg-white border-0">
             <table className="table table-hover mb-0 align-middle table-bordered">
               <thead className="table-primary text-white text-center">
                 <tr className="align-middle">
-                  <th>STT</th>
-                  <th>Ảnh</th>
-                  <th>Thông tin</th>
-                  <th>Tags</th>
-                  <th>Ngày đăng</th>
-                  <th>Trạng thái</th>
-                  <th>Lượt xem</th>
-                  <th>Hành động</th>
+                  <th>{t("admin.news.table.stt")}</th>
+                  <th>{t("admin.news.table.image")}</th>
+                  <th>{t("admin.news.table.info")}</th>
+                  <th>{t("admin.news.table.tags")}</th>
+                  <th>{t("admin.news.table.publishedAt")}</th>
+                  <th>{t("admin.news.table.status")}</th>
+                  <th>{t("admin.news.table.views")}</th>
+                  <th>{t("admin.news.table.actions")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -280,8 +284,8 @@ const AdminNews = ({ adminController }) => {
                       className="text-center py-5 text-muted fs-4"
                     >
                       {searchTerm
-                        ? "Không tìm thấy tin tức nào"
-                        : "Chưa có Tin túc"}
+                        ? t("admin.news.noResults")
+                        : t("admin.news.noNews")}
                     </td>
                   </tr>
                 ) : (
@@ -297,10 +301,10 @@ const AdminNews = ({ adminController }) => {
                       </td>
                       <td className="col-6">
                         <div className="font-medium text-gray-900">
-                          <b>Tiêu đề: </b>
+                          <b>{t("admin.news.table.title")}: </b>
                           {item.title}
                           <br />
-                          <b>Mô tả: </b>
+                          <b>{t("admin.news.table.description")}: </b>
                           {item.description}
                         </div>
                       </td>
@@ -327,7 +331,9 @@ const AdminNews = ({ adminController }) => {
                               : "bg-gray-100 text-gray-800"
                           }`}
                         >
-                          {item.isPublished ? "Đã đăng" : "Nháp"}
+                          {item.isPublished
+                            ? t("admin.news.status.published")
+                            : t("admin.news.status.draft")}
                         </span>
                       </td>
                       <td className=" text-center fs-7">{item.views}</td>
@@ -336,13 +342,13 @@ const AdminNews = ({ adminController }) => {
                           onClick={() => openModal(item)}
                           className="btn btn-sm btn-success me-2"
                         >
-                          Sửa
+                          {t("admin.news.edit")}
                         </button>
                         <button
                           onClick={() => handleDelete(item._id)}
                           className="btn btn-sm btn-danger"
                         >
-                          Xóa
+                          {t("admin.news.delete")}
                         </button>
                       </td>
                     </tr>
@@ -418,7 +424,7 @@ const AdminNews = ({ adminController }) => {
                   >
                     <div className="col-12 mb-2">
                       <label className="form-label fw-bold text-danger">
-                        Tiêu đề *
+                        {t("admin.news.form.title")} *
                       </label>
                       <input
                         type="text"
@@ -432,7 +438,7 @@ const AdminNews = ({ adminController }) => {
                     </div>
                     <div className="mb-2 col-12">
                       <label className="form-label fw-bold text-danger">
-                        Thumbnail URL *
+                        {t("admin.news.form.thumbnailURL")} *
                       </label>
                       <input
                         type="text"
@@ -449,7 +455,9 @@ const AdminNews = ({ adminController }) => {
                       />
                     </div>
                     <div className="col-12 mb-2">
-                      <label className="form-label fw-bold">Mô tả ngắn *</label>
+                      <label className="form-label fw-bold">
+                        {t("admin.news.form.shortDescription")} *
+                      </label>
                       <textarea
                         required
                         rows={2}
@@ -465,7 +473,7 @@ const AdminNews = ({ adminController }) => {
                     </div>
                     <div className="col-12 mb-2">
                       <label className="form-label fw-bold">
-                        Nội dung bài viết *
+                        {t("admin.news.form.content")} *
                       </label>
                       <textarea
                         required
@@ -481,7 +489,9 @@ const AdminNews = ({ adminController }) => {
                       ></textarea>
                     </div>
                     <div className="col-12 mb-2">
-                      <label className="form-label fw-bold">Tags</label>
+                      <label className="form-label fw-bold">
+                        {t("admin.news.form.tags")}
+                      </label>
                       <div className="row border rounded p-2 d-flex row-cols-lg-5 g-2">
                         {tagsNew.map((tag) => (
                           <label
@@ -526,7 +536,7 @@ const AdminNews = ({ adminController }) => {
                           }
                         />
                         <label className="form-check-label fw-bold text-danger">
-                          Đã đăng
+                          {t("admin.news.status.published")}
                         </label>
                       </div>
                     </div>
@@ -538,10 +548,12 @@ const AdminNews = ({ adminController }) => {
                       onClick={() => setModalOpen(false)}
                       className="btn-dark btn me-3"
                     >
-                      Hủy
+                      {t("btn.cancel")}
                     </button>
                     <button type="submit" className="btn btn-success me-4">
-                      {isEditing ? "Cập nhật" : "Tạo bài viết"}
+                      {isEditing
+                        ? t("admin.news.updateButton")
+                        : t("admin.news.saveButton")}
                     </button>
                   </div>
                 </form>

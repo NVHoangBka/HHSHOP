@@ -1,4 +1,9 @@
 {
+    "language": {
+        "vi": "Tiếng Việt",
+        "en": "English",
+        "cz": "Cộng hòa Séc"
+    },
     "introduce": {},
     "header": {
         "home": "Trang chủ",
@@ -149,15 +154,47 @@
         }
     },
     "product": {
-        "product_all": "Tất cả sản phẩm",
-        "product": "Sản phẩm",
-        "cart": "Giỏ hàng",
-        "empty-category": "Không có sản phẩm nào trong danh mục này.",
-        "not-found": "Sản phẩm không tồn tại",
         "breadcrumb": {
             "home": "Trang chủ"
         },
-        "loading": "Đang tải...",
+        "allProducts": "Tất cả sản phẩm",
+        "loading": "Đang tải sản phẩm...",
+        "noProducts": "Không có sản phẩm nào trong danh mục này.",
+        "sort": {
+            "label": "Sắp xếp",
+            "default": "Mặc định",
+            "nameAsc": "Tên A → Z",
+            "nameDesc": "Tên Z → A",
+            "priceAsc": "Giá tăng dần",
+            "priceDesc": "Giá giảm dần",
+            "newest": "Mới nhất",
+            "oldest": "Cũ nhất"
+        },
+        "filter": {
+            "title": "Lọc",
+            "price": "Giá",
+            "brand": "Hãng sản xuất",
+            "type": "Loại sản phẩm",
+            "color": "Màu sắc",
+            "tag": "Tags",
+            "resetAll": "Xóa tất cả",
+            "priceRanges": {
+                "under1m": "Giá dưới 1.000.000₫",
+                "1m-2m": "1.000.000₫ - 2.000.000₫",
+                "2m-3m": "2.000.000₫ - 3.000.000₫",
+                "3m-5m": "3.000.000₫ - 5.000.000₫",
+                "5m-7m": "5.000.000₫ - 7.000.000₫",
+                "7m-10m": "7.000.000₫ - 10.000.000₫",
+                "over10m": "Giá trên 10.000.000₫"
+            }
+        },
+        "pagination": {
+            "previous": "Trước",
+            "next": "Sau"
+        },
+        "product": "Sản phẩm",
+        "cart": "Giỏ hàng",
+        "not-found": "Sản phẩm không tồn tại",
         "notFound": "Sản phẩm không tồn tại.",
         "backHome": "Quay về trang chủ",
         "brand": "Thương hiệu",
@@ -205,7 +242,27 @@
         "all-categories": "Tất cả danh mục",
         "product-name": "Tìm theo tên Sản phẩm",
         "no-product": "Không tìm thấy sản phẩm nào",
-        "popular-keywords": "Từ khoá phổ biến"
+        "popular-keywords": "Từ khoá phổ biến",
+        "searchResults": {
+            "breadcrumb": {
+                "home": "Trang chủ",
+                "current": "Tìm kiếm"
+            },
+            "title": "Kết quả tìm kiếm cho",
+            "loading": "Đang tìm...",
+            "noKeyword": "Vui lòng nhập từ khóa tìm kiếm.",
+            "noResults": "Không tìm thấy sản phẩm nào.",
+            "backHome": "Quay về trang chủ",
+            "continueShopping": "Tiếp tục mua sắm",
+            "inCategory": "trong",
+            "categoryNames": {
+                "personal-care": "Chăm sóc cá nhân",
+                "baby-care": "Chăm sóc bé",
+                "household-cleaning": "Vệ sinh nhà cửa",
+                "food-beverages": "Thực phẩm & Đồ uống",
+                "all": "Tất cả danh mục"
+            }
+        }
     },
     "menu": {
         "product_all": "Tất cả sản phẩm",
@@ -473,6 +530,295 @@
         "cancel": "Hủy",
         "update": "Cập nhật",
         "delete": "Xóa",
-        "check": "Kiểm tra"
+        "check": "Kiểm tra",
+        "edit": "Sửa"
+    },
+    "admin": {
+        "login": {
+            "title": "Đăng nhập Admin",
+            "description": "Quản lý cửa hàng",
+            "email": "Email",
+            "password": "Mật khẩu",
+            "loading": "Đang đăng nhập...",
+            "loginButton": "ĐĂNG NHẬP ADMIN"
+        },
+        "welcome": "Chào mừng",
+        "logout": "Đăng xuất",
+        "dashboard": "Tổng quan",
+        "products": {
+            "title": "Quản lí sản phẩm",
+            "searchPlaceholder": "Tìm sản phẩm theo tên hoặc ...",
+            "addProduct": "Thêm sản phẩm mới",
+            "editProduct": "Sửa sản phẩm",
+            "loading": "Đang tải sản phẩm...",
+            "noResults": "Không tìm thấy sản phẩm nào.",
+            "noProducts": "Chưa có sản phẩm nào.",
+            "table": {
+                "stt": "STT",
+                "image": "Ảnh",
+                "info": "Thông tin sản phẩm",
+                "name": "Tên sản phẩm",
+                "description": "Mô tả",
+                "category": "Danh mục",
+                "price": "Giá",
+                "stock": "Tồn kho",
+                "unit": "Cái",
+                "tags": "Tags",
+                "createdAt": "Ngày tạo",
+                "actions": "Hành động"
+            },
+            "form": {
+                "name": "Tên sản phẩm",
+                "category": "Danh mục",
+                "selectCategory": "Chọn danh mục",
+                "price": "Giá gốc",
+                "priceSale": "Giá khuyến mãi",
+                "priceDiscountPercent": "Phần trăm giảm giá",
+                "priceSaleHint": "Để trống nếu không có khuyến mãi",
+                "brand": "Thương hiệu",
+                "selectBrand": "Chọn thương hiệu",
+                "image": "Ảnh sản phẩm",
+                "imagePlaceholderLink": "Nhập URL ảnh",
+                "or": "Hoặc",
+                "uploadFromComputer": "Tải ảnh từ máy tính",
+                "imageLoadError": "Lỗi tải ảnh. Vui lòng thử lại.",
+                "imagePreview": "Link ảnh hiện tại",
+                "removeImage": "Xóa ảnh",
+                "galleryPlaceholder": "Dán nhiều link ảnh, mỗi link 1 dòng...&#10;HOẶC dùng nút upload bên dưới để tải ảnh từ máy tính.",
+                "galleryUploadFromComputer": "Tải ảnh lên từ máy tính",
+                "selectTags": "Chọn tags",
+                "description": "Mô tả chi tiết (HTML)",
+                "shortDescription": "Mô tả ngắn",
+                "type": "Loại sản phẩm",
+                "color": "Màu sắc",
+                "tags": "Tags",
+                "isStock": "Còn hàng?",
+                "inStock": "Còn hàng",
+                "outOfStock": "Hết hàng",
+                "flashSale": "Sản phẩm Flash Sale?"
+            },
+            "toast": {
+                "loading": "Đang xử lý...",
+                "error": "Đã có lỗi xảy ra. Vui lòng thử lại!",
+                "addSuccess": "Thêm sản phẩm thành công!",
+                "updateSuccess": "Cập nhật sản phẩm thành công!",
+                "confirmDelete": "Xác nhận xóa sản phẩm? Không thể khôi phục!",
+                "deleteSuccess": "Xóa sản phẩm thành công!",
+                "deleteFailed": "Xóa sản phẩm thất bại!",
+                "uploadImageSuccess": "Tải ảnh lên thành công!",
+                "uploadImageFailed": "Tải ảnh lên thất bại!",
+                "errorLoadingProducts": "Lỗi tải sản phẩm. Vui lòng thử lại!"
+            }
+        },
+        "users": {
+            "title": "Quản lí người dùng",
+            "searchPlaceholder": "Tìm người dùng theo tên hoặc email...",
+            "loading": "Đang tải người dùng...",
+            "noResults": "Không tìm thấy người dùng nào.",
+            "noUsers": "Chưa có người dùng nào.",
+            "addUser": "Thêm người dùng mới",
+            "editUser": "Sửa người dùng",
+            "table": {
+                "stt": "STT",
+                "name": "Tên người dùng",
+                "email": "Email",
+                "phone": "Số điện thoại",
+                "address": "Địa chỉ",
+                "registeredAt": "Ngày đăng ký",
+                "totalOrders": "Tổng đơn hàng",
+                "totalSpent": "Tổng chi tiêu",
+                "actions": "Hành động"
+            },
+            "role": {
+                "admin": "Quản trị viên",
+                "customer": "Khách hàng"
+            },
+            "form": {
+                "fullName": "Họ tên",
+                "email": "Email",
+                "phone": "Số điện thoại",
+                "password": "Mật khẩu",
+                "confirmPassword": "Xác nhận mật khẩu",
+                "role": "Vai trò"
+            },
+            "toast": {
+                "loading": "Đang xử lý...",
+                "error": "Đã có lỗi xảy ra. Vui lòng thử lại!",
+                "addSuccess": "Thêm người dùng thành công!",
+                "updateSuccess": "Cập nhật người dùng thành công!",
+                "confirmDelete": "Xác nhận xóa người dùng? Không thể khôi phục!",
+                "deleteSuccess": "Xóa người dùng thành công!",
+                "deleteFailed": "Xóa người dùng thất bại!",
+                "errorLoadingUsers": "Lỗi tải người dùng. Vui lòng thử lại!"
+            }
+        },
+        "tags": {
+            "title": "Quản lí Tags",
+            "searchPlaceholder": "Tìm tag theo tên...",
+            "addTag": "Thêm tag mới",
+            "editTag": "Sửa tag",
+            "loading": "Đang tải tags...",
+            "noResults": "Không tìm thấy tag nào.",
+            "noTags": "Chưa có tag nào.",
+            "table": {
+                "stt": "STT",
+                "name": "Tên tag",
+                "type": "Loại tag",
+                "description": "Mô tả",
+                "status": "Trạng thái",
+                "createdAt": "Ngày tạo",
+                "actions": "Hành động"
+            },
+            "type": {
+                "article": "Chỉ bài viết",
+                "product": "Chỉ sản phẩm",
+                "both": "Cả sản phẩm & bài viết"
+            },
+            "status": {
+                "active": "Hoạt động",
+                "inactive": "Không hoạt động"
+            },
+            "form": {
+                "name": "Tên tag",
+                "description": "Mô tả",
+                "type": "Loại tag"
+            },
+            "toast": {
+                "loading": "Đang xử lý...",
+                "error": "Đã có lỗi xảy ra. Vui lòng thử lại!",
+                "addSuccess": "Thêm tag thành công!",
+                "updateSuccess": "Cập nhật tag thành công!",
+                "confirmDelete": "Xác nhận xóa tag? Không thể khôi phục!",
+                "deleteSuccess": "Xóa tag thành công!",
+                "deleteFailed": "Xóa tag thất bại!",
+                "errorLoadingTags": "Lỗi tải tags. Vui lòng thử lại!"
+            }
+        },
+        "settings": "Cài đặt",
+        "orders": {
+            "title": "Quản lí đơn hàng",
+            "searchPlaceholder": "Tìm đơn hàng theo mã đơn...",
+            "total": "Tổng đơn hàng",
+            "totalRevenue": "Tổng doanh thu",
+            "todayRevenue": "Doanh thu hôm nay",
+            "orderId": "Mã đơn hàng",
+            "totalAmount": "Tổng tiền",
+            "createdAt": "Ngày tạo",
+            "noOrders": "Không có đơn hàng nào.",
+            "viewOrder": "Xem đơn hàng",
+            "editOrder": "Sửa đơn hàng",
+            "updateSuccess": "Cập nhật đơn hàng thành công!",
+            "updateFailed": "Cập nhật đơn hàng thất bại!",
+            "status": {
+                "title": "Trạng thái đơn hàng",
+                "pending": "Đơn hàng chưa xử lí",
+                "confirmed": "Đơn hàng đã xác nhận",
+                "preparing": "Đơn hàng đang chuẩn bị",
+                "shipped": "Đơn hàng đã giao cho vận chuyển",
+                "delivered": "Đơn hàng đã giao",
+                "canceled": "Đơn hàng đã huỷ",
+                "returned": "Đơn hàng đã trả",
+                "pendingCount": "Số đơn chờ xử lí",
+                "pendingList": "Danh sách đơn hàng chờ xử lí",
+                "viewAllPendingOrders": "Xem tất cả đơn hàng chờ xử lí"
+            },
+            "paymentMethods": {
+                "title": "Phương thức thanh toán",
+                "cod": "Thanh toán khi nhận hàng (COD)",
+                "bankTransfer": "Chuyển khoản ngân hàng "
+            },
+            "paymentStatus": {
+                "title": "Trạng thái thanh toán",
+                "pendingPayment": "THANH TOÁN CHỜ XÁC NHẬN",
+                "pendingCount": "Số đơn chờ thanh toán",
+                "pendingTotal": "Tổng số tiền chờ thanh toán",
+                "pendingList": "Danh sách đơn hàng chưa thanh toán",
+                "pending": "Chưa thanh toán",
+                "paid": "Đã thanh toán",
+                "failed": "Thanh toán thất bại",
+                "canceled": "Đã hoàn tiền",
+                "viewAllQRPayments": "Xem tất cả đơn chờ xác nhận"
+            },
+            "table": {
+                "stt": "STT",
+                "orderId": "Mã đơn hàng",
+                "customer": "Khách hàng",
+                "phone": "Số điện thoại",
+                "email": "Email",
+                "address": "Địa chỉ",
+                "totalAmount": "Tổng tiền",
+                "paymentMethod": "Phương thức thanh toán",
+                "paymentStatus": "Trạng thái thanh toán",
+                "orderStatus": "Trạng thái đơn hàng",
+                "createdAt": "Ngày tạo",
+                "actions": "Hành động"
+            }
+        },
+        "news": {
+            "title": "Quản lí tin tức",
+            "searchPlaceholder": "Tìm tin tức...",
+            "addNews": "Thêm tin tức mới",
+            "editNews": "Sửa tin tức",
+            "table": {
+                "stt": "STT",
+                "image": "Ảnh",
+                "info": "Thông tin",
+                "tags": "Tags",
+                "publishedAt": "Ngày đăng",
+                "status": "Trạng thái",
+                "views": "Lượt xem",
+                "actions": "Hành động",
+                "createdAt": "Ngày tạo",
+                "title": "Tiêu đề",
+                "description": "Mô tả"
+            },
+            "form": {
+                "title": "Tiêu đề tin tức",
+                "tags": "Tags",
+                "selectTags": "Chọn tags",
+                "thumbnailURL": "URL ảnh đại diện",
+                "shortDescription": "Mô tả ngắn",
+                "content": "Nội dung tin tức",
+                "status": "Trạng thái"
+            },
+            "loading": "Đang tải tin tức...",
+            "noResults": "Không tìm thấy tin tức nào.",
+            "noNews": "Chưa có tin tức nào.",
+            "createdAt": "Ngày tạo",
+            "actions": "Hành động",
+            "edit": "Sửa",
+            "delete": "Xóa",
+            "deleting": "Đang xóa...",
+            "addButton": "THÊM TIN TỨC MỚI",
+            "saveButton": "LƯU TIN TỨC",
+            "updateButton": "CẬP NHẬT TIN TỨC",
+            "status": {
+                "published": "Đã đăng",
+                "draft": "Bản nháp",
+                "archived": "Đã lưu trữ"
+            },
+            "toast": {
+                "error": "Đã có lỗi xảy ra. Vui lòng thử lại!",
+                "createSuccess": "Thêm tin tức thành công!",
+                "updateSuccess": "Cập nhật tin tức thành công!",
+                "confirmDelete": "Xác nhận xóa tin tức? Không thể khôi phục!",
+                "deleteSuccess": "Xóa tin tức thành công!",
+                "deleteFailed": "Xóa tin tức thất bại!"
+            }
+        },
+        "payments": {
+            "title": "Xác nhận thanh toán chuyển khoản",
+            "loading": "Đang tải các thanh toán chờ xác nhận...",
+            "content": "Nội dung",
+            "customer": "Khách",
+            "noPayments": "Không có thanh toán chuyển khoản nào chờ xác nhận.",
+            "confirmPayment": "Xác nhận thanh toán",
+            "confirming": "Đang xác nhận...",
+            "confirmPaid": "Xác nhận đã thanh toán",
+            "toast": {
+                "confirmSuccess": "Xác nhận thanh toán thành công!",
+                "confirmFailed": "Xác nhận thanh toán thất bại!"
+            }
+        }
     }
 }

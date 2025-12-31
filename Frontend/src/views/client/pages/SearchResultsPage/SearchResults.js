@@ -1,9 +1,11 @@
 // src/views/pages/SearchResults.jsx
 import React, { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
-import ProductItem from "..//ProductPage/ProductItem";
+import ProductItem from "../ProductPage/ProductItem";
+import { useTranslation } from "react-i18next";
 
 const SearchResults = ({ productController, addToCart }) => {
+  const [t, i18n] = useTranslation();
   const [searchParams] = useSearchParams();
   const q = searchParams.get("q") || "";
   const category = searchParams.get("category") || "all";
@@ -30,9 +32,9 @@ const SearchResults = ({ productController, addToCart }) => {
   if (!q) {
     return (
       <div className="container py-5 text-center">
-        <p className="mb-3">Vui lòng nhập từ khóa tìm kiếm.</p>
+        <p className="mb-3">{t("search.searchResults.noKeyword")}</p>
         <Link to="/" className="btn btn-success">
-          Quay về trang chủ
+          {t("search.searchResults.backHome")}
         </Link>
       </div>
     );
@@ -40,47 +42,53 @@ const SearchResults = ({ productController, addToCart }) => {
 
   return (
     <div className="bg-success-subtle">
-      <div className="container pb-4">
+      <div className="container pb-xl-4">
         <div className="breadcrumbs">
-          <ul className="breadcrumb py-3 flex flex-wrap items-center text-xs md:text-sm">
+          <ul className="breadcrumb py-xl-3 flex flex-wrap items-center">
             <li className="home">
               <Link
                 className="link hover"
                 to="/"
-                title="Trang chủ"
+                title={t("search.searchResults.breadcrumb.home")}
                 style={{ textDecoration: "none", color: "black" }}
               >
-                <span>Trang chủ</span>
+                <span>{t("search.searchResults.breadcrumb.home")}</span>
               </Link>
-              <span className="mx-1 md:mx-2 inline-block">&nbsp;/&nbsp;</span>
+              <span className="mx-1 inline-block">&nbsp;/&nbsp;</span>
             </li>
             <li>
-              <span style={{ color: "#BFBFBF" }}>Tìm kiếm</span>
+              <span style={{ color: "#BFBFBF" }}>
+                {t("search.searchResults.breadcrumb.current")}
+              </span>
             </li>
           </ul>
         </div>
-        <div className="py-3 px-4  bg-white rounded-3">
+        <div className="py-xl-3 px-xl-4  bg-white rounded-3">
           <h2 className="mb-4 mt-2 text-center fst-italic">
-            Kết quả tìm kiếm cho: <strong>{q}</strong>
+            {t("search.searchResults.title")} <strong>{q}</strong>
             {category !== "all" && ` trong ${getCategoryName(category)}`}
           </h2>
           {loading ? (
-            <div className="text-center py-5">
+            <div className="text-center py-xl-5">
               <div className="spinner-border text-success" role="status">
-                <span className="visually-hidden">Đang tìm...</span>
+                <span className="visually-hidden">
+                  {t("search.searchResults.loading")}
+                </span>
               </div>
             </div>
           ) : products.length === 0 ? (
-            <div className="text-center py-5">
-              <p className="text-muted mb-3">Không tìm thấy sản phẩm nào.</p>
+            <div className="text-center py-xl-5">
+              <p className="text-muted mb-xl-3">
+                {t("search.searchResults.noResults")}
+              </p>
               <Link to="/" className="btn btn-outline-success">
-                Tiếp tục mua sắm
+                {t("search.searchResults.backHome")}
               </Link>
             </div>
           ) : (
             <div className="row justify-content-center">
               {products.map((product) => (
-                <div key={product.id} className="col-2 mb-4">
+                <div key={product.id} className="col-xl-2 mb-xl-4">
                   <ProductItem product={product} addToCart={addToCart} />
                 </div>
               ))}

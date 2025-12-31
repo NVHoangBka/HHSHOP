@@ -1,8 +1,11 @@
 // src/admin/pages/AdminLogin.jsx
+
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 const AdminLogin = ({ onLoginAdmin }) => {
+  const [t] = useTranslation();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -41,15 +44,19 @@ const AdminLogin = ({ onLoginAdmin }) => {
               className="fw-bold text-success mb-3"
               style={{ fontSize: "2.5rem" }}
             >
-              HHSHOP
+              {t("admin.login.title")}
             </h1>
-            <h4 className="text-dark fw-semibold">ĐĂNG NHẬP ADMIN</h4>
-            <p className="text-muted small">Quản lý cửa hàng</p>
+            <h4 className="text-dark fw-semibold">
+              {t("admin.login.description")}
+            </h4>
+            <p className="text-muted small">{t("admin.login.description")}</p>
           </div>
 
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
-              <label className="form-label fw-semibold">Email</label>
+              <label className="form-label fw-semibold">
+                {t("admin.login.email")}
+              </label>
               <input
                 type="email"
                 className="form-control form-control-lg"
@@ -62,7 +69,9 @@ const AdminLogin = ({ onLoginAdmin }) => {
             </div>
 
             <div className="mb-4">
-              <label className="form-label fw-semibold">Mật khẩu</label>
+              <label className="form-label fw-semibold">
+                {t("admin.login.password")}
+              </label>
               <input
                 type="password"
                 className="form-control form-control-lg"
@@ -86,10 +95,10 @@ const AdminLogin = ({ onLoginAdmin }) => {
               {loading ? (
                 <>
                   <span className="spinner-border spinner-border-sm me-2" />
-                  Đang đăng nhập...
+                  {t("admin.login.loading")}
                 </>
               ) : (
-                "ĐĂNG NHẬP ADMIN"
+                t("admin.login.loginButton")
               )}
             </button>
           </form>

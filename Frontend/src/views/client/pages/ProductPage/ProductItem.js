@@ -8,7 +8,7 @@ const ProductItem = ({ product, addToCart }) => {
 
   if (!product) {
     return (
-      <div className="product-item p-3 border mx-2">
+      <div className="product-item p-3 border mx-xl-2">
         {t("product.not-found")}
       </div>
     );

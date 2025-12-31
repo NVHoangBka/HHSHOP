@@ -1,7 +1,9 @@
 // src/admin/pages/Users.jsx
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const AdminUsers = ({ adminController }) => {
+  const [t, i18n] = useTranslation();
   const [users, setUsers] = useState([]);
 
   // TÌM KIẾM: CHỈ BẤM ENTER MỚI LỌC
@@ -60,7 +62,7 @@ const AdminUsers = ({ adminController }) => {
       <div className="user-admin_header d-flex justify-content-between align-items-center mb-4">
         <div>
           <h2 className="fw-bold text-uppercase text-success">
-            Quản lý người dùng
+            {t("admin.users.title")}
           </h2>
         </div>
         <div className="d-flex justify-content-between align-items-center">
@@ -71,7 +73,7 @@ const AdminUsers = ({ adminController }) => {
             <input
               type="text"
               className="input-group border-0 mx-1 px-3 fs-6 outline-0 no-focus"
-              placeholder="Tìm người dùng..."
+              placeholder={t("admin.users.searchPlaceholder")}
               value={searchInput}
               style={{ maxWidth: "230px" }}
               onChange={(e) => setSearchInput(e.target.value)}
@@ -91,7 +93,7 @@ const AdminUsers = ({ adminController }) => {
             className="btn btn-success shadow "
             onClick={() => openModal()}
           >
-            + Thêm người dùng mới
+            + {t("admin.users.addUser")}
           </button>
         </div>
       </div>
@@ -99,15 +101,15 @@ const AdminUsers = ({ adminController }) => {
         <table className="table table-striped table-bordered table-hover align-middle">
           <thead className="table-primary">
             <tr className="text-center align-middle">
-              <th>STT</th>
-              <th>Email</th>
-              <th>Họ Tên</th>
-              <th>SDT</th>
-              <th>Địa chỉ</th>
-              <th>Ngày đăng ký</th>
-              <th>Tổng đơn</th>
-              <th>Tổng chi</th>
-              <th>Hành động</th>
+              <th>{t("admin.users.table.stt")}</th>
+              <th>{t("admin.users.table.email")}</th>
+              <th>{t("admin.users.table.name")}</th>
+              <th>{t("admin.users.table.phone")}</th>
+              <th>{t("admin.users.table.address")}</th>
+              <th>{t("admin.users.table.registeredAt")}</th>
+              <th>{t("admin.users.table.totalOrders")}</th>
+              <th>{t("admin.users.table.totalSpent")}</th>
+              <th>{t("admin.users.table.actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -126,9 +128,11 @@ const AdminUsers = ({ adminController }) => {
                 <td>{user.totalOrder.toLocaleString("vi-VN") || 0} VNĐ</td>
                 <td>
                   <button className="btn btn-sm btn-success mx-1">
-                    Cập nhật
+                    {t("btn.update")}
                   </button>
-                  <button className="btn btn-sm btn-danger mx-1">Xoá</button>
+                  <button className="btn btn-sm btn-danger mx-1">
+                    {t("btn.delete")}
+                  </button>
                 </td>
               </tr>
             ))}

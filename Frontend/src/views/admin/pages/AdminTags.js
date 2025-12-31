@@ -1,7 +1,9 @@
 // src/admin/pages/AdminTags.jsx
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const AdminTags = ({ adminController }) => {
+  const [t, i18n] = useTranslation();
   const [tags, setTags] = useState([]);
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState({ show: false, message: "", type: "" });
@@ -113,7 +115,9 @@ const AdminTags = ({ adminController }) => {
         : await adminController.createTagAdmin(tagData);
       if (result.success) {
         showToast(
-          isEditing ? "Cập nhật thành công!" : "Thêm tags thành công!",
+          isEditing
+            ? t("admin.tags.toast.updateSuccess")
+            : t("admin.tags.toast.addSuccess"),
           "success"
         );
         setModalOpen(false);
@@ -125,15 +129,15 @@ const AdminTags = ({ adminController }) => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Xóa sản phẩm này? Không thể khôi phục!")) return;
+    if (!window.confirm(t("admin.tags.toast.confirmDelete"))) return;
     try {
       const result = await adminController.deleteTagAdmin(id);
       if (result.success) {
-        showToast("Xóa thành công!", "success");
+        showToast(t("admin.tags.toast.deleteSuccess"), "success");
         setTags((prev) => prev.filter((p) => p._id !== id));
       }
     } catch (err) {
-      showToast("Xóa thất bại", "danger");
+      showToast(t("admin.tags.toast.deleteFailed"), "danger");
     }
   };
 
@@ -164,11 +168,11 @@ const AdminTags = ({ adminController }) => {
   const renderTagType = (type) => {
     switch (type) {
       case "article":
-        return "Chỉ bài viết";
+        return t("admin.tags.type.article");
       case "product":
-        return "Chỉ sản phẩm";
+        return t("admin.tags.type.product");
       default:
-        return "Cả sản phẩm & bài viết";
+        return t("admin.tags.type.both");
     }
   };
 
@@ -178,7 +182,7 @@ const AdminTags = ({ adminController }) => {
         <div className="new-admin_header d-flex justify-content-between align-items-center mb-4">
           <div>
             <h2 className="fw-bold text-uppercase text-success">
-              Quản lý Tags
+              {t("admin.tags.title")}
             </h2>
           </div>
           <div className="d-flex justify-content-between align-items-center">
@@ -189,7 +193,7 @@ const AdminTags = ({ adminController }) => {
               <input
                 type="text"
                 className="input-group border-0 mx-1 px-3 fs-6 outline-0 no-focus"
-                placeholder="Tìm tag..."
+                placeholder={t("admin.tags.searchPlaceholder")}
                 value={searchInput}
                 style={{ maxWidth: "230px" }}
                 onChange={(e) => setSearchInput(e.target.value)}
@@ -209,24 +213,24 @@ const AdminTags = ({ adminController }) => {
               className="btn btn-success shadow "
               onClick={() => openModal()}
             >
-              + Thêm tag mới
+              + {t("admin.tags.addTag")}
             </button>
           </div>
         </div>
         {/* Table */}
         {loading ? (
-          <div className="text-center py-10">Đang tải...</div>
+          <div className="text-center py-10">{t("admin.tags.loading")}</div>
         ) : (
           <div className="bg-white border-0">
             <table className="table table-hover mb-0 align-middle table-bordered">
               <thead className="table-primary text-white text-center">
                 <tr className="align-middle">
-                  <th>STT</th>
-                  <th>Tên Tag</th>
-                  <th>Loại tag</th>
-                  <th>Mô tả</th>
-                  <th>Trạng thái</th>
-                  <th>Hành động</th>
+                  <th>{t("admin.tags.table.stt")}</th>
+                  <th>{t("admin.tags.table.name")}</th>
+                  <th>{t("admin.tags.table.type")}</th>
+                  <th>{t("admin.tags.table.description")}</th>
+                  <th>{t("admin.tags.table.status")}</th>
+                  <th>{t("admin.tags.table.action")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -237,8 +241,8 @@ const AdminTags = ({ adminController }) => {
                       className="text-center py-5 text-muted fs-4"
                     >
                       {searchTerm
-                        ? "Không tìm thấy tags nào"
-                        : "Chưa có tags nào"}
+                        ? t("admin.tags.noResults")
+                        : t("admin.tags.noTags")}
                     </td>
                   </tr>
                 ) : (
@@ -257,7 +261,9 @@ const AdminTags = ({ adminController }) => {
                               : "bg-gray-100 text-gray-800"
                           }`}
                         >
-                          {item.isActive ? "Hiển thị" : "Chưa"}
+                          {item.isActive
+                            ? t("admin.tags.status.active")
+                            : t("admin.tags.status.inactive")}
                         </span>
                       </td>
                       <td className=" text-center col-1">
@@ -265,13 +271,13 @@ const AdminTags = ({ adminController }) => {
                           onClick={() => openModal(item)}
                           className="btn btn-sm btn-success me-2"
                         >
-                          Sửa
+                          {t("btn.edit")}
                         </button>
                         <button
                           onClick={() => handleDelete(item._id)}
                           className="btn btn-sm btn-danger"
                         >
-                          Xóa
+                          {t("btn.delete")}
                         </button>
                       </td>
                     </tr>
@@ -334,7 +340,9 @@ const AdminTags = ({ adminController }) => {
               <div className="modal-content border-0 shadow-lg">
                 <div className="modal-header bg-success text-white">
                   <h5 className="modal-title fw-bold">
-                    {isEditing ? "Sửa bài viết" : "Thêm bài viết mới"}
+                    {isEditing
+                      ? t("admin.tags.editTag")
+                      : t("admin.tags.addTag")}
                   </h5>
                   <button
                     className="btn-close btn-close-white"
@@ -348,7 +356,7 @@ const AdminTags = ({ adminController }) => {
                   >
                     <div className="col-12 mb-2">
                       <label className="form-label fw-bold text-danger">
-                        Tên tag *
+                        {t("admin.tags.name")} *
                       </label>
                       <input
                         type="text"
@@ -362,7 +370,9 @@ const AdminTags = ({ adminController }) => {
                     </div>
 
                     <div className="col-12 mb-2">
-                      <label className="form-label fw-bold">Mô tả ngắn *</label>
+                      <label className="form-label fw-bold">
+                        {t("admin.tags.description")} *
+                      </label>
                       <textarea
                         required
                         rows={2}
@@ -378,7 +388,7 @@ const AdminTags = ({ adminController }) => {
                     </div>
                     <div className="mb-2 col-12">
                       <label className="form-label fw-bold text-danger">
-                        Loại tag *
+                        {t("admin.tags.type")} *
                       </label>
                       <select
                         value={formData.type}
@@ -387,9 +397,15 @@ const AdminTags = ({ adminController }) => {
                         }
                         className="w-100 border rounded px-3 py-2 mb-3"
                       >
-                        <option value="both">Cả bài viết & sản phẩm</option>
-                        <option value="article">Chỉ bài viết</option>
-                        <option value="product">Chỉ sản phẩm</option>
+                        <option value="both">
+                          {t("admin.tags.type.both")}
+                        </option>
+                        <option value="article">
+                          {t("admin.tags.type.article")}
+                        </option>
+                        <option value="product">
+                          {t("admin.tags.type.product")}
+                        </option>
                       </select>
                     </div>
                     <div className="d-flex align-items-center mt-3">
@@ -406,7 +422,7 @@ const AdminTags = ({ adminController }) => {
                           }
                         />
                         <label className="form-check-label fw-bold text-danger">
-                          Hiển thị
+                          {t("admin.tags.status.active")}
                         </label>
                       </div>
                     </div>
@@ -418,10 +434,10 @@ const AdminTags = ({ adminController }) => {
                       onClick={() => setModalOpen(false)}
                       className="btn-dark btn me-3"
                     >
-                      Hủy
+                      {t("btn.cancel")}
                     </button>
                     <button type="submit" className="btn btn-success me-4">
-                      {isEditing ? "Cập nhật" : "Tạo bài viết"}
+                      {isEditing ? t("btn.update") : t("btn.add")}
                     </button>
                   </div>
                 </form>

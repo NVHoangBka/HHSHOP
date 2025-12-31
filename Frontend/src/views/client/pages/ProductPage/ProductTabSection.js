@@ -120,7 +120,7 @@ const ProductTabSection = ({
                 </div>
               ))
             ) : (
-              <p className="text-center">{t("product.empty-category")}</p>
+              <p className="text-center">{t("product.noProducts")}</p>
             )}
           </div>
           <Link

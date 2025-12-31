@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import ProductItem from "./ProductItem";
+import { useTranslation } from "react-i18next";
 
 const Product = ({ path, addToCart, productController, titleController }) => {
+  const [t] = useTranslation();
   const params = useParams();
   const fullPath = params["*"];
   const [titlePath, subTitlePath] = fullPath
@@ -230,17 +232,17 @@ const Product = ({ path, addToCart, productController, titleController }) => {
     <div className="product bg-success-subtle">
       <div className="container">
         <div className="breadcrumbs">
-          <ul className="breadcrumb py-3 flex flex-wrap items-center text-xs md:text-sm">
+          <ul className="breadcrumb py-xl-3 flex flex-wrap items-center">
             <li className="home">
               <Link
                 className="link hover"
                 to="/"
-                title="Trang chủ"
+                title={t("product.breadcrumbs.home")}
                 style={{ textDecoration: "none", color: "black" }}
               >
-                <span>Trang chủ</span>
+                <span>{t("product.breadcrumbs.home")}</span>
               </Link>
-              <span className="mx-1 md:mx-2 inline-block">&nbsp;/&nbsp;</span>
+              <span className="mx-1 inline-block">&nbsp;/&nbsp;</span>
             </li>
             <li>
               <span style={{ color: "#BFBFBF" }}>{titlePathCover}</span>
@@ -248,8 +250,8 @@ const Product = ({ path, addToCart, productController, titleController }) => {
           </ul>
         </div>
         <section className="section section-collection-banner">
-          <div className="collection_banner mb-5 md:mb-5  container text-center px-0">
-            <Link className="banner" to="#" title="Tất cả sản phẩm">
+          <div className="collection_banner mb-xl-5 container text-center px-0">
+            <Link className="banner" to="#" title={t("product.allProducts")}>
               <picture>
                 <source
                   media="(max-width: 767px)"
@@ -260,7 +262,7 @@ const Product = ({ path, addToCart, productController, titleController }) => {
                   src="https://bizweb.dktcdn.net/100/518/448/themes/953339/assets/collection_main_banner.jpg?1758526220617"
                   width="1432"
                   height="120"
-                  alt="Tất cả sản phẩm"
+                  alt={t("product.allProducts")}
                   style={{ height: "auto", width: "100%" }}
                 />
               </picture>
@@ -269,9 +271,9 @@ const Product = ({ path, addToCart, productController, titleController }) => {
         </section>
         <section className="section grid w-100" id="product-list-0">
           <div className="row mx-0">
-            <div className="col-9 content-product-left">
+            <div className="col-xl-9 content-product-left">
               <h2 className="text-success fs-1 fw-semibold">{title}</h2>
-              <div className="d-left flex-row-reverse align-items-center mb-2">
+              <div className="d-left flex-row-reverse align-items-center mb-xl-2">
                 <div className="d-flex justify-content-end">
                   <button
                     className="btn d-flex d-lg-none bg-white border align-items-center"
@@ -293,44 +295,57 @@ const Product = ({ path, addToCart, productController, titleController }) => {
                         fill-opacity="0.1"
                       ></path>
                     </svg>
-                    Lọc
-                    <span className="filter-count w-5 h-5 md:w-6 md:h-6 inline-flex items-center justify-center bg-[#EE1926] text-white rounded-full  ml-1">
+                    {t("product.filter.title")}
+                    <span className="filter-count w-5 h-5 inline-flex alignitems-center justify-content-center text-white rounded-full  ms-1">
                       0
                     </span>
                   </button>
-                  <div className="sort-mobile whitespace-nowrap d-flex align-items-center gap-2 ml-auto me-3">
+                  <div className="sort-mobile whitespace-nowrap d-flex align-items-center gap-2 me-xl-3">
                     <label
                       htmlFor="sort-mobile"
                       className="labbel text-light-emphasis"
                     >
-                      {" "}
-                      Sắp xếp{" "}
+                      {t("product.sort.label")}
                     </label>
                     <sort-by data-collection="0">
                       <select
                         name="sort_by"
                         id="sort-mobile"
-                        className="form-select  bg-white rounded-pill"
+                        className="form-select bg-white rounded-pill"
                       >
-                        <option value="manual">Mặc định</option>
-                        <option value="name:asc">Tên A → Z</option>
-                        <option value="name:desc">Tên Z → A</option>
-                        <option value="price_min:asc">Giá tăng dần</option>
-                        <option value="price_min:desc">Giá giảm dần</option>
-                        <option value="created_on:desc">Mới nhất</option>
-                        <option value="created_on:asc">Cũ nhất</option>
+                        <option value="manual">
+                          {t("product.sort.default")}
+                        </option>
+                        <option value="name:asc">
+                          {t("product.sort.nameAsc")}
+                        </option>
+                        <option value="name:desc">
+                          {t("product.sort.nameDesc")}
+                        </option>
+                        <option value="price_min:asc">
+                          {t("product.sort.priceAsc")}
+                        </option>
+                        <option value="price_min:desc">
+                          {t("product.sort.priceDesc")}
+                        </option>
+                        <option value="created_on:desc">
+                          {t("product.sort.newest")}
+                        </option>
+                        <option value="created_on:asc">
+                          {t("product.sort.oldest")}
+                        </option>
                       </select>
                     </sort-by>
                   </div>
                 </div>
-                <div className="filter-items w-100 d-flex flex-wrap mb-3">
+                <div className="filter-items w-100 d-flex flex-wrap mb-xl-3">
                   {Object.entries(filters || {}).flatMap(
                     ([key, items]) =>
                       Array.isArray(items)
                         ? items.map((item) => (
                             <div
                               key={`${key}-${item.value}`}
-                              className="filter-item bg-white d-flex fw-semibold items-center justify-content-center border rounded-1 py-1 px-3 relative cursor-pointer link mx-1 hover"
+                              className="filter-item bg-white d-flex fw-semibold items-center justify-content-center border rounded-1 py-1 px-xl-3 relative cursor-pointer link mx-1 hover"
                             >
                               {item.label}
                               <span
@@ -351,20 +366,20 @@ const Product = ({ path, addToCart, productController, titleController }) => {
                     (v) => Array.isArray(v) && v.length > 0
                   ) && (
                     <div
-                      className="filter-item text-danger border rounded-1 py-1 px-3 mx-1 my-1 cursor-pointer"
+                      className="filter-item text-danger border rounded-1 py-1 px-xl-3 mx-1 my-1 cursor-pointer"
                       onClick={resetAllFilters}
                     >
-                      Xóa tất cả
+                      {t("product.filter.resetAll")}
                     </div>
                   )}
                 </div>
               </div>
-              <div className="product-list grid me-2">
+              <div className="product-list grid me-xl-2">
                 <div className="product-items" style={{ minHeight: "1200px" }}>
                   <div className="row">
                     {currentProducts.length > 0 ? (
                       currentProducts.map((product) => (
-                        <div className="col-3 my-3" key={product.id}>
+                        <div className="col-xl-3 my-xl-3" key={product.id}>
                           <ProductItem
                             product={product}
                             addToCart={addToCart}
@@ -372,14 +387,12 @@ const Product = ({ path, addToCart, productController, titleController }) => {
                         </div>
                       ))
                     ) : (
-                      <p className="text-center">
-                        Không có sản phẩm nào trong danh mục này.
-                      </p>
+                      <p className="text-center">{t("product.noProducts")}</p>
                     )}
                   </div>
                 </div>
                 {/* phân trang */}
-                <div className="pagination d-flex justify-content-center my-4">
+                <div className="pagination d-flex justify-content-center my-xl-4">
                   {/* Nút mũi tên trái */}
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
@@ -415,20 +428,20 @@ const Product = ({ path, addToCart, productController, titleController }) => {
                 </div>
               </div>
             </div>
-            <div className="col-3 content-product-right pe-0">
+            <div className="col-xl-3 content-product-right pe-0">
               <facet-drawer data-collection="0">
-                <div className="collection-filter bg-white pb-5 rounded-3">
-                  <div className="facet-inner overflow-auto bg-background  h-full px-2 z-10 relative ml-auto">
+                <div className="collection-filter bg-white pb-xl-5 rounded-3">
+                  <div className="facet-inner overflow-auto bg-background  h-full px-xl-2 z-10 relative ml-auto">
                     <form className="facet-form">
-                      <div className="filter-container d-flex flex-column rounded-sm ps-4 pt-4 ">
+                      <div className="filter-container d-flex flex-column rounded-sm ps-xl-4 pt-xl-4 ">
                         {/* Giá */}
                         <aside
-                          className="aside-item filter-price py-2"
+                          className="aside-item filter-price py-xl-2"
                           style={{ order: "4" }}
                         >
                           <div className="aside-title">
-                            <h2 className="title-head mt-0 fw-semibold mb-3 fs-6">
-                              Giá
+                            <h2 className="title-head mt-0 fw-semibold mb-xl-3 fs-6">
+                              {t("product.filter.price")}
                             </h2>
                           </div>
                           <div className="aside-content filter-group">
@@ -450,7 +463,7 @@ const Product = ({ path, addToCart, productController, titleController }) => {
                                   className="custom-checkbox ms-2 fw-100"
                                   htmlFor="filter-lower-1000000"
                                 >
-                                  Giá dưới 1.000.000₫
+                                  {t("product.filter.priceRanges.under1m")}
                                 </label>
                               </li>
                               <li className="filter-item filter-item--check-box link mb-1 d-flex align-items-center">
@@ -470,7 +483,7 @@ const Product = ({ path, addToCart, productController, titleController }) => {
                                   className="custom-checkbox ms-2 fw-100"
                                   htmlFor="filter-1000000-2000000"
                                 >
-                                  1.000.000₫ - 2.000.000₫
+                                  {t("product.filter.priceRanges.1m-2m")}
                                 </label>
                               </li>
                               <li className="filter-item filter-item--check-box link mb-1 d-flex align-items-center">
@@ -490,7 +503,7 @@ const Product = ({ path, addToCart, productController, titleController }) => {
                                   className="custom-checkbox ms-2 fw-100"
                                   htmlFor="filter-2000000-3000000"
                                 >
-                                  2.000.000₫ - 3.000.000₫
+                                  {t("product.filter.priceRanges.2m-3m")}
                                 </label>
                               </li>
                               <li className="filter-item filter-item--check-box link mb-1 d-flex align-items-center">
@@ -510,7 +523,7 @@ const Product = ({ path, addToCart, productController, titleController }) => {
                                   className="custom-checkbox ms-2 fw-100"
                                   htmlFor="filter-3000000-5000000"
                                 >
-                                  3.000.000₫ - 5.000.000₫
+                                  {t("product.filter.priceRanges.3m-5m")}
                                 </label>
                               </li>
                               <li className="filter-item filter-item--check-box link mb-1 d-flex align-items-center">
@@ -530,7 +543,7 @@ const Product = ({ path, addToCart, productController, titleController }) => {
                                   className="custom-checkbox ms-2 fw-100"
                                   htmlFor="filter-5000000-7000000"
                                 >
-                                  5.000.000₫ - 7.000.000₫
+                                  {t("product.filter.priceRanges.5m-7m")}
                                 </label>
                               </li>
                               <li className="filter-item filter-item--check-box link mb-1 d-flex align-items-center">
@@ -550,7 +563,7 @@ const Product = ({ path, addToCart, productController, titleController }) => {
                                   className="custom-checkbox ms-2 fw-100"
                                   htmlFor="filter-7000000-10000000"
                                 >
-                                  7.000.000₫ - 10.000.000₫
+                                  {t("product.filter.priceRanges.7m-10m")}
                                 </label>
                               </li>
                               <li className="filter-item filter-item--check-box link mb-1 d-flex align-items-center">
@@ -570,7 +583,7 @@ const Product = ({ path, addToCart, productController, titleController }) => {
                                   className="custom-checkbox ms-2 fw-100"
                                   htmlFor="filter-upper-10000000"
                                 >
-                                  Giá trên 10.000.000₫
+                                  {t("product.filter.priceRanges.over10m")}
                                 </label>
                               </li>
                             </ul>
@@ -578,12 +591,12 @@ const Product = ({ path, addToCart, productController, titleController }) => {
                         </aside>
                         {/* Hãng sản xuất */}
                         <aside
-                          className="aside-item filter-vendor py-2"
+                          className="aside-item filter-vendor py-xl-2"
                           style={{ order: "3" }}
                         >
                           <div className="aside-title">
-                            <h2 className="title-head mt-0 fw-semibold mb-3 fs-6">
-                              Hãng sản xuất
+                            <h2 className="title-head mt-0 fw-semibold mb-xl-3 fs-6">
+                              {t("product.filter.brand")}
                             </h2>
                           </div>
                           <div className="aside-content filter-group">
@@ -678,7 +691,7 @@ const Product = ({ path, addToCart, productController, titleController }) => {
                         >
                           <div className="aside-title">
                             <h2 className="title-head mt-0 fw-semibold mb-3 fs-6">
-                              Loại sản phẩm
+                              {t("product.filter.type")}
                             </h2>
                           </div>
                           <div className="aside-content filter-group">
@@ -896,7 +909,7 @@ const Product = ({ path, addToCart, productController, titleController }) => {
                         >
                           <div className="aside-title">
                             <h2 className="title-head mt-0 fw-semibold mb-3 fs-6">
-                              Màu sắc
+                              {t("product.filter.color")}
                             </h2>
                           </div>
                           <div className="aside-content filter-group">
@@ -1035,7 +1048,7 @@ const Product = ({ path, addToCart, productController, titleController }) => {
                         >
                           <div className="aside-title">
                             <h2 className="title-head mt-0 fw-semibold mb-3 fs-6">
-                              Tags
+                              {t("product.filter.tag")}
                             </h2>
                           </div>
                           <div className="aside-content filter-group">

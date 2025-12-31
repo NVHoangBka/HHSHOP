@@ -1,8 +1,10 @@
 // src/admin/pages/Products.jsx → FORM THÊM/SỬA SẢN PHẨM ĐỈNH CAO NHẤT 2025
 import React, { useEffect, useState } from "react";
 import tagController from "../../../controllers/TagController";
+import { useTranslation } from "react-i18next";
 
 const AdminProducts = ({ adminController }) => {
+  const [t, i18n] = useTranslation();
   const [products, setProducts] = useState([]);
   const [tagsProduct, setTagsProduct] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -60,7 +62,7 @@ const AdminProducts = ({ adminController }) => {
         setCurrentPage(currentPage);
       }
     } catch (err) {
-      showToast("Lỗi tải sản phẩm", "danger");
+      showToast(t("admin.products.toast.errorLoadingProducts"), "danger");
     } finally {
       setLoading(false);
     }
@@ -186,7 +188,9 @@ const AdminProducts = ({ adminController }) => {
 
       if (result.success) {
         showToast(
-          isEditing ? "Cập nhật thành công!" : "Thêm sản phẩm thành công!",
+          isEditing
+            ? t("admin.products.toast.updateSuccess")
+            : t("admin.products.toast.addSuccess"),
           "success"
         );
         setModalOpen(false);
@@ -206,15 +210,15 @@ const AdminProducts = ({ adminController }) => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Xóa sản phẩm này? Không thể khôi phục!")) return;
+    if (!window.confirm(t("admin.products.toast.confirmDelete"))) return;
     try {
       const result = await adminController.deleteProductAdmin(id);
       if (result.success) {
-        showToast("Xóa thành công!", "success");
+        showToast(t("admin.products.toast.deleteSuccess"), "success");
         setProducts((prev) => prev.filter((p) => p._id !== id));
       }
     } catch (err) {
-      showToast("Xóa thất bại", "danger");
+      showToast(t("admin.products.toast.deleteFailed"), "danger");
     }
   };
 
@@ -226,9 +230,9 @@ const AdminProducts = ({ adminController }) => {
       setLoading(true);
       const url = await adminController.uploadSingle(file);
       setFormData({ ...formData, image: url });
-      showToast("Upload ảnh chính thành công!", "success");
+      showToast(t("admin.products.toast.uploadSuccess"), "success");
     } catch (err) {
-      showToast("Upload thất bại: " + err.message, "danger");
+      showToast(t("admin.products.toast.uploadFailed"), "danger");
     } finally {
       setLoading(false);
     }
@@ -247,9 +251,9 @@ const AdminProducts = ({ adminController }) => {
         : urls.join("\n");
 
       setFormData({ ...formData, gallery: newGallery });
-      showToast("Upload ảnh chính thành công!", "success");
+      showToast(t("admin.products.toast.uploadSuccess"), "success");
     } catch (err) {
-      showToast("Upload thất bại: " + err.message, "danger");
+      showToast(t("admin.products.toast.uploadFailed"), "danger");
     } finally {
       setLoading(false);
     }
@@ -286,15 +290,10 @@ const AdminProducts = ({ adminController }) => {
           className="spinner-border text-primary"
           style={{ width: "3rem", height: "3rem" }}
         ></div>
-        <p className="mt-3 fs-5">Đang tải sản phẩm...</p>
+        <p className="mt-3 fs-5">{t("admin.products.loading")}</p>
       </div>
     );
   }
-
-  // console.log(totalPages);
-  // console.log(currentPage);
-  // console.log(totalProducts);
-
   return (
     <>
       {/* Toast */}
@@ -318,7 +317,7 @@ const AdminProducts = ({ adminController }) => {
         <div className="d-flex justify-content-between align-items-center mb-4">
           <div>
             <h2 className="fw-bold text-success text-uppercase">
-              Quản lý sản phẩm
+              {t("admin.products.title")}
             </h2>
           </div>
           <div className="d-flex justify-content-between align-items-center">
@@ -329,7 +328,7 @@ const AdminProducts = ({ adminController }) => {
               <input
                 type="text"
                 className="input-group border-0 mx-1 px-3 fs-6 outline-0 no-focus"
-                placeholder="Tìm sản phẩm..."
+                placeholder={t("admin.products.searchPlaceholder")}
                 value={searchInput}
                 style={{ maxWidth: "230px" }}
                 onChange={(e) => setSearchInput(e.target.value)}
@@ -349,7 +348,7 @@ const AdminProducts = ({ adminController }) => {
               className="btn btn-success shadow "
               onClick={() => openModal()}
             >
-              + Thêm sản phẩm mới
+              + {t("admin.products.addProduct")}
             </button>
           </div>
         </div>
@@ -361,12 +360,16 @@ const AdminProducts = ({ adminController }) => {
               <table className="table table-hover mb-0 align-middle">
                 <thead className="table-primary text-white">
                   <tr>
-                    <th className="text-center">STT</th>
-                    <th className="ps-4">Ảnh</th>
-                    <th>Tên sản phẩm</th>
-                    <th>Giá</th>
-                    <th>Tồn kho</th>
-                    <th className="text-center">Hành động</th>
+                    <th className="text-center">
+                      {t("admin.products.table.stt")}
+                    </th>
+                    <th className="ps-4">{t("admin.products.table.image")}</th>
+                    <th>{t("admin.products.table.info")}</th>
+                    <th>{t("admin.products.table.price")}</th>
+                    <th>{t("admin.products.table.stock")}</th>
+                    <th className="text-center">
+                      {t("admin.products.table.actions")}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -377,8 +380,8 @@ const AdminProducts = ({ adminController }) => {
                         className="text-center py-5 text-muted fs-4"
                       >
                         {searchTerm
-                          ? "Không tìm thấy sản phẩm nào"
-                          : "Chưa có sản phẩm"}
+                          ? t("admin.products.noResults")
+                          : t("admin.products.noProducts")}
                       </td>
                     </tr>
                   ) : (
@@ -400,11 +403,11 @@ const AdminProducts = ({ adminController }) => {
                         </td>
                         <td>
                           <p className="mb-1">
-                            <b>Tên sản phẩm: </b>
+                            <b>{t("admin.products.table.name")}: </b>
                             {p.name}
                           </p>
                           <span className="">
-                            <b>Mô tả: </b>
+                            <b>{t("admin.products.table.description")}: </b>
                             {p.description}
                           </span>
                         </td>
@@ -429,7 +432,7 @@ const AdminProducts = ({ adminController }) => {
                                 : "bg-danger"
                             } fs-6`}
                           >
-                            {p.stock || 0} cái
+                            {p.stock || 0} {t("admin.products.table.unit")}
                           </span>
                         </td>
                         <td className="text-center">
@@ -437,13 +440,13 @@ const AdminProducts = ({ adminController }) => {
                             className="btn btn-sm btn-success me-2"
                             onClick={() => openModal(p)}
                           >
-                            Sửa
+                            {t("btn.edit")}
                           </button>
                           <button
                             className="btn btn-sm btn-danger"
                             onClick={() => handleDelete(p._id)}
                           >
-                            Xóa
+                            {t("btn.delete")}
                           </button>
                         </td>
                       </tr>
@@ -508,7 +511,9 @@ const AdminProducts = ({ adminController }) => {
               <div className="modal-content border-0 shadow-lg">
                 <div className="modal-header bg-success text-white">
                   <h5 className="modal-title fw-bold">
-                    {isEditing ? "SỬA SẢN PHẨM" : "THÊM SẢN PHẨM MỚI"}
+                    {isEditing
+                      ? t("admin.products.editProduct")
+                      : t("admin.products.addProduct")}
                   </h5>
                   <button
                     className="btn-close btn-close-white"
@@ -525,7 +530,7 @@ const AdminProducts = ({ adminController }) => {
                       {/* TÊN + GIÁ */}
                       <div className="col-12">
                         <label className="form-label fw-bold text-danger">
-                          Tên sản phẩm *
+                          {t("admin.products.form.name")} *
                         </label>
                         <input
                           type="text"
@@ -540,7 +545,7 @@ const AdminProducts = ({ adminController }) => {
 
                       <div className="col-md-4">
                         <label className="form-label fw-bold">
-                          Giá gốc (₫) *
+                          {t("admin.products.form.price")} (₫) *
                         </label>
                         <input
                           type="number"
@@ -555,7 +560,7 @@ const AdminProducts = ({ adminController }) => {
 
                       <div className="col-md-4">
                         <label className="form-label fw-bold">
-                          Giá khuyến mãi (₫)
+                          {t("admin.products.form.priceSale")} (₫)
                         </label>
                         <input
                           type="number"
@@ -567,13 +572,13 @@ const AdminProducts = ({ adminController }) => {
                               discountPrice: e.target.value,
                             })
                           }
-                          placeholder="Để trống nếu không giảm"
+                          placeholder={t("admin.products.form.priceSaleHint")}
                         />
                       </div>
 
                       <div className="col-4">
                         <label className="form-label fw-bold">
-                          Thương hiệu
+                          {t("admin.products.form.brand")}
                         </label>
                         <select
                           className="form-select"
@@ -582,7 +587,9 @@ const AdminProducts = ({ adminController }) => {
                             setFormData({ ...formData, brand: e.target.value })
                           }
                         >
-                          <option value="">Chọn thương hiệu</option>
+                          <option value="">
+                            {t("admin.products.form.selectBrand")}
+                          </option>
                           {popularBrands.map((b) => (
                             <option key={b} value={b}>
                               {b}
@@ -594,7 +601,7 @@ const AdminProducts = ({ adminController }) => {
                       {/* ẢNH CHÍNH */}
                       <div className="col-12 mb-4">
                         <label className="form-label fw-bold text-danger">
-                          Ảnh chính *
+                          {t("admin.products.form.image")} *
                         </label>
 
                         {/* Input dán link */}
@@ -602,7 +609,9 @@ const AdminProducts = ({ adminController }) => {
                           <input
                             type="url"
                             className="form-control"
-                            placeholder="Dán link ảnh vào đây[](https://...)"
+                            placeholder={t(
+                              "admin.products.form.imagePlaceholderLink"
+                            )}
                             value={formData.image || ""}
                             onChange={(e) =>
                               setFormData({
@@ -611,7 +620,9 @@ const AdminProducts = ({ adminController }) => {
                               })
                             }
                           />
-                          <span className="input-group-text">HOẶC</span>
+                          <span className="input-group-text">
+                            {t("admin.products.form.or")}
+                          </span>
                         </div>
 
                         {/* Upload file */}
@@ -632,13 +643,14 @@ const AdminProducts = ({ adminController }) => {
                               style={{ maxHeight: "320px", maxWidth: "100%" }}
                               onError={(e) => {
                                 e.target.src = "/placeholder.jpg";
-                                e.target.alt =
-                                  "Link lỗi hoặc ảnh không tồn tại";
+                                e.target.alt = t(
+                                  "admin.products.form.imageLoadError"
+                                );
                               }}
                             />
                             <div className="mt-2">
                               <small className="text-muted">
-                                Link hiện tại:
+                                {t("admin.products.form.imagePreview")}:
                               </small>
                               <br />
                               <code className="bg-light p-1 rounded">
@@ -652,7 +664,7 @@ const AdminProducts = ({ adminController }) => {
                                 setFormData({ ...formData, image: "" })
                               }
                             >
-                              Xóa ảnh chính
+                              {t("admin.products.form.removeImage")}
                             </button>
                           </div>
                         )}
@@ -673,7 +685,9 @@ const AdminProducts = ({ adminController }) => {
                         <textarea
                           className="form-control mb-3"
                           rows="4"
-                          placeholder="Dán nhiều link ảnh, mỗi link 1 dòng...&#10;HOẶC dùng nút upload bên dưới"
+                          placeholder={t(
+                            "admin.products.form.galleryPlaceholder"
+                          )}
                           value={formData.gallery || ""}
                           onChange={(e) =>
                             setFormData({
@@ -746,7 +760,9 @@ const AdminProducts = ({ adminController }) => {
 
                       {/* MÔ TẢ */}
                       <div className="col-12">
-                        <label className="form-label fw-bold">Mô tả ngắn</label>
+                        <label className="form-label fw-bold">
+                          {t("admin.products.form.shortDescription")}
+                        </label>
                         <textarea
                           className="form-control"
                           rows="2"
@@ -762,7 +778,7 @@ const AdminProducts = ({ adminController }) => {
 
                       <div className="col-12 mb-2">
                         <label className="form-label fw-bold">
-                          Mô tả chi tiết (HTML)
+                          {t("admin.products.form.description")}
                         </label>
                         <textarea
                           className="form-control"
@@ -780,7 +796,7 @@ const AdminProducts = ({ adminController }) => {
                       {/* PHÂN LOẠI CHECKBOX */}
                       <div className="col-12 mb-2">
                         <label className="form-label fw-bold">
-                          Loại sản phẩm
+                          {t("admin.products.form.type")}
                         </label>
                         <div className="d-flex flex-wrap px-3 py-2 rounded border align-items-center">
                           {popularTypes.map((t, index) => (
@@ -805,7 +821,9 @@ const AdminProducts = ({ adminController }) => {
                       </div>
 
                       <div className="col-12 mb-2">
-                        <label className="form-label fw-bold">Màu sắc</label>
+                        <label className="form-label fw-bold">
+                          {t("admin.products.form.color")}
+                        </label>
                         <div className="d-flex flex-wrap px-3 py-2 rounded border align-items-center">
                           {popularColors.map((color, index) => (
                             <div key={index} className="col-3 form-check mb-2">
@@ -830,7 +848,9 @@ const AdminProducts = ({ adminController }) => {
 
                       {/* TAGS */}
                       <div className="col-12 ">
-                        <label className="form-label fw-bold">Tags</label>
+                        <label className="form-label fw-bold">
+                          {t("admin.products.form.tags")}
+                        </label>
                         <div className="d-flex flex-wrap px-3 py-2 rounded border align-items-center">
                           {tagsProduct.map((tag) => (
                             <div key={tag._id} className="col-3 form-check ">
@@ -862,7 +882,9 @@ const AdminProducts = ({ adminController }) => {
 
                       {/* CÁC TRƯỜNG KHÁC */}
                       <div className="col-md-6">
-                        <label className="form-label fw-bold">Còn hàng?</label>
+                        <label className="form-label fw-bold">
+                          {t("admin.products.form.isStock")}
+                        </label>
                         <select
                           className="form-select"
                           value={formData.inStock}
@@ -873,8 +895,12 @@ const AdminProducts = ({ adminController }) => {
                             })
                           }
                         >
-                          <option value={true}>Có hàng</option>
-                          <option value={false}>Hết hàng</option>
+                          <option value={true}>
+                            {t("admin.products.form.inStock")}
+                          </option>
+                          <option value={false}>
+                            {t("admin.products.form.outOfStock")}
+                          </option>
                         </select>
                       </div>
 
@@ -892,7 +918,7 @@ const AdminProducts = ({ adminController }) => {
                             }
                           />
                           <label className="form-check-label fw-bold text-danger">
-                            Hiển thị Flash Sale giả
+                            {t("admin.products.form.flashSale")}
                           </label>
                         </div>
                       </div>
@@ -905,13 +931,13 @@ const AdminProducts = ({ adminController }) => {
                       className="btn btn-secondary fw-semibold"
                       onClick={() => setModalOpen(false)}
                     >
-                      Hủy
+                      {t("btn.cancel")}
                     </button>
                     <button
                       type="submit"
                       className="btn btn-success fw-semibold"
                     >
-                      {isEditing ? "CẬP NHẬT" : "THÊM MỚI"}
+                      {isEditing ? t("btn.update") : t("btn.add")}
                     </button>
                   </div>
                 </form>

@@ -6,7 +6,7 @@ const Introduce = () => {
     <div className="bg-success-subtle">
       <div className="breadcrumbs">
         <div className="container">
-          <ul className="breadcrumb py-3 d-flex flex-wrap align-items-center">
+          <ul className="breadcrumb py-xl-3 d-flex flex-wrap align-items-center">
             <li className="home">
               <Link
                 className="link hover"
@@ -16,7 +16,7 @@ const Introduce = () => {
               >
                 Trang chủ
               </Link>
-              <span className="mx-1 md:mx-2 inline-block">&nbsp;/&nbsp;</span>
+              <span className="mx-1 inline-block">&nbsp;/&nbsp;</span>
             </li>
             <li>
               <span className="text-secondary">Giới thiệu</span>
@@ -28,10 +28,10 @@ const Introduce = () => {
         <div class="container">
           <div class="grid justify-content-center">
             <div>
-              <div class="bg-white rounded-3 px-3 py-4 mx-5 ">
-                <h1 class="fw-semibold mb-4 fs-2">Giới thiệu</h1>
+              <div class="bg-white rounded-3 px-xl-3 py-xl-4 mx-xl-5 ">
+                <h1 class="fw-semibold mb-xl-4 fs-2">Giới thiệu</h1>
 
-                <div class="page-content ms-3">
+                <div class="page-content ms-xl-3">
                   <div class="rte">
                     <div class="prose w-100 content ">
                       <p>

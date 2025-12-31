@@ -1,7 +1,9 @@
 // src/admin/pages/Payments.jsx
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const AdminPayments = () => {
+  const [t, i18n] = useTranslation();
   const [payments, setPayments] = useState([]);
 
   useEffect(() => {
@@ -20,9 +22,7 @@ const AdminPayments = () => {
 
   return (
     <div className="container py-4">
-      <h2 className="mb-4 fw-bold text-danger">
-        Xác nhận thanh toán chuyển khoản
-      </h2>
+      <h2 className="mb-4 fw-bold text-danger">{t("admin.payments.title")}</h2>
       <div className="row g-4">
         {payments.map((item) => (
           <div key={item.order._id} className="col-md-6">
@@ -40,11 +40,12 @@ const AdminPayments = () => {
                 />
                 <div className="mt-3 p-3 bg-light rounded">
                   <p className="mb-1">
-                    <strong>Nội dung:</strong>{" "}
+                    <strong>{t("admin.payments.content")}:</strong>{" "}
                     <code className="text-danger">{item.bankInfo.content}</code>
                   </p>
                   <p className="mb-0">
-                    <strong>Khách:</strong> {item.order.address.recipientName} –{" "}
+                    <strong>{t("admin.payments.customer")}:</strong>{" "}
+                    {item.order.address.recipientName} –{" "}
                     {item.order.address.phoneNumber}
                   </p>
                 </div>
@@ -52,7 +53,7 @@ const AdminPayments = () => {
                   className="btn btn-success btn-lg mt-3"
                   onClick={() => confirmPaid(item.order._id)}
                 >
-                  ĐÃ NHẬN ĐƯỢC TIỀN
+                  {t("admin.payments.confirmPaid")}
                 </button>
               </div>
             </div>
@@ -60,7 +61,7 @@ const AdminPayments = () => {
         ))}
         {payments.length === 0 && (
           <div className="alert alert-success text-center fs-3">
-            Không có đơn chuyển khoản nào đang chờ xác nhận
+            {t("admin.payments.noPayments")}
           </div>
         )}
       </div>
