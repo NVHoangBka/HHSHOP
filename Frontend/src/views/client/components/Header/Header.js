@@ -95,7 +95,7 @@ const Header = ({
   return (
     <header
       className="header shadow-sm bg-white sticky-top "
-      style={{ zIndex: "2000" }}
+      style={{ zIndex: "1500" }}
     >
       <div className="header-top py-xl-2">
         <div className="container ">
@@ -247,6 +247,7 @@ const Header = ({
         show={showMenu}
         onHide={() => setShowMenu(false)}
         placement="start"
+        style={{ zIndex: "3000" }}
       >
         <Offcanvas.Header closeButton>
           <Offcanvas.Title>
@@ -288,6 +289,7 @@ const Header = ({
         show={showSearch}
         onHide={() => setShowSearch(false)}
         placement="end"
+        style={{ zIndex: "3000" }}
       >
         <Offcanvas.Body className="p-xl-0">
           <Search
@@ -304,6 +306,7 @@ const Header = ({
         show={showCart}
         onHide={() => setShowCart(false)}
         placement="end"
+        style={{ zIndex: "3000" }}
       >
         <Offcanvas.Body className="p-xl-0 d-flex flex-column">
           <div className="flex-grow-1 overflow-auto">

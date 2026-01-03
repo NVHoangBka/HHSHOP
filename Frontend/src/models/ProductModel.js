@@ -3,7 +3,8 @@ class Product {
   constructor(data) {
     this.id = data._id || data.id;
 
-    this.name = data.name || "";
+    this.name = this.normalizeTranslatable(data.name, "Tên sản phẩm");
+
     this.slug = data.slug || "";
 
     // Giá cơ bản (nếu không có variants)
@@ -19,7 +20,10 @@ class Product {
 
     // Nội dung chi tiết
     this.shortDescription = data.shortDescription || "";
-    this.description = data.description || "";
+    this.description = this.normalizeTranslatable(
+      data.description,
+      "Mô tả sản phẩm"
+    );
     this.highlightContent = data.highlightContent || "";
     this.highlightSections = data.highlightSections || [];
 
@@ -52,6 +56,34 @@ class Product {
     this.isFeatured = data.isFeatured !== false;
 
     this.finalPrice = this.discountPrice || this.price;
+  }
+
+  normalizeTranslatable(value, fallback = "") {
+    if (!value) return { vi: fallback };
+
+    if (typeof value === "string") {
+      return { vi: value };
+    }
+
+    // Đã là object → kiểm tra có key 'vi' không, nếu không thì thêm fallback
+    if (typeof value === "object" && value !== null) {
+      return {
+        vi: value.vi || fallback,
+        en: value.en || "",
+        cz: value.cz || "",
+        // thêm ngôn ngữ khác nếu cần...
+      };
+    }
+
+    return { vi: fallback };
+  }
+
+  getName(lang = "vi") {
+    return this.name?.[lang] || this.name?.vi || "Chưa đặt tên";
+  }
+
+  getDescription(lang = "vi") {
+    return this.description?.[lang] || this.description?.vi || "";
   }
 }
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 
 const CartHeader = ({
   onClose,
@@ -9,12 +9,15 @@ const CartHeader = ({
   onCartChange,
 }) => {
   const navigate = useNavigate();
+  const [t, i18n] = useTranslation();
   const [cartItems, setCartItems] = useState(propCartItems || []);
   const [total, setTotal] = useState(cartController.getTotalPrice());
   const [showBillInfo, setShowBillInfo] = useState(true);
   const [showTime, setShowTime] = useState(true);
   const [showNote, setShowNote] = useState(true);
   const [showVocher, setShowVocher] = useState(true);
+
+  const currentLanguage = localStorage.getItem("i18n_lang") || "en";
 
   // Đồng bộ state với props khi có thay đổi
   useEffect(() => {
@@ -76,6 +79,12 @@ const CartHeader = ({
     setShowVocher(!showVocher);
   };
 
+  const productName = (product) => {
+    return (
+      product.name?.[currentLanguage] || product.name?.vi || "Chưa đặt tên"
+    );
+  };
+
   return (
     <div className="d-flex flex-column end-0 h-100">
       <div className="cart-header d-flex justify-content-between align-items-center border-bottom me-xl-2">
@@ -117,7 +126,7 @@ const CartHeader = ({
               <div className="cart-top pt-xl-1 overflow-y-auto flex flex-col">
                 <div className="cart-table">
                   <div className="cart-items">
-                    {cartItems.map((item, index) => (
+                    {cartItems.map((product, index) => (
                       <div
                         key={index}
                         className="cart-item py-xl-3 border-bottom"
@@ -126,15 +135,16 @@ const CartHeader = ({
                           <div className="d-flex">
                             <Link
                               className="cart-item__image"
-                              to={`/products/slug/${item.slug}`}
-                              title={item.name}
+                              to={`/products/slug/${product.slug}`}
+                              title={productName(product)}
                             >
                               <img
                                 src={
-                                  item.image || "https://via.placeholder.com/60"
+                                  product.image ||
+                                  "https://via.placeholder.com/60"
                                 } // Hiển thị placeholder nếu không có image
                                 className="me-xl-2 rounded"
-                                alt={item.name}
+                                alt={productName(product)}
                                 style={{
                                   width: "60px",
                                   height: "60px",
@@ -145,21 +155,21 @@ const CartHeader = ({
                             <div>
                               <p className="cart-item__name mb-xl-0 fw-semibold small">
                                 <Link
-                                  to={`/products/slug/${item.slug}`}
-                                  title={item.name}
+                                  to={`/products/slug/${product.slug}`}
+                                  title={productName(product)}
                                   className="link text-decoration-none text-dark"
                                 >
-                                  {item.name}
+                                  {productName(product)}
                                 </Link>
                               </p>
                               <span className="cart-item__variant text-muted fs-7">
-                                Size: {item.size || "default"}
+                                Size: {product.size || "default"}
                               </span>
                             </div>
                           </div>
                           <button
                             className="btn btn-sm px-xl-2 rounded-circle text-muted"
-                            onClick={() => handleRemove(item.id)}
+                            onClick={() => handleRemove(product.id)}
                           >
                             <i className="bi bi-x-lg"></i>
                           </button>
@@ -169,8 +179,8 @@ const CartHeader = ({
                           <div className="cart-unit-price-col">
                             <div className="price text-danger fw-bold">
                               {(
-                                (item.discountPrice || item.price) *
-                                item.quantity
+                                (product.discountPrice || product.price) *
+                                product.quantity
                               ).toLocaleString("vi-VN")}
                               ₫
                             </div>
@@ -183,7 +193,7 @@ const CartHeader = ({
                               type="button"
                               name="minus"
                               className="col-xl-3 d-flex justify-content-center align-items-center btn-outline-secondary border-0"
-                              onClick={() => handleDecrease(item.id)}
+                              onClick={() => handleDecrease(product.id)}
                             >
                               <i className="bi bi-dash"></i>
                             </button>
@@ -192,7 +202,7 @@ const CartHeader = ({
                               className="form-quantity col-xl-6 text-center no-spinner border-0"
                               name="Lines"
                               data-line-index="1"
-                              value={item.quantity || 1}
+                              value={product.quantity || 1}
                               min="1"
                               readOnly
                             />
@@ -200,7 +210,7 @@ const CartHeader = ({
                               type="button"
                               name="plus"
                               className="col-xl-3 d-flex justify-content-center align-items-center btn-outline-secondary border-0"
-                              onClick={() => handleIncrease(item.id)}
+                              onClick={() => handleIncrease(product.id)}
                             >
                               <i className="bi bi-plus"></i>
                             </button>

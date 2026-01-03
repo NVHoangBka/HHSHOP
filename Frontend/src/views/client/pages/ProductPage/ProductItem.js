@@ -6,6 +6,8 @@ const ProductItem = ({ product, addToCart }) => {
   const navigate = useNavigate();
   const [t, i18n] = useTranslation();
 
+  const currentLanguage = localStorage.getItem("i18n_lang") || "en";
+
   if (!product) {
     return (
       <div className="product-item p-3 border mx-xl-2">
@@ -14,7 +16,9 @@ const ProductItem = ({ product, addToCart }) => {
     );
   }
 
-  const { name, image, price, discountPrice, rating = 0, slug } = product;
+  const { image, price, discountPrice, rating = 0, slug } = product;
+
+  const name = product.getName(currentLanguage);
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -54,7 +58,12 @@ const ProductItem = ({ product, addToCart }) => {
       className="product-item w-100 p-xl-3 border mx-xl-2 bg-white h-100 rounded-4 cursor-pointer hover"
       onClick={handleShowProductDetail}
     >
-      <img src={image} className="img-fluid rounded-start w-100" alt={name} />
+      <img
+        src={image}
+        className="img-fluid rounded-start w-100"
+        alt={name}
+        style={{ height: "158px" }}
+      />
       <p className="mt-xl-3 line-clamp-2 fs-body fw-semibold text-hover fixed-two-lines">
         {name}
       </p>

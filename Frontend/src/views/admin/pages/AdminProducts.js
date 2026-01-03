@@ -24,14 +24,16 @@ const AdminProducts = ({ adminController }) => {
   const [totalPages, setTotalPages] = useState(0);
   const [limit, setLimit] = useState(10); // backend mặc định 10
 
+  const currentLanguage = localStorage.getItem("i18n_lang_admin") || "en";
+
   const [formData, setFormData] = useState({
-    name: "",
+    name: { vi: "", en: "", cz: "" },
     price: "",
     discountPrice: "",
     image: "",
     gallery: "",
     shortDescription: "",
-    description: "",
+    description: { vi: "", en: "", cz: "" },
     types: [],
     tags: [],
     brand: "",
@@ -126,18 +128,34 @@ const AdminProducts = ({ adminController }) => {
         ? product.gallery.join("\n")
         : product.gallery || "";
 
-      setFormData({ ...product, gallery: galleryString });
+      const normalize = (value) => {
+        if (typeof value === "string") return { vi: value, en: "", cz: "" };
+        if (!value || typeof value !== "object")
+          return { vi: "", en: "", cz: "" };
+        return {
+          vi: value.vi || "",
+          en: value.en || "",
+          cz: value.cz || "",
+        };
+      };
+
+      setFormData({
+        ...product,
+        name: normalize(product.name),
+        description: normalize(product.description),
+        gallery: galleryString,
+      });
     } else {
       setIsEditing(false);
       setCurrentId(null);
       setFormData({
-        name: "",
+        name: { vi: "", en: "", cz: "" },
         price: "",
         discountPrice: "",
         image: "",
         gallery: "",
         shortDescription: "",
-        description: "",
+        description: { vi: "", en: "", cz: "" },
         types: [],
         tags: [],
         brand: "",
@@ -276,12 +294,20 @@ const AdminProducts = ({ adminController }) => {
     setSearchTerm("");
   };
 
+  const getTranslated = (translatable, defaultValue = "") => {
+    if (typeof translatable === "string") return translatable;
+    if (!translatable || typeof translatable !== "object") return defaultValue;
+    return translatable[currentLanguage] || translatable.vi || defaultValue;
+  };
   // Lọc chỉ theo tên sản phẩm (không phân biệt hoa thường)
-  const filteredProducts = products.filter(
-    (product) =>
-      searchTerm === "" ||
-      product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredProducts = products.filter((product) => {
+    if (searchTerm === "") return true;
+
+    const searchLower = searchTerm.toLowerCase();
+    const nameStr = getTranslated(product.name, "").toLowerCase();
+
+    return nameStr.includes(searchLower);
+  });
 
   if (loading) {
     return (
@@ -294,6 +320,46 @@ const AdminProducts = ({ adminController }) => {
       </div>
     );
   }
+
+  const translateText = async (text, targetLang) => {
+    if (!text) return "";
+    try {
+      const res = await fetch(
+        `https://translate.googleapis.com/translate_a/single?client=gtx&sl=vi&tl=${targetLang}&dt=t&q=${encodeURIComponent(
+          text
+        )}`
+      );
+      const data = await res.json();
+      return data?.[0]?.[0]?.[0] || text;
+    } catch (err) {
+      console.error("Dịch lỗi:", err);
+      return text; // fallback
+    }
+  };
+
+  const autoTranslateAll = async () => {
+    if (!formData.name?.vi.trim()) {
+      showToast("Vui lòng nhập tên tiếng Việt trước!", "warning");
+      return;
+    }
+
+    showToast("Đang dịch tự động sang EN & CZ...", "info");
+
+    const nameEn = await translateText(formData.name.vi, "en");
+    const nameCz = await translateText(formData.name.vi, "cz");
+
+    const descEn = await translateText(formData.description?.vi || "", "en");
+    const descCz = await translateText(formData.description?.vi || "", "cz");
+    setFormData({
+      ...formData,
+      name: { ...formData.name, en: nameEn, cz: nameCz },
+
+      description: { ...formData.description, en: descEn, cz: descCz },
+    });
+
+    showToast("Đã dịch xong! Kiểm tra và chỉnh sửa nếu cần.", "success");
+  };
+
   return (
     <>
       {/* Toast */}
@@ -391,7 +457,7 @@ const AdminProducts = ({ adminController }) => {
                         <td className="ps-4">
                           <img
                             src={p.image || "/placeholder.jpg"}
-                            alt={p.name}
+                            alt={getTranslated(p.name, "Chưa đặt tên")}
                             className="rounded"
                             style={{
                               width: 70,
@@ -404,11 +470,11 @@ const AdminProducts = ({ adminController }) => {
                         <td>
                           <p className="mb-1">
                             <b>{t("admin.products.table.name")}: </b>
-                            {p.name}
+                            {getTranslated(p.name, "Chưa đặt tên")}
                           </p>
                           <span className="">
                             <b>{t("admin.products.table.description")}: </b>
-                            {p.description}
+                            {getTranslated(p.description, "")}
                           </span>
                         </td>
                         <td>
@@ -529,18 +595,53 @@ const AdminProducts = ({ adminController }) => {
                     <div className="row g-3">
                       {/* TÊN + GIÁ */}
                       <div className="col-12">
-                        <label className="form-label fw-bold text-danger">
+                        <div className="d-flex">
+                          <div className="mb-4 col-xl-10">
+                            <label className="form-label fw-bold text-danger">
+                              Tên sản phẩm *
+                            </label>
+                            <input
+                              type="text"
+                              className="form-control form-control-lg"
+                              value={formData.name?.vi || ""}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  name: {
+                                    ...formData.name,
+                                    vi: e.target.value,
+                                  },
+                                })
+                              }
+                              required
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            className="btn btn-primary mb-4 ms-3 align-self-end"
+                            onClick={autoTranslateAll}
+                          >
+                            Chuyển ngôn ngữ
+                          </button>
+                        </div>
+                        {/* <label className="form-label fw-bold text-danger">
                           {t("admin.products.form.name")} *
                         </label>
                         <input
                           type="text"
                           className="form-control form-control-lg"
-                          value={formData.name}
+                          value={formData.name[currentLanguage]}
                           onChange={(e) =>
-                            setFormData({ ...formData, name: e.target.value })
+                            setFormData({
+                              ...formData,
+                              name: {
+                                ...formData.name,
+                                [currentLanguage]: e.target.value,
+                              },
+                            })
                           }
                           required
-                        />
+                        /> */}
                       </div>
 
                       <div className="col-md-4">
@@ -804,7 +905,7 @@ const AdminProducts = ({ adminController }) => {
                               <input
                                 className="form-check-input"
                                 type="checkbox"
-                                checked={formData.types.includes(t)}
+                                // checked={formData.types.includes(t)}
                                 onChange={() =>
                                   setFormData({
                                     ...formData,

@@ -42,7 +42,11 @@ const reviewSchema = new mongoose.Schema(
 
 const productSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true, trim: true },
+    name: {
+      vi: { type: String, trim: true },
+      en: { type: String, trim: true },
+      cz: { type: String, trim: true },
+    },
     slug: { type: String, unique: true, sparse: true },
 
     // Giá cơ bản (nếu không có variants)
@@ -58,7 +62,11 @@ const productSchema = new mongoose.Schema(
 
     // Nội dung chi tiết
     shortDescription: { type: String, maxlength: 500 },
-    description: { type: String }, // HTML content
+    description: {
+      vi: { type: String },
+      en: { type: String },
+      cz: { type: String },
+    }, // HTML content
     highlightContent: { type: String }, // fallback cũ
     highlightSections: [highlightSectionSchema], // MỚI – SIÊU ĐẸP
 

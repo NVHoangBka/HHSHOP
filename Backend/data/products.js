@@ -2,7 +2,11 @@ module.exports = {
   products: [
     {
       id: 1,
-      name: "Nước lau sàn Sunlight Tinh dầu thảo mộc Ngăn côn trùng",
+      name: {
+        vi: "Nước lau sàn Sunlight Tinh dầu thảo mộc Ngăn côn trùng",
+        en: "Sunlight Herbal Essential Floor Cleaner Insect Repellent",
+        cz: "Sunlight bylinný esenciální čistič podlah odpuzující hmyz",
+      },
       price: 70000,
       discountPrice: 30000,
       image:
@@ -12,8 +16,11 @@ module.exports = {
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/image-117.jpg?v=1717487311197",
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/image-118.jpg?v=1717487311197",
       ],
-      description:
-        "Nước lau sàn hiệu quả, ngăn côn trùng, an toàn cho gia đình.",
+      description: {
+        vi: "Nước lau sàn hiệu quả, ngăn côn trùng, an toàn cho gia đình.",
+        en: "Effective floor cleaner, repels insects, safe for families.",
+        cz: "Účinný čistič podlah, odpuzuje hmyz, bezpečný pro rodiny.",
+      },
       types: ["nuoc-giat", "hot", "household-cleaning", "washing-liquid"],
       tag: ["flashsale"],
       brands: ["Sunlight"],
@@ -53,7 +60,11 @@ module.exports = {
 
     {
       id: 2,
-      name: "Nước Rửa Chén Bát Sunlight 100% Gốc Thực vật Lô Hội/Gừng/Trà Xanh/ Quế & Bồ hòn/Mềm dịu| Chai 3.6KG, 3.5kg",
+      name: {
+        vi: "Nước Rửa Chén Bát Sunlight 100% Gốc Thực vật Lô Hội/Gừng/Trà Xanh/ Quế & Bồ hòn/Mềm dịu| Chai 3.6KG, 3.5kg",
+        en: "Sunlight Dishwashing Liquid 100% Plant-Based Aloe Vera/Ginger/Green Tea/ Cinnamon & Soapnut/Mild | Bottle 3.6KG, 3.5kg",
+        cz: "Sunlight čisticí prostředek na nádobí 100% rostlinný zdroj Aloe Vera/Ginger/Green Tea/ Cinnamon & Soapnut/Mild | láhev 3.6KG, 3.5kg",
+      },
       price: 129000,
       discountPrice: 121000,
       image:
@@ -64,8 +75,11 @@ module.exports = {
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/image-114.jpg?v=1717486673863",
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/image-115.jpg?v=1717486673863",
       ],
-      description:
-        "Nước rửa chén thân thiện với môi trường, dịu nhẹ cho da tay.",
+      description: {
+        vi: "Nước rửa chén thân thiện với môi trường, dịu nhẹ cho da tay.",
+        en: "Eco-friendly dishwashing liquid, gentle on hands.",
+        cz: "Ekologický čisticí prostředek na nádobí, jemný k rukám.",
+      },
       types: ["nuoc-giat", "hot", "household-cleaning"],
       tag: ["flashsale"],
       brands: ["Sunlight"],
@@ -120,7 +134,11 @@ module.exports = {
 
     {
       id: 3,
-      name: "Nước xả vải Downy hương hoa Oải Hương nước Pháp",
+      name: {
+        vi: "Nước Xả Vải Downy Hương Oải Hương Nước Pháp 2.2L/3L",
+        en: "Downy Lavender Scent French Water Fabric Softener 2.2L/3L",
+        cz: "Downy Levandulová vůně francouzské vody Aviváž 2,2 l/3 l",
+      },
       price: 182000,
       discountPrice: 167000,
       image:
@@ -131,7 +149,11 @@ module.exports = {
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-108.jpg?v=1717485532697",
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-109.jpg?v=1717485532697",
       ],
-      description: "Hương thơm sang trọng, lưu hương đến 30 ngày.",
+      description: {
+        vi: "Làm mềm vải, lưu hương nước hoa Pháp đến 30 ngày.",
+        en: "Softens fabric, retains French perfume scent for up to 30 days.",
+        cz: "Změkčuje tkaninu, uchovává vůni francouzských parfémů až 30 dní.",
+      },
       types: ["nuoc-giat", "hot", "san-deal"],
       tag: ["flashsale"],
       brands: ["Downy"],
@@ -155,7 +177,11 @@ module.exports = {
 
     {
       id: 4,
-      name: "Túi Nước Xả Vải Comfort Thiên Nhiên Thanh Khiết - Túi 1.7L",
+      name: {
+        vi: "Nước Xả Vải Comfort Thiên Nhiên Thanh Khiết 2.4L",
+        en: "Comfort Natural Pure Fabric Softener 2.4L",
+        cz: "Comfort Přírodní čistá aviváž na tkaniny 2,4 l",
+      },
       price: 150000,
       discountPrice: 120000,
       image:
@@ -166,7 +192,11 @@ module.exports = {
         "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/frame-104.jpg?v=1717476291620",
         "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/frame-105.jpg?v=1717476291620",
       ],
-      description: "Hương thơm dịu nhẹ từ thiên nhiên.",
+      description: {
+        vi: "Làm mềm vải, lưu hương từ tinh dầu thiên nhiên.",
+        en: "Softens fabric, retains scent from natural essential oils.",
+        cz: "Změkčuje tkaninu, uchovává vůni z přírodních esenciálních olejů.",
+      },
       types: ["nuoc-giat", "hot"],
       tag: ["flashsale"],
       brands: ["Comfort"],
@@ -187,7 +217,11 @@ module.exports = {
 
     {
       id: 5,
-      name: "Nước Giặt Comfort Dưỡng Vải Đa Năng Thiên Nhiên Thanh Khiết 3.0KG",
+      name: {
+        vi: "Nước Giặt Dưỡng Vải Comfort Thiên Nhiên Vườn hoa thanh khiết 3.6kg",
+        en: "Comfort Natural Laundry Detergent Pure Garden Flowers 3.6kg",
+        cz: "Comfort Přírodní prací prostředek Čisté zahradní květiny 3,6 kg",
+      },
       price: 270000,
       discountPrice: 159000,
       image:
@@ -197,7 +231,11 @@ module.exports = {
         "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/image-94.jpg?v=1717475952480",
         "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/image-95.jpg?v=1717475952480",
       ],
-      description: "Giặt sạch, lưu hương, bảo vệ sợi vải.",
+      description: {
+        vi: "Giặt sạch, lưu hương, bảo vệ sợi vải.",
+        en: "Cleans, freshens, protects fabric fibers.",
+        cz: "Čistí, osvěžuje, chrání vlákna tkanin.",
+      },
       types: ["nuoc-giat", "hot", "san-deal"],
       tag: ["flashsale"],
       brands: ["Comfort"],
@@ -218,7 +256,11 @@ module.exports = {
 
     {
       id: 6,
-      name: "Tẩy cặn canxi, tẩy kính, vòi sen Hikit 500ml",
+      name: {
+        vi: "Nước Tẩy Cặn Canxi Hikit Siêu Mạnh 500ml",
+        en: "HIKIT Calcium Scale Remover Super Strong 500ml",
+        cz: "HIKIT Odstraňovač vápenných usazenin Super Strong 500ml",
+      },
       price: 50000,
       image:
         "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/frame-110.jpg?v=1717486138593",
@@ -227,7 +269,11 @@ module.exports = {
         "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/frame-111.jpg?v=1717486138593",
         "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/frame-112.jpg?v=1717486138593",
       ],
-      description: "Tẩy sạch cặn canxi, sáng bóng kính và inox.",
+      description: {
+        vi: "Tẩy cặn canxi hiệu quả, làm sáng bóng bề mặt.",
+        en: "Effectively removes calcium scale, restores surface shine.",
+        cz: "Účinně odstraňuje vápenaté usazeniny, obnovuje lesk povrchu.",
+      },
       types: ["nuoc-lau-nha", "san-deal", "household-cleaning"],
       tag: ["flashsale"],
       brands: ["Hikit"],
@@ -247,7 +293,11 @@ module.exports = {
 
     {
       id: 7,
-      name: "Túi Nước Giặt Xả MaxKleen Thiên Nhiên Vườn hoa thanh khiết 3.6kg",
+      name: {
+        vi: "Túi Nước Giặt Xả MaxKleen Thiên Nhiên Vườn hoa thanh khiết 3.6kg",
+        en: "MaxKleen Natural Laundry Detergent and Fabric Softener Pure Garden Flowers 3.6kg",
+        cz: "MaxKleen Přírodní prací prostředek a aviváž Čisté zahradní květiny 3,6 kg",
+      },
       price: 9000,
       image:
         "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/frame-99.jpg?v=1717475690873",
@@ -257,7 +307,20 @@ module.exports = {
         "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/frame-98.jpg?v=1717475690873",
         "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/frame-100.jpg?v=1717475690873",
       ],
-      description: "Giặt sạch, lưu hương, bảo vệ sợi vải.",
+      description: {
+        vi: "Giặt sạch, lưu hương, bảo vệ sợi vải.",
+        en: "Cleans, freshens, protects fabric fibers.",
+        cz: "Čistí, osvěžuje, chrání vlákna tkanin.",
+      },
+      price: 9000,
+      image:
+        "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/frame-99.jpg?v=1717475690873",
+      gallery: [
+        "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/frame-99.jpg?v=1717475690873",
+        "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/frame-97.jpg?v=1717475690873",
+        "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/frame-98.jpg?v=1717475690873",
+        "https://bizweb.dktcdn.net/thumb/medium/100/518/448/products/frame-100.jpg?v=1717475690873",
+      ],
       types: ["nuoc-giat", "hot", "san-deal"],
       tag: ["flashsale"],
       brands: ["MaxKleen"],
@@ -277,7 +340,11 @@ module.exports = {
 
     {
       id: 8,
-      name: "Sáp thơm phòng khử mùi Mr.Fresh Pure Aroma 230g",
+      name: {
+        vi: "Sáp thơm phòng khử mùi Mr.Fresh Pure Aroma 230g",
+        en: "Mr.Fresh Pure Aroma 230g Air Freshener Wax",
+        cz: "Mr.Fresh Pure Aroma 230g Vonný vosk do vzduchu",
+      },
       price: 35000,
       discountPrice: 20000,
       image:
@@ -288,7 +355,11 @@ module.exports = {
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/image-121.jpg?v=1717487812197",
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/image-122.jpg?v=1717487812197",
       ],
-      description: "Khử mùi hiệu quả, thơm mát lâu dài.",
+      description: {
+        vi: "Khử mùi hiệu quả, thơm mát lâu dài.",
+        en: "Effective deodorization, long-lasting freshness.",
+        cz: "Účinná deodorace, dlouhotrvající svěžest.",
+      },
       types: ["xit-phong", "san-deal"],
       tag: ["flashsale"],
       brands: ["Mr.Fresh"],
@@ -308,7 +379,11 @@ module.exports = {
     },
     {
       id: 9,
-      name: "Rau muống hữu cơ 300g",
+      name: {
+        vi: "Rau muống hữu cơ 300g",
+        en: "Organic Water Spinach 300g",
+        cz: "Organický vodní špenát 300g",
+      },
       price: 35000,
       discountPrice: 20000,
       image:
@@ -316,7 +391,11 @@ module.exports = {
       gallery: [
         "https://bizweb.dktcdn.net/thumb/grande/100/518/448/products/upload-e9fa2f43255248b6a348296051b1f4d3.jpg?v=1717407836197",
       ],
-      description: "Rau muống sạch, trồng tại Đà Lạt.",
+      description: {
+        vi: "Rau muống sạch, trồng tại Đà Lạt.",
+        en: "Clean water spinach, grown in Da Lat.",
+        cz: "Čistý vodní špenát, pěstovaný v Da Latu.",
+      },
       types: ["rau-cu"],
       tag: ["flashsale"],
       brands: ["VINAMIT"],
@@ -336,7 +415,11 @@ module.exports = {
 
     {
       id: 10,
-      name: "Rau lang hữu cơ 300g",
+      name: {
+        vi: "Rau lang hữu cơ 300g",
+        en: "Organic Sweet Leaf 300g",
+        cz: "Organický sladký list 300g",
+      },
       price: 35000,
       discountPrice: 20000,
       image:
@@ -362,7 +445,11 @@ module.exports = {
     },
     {
       id: 11,
-      name: "Rau dền hữu cơ 300g",
+      name: {
+        vi: "Rau dền hữu cơ 300g",
+        en: "Organic Red Amaranth 300g",
+        cz: "Organický červený amarant 300g",
+      },
       price: 35000,
       discountPrice: 20000,
       image:
@@ -378,7 +465,11 @@ module.exports = {
 
     {
       id: 12,
-      name: "Cải bẹ xanh hữu cơ 300g",
+      name: {
+        vi: "Cải bẹ xanh hữu cơ 300g",
+        en: "Organic Bok Choy 300g",
+        cz: "Organický čínský zelí 300g",
+      },
       price: 35000,
       discountPrice: 20000,
       image:
@@ -394,7 +485,11 @@ module.exports = {
 
     {
       id: 13,
-      name: "Tôm lột đông lạnh 200g",
+      name: {
+        vi: "Tôm lột đông lạnh 200g",
+        en: "Frozen Shelled Prawn 200g",
+        cz: "Mražený vymačkaný krevetka 200g",
+      },
       price: 35000,
       discountPrice: 20000,
       image:
@@ -414,7 +509,11 @@ module.exports = {
 
     {
       id: 14,
-      name: "Xương bò tơ (500g)",
+      name: {
+        vi: "Xương bò tơ (500g)",
+        en: "Veal Bone (500g)",
+        cz: "Telecí kost (500g)",
+      },
       price: 35000,
       discountPrice: 20000,
       image:
@@ -429,7 +528,11 @@ module.exports = {
 
     {
       id: 15,
-      name: "Sổ Planner Lên Kế Hoạch Hằng Ngày",
+      name: {
+        vi: "Sổ Planner Lên Kế Hoạch Hằng Ngày",
+        en: "Daily Planner Notebook",
+        cz: "Denní plánovač Notebook",
+      },
       price: 35000,
       discountPrice: 20000,
       image:
@@ -450,7 +553,11 @@ module.exports = {
 
     {
       id: 16,
-      name: "Giấy ghi chú trong suốt đánh dấu trang sách",
+      name: {
+        vi: "Giấy ghi chú trong suốt đánh dấu trang sách",
+        en: "Transparent Sticky Notes for Bookmarking",
+        cz: "Průhledné samolepicí poznámky pro záložky",
+      },
       price: 35000,
       discountPrice: 20000,
       image:
@@ -471,7 +578,11 @@ module.exports = {
 
     {
       id: 17,
-      name: "Túi đựng bút trong suốt phong cách",
+      name: {
+        vi: "Túi đựng bút trong suốt phong cách",
+        en: "Stylish Transparent Pen Case",
+        cz: "Stylové průhledné pouzdro na pero",
+      },
       price: 35000,
       discountPrice: 20000,
       image:
@@ -492,7 +603,11 @@ module.exports = {
 
     {
       id: 18,
-      name: "Bút highlight dạ quang 18 màu",
+      name: {
+        vi: "Bút Highlight 18 Màu Sắc",
+        en: "18 Colors Highlighter Pen",
+        cz: "Zvýrazňovač 18 barev",
+      },
       price: 25000,
       discountPrice: 180000,
       image:
@@ -519,7 +634,11 @@ module.exports = {
 
     {
       id: 19,
-      name: "Bút Bi Gel Ngòi 0,5mm Viết Trơn",
+      name: {
+        vi: "Bút Bi Gel Ngòi 0,5mm Viết Trơn",
+        en: "0.5mm Gel Pen Smooth Writing",
+        cz: "0,5mm gelové pero hladké psaní",
+      },
       price: 6000,
       discountPrice: 3000,
       image:
@@ -530,7 +649,11 @@ module.exports = {
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-77.jpg?v=1717473523093",
         "https://bizweb.dktcdn.net/thumb/large/100/518/448/products/frame-78.jpg?v=1717473523093",
       ],
-      description: "Viết mượt, mực đều, không lem.",
+      description: {
+        vi: "Bút bi gel ngòi 0.5mm viết trơn mượt.",
+        en: "0.5mm gel pen for smooth writing.",
+        cz: "0,5mm gelové pero pro hladké psaní.",
+      },
       types: ["but-viet"],
       tag: ["flashsale"],
       brands: ["Thiên Long"],
@@ -555,7 +678,11 @@ module.exports = {
 
     {
       id: 20,
-      name: "Băng keo hai mặt dài 6m",
+      name: {
+        vi: "Băng keo hai mặt dài 6m",
+        en: "6m Double-Sided Tape",
+        cz: "6m oboustranná páska",
+      },
       price: 45000,
       discountPrice: 29000,
       image:
