@@ -216,6 +216,27 @@ class AdminController {
       return { success: false, message: "Lấy tag thất bại" };
     }
   }
+
+  // ============   CATEGORIES ADMIN ==================
+  async getCategoriesAllAdmin(pagination) {
+    try {
+      const result = await this.adminService.getCategoriesAllAdmin(pagination);
+      return result;
+    } catch (error) {
+      return { success: false, message: "Lấy danh mục thất bại" };
+    }
+  }
+
+  async getSubCategoriesByCategory(categoryId) {
+    try {
+      const result = await this.adminService.getSubCategoriesByCategory(
+        categoryId
+      );
+      return result;
+    } catch (error) {
+      return { success: false, message: "Lấy danh mục con thất bại" };
+    }
+  }
 }
 
 export default AdminController;

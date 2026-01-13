@@ -1,5 +1,6 @@
 // backend/models/Product.js → PHIÊN BẢN CUỐI CÙNG – ĐỈNH CAO THẬT SỰ
 const mongoose = require("mongoose");
+const slugify = require("slugify");
 const { updateTagCounts } = require("../utils/updateTagCounts");
 
 const variantSchema = new mongoose.Schema(
@@ -72,7 +73,7 @@ const productSchema = new mongoose.Schema(
 
     // Phân loại tìm kiếm
     category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
-    subCategory: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
+    subCategories: [{ type: mongoose.Schema.Types.ObjectId, ref: "Category" }],
 
     brand: { type: mongoose.Schema.Types.ObjectId, ref: "Brand", index: true },
     colors: [{ type: mongoose.Schema.Types.ObjectId, ref: "Color" }],
@@ -161,25 +162,32 @@ productSchema.index({ createdAt: -1 });
 productSchema.pre("save", function (next) {
   // Tạo slug
   if (this.isModified("name") || !this.slug) {
-    const baseSlug = this.name
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/đ/g, "d")
-      .replace(/[^a-z0-9\s-]/g, "")
-      .trim()
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-");
-
-    this.slug = baseSlug + "-" + Date.now().toString(36);
+    const name = this.name.vi || this.name.en || this.name.cz || "";
+    if (name) {
+      this.slug =
+        slugify(name, {
+          lower: true,
+          strict: true,
+          locale: "vi",
+          remove: /[*+~.()'"!:@]/g,
+        }) +
+        "-" +
+        Date.now().toString(36);
+    }
   }
 
-  // Cập nhật totalStock & totalSold từ variants
-  if (this.variants && this.variants.length > 0) {
+  // Nếu có variants → bỏ giá gốc
+  if (this.variants?.length > 0) {
+    this.price = undefined;
+    this.discountPrice = undefined;
     this.totalStock = this.variants.reduce((sum, v) => sum + v.stock, 0);
     this.totalSold = this.variants.reduce((sum, v) => sum + v.sold, 0);
+  } else {
+    this.variants = [];
   }
 
+  // inStock tự động
+  this.inStock = this.stock > 0;
   next();
 });
 
@@ -189,21 +197,5 @@ productSchema.statics.search = function (query) {
     score: { $meta: "textScore" },
   });
 };
-
-// productSchema.post("save", async function () {
-//   try {
-//     await updateTagCounts();
-//   } catch (err) {
-//     console.error("Error updating tag counts after save Product:", err);
-//   }
-// });
-
-// productSchema.post("findOneAndDelete", async function () {
-//   try {
-//     await updateTagCounts();
-//   } catch (err) {
-//     console.error("Error updating tag counts after delete Product:", err);
-//   }
-// });
 
 module.exports = mongoose.model("Product", productSchema);

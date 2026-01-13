@@ -15,6 +15,7 @@ const uploadRouter = require("./Upload");
 const userRouter = require("./User");
 const tagRouter = require("./Tag");
 const newRouter = require("./New");
+const CategoryRouter = require("./Category");
 // const searchRouter = require("./Search");
 
 router.use("/auth", authRouter);
@@ -30,6 +31,7 @@ router.use("/upload", uploadRouter);
 router.use("/users", userRouter);
 router.use("/news", newRouter);
 router.use("/tags", tagRouter);
+router.use("/categories", CategoryRouter);
 // router.use("/search", searchRouter);
 
 module.exports = router;

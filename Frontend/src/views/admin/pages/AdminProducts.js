@@ -5,8 +5,13 @@ import { useTranslation } from "react-i18next";
 
 const AdminProducts = ({ adminController }) => {
   const [t, i18n] = useTranslation();
+  const currentLanguage = localStorage.getItem("i18n_lang_admin") || "en";
+
   const [products, setProducts] = useState([]);
   const [tagsProduct, setTagsProduct] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
+
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState({ show: false, message: "", type: "" });
 
@@ -24,8 +29,6 @@ const AdminProducts = ({ adminController }) => {
   const [totalPages, setTotalPages] = useState(0);
   const [limit, setLimit] = useState(10); // backend mặc định 10
 
-  const currentLanguage = localStorage.getItem("i18n_lang_admin") || "en";
-
   const [formData, setFormData] = useState({
     name: { vi: "", en: "", cz: "" },
     price: "",
@@ -34,6 +37,8 @@ const AdminProducts = ({ adminController }) => {
     gallery: "",
     shortDescription: "",
     description: { vi: "", en: "", cz: "" },
+    category: "",
+    subCategories: [],
     types: [],
     tags: [],
     brand: "",
@@ -59,8 +64,8 @@ const AdminProducts = ({ adminController }) => {
       const result = await adminController.getProductsAllAdmin(pagination);
       if (result.success) {
         setProducts(result.products || []);
-        setTotalProducts(result.paginationData.totalProducts);
-        setTotalPages(result.paginationData.totalPages);
+        setTotalProducts(result.paginationData?.totalProducts || 0);
+        setTotalPages(result.paginationData?.totalPages || 0);
         setCurrentPage(currentPage);
       }
     } catch (err) {
@@ -84,16 +89,42 @@ const AdminProducts = ({ adminController }) => {
     } catch (error) {}
   };
 
+  const fetchCategories = async () => {
+    try {
+      const res = await adminController.getCategoriesAllAdmin(); // Giả định API trả { success, categories: [{_id, name: {vi,en,cz}, children: [...]}] }
+      if (res.success) {
+        setCategories(res.categories || []);
+      }
+    } catch (err) {
+      console.error("Lỗi load categories:", err);
+    }
+  };
+
+  const fetchSubCategories = async (categoryId) => {
+    try {
+      const res = await adminController.getSubCategoriesByCategory(categoryId);
+      if (res.success) {
+        setSubCategories(res.subcategories || []);
+      }
+    } catch (err) {
+      console.error("Lỗi load subcategories:", err);
+    }
+  };
+
   // Load lần đầu + khi search hoặc đổi trang
   useEffect(() => {
     setCurrentPage(1);
     loadProducts();
     fetchTagsProduct();
+    fetchCategories();
+    fetchSubCategories(formData.category);
   }, [searchTerm]);
 
   useEffect(() => {
     loadProducts(currentPage);
     fetchTagsProduct(currentPage);
+    fetchCategories();
+    fetchSubCategories(formData.category);
   }, [currentPage]);
 
   const showToast = (msg, type = "success") => {
@@ -101,7 +132,6 @@ const AdminProducts = ({ adminController }) => {
     setTimeout(() => setToast({ show: false, message: "", type: "" }), 3000);
   };
 
-  const popularTypes = ["hot", "new", "flashsale", "best-seller"];
   const popularBrands = [
     "Sunlight",
     "Comfort",
@@ -128,23 +158,43 @@ const AdminProducts = ({ adminController }) => {
         ? product.gallery.join("\n")
         : product.gallery || "";
 
-      const normalize = (value) => {
-        if (typeof value === "string") return { vi: value, en: "", cz: "" };
-        if (!value || typeof value !== "object")
-          return { vi: "", en: "", cz: "" };
+      // Load subcategory nếu có category
+      const catId = product.category?._id || "";
+      let subs = [];
+      if (catId) {
+        const selectedCat = categories.find((c) => c._id === catId);
+        subs = selectedCat?.children || [];
+      }
+
+      const normalizeLang = (obj) => {
+        if (typeof obj === "string") return { vi: obj, en: "", cz: "" };
+        if (!obj || typeof obj !== "object") return { vi: "", en: "", cz: "" };
         return {
-          vi: value.vi || "",
-          en: value.en || "",
-          cz: value.cz || "",
+          vi: obj.vi || "",
+          en: obj.en || "",
+          cz: obj.cz || "",
         };
       };
 
       setFormData({
         ...product,
-        name: normalize(product.name),
-        description: normalize(product.description),
+        name: normalizeLang(product.name),
+        description: normalizeLang(product.description),
         gallery: galleryString,
+        category: catId,
+        subCategory: Array.isArray(product.subCategory)
+          ? product.subCategory.map((s) => s?._id || s)
+          : product.subCategory?._id
+          ? [product.subCategory._id]
+          : [],
+        inStock: product.inStock !== false,
+        flashSale: !!product.flashSale,
+        highlightSections: product.highlightSections?.length
+          ? product.highlightSections
+          : [{ title: "", content: "", icon: "bi-star-fill", order: 0 }],
       });
+
+      setSubCategories(subs);
     } else {
       setIsEditing(false);
       setCurrentId(null);
@@ -156,6 +206,8 @@ const AdminProducts = ({ adminController }) => {
         gallery: "",
         shortDescription: "",
         description: { vi: "", en: "", cz: "" },
+        category: "",
+        subCategories: [],
         types: [],
         tags: [],
         brand: "",
@@ -168,6 +220,7 @@ const AdminProducts = ({ adminController }) => {
           { title: "", content: "", icon: "bi-star-fill", order: 0 },
         ],
       });
+      setSubCategories([]);
     }
     setModalOpen(true);
   };
@@ -182,13 +235,16 @@ const AdminProducts = ({ adminController }) => {
           .filter((url) => url.length > 0)
       : [];
 
-    const data = {
+    const submitData = {
       ...formData,
       price: Number(formData.price),
       discountPrice: formData.discountPrice
         ? Number(formData.discountPrice)
         : undefined,
       gallery: galleryArray,
+      category: formData.category || undefined,
+      subCategories:
+        formData.subCategories.length > 0 ? formData.subCategories : undefined,
       types: formData.types,
       tags: formData.tags,
       colors: formData.colors,
@@ -199,9 +255,12 @@ const AdminProducts = ({ adminController }) => {
     try {
       let result;
       if (isEditing) {
-        result = await adminController.updateProductAdmin(currentId, data);
+        result = await adminController.updateProductAdmin(
+          currentId,
+          submitData
+        );
       } else {
-        result = await adminController.createProductAdmin(data);
+        result = await adminController.createProductAdmin(submitData);
       }
 
       if (result.success) {
@@ -213,7 +272,6 @@ const AdminProducts = ({ adminController }) => {
         );
         setModalOpen(false);
         // Reload danh sách
-
         loadProducts();
       }
     } catch (err) {
@@ -243,9 +301,8 @@ const AdminProducts = ({ adminController }) => {
   const handleUploadSingle = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
+    setLoading(true);
     try {
-      setLoading(true);
       const url = await adminController.uploadSingle(file);
       setFormData({ ...formData, image: url });
       showToast(t("admin.products.toast.uploadSuccess"), "success");
@@ -255,12 +312,12 @@ const AdminProducts = ({ adminController }) => {
       setLoading(false);
     }
   };
+
   const handleUploadMultiple = async (e) => {
     const files = Array.from(e.target.files);
     if (files.length === 0) return;
-
+    setLoading(true);
     try {
-      setLoading(true);
       const urls = await adminController.uploadMultiple(files);
 
       const currentGallery = formData.gallery || "";
@@ -294,19 +351,15 @@ const AdminProducts = ({ adminController }) => {
     setSearchTerm("");
   };
 
-  const getTranslated = (translatable, defaultValue = "") => {
-    if (typeof translatable === "string") return translatable;
-    if (!translatable || typeof translatable !== "object") return defaultValue;
-    return translatable[currentLanguage] || translatable.vi || defaultValue;
+  const getTranslated = (obj, fallback = "") => {
+    return obj?.[currentLanguage] || obj?.vi || obj?.en || fallback;
   };
+
   // Lọc chỉ theo tên sản phẩm (không phân biệt hoa thường)
-  const filteredProducts = products.filter((product) => {
-    if (searchTerm === "") return true;
-
+  const filteredProducts = products.filter((p) => {
+    if (!searchTerm) return true;
     const searchLower = searchTerm.toLowerCase();
-    const nameStr = getTranslated(product.name, "").toLowerCase();
-
-    return nameStr.includes(searchLower);
+    return getTranslated(p.name, "").toLowerCase().includes(searchLower);
   });
 
   if (loading) {
@@ -321,11 +374,11 @@ const AdminProducts = ({ adminController }) => {
     );
   }
 
-  const translateText = async (text, targetLang) => {
+  const translateText = async (text, lang) => {
     if (!text) return "";
     try {
       const res = await fetch(
-        `https://translate.googleapis.com/translate_a/single?client=gtx&sl=vi&tl=${targetLang}&dt=t&q=${encodeURIComponent(
+        `https://translate.googleapis.com/translate_a/single?client=gtx&sl=vi&tl=${lang}&dt=t&q=${encodeURIComponent(
           text
         )}`
       );
@@ -345,17 +398,18 @@ const AdminProducts = ({ adminController }) => {
 
     showToast("Đang dịch tự động sang EN & CZ...", "info");
 
-    const nameEn = await translateText(formData.name.vi, "en");
-    const nameCz = await translateText(formData.name.vi, "cz");
+    const [nameEn, nameCz, descEn, descCz] = await Promise.all([
+      translateText(formData.name.vi, "en"),
+      translateText(formData.name.vi, "cz"),
+      translateText(formData.description?.vi || "", "en"),
+      translateText(formData.description?.vi || "", "cz"),
+    ]);
 
-    const descEn = await translateText(formData.description?.vi || "", "en");
-    const descCz = await translateText(formData.description?.vi || "", "cz");
-    setFormData({
-      ...formData,
-      name: { ...formData.name, en: nameEn, cz: nameCz },
-
-      description: { ...formData.description, en: descEn, cz: descCz },
-    });
+    setFormData((prev) => ({
+      ...prev,
+      name: { ...prev.name, en: nameEn, cz: nameCz },
+      description: { ...prev.description, en: descEn, cz: descCz },
+    }));
 
     showToast("Đã dịch xong! Kiểm tra và chỉnh sửa nếu cần.", "success");
   };
@@ -624,26 +678,9 @@ const AdminProducts = ({ adminController }) => {
                             Chuyển ngôn ngữ
                           </button>
                         </div>
-                        {/* <label className="form-label fw-bold text-danger">
-                          {t("admin.products.form.name")} *
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control form-control-lg"
-                          value={formData.name[currentLanguage]}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              name: {
-                                ...formData.name,
-                                [currentLanguage]: e.target.value,
-                              },
-                            })
-                          }
-                          required
-                        /> */}
                       </div>
 
+                      {/* Giá */}
                       <div className="col-md-4">
                         <label className="form-label fw-bold">
                           {t("admin.products.form.price")} (₫) *
@@ -659,6 +696,7 @@ const AdminProducts = ({ adminController }) => {
                         />
                       </div>
 
+                      {/**Giá khuyến mãi */}
                       <div className="col-md-4">
                         <label className="form-label fw-bold">
                           {t("admin.products.form.priceSale")} (₫)
@@ -676,7 +714,6 @@ const AdminProducts = ({ adminController }) => {
                           placeholder={t("admin.products.form.priceSaleHint")}
                         />
                       </div>
-
                       <div className="col-4">
                         <label className="form-label fw-bold">
                           {t("admin.products.form.brand")}
@@ -894,31 +931,87 @@ const AdminProducts = ({ adminController }) => {
                         />
                       </div>
 
-                      {/* PHÂN LOẠI CHECKBOX */}
-                      <div className="col-12 mb-2">
+                      {/* DANH MỤC CHÍNH */}
+                      <div className="col-md-6">
                         <label className="form-label fw-bold">
-                          {t("admin.products.form.type")}
+                          Danh mục chính *
                         </label>
-                        <div className="d-flex flex-wrap px-3 py-2 rounded border align-items-center">
-                          {popularTypes.map((t, index) => (
-                            <div key={index} className="col-3 form-check">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                // checked={formData.types.includes(t)}
-                                onChange={() =>
-                                  setFormData({
-                                    ...formData,
-                                    types: toggleArray(formData.types, t),
-                                  })
-                                }
-                              />
-                              <label className="form-check-label text-capitalize">
-                                {t}
-                              </label>
-                            </div>
+                        <select
+                          className="form-select"
+                          value={formData.category}
+                          onChange={(e) => {
+                            const catId = e.target.value;
+                            setFormData({ ...formData, category: catId });
+                            // Tự động load subcategory
+                            const selected = categories.find(
+                              (c) => c._id === catId
+                            );
+                            setSubCategories(selected?.children || []);
+                            setFormData((prev) => ({
+                              ...prev,
+                              subCategories: [],
+                            })); // reset lựa chọn con
+                          }}
+                          required
+                        >
+                          <option value="">Chọn danh mục chính</option>
+                          {categories.map((cat) => (
+                            <option key={cat._id} value={cat._id}>
+                              {getTranslated(cat.name)}
+                            </option>
                           ))}
-                        </div>
+                        </select>
+                      </div>
+
+                      {/* DANH MỤC CON - CHECKBOX */}
+                      <div className="col-md-6">
+                        <label className="form-label fw-bold">
+                          Danh mục con{" "}
+                          {formData.subCategories.length > 0 &&
+                            `(${formData.subCategories.length} đã chọn)`}
+                        </label>
+
+                        {subCategories.length === 0 ? (
+                          <div className="text-muted small fst-italic">
+                            {formData.category
+                              ? "Danh mục này chưa có danh mục con"
+                              : "Vui lòng chọn danh mục chính trước"}
+                          </div>
+                        ) : (
+                          <div
+                            className="border rounded p-3 bg-light"
+                            style={{ maxHeight: "220px", overflowY: "auto" }}
+                          >
+                            {subCategories.map((sub) => (
+                              <div key={sub._id} className="form-check mb-2">
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                                  id={`subcat-${sub._id}`}
+                                  checked={formData.subCategories.includes(
+                                    sub._id
+                                  )}
+                                  onChange={(e) => {
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      subCategories: e.target.checked
+                                        ? [...prev.subCategories, sub._id]
+                                        : prev.subCategories.filter(
+                                            (id) => id !== sub._id
+                                          ),
+                                    }));
+                                  }}
+                                />
+                                <label
+                                  className="form-check-label"
+                                  htmlFor={`subcat-${sub._id}`}
+                                >
+                                  {getTranslated(sub.name)}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
 
                       <div className="col-12 mb-2">

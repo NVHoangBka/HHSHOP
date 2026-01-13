@@ -248,6 +248,32 @@ class AdminService {
     }
   }
 
+  // ========= CATEGORY ADMIN ==============
+  async getCategoriesAllAdmin() {
+    try {
+      const res = await api.get("/categories");
+      console.log(res.data);
+      const categories = res.data.categories;
+      return { success: true, categories };
+    } catch (error) {
+      console.error("Login error:", error);
+      return this.handleError(error);
+    }
+  }
+
+  async getSubCategoriesAllAdmin() {
+    try {
+      const res = await api.get("/categories/subcategories");
+      const subcategories = res.data.subcategories;
+      console.log(res.data);
+
+      return { success: true, subcategories };
+    } catch (error) {
+      console.error("Login error:", error);
+      return this.handleError(error);
+    }
+  }
+
   // === XỬ LÝ LỖI CHUNG ===
   handleError(error) {
     const message = error.response?.data?.message || "Lỗi hệ thống";
