@@ -8,7 +8,7 @@ class ColorController {
    */
   static async getColos(req, res) {
     try {
-      const categories = await Color.find({ isActive: true })
+      const colors = await Color.find({ isActive: true })
         .select("name value slug description")
         .sort({ "name.vi": 1 })
         .lean();

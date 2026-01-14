@@ -128,6 +128,8 @@ const AdminProducts = ({ adminController }) => {
     fetchColors();
   }, [currentPage]);
 
+  console.log(colors);
+
   const showToast = (msg, type = "success") => {
     setToast({ show: true, message: msg, type });
     setTimeout(() => setToast({ show: false, message: "", type: "" }), 3000);
@@ -1034,6 +1036,7 @@ const AdminProducts = ({ adminController }) => {
                         )}
                       </div>
 
+                      {/* MÀU SẮC */}
                       <div className="col-12 mb-2">
                         <label className="form-label fw-bold">
                           {t("admin.products.form.color")}
