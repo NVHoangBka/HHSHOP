@@ -11,6 +11,7 @@ const AdminProducts = ({ adminController }) => {
   const [tagsProduct, setTagsProduct] = useState([]);
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
+  const [colors, setColors] = useState([]);
 
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState({ show: false, message: "", type: "" });
@@ -100,18 +101,31 @@ const AdminProducts = ({ adminController }) => {
     }
   };
 
+  const fetchColors = async () => {
+    try {
+      const res = await adminController.getColorsAllAdmin();
+      if (res.success) {
+        setColors(res.colors || []);
+      }
+    } catch (err) {
+      console.error("Lỗi load colors:", err);
+    }
+  };
+
   // Load lần đầu + khi search hoặc đổi trang
   useEffect(() => {
     setCurrentPage(1);
     loadProducts();
     fetchTagsProduct();
     fetchCategories();
+    fetchColors();
   }, [searchTerm]);
 
   useEffect(() => {
     loadProducts();
     fetchTagsProduct();
     fetchCategories();
+    fetchColors();
   }, [currentPage]);
 
   const showToast = (msg, type = "success") => {

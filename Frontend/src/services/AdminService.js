@@ -272,6 +272,18 @@ class AdminService {
     }
   }
 
+  // === COLORS ADMIN=====
+  async getColorsAllAdmin() {
+    try {
+      const res = await api.get("/colors");
+      const colors = res.data.colors;
+      return { success: true, colors };
+    } catch (error) {
+      console.error("Login error:", error);
+      return this.handleError(error);
+    }
+  }
+
   // === XỬ LÝ LỖI CHUNG ===
   handleError(error) {
     const message = error.response?.data?.message || "Lỗi hệ thống";

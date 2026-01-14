@@ -237,6 +237,16 @@ class AdminController {
       return { success: false, message: "Lấy danh mục con thất bại" };
     }
   }
+
+  // ================COLORS ADMIN =======================
+  async getColorsAllAdmin() {
+    try {
+      const result = await this.adminService.getColorsAllAdmin();
+      return result;
+    } catch (error) {
+      return { success: false, message: "Lấy màu sắc thất bại" };
+    }
+  }
 }
 
 export default AdminController;
