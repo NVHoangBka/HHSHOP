@@ -18,8 +18,8 @@ const variantSchema = new mongoose.Schema(
 
 const highlightSectionSchema = new mongoose.Schema(
   {
-    title: { type: String, required: true },
-    content: { type: String, required: true }, // hỗ trợ HTML
+    title: { type: String },
+    content: { type: String }, // hỗ trợ HTML
     icon: { type: String, default: "bi bi-star-fill" },
     order: { type: Number, default: 0 },
   },

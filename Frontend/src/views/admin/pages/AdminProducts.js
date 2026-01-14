@@ -91,23 +91,12 @@ const AdminProducts = ({ adminController }) => {
 
   const fetchCategories = async () => {
     try {
-      const res = await adminController.getCategoriesAllAdmin(); // Giả định API trả { success, categories: [{_id, name: {vi,en,cz}, children: [...]}] }
+      const res = await adminController.getCategoriesAllAdmin();
       if (res.success) {
         setCategories(res.categories || []);
       }
     } catch (err) {
       console.error("Lỗi load categories:", err);
-    }
-  };
-
-  const fetchSubCategories = async (categoryId) => {
-    try {
-      const res = await adminController.getSubCategoriesByCategory(categoryId);
-      if (res.success) {
-        setSubCategories(res.subcategories || []);
-      }
-    } catch (err) {
-      console.error("Lỗi load subcategories:", err);
     }
   };
 
@@ -117,14 +106,12 @@ const AdminProducts = ({ adminController }) => {
     loadProducts();
     fetchTagsProduct();
     fetchCategories();
-    fetchSubCategories(formData.category);
   }, [searchTerm]);
 
   useEffect(() => {
-    loadProducts(currentPage);
-    fetchTagsProduct(currentPage);
+    loadProducts();
+    fetchTagsProduct();
     fetchCategories();
-    fetchSubCategories(formData.category);
   }, [currentPage]);
 
   const showToast = (msg, type = "success") => {
@@ -158,14 +145,17 @@ const AdminProducts = ({ adminController }) => {
         ? product.gallery.join("\n")
         : product.gallery || "";
 
-      // Load subcategory nếu có category
-      const catId = product.category?._id || "";
+      // 1. Lấy categoryId từ sản phẩm
+      const catId = product.category?._id || product.category || "";
+
+      // 2. Tìm danh sách subcategory tương ứng
       let subs = [];
       if (catId) {
         const selectedCat = categories.find((c) => c._id === catId);
         subs = selectedCat?.children || [];
       }
 
+      // 3. Chuẩn hóa dữ liệu đa ngôn ngữ
       const normalizeLang = (obj) => {
         if (typeof obj === "string") return { vi: obj, en: "", cz: "" };
         if (!obj || typeof obj !== "object") return { vi: "", en: "", cz: "" };
@@ -176,17 +166,28 @@ const AdminProducts = ({ adminController }) => {
         };
       };
 
+      // 4. Chuẩn hóa subCategories thành mảng ObjectId string
+      let selectedSubIds = [];
+      if (product.subCategories) {
+        selectedSubIds = Array.isArray(product.subCategories)
+          ? product.subCategories.map((s) => s?._id || s)
+          : product.subCategories?._id
+          ? [product.subCategories._id]
+          : [];
+      } else if (product.subCategory) {
+        // Fallback nếu model cũ dùng subCategory single
+        selectedSubIds = [
+          product.subCategory?._id || product.subCategory,
+        ].filter(Boolean);
+      }
+
       setFormData({
         ...product,
         name: normalizeLang(product.name),
         description: normalizeLang(product.description),
         gallery: galleryString,
         category: catId,
-        subCategory: Array.isArray(product.subCategory)
-          ? product.subCategory.map((s) => s?._id || s)
-          : product.subCategory?._id
-          ? [product.subCategory._id]
-          : [],
+        subCategories: selectedSubIds,
         inStock: product.inStock !== false,
         flashSale: !!product.flashSale,
         highlightSections: product.highlightSections?.length
@@ -352,7 +353,7 @@ const AdminProducts = ({ adminController }) => {
   };
 
   const getTranslated = (obj, fallback = "") => {
-    return obj?.[currentLanguage] || obj?.vi || obj?.en || fallback;
+    return obj?.[currentLanguage] || obj?.vi || obj?.en || obj?.cz || fallback;
   };
 
   // Lọc chỉ theo tên sản phẩm (không phân biệt hoa thường)
@@ -400,9 +401,9 @@ const AdminProducts = ({ adminController }) => {
 
     const [nameEn, nameCz, descEn, descCz] = await Promise.all([
       translateText(formData.name.vi, "en"),
-      translateText(formData.name.vi, "cz"),
+      translateText(formData.name.vi, "cs"),
       translateText(formData.description?.vi || "", "en"),
-      translateText(formData.description?.vi || "", "cz"),
+      translateText(formData.description?.vi || "", "cs"),
     ]);
 
     setFormData((prev) => ({
@@ -412,6 +413,19 @@ const AdminProducts = ({ adminController }) => {
     }));
 
     showToast("Đã dịch xong! Kiểm tra và chỉnh sửa nếu cần.", "success");
+  };
+
+  const handleCategoryChange = async (e) => {
+    const catId = e.target.value;
+    setFormData({ ...formData, category: catId });
+    // Tự động load subcategory
+    const selected = categories.find((c) => c._id === catId);
+
+    setSubCategories(selected?.children || []);
+    setFormData((prev) => ({
+      ...prev,
+      subCategories: [],
+    }));
   };
 
   return (
@@ -652,7 +666,7 @@ const AdminProducts = ({ adminController }) => {
                         <div className="d-flex">
                           <div className="mb-4 col-xl-10">
                             <label className="form-label fw-bold text-danger">
-                              Tên sản phẩm *
+                              {t("admin.products.form.name")} *
                             </label>
                             <input
                               type="text"
@@ -675,7 +689,7 @@ const AdminProducts = ({ adminController }) => {
                             className="btn btn-primary mb-4 ms-3 align-self-end"
                             onClick={autoTranslateAll}
                           >
-                            Chuyển ngôn ngữ
+                            {t("admin.products.form.autoTranslate")}
                           </button>
                         </div>
                       </div>
@@ -816,7 +830,7 @@ const AdminProducts = ({ adminController }) => {
                             ? formData.gallery.split("\n").filter(Boolean)
                                 .length
                             : 0}{" "}
-                          ảnh)
+                          {t("admin.products.form.countImage")})
                         </label>
 
                         {/* Dán nhiều link (mỗi link 1 dòng) */}
@@ -925,7 +939,10 @@ const AdminProducts = ({ adminController }) => {
                           onChange={(e) =>
                             setFormData({
                               ...formData,
-                              description: e.target.value,
+                              description: {
+                                ...formData.description,
+                                vi: e.target.value,
+                              },
                             })
                           }
                         />
@@ -934,27 +951,17 @@ const AdminProducts = ({ adminController }) => {
                       {/* DANH MỤC CHÍNH */}
                       <div className="col-md-6">
                         <label className="form-label fw-bold">
-                          Danh mục chính *
+                          {t("admin.products.form.category")} *
                         </label>
                         <select
                           className="form-select"
                           value={formData.category}
-                          onChange={(e) => {
-                            const catId = e.target.value;
-                            setFormData({ ...formData, category: catId });
-                            // Tự động load subcategory
-                            const selected = categories.find(
-                              (c) => c._id === catId
-                            );
-                            setSubCategories(selected?.children || []);
-                            setFormData((prev) => ({
-                              ...prev,
-                              subCategories: [],
-                            })); // reset lựa chọn con
-                          }}
+                          onChange={handleCategoryChange}
                           required
                         >
-                          <option value="">Chọn danh mục chính</option>
+                          <option value="">
+                            {t("admin.products.form.selectCategory")}
+                          </option>
                           {categories.map((cat) => (
                             <option key={cat._id} value={cat._id}>
                               {getTranslated(cat.name)}
@@ -966,16 +973,15 @@ const AdminProducts = ({ adminController }) => {
                       {/* DANH MỤC CON - CHECKBOX */}
                       <div className="col-md-6">
                         <label className="form-label fw-bold">
-                          Danh mục con{" "}
-                          {formData.subCategories.length > 0 &&
+                          {t("admin.products.form.subCategory")}{" "}
+                          {formData.subCategories?.length > 0 &&
                             `(${formData.subCategories.length} đã chọn)`}
                         </label>
-
                         {subCategories.length === 0 ? (
                           <div className="text-muted small fst-italic">
                             {formData.category
-                              ? "Danh mục này chưa có danh mục con"
-                              : "Vui lòng chọn danh mục chính trước"}
+                              ? t("admin.products.form.noSubCategory")
+                              : t("admin.products.form.selectCategoryFirst")}
                           </div>
                         ) : (
                           <div
@@ -1085,7 +1091,7 @@ const AdminProducts = ({ adminController }) => {
                           onChange={(e) =>
                             setFormData({
                               ...formData,
-                              inStock: e.target.value,
+                              inStock: e.target.value === "true",
                             })
                           }
                         >

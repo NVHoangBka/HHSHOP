@@ -252,7 +252,6 @@ class AdminService {
   async getCategoriesAllAdmin() {
     try {
       const res = await api.get("/categories");
-      console.log(res.data);
       const categories = res.data.categories;
       return { success: true, categories };
     } catch (error) {
@@ -261,11 +260,10 @@ class AdminService {
     }
   }
 
-  async getSubCategoriesAllAdmin() {
+  async getSubCategoriesByCategory(categoryId) {
     try {
-      const res = await api.get("/categories/subcategories");
+      const res = await api.get(`/categories/subcategories/${categoryId}`);
       const subcategories = res.data.subcategories;
-      console.log(res.data);
 
       return { success: true, subcategories };
     } catch (error) {
