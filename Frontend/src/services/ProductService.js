@@ -36,12 +36,22 @@ class ProductService {
 
   async getProductById(id) {
     const res = await api.get(`/products/${id}`);
-    return this.productModel.mapProduct(res.data.product);
+    return this.productModel.mapProduct(res.data.products);
+  }
+
+  async getProductsByCategory(categoryId) {
+    const res = await api.get(`/products/category/${categoryId}`);
+    return this.productModel.mapProduct(res.data.products);
+  }
+
+  async getProductsBySubCategory(subCategoryId) {
+    const res = await api.get(`/products/subcategory/${subCategoryId}`);
+    return this.productModel.mapProducts(res.data.products);
   }
 
   async getProductBySlug(slug) {
     const res = await api.get(`/products/slug/${slug}`);
-    return this.productModel.mapProduct(res.data.product);
+    return this.productModel.mapProducts(res.data.products);
   }
 
   // async filterProducts(criteria) {

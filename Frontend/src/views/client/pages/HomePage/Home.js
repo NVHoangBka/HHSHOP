@@ -10,11 +10,15 @@ const Home = ({
   productController,
   titleController,
   bannerController,
+  categoryController,
 }) => {
   const { t } = useTranslation();
+  const currentLanguage = localStorage.getItem("i18n_lang") || "en";
+
   const [flashSaleProducts, setFlashSaleProducts] = useState([]);
   const [bannerHome, setBannerHome] = useState([]);
   const [titlesHome, setTitlesHome] = useState([]);
+  const [categoriesHome, setCategoriesHome] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,6 +26,15 @@ const Home = ({
         const orders = await productController.getAllProducts();
         const banners = await bannerController.getBannersAll();
         const titles = await titleController.getTitlesByType("h1");
+        const resCategories = await categoryController.getCategories();
+
+        if (resCategories.success) {
+          const categories = resCategories.categories;
+          const featuredCategories = categories.filter(
+            (category) => category.isFeatured === true
+          );
+          setCategoriesHome(featuredCategories);
+        }
 
         const flashSale = orders.filter((order) => order.flashSale === true);
 
@@ -33,7 +46,16 @@ const Home = ({
       }
     };
     fetchData();
-  }, [bannerController, productController, titleController]);
+  }, [
+    bannerController,
+    productController,
+    titleController,
+    categoryController,
+  ]);
+
+  const getTranslated = (obj, fallback = "") => {
+    return obj?.[currentLanguage] || obj?.vi || obj?.en || obj?.cz || fallback;
+  };
 
   return (
     <>
@@ -101,38 +123,21 @@ const Home = ({
             </div>
           </div>
         </div>
-        <ProductTabSection
-          path="cham-soc-gia-dinh"
-          title={t("home.tabs.family-care")}
-          value="family-care"
-          addToCart={addToCart}
-          productController={productController}
-          titleController={titleController}
-        />
-        <ProductTabSection
-          path=""
-          title={t("home.tabs.trending")}
-          value="trending"
-          addToCart={addToCart}
-          productController={productController}
-          titleController={titleController}
-        />
-        <ProductTabSection
-          path="thuc-pham-tuoi-song"
-          title={t("home.tabs.fresh-food")}
-          value="fresh-food"
-          addToCart={addToCart}
-          productController={productController}
-          titleController={titleController}
-        />
-        <ProductTabSection
-          path="van-phong-pham"
-          title={t("home.tabs.stationery")}
-          value="stationery"
-          addToCart={addToCart}
-          productController={productController}
-          titleController={titleController}
-        />
+
+        {[...categoriesHome]
+          .sort((a, b) => (a.homeOrder ?? 9999) - (b.homeOrder ?? 9999))
+          .map((category, index) => (
+            <ProductTabSection
+              key={index}
+              path={getTranslated(category.slug)}
+              title={getTranslated(category.name)}
+              value={getTranslated(category.value)}
+              addToCart={addToCart}
+              productController={productController}
+              titleController={titleController}
+              categoryController={categoryController}
+            />
+          ))}
       </div>
     </>
   );

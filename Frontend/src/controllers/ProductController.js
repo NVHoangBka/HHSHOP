@@ -29,6 +29,14 @@ class ProductController {
     return this.productService.getProductById(id);
   }
 
+  getProductsByCategory(categoryId) {
+    return this.productService.getProductsByCategory(categoryId);
+  }
+
+  getProductsBySubCategory(subCategoryId) {
+    return this.productService.getProductsBySubCategory(subCategoryId);
+  }
+
   search(query, category = "all") {
     return this.productService.search(query, category);
   }

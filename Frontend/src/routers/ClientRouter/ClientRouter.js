@@ -25,6 +25,7 @@ const ClientRouter = (props, index) => (
           productController={props.productController}
           bannerController={props.bannerController}
           titleController={props.titleController}
+          categoryController={props.categoryController}
         />
       }
     />

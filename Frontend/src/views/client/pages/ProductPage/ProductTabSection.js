@@ -9,68 +9,81 @@ const ProductTabSection = ({
   title,
   addToCart,
   productController,
-  titleController,
+  categoryController,
 }) => {
-  const [t, i18n] = useTranslation();
+  const [t] = useTranslation();
+  const currentLanguage = localStorage.getItem("i18n_lang") || "en";
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [subTitles, setSubTitles] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
   const [activeTab, setActiveTab] = useState();
+  const [categoryId, setCategoryId] = useState(null);
+
+  const getTranslated = (obj, fallback = "") => {
+    return obj?.[currentLanguage] || obj?.vi || obj?.en || obj?.cz || fallback;
+  };
+
+  useEffect(() => {
+    const fetchCategoryId = async (value) => {
+      try {
+        const result = await categoryController.getCategoriesByValue(value);
+        if (result.success) {
+          const categories = result.category;
+          setCategoryId(categories?._id);
+        }
+      } catch (error) {}
+    };
+    fetchCategoryId(value);
+  }, [value]);
 
   // Lấy subTitles tương ứng với value của section này
   useEffect(() => {
-    const fetchSubTitles = async () => {
-      if (!value) return; // nếu không có value (trường hợp trending) thì bỏ qua
+    const fetchSubCategories = async () => {
+      if (!categoryId) return;
 
       try {
-        const allTitles = await titleController.getAllTitles();
-        const parent = allTitles.find((t) => t.value === value);
+        const result = await categoryController.getSubCategoriesByCategory(
+          categoryId
+        );
+        if (result.success) {
+          const subs = result.subCategories;
+          setSubCategories(subs);
 
-        if (parent && parent.subTitles && parent.subTitles.length > 0) {
-          const subs = parent.subTitles;
-          setSubTitles(subs);
-
-          // Tự động chọn subTitle đầu tiên làm activeTab
+          // Tự động chọn tab đầu tiên
           if (subs.length > 0) {
-            setActiveTab(subs[0].value);
+            setActiveTab(subs[0]._id);
+          } else {
+            setActiveTab("");
           }
-        } else {
-          setSubTitles([]);
-          setActiveTab(value);
         }
       } catch (error) {
         console.error("Lỗi lấy subTitles:", error);
-        setSubTitles([]);
+        setSubCategories([]);
+        setActiveTab("");
       }
     };
 
-    fetchSubTitles();
-  }, [value, titleController]);
+    fetchSubCategories();
+  }, [categoryId]);
 
   // Logic lấy sản phẩm ()
   useEffect(() => {
-    if (!activeTab) return;
-
     const fetchProducts = async () => {
+      if (!categoryId) return;
+
       try {
         let products = [];
 
-        if (value === "trending" || !value) {
-          // Trường hợp đặc biệt: Sản phẩm nổi bật
-          products = await productController.getAllProducts();
-          products = products
-            .sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0)) // ví dụ
-            .slice(0, 5);
-        } else {
-          // Lấy sản phẩm theo TẤT CẢ subTitles con
-          const allSubProducts = await productController.getProductsByType(
+        if (activeTab) {
+          // Lọc theo subCategory cụ thể
+          products = await productController.getProductsBySubCategory(
             activeTab
           );
-
-          // Gộp lại và lấy 5 sản phẩm đầu (hoặc random, mới nhất...)
-          products = allSubProducts.slice(0, 5);
+        } else {
+          // Lọc theo category cha (nếu không có sub hoặc tab "Tất cả")
+          products = await productController.getProductsByCategory(categoryId);
         }
 
-        setFilteredProducts(products || []);
+        setFilteredProducts(products);
       } catch (error) {
         console.error("Lỗi lấy sản phẩm:", error);
         setFilteredProducts([]);
@@ -78,7 +91,7 @@ const ProductTabSection = ({
     };
 
     fetchProducts();
-  }, [activeTab, value, productController]);
+  }, [activeTab, categoryId]);
 
   return (
     <div className="section-product-tabs mt-xl-5">
@@ -94,15 +107,15 @@ const ProductTabSection = ({
           </h2>
         </div>
         <div className="heading-tabs mx-xl-5 mt-xl-4 row justify-content-center">
-          {subTitles.slice(0, 3).map((sub) => (
+          {subCategories.slice(0, 3).map((sub) => (
             <button
-              key={sub.value}
+              key={sub._id}
               className={`btn product-tab col-xl-3 col-lg-3 mx-xl-3 ${
-                activeTab === sub.value ? "active" : "bg-white border"
+                activeTab === sub._id ? "active" : "bg-white border"
               } hover`}
-              onClick={() => setActiveTab(sub.value)}
+              onClick={() => setActiveTab(sub._id)}
             >
-              {i18n.language === "en" ? sub.nameEn : sub.nameVn}
+              {getTranslated(sub.name)}
             </button>
           ))}
         </div>

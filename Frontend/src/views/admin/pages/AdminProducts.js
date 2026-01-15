@@ -4,7 +4,7 @@ import tagController from "../../../controllers/TagController";
 import { useTranslation } from "react-i18next";
 
 const AdminProducts = ({ adminController }) => {
-  const [t, i18n] = useTranslation();
+  const [t] = useTranslation();
   const currentLanguage = localStorage.getItem("i18n_lang_admin") || "en";
 
   const [products, setProducts] = useState([]);
@@ -38,7 +38,7 @@ const AdminProducts = ({ adminController }) => {
     gallery: "",
     shortDescription: "",
     description: { vi: "", en: "", cz: "" },
-    category: "",
+    categories: [],
     subCategories: [],
     types: [],
     tags: [],
@@ -62,7 +62,11 @@ const AdminProducts = ({ adminController }) => {
   const loadProducts = async () => {
     try {
       setLoading(true);
-      const result = await adminController.getProductsAllAdmin(pagination);
+      const result = await adminController.getProductsAllAdmin({
+        page: currentPage,
+        limit,
+        search: searchTerm || undefined,
+      });
       if (result.success) {
         setProducts(result.products || []);
         setTotalProducts(result.paginationData?.totalProducts || 0);
@@ -128,8 +132,6 @@ const AdminProducts = ({ adminController }) => {
     fetchColors();
   }, [currentPage]);
 
-  console.log(colors);
-
   const showToast = (msg, type = "success") => {
     setToast({ show: true, message: msg, type });
     setTimeout(() => setToast({ show: false, message: "", type: "" }), 3000);
@@ -143,7 +145,6 @@ const AdminProducts = ({ adminController }) => {
     "Lifebuoy",
     "Vim",
   ];
-  const popularColors = ["Vàng", "Xanh", "Hồng", "Trắng", "Đỏ", "Tím", "Đen"];
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages && page !== currentPage) {
@@ -162,14 +163,14 @@ const AdminProducts = ({ adminController }) => {
         : product.gallery || "";
 
       // 1. Lấy categoryId từ sản phẩm
-      const catId = product.category?._id || product.category || "";
+      // const catId = product.category?._id || product.category || "";
 
-      // 2. Tìm danh sách subcategory tương ứng
-      let subs = [];
-      if (catId) {
-        const selectedCat = categories.find((c) => c._id === catId);
-        subs = selectedCat?.children || [];
-      }
+      // // 2. Tìm danh sách subcategory tương ứng
+      // let subs = [];
+      // if (catId) {
+      //   const selectedCat = categories.find((c) => c._id === catId);
+      //   subs = selectedCat?.children || [];
+      // }
 
       // 3. Chuẩn hóa dữ liệu đa ngôn ngữ
       const normalizeLang = (obj) => {
@@ -181,6 +182,18 @@ const AdminProducts = ({ adminController }) => {
           cz: obj.cz || "",
         };
       };
+
+      let selectedCategories = [];
+      if (product.categories) {
+        selectedCategories = Array.isArray(product.categories)
+          ? product.categories.map((c) => c?._id || c).filter(Boolean)
+          : [product.categories?._id || product.categories].filter(Boolean);
+      } else if (product.category) {
+        // Fallback nếu model cũ dùng single category
+        selectedCategories = [product.category?._id || product.category].filter(
+          Boolean
+        );
+      }
 
       // 4. Chuẩn hóa subCategories thành mảng ObjectId string
       let selectedSubIds = [];
@@ -197,13 +210,22 @@ const AdminProducts = ({ adminController }) => {
         ].filter(Boolean);
       }
 
+      // Chuẩn hóa colors thành mảng ID string
+      let selectedColors = [];
+      if (product.colors) {
+        selectedColors = Array.isArray(product.colors)
+          ? product.colors.map((c) => c?._id || c).filter(Boolean)
+          : [product.colors?._id || product.colors].filter(Boolean);
+      }
+
       setFormData({
         ...product,
         name: normalizeLang(product.name),
         description: normalizeLang(product.description),
         gallery: galleryString,
-        category: catId,
+        categories: selectedCategories,
         subCategories: selectedSubIds,
+        colors: selectedColors,
         inStock: product.inStock !== false,
         flashSale: !!product.flashSale,
         highlightSections: product.highlightSections?.length
@@ -211,7 +233,7 @@ const AdminProducts = ({ adminController }) => {
           : [{ title: "", content: "", icon: "bi-star-fill", order: 0 }],
       });
 
-      setSubCategories(subs);
+      loadAllSubCategories(selectedCategories);
     } else {
       setIsEditing(false);
       setCurrentId(null);
@@ -223,7 +245,7 @@ const AdminProducts = ({ adminController }) => {
         gallery: "",
         shortDescription: "",
         description: { vi: "", en: "", cz: "" },
-        category: "",
+        categories: [],
         subCategories: [],
         types: [],
         tags: [],
@@ -240,6 +262,33 @@ const AdminProducts = ({ adminController }) => {
       setSubCategories([]);
     }
     setModalOpen(true);
+  };
+
+  // Load tất cả subCategories từ mảng category IDs đã chọn
+  const loadAllSubCategories = async (catIds) => {
+    if (!catIds || catIds.length === 0) {
+      setSubCategories([]);
+      return;
+    }
+
+    try {
+      const allSubs = [];
+      for (const catId of catIds) {
+        const res = await adminController.getSubCategoriesByCategory(catId);
+        if (res.success) {
+          allSubs.push(...(res.subcategories || []));
+        }
+      }
+      console.log(allSubs);
+      // Loại bỏ trùng lặp (nếu một sub thuộc nhiều cha - hiếm xảy ra)
+      const uniqueSubs = Array.from(
+        new Map(allSubs.map((s) => [s._id, s])).values()
+      );
+      setSubCategories(uniqueSubs);
+    } catch (err) {
+      console.error("Lỗi load subCategories:", err);
+      setSubCategories([]);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -259,7 +308,8 @@ const AdminProducts = ({ adminController }) => {
         ? Number(formData.discountPrice)
         : undefined,
       gallery: galleryArray,
-      category: formData.category || undefined,
+      categories:
+        formData.categories.length > 0 ? formData.categories : undefined,
       subCategories:
         formData.subCategories.length > 0 ? formData.subCategories : undefined,
       types: formData.types,
@@ -431,17 +481,12 @@ const AdminProducts = ({ adminController }) => {
     showToast("Đã dịch xong! Kiểm tra và chỉnh sửa nếu cần.", "success");
   };
 
-  const handleCategoryChange = async (e) => {
-    const catId = e.target.value;
-    setFormData({ ...formData, category: catId });
-    // Tự động load subcategory
-    const selected = categories.find((c) => c._id === catId);
-
-    setSubCategories(selected?.children || []);
-    setFormData((prev) => ({
-      ...prev,
-      subCategories: [],
-    }));
+  const handleCategoryChange = async (catId) => {
+    setFormData((prev) => {
+      const updated = toggleArray(prev.categories, catId);
+      loadAllSubCategories(updated);
+      return { ...prev, categories: updated, subCategories: [] };
+    });
   };
 
   return (
@@ -969,21 +1014,36 @@ const AdminProducts = ({ adminController }) => {
                         <label className="form-label fw-bold">
                           {t("admin.products.form.category")} *
                         </label>
-                        <select
-                          className="form-select"
-                          value={formData.category}
-                          onChange={handleCategoryChange}
-                          required
-                        >
-                          <option value="">
-                            {t("admin.products.form.selectCategory")}
-                          </option>
-                          {categories.map((cat) => (
-                            <option key={cat._id} value={cat._id}>
-                              {getTranslated(cat.name)}
-                            </option>
-                          ))}
-                        </select>
+                        {categories.length === 0 ? (
+                          <div className="text-muted small fst-italic">
+                            {t("admin.products.form.noCategory")}
+                          </div>
+                        ) : (
+                          <div
+                            className="border rounded p-3 bg-light"
+                            style={{ maxHeight: "220px", overflowY: "auto" }}
+                          >
+                            {categories.map((cat) => (
+                              <div key={cat._id} className="form-check mb-2">
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                                  id={`cat-${cat._id}`}
+                                  checked={formData.categories.includes(
+                                    cat._id
+                                  )}
+                                  onChange={() => handleCategoryChange(cat._id)}
+                                />
+                                <label
+                                  className="form-check-label"
+                                  htmlFor={`cat-${cat._id}`}
+                                >
+                                  {getTranslated(cat.name)}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
 
                       {/* DANH MỤC CON - CHECKBOX */}
@@ -1042,24 +1102,40 @@ const AdminProducts = ({ adminController }) => {
                           {t("admin.products.form.color")}
                         </label>
                         <div className="d-flex flex-wrap px-3 py-2 rounded border align-items-center">
-                          {popularColors.map((color, index) => (
-                            <div key={index} className="col-3 form-check mb-2">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                checked={formData.colors.includes(color)}
-                                onChange={() =>
-                                  setFormData({
-                                    ...formData,
-                                    colors: toggleArray(formData.colors, color),
-                                  })
-                                }
-                              />
-                              <label className="form-check-label text-capitalize">
-                                {color}
-                              </label>
+                          {colors.length === 0 ? (
+                            <div className="text-muted small fst-italic">
+                              Đang tải danh sách màu...
                             </div>
-                          ))}
+                          ) : (
+                            colors.map((color, index) => (
+                              <div
+                                key={index}
+                                className="col-3 form-check mb-2"
+                              >
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                                  id={`color-${color._id}`}
+                                  checked={formData.colors.includes(color._id)}
+                                  onChange={() => {
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      colors: toggleArray(
+                                        prev.colors,
+                                        color._id
+                                      ),
+                                    }));
+                                  }}
+                                />
+                                <label
+                                  className="form-check-label text-capitalize"
+                                  htmlFor={`color-${color._id}`}
+                                >
+                                  {getTranslated(color.name)}
+                                </label>
+                              </div>
+                            ))
+                          )}
                         </div>
                       </div>
 

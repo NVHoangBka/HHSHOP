@@ -1,4 +1,5 @@
 // backend/controllers/ProductController.js
+const mongoose = require("mongoose");
 const Product = require("../models/Product");
 
 class ProductController {
@@ -72,6 +73,96 @@ class ProductController {
       20
     );
     res.json({ success: true, products });
+  }
+
+  static async getByCategory(req, res) {
+    try {
+      const { categoryId } = req.params;
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 20;
+      const skip = (page - 1) * limit;
+
+      if (!mongoose.Types.ObjectId.isValid(categoryId)) {
+        return res.status(400).json({
+          success: false,
+          message: "ID danh mục không hợp lệ",
+        });
+      }
+
+      const filter = { category: categoryId, isActive: true };
+
+      const [products, total] = await Promise.all([
+        Product.find(filter)
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(limit)
+          .lean(),
+        Product.countDocuments(filter),
+      ]);
+
+      res.json({
+        success: true,
+        products,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit),
+        },
+      });
+    } catch (error) {
+      console.error("Lỗi getByCategory:", error);
+      res.status(500).json({
+        success: false,
+        message: "Lỗi hệ thống khi lấy sản phẩm theo danh mục",
+        error: error.message,
+      });
+    }
+  }
+
+  static async getBySubCategory(req, res) {
+    try {
+      const { subCategoryId } = req.params;
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 20;
+      const skip = (page - 1) * limit;
+
+      if (!mongoose.Types.ObjectId.isValid(subCategoryId)) {
+        return res.status(400).json({
+          success: false,
+          message: "ID danh mục con không hợp lệ",
+        });
+      }
+
+      const filter = { subCategories: subCategoryId, isActive: true };
+
+      const [products, total] = await Promise.all([
+        Product.find(filter)
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(limit)
+          .lean(),
+        Product.countDocuments(filter),
+      ]);
+
+      res.json({
+        success: true,
+        products,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit),
+        },
+      });
+    } catch (error) {
+      console.error("Lỗi getBySubCategory:", error);
+      res.status(500).json({
+        success: false,
+        message: "Lỗi hệ thống khi lấy sản phẩm theo danh mục con",
+        error: error.message,
+      });
+    }
   }
 
   static async getById(req, res) {

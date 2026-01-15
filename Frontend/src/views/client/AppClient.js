@@ -10,6 +10,8 @@ import ProductController from "../../controllers/ProductController";
 import CartController from "../../controllers/CartController";
 import bannerController from "../../controllers/BannerController";
 import orderController from "../../controllers/OrderController";
+import categoryController from "../../controllers/CategoryController";
+
 import ClientRouter from "../../routers/ClientRouter/ClientRouter";
 
 const AppClient = () => {
@@ -136,6 +138,7 @@ const AppClient = () => {
           titleController={titleController}
           bannerController={bannerController}
           orderController={orderController}
+          categoryController={categoryController}
         />
       </div>
       <Footer />

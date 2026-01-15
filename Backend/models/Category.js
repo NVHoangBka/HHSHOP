@@ -1,4 +1,4 @@
-// models/Category.js – PHIÊN BẢN ĐA NGÔN NGỮ (vi/en/cz)
+// models/Category.js – PHIÊN BẢN ĐA NGÔN NGỮ (vi/en/cz) + THÊM VALUE
 const mongoose = require("mongoose");
 const slugify = require("slugify");
 
@@ -13,12 +13,17 @@ const CategorySchema = new mongoose.Schema(
       vi: { type: String, unique: true, sparse: true },
       en: { type: String, unique: true, sparse: true },
       cz: { type: String, unique: true, sparse: true },
-    }, // Slug riêng cho từng ngôn ngữ (tốt cho SEO đa ngôn ngữ)
-
+    },
     description: {
       vi: { type: String, maxlength: 500 },
       en: { type: String, maxlength: 500 },
       cz: { type: String, maxlength: 500 },
+    },
+
+    value: {
+      vi: { type: String, unique: true, sparse: true },
+      en: { type: String, unique: true, sparse: true },
+      cz: { type: String, unique: true, sparse: true },
     },
 
     icon: { type: String, default: "bi bi-shop" },
@@ -65,14 +70,22 @@ CategorySchema.pre("save", async function (next) {
   for (const lang of languages) {
     const nameLang = this.name[lang] || this.name.vi; // fallback về vi nếu thiếu
     if (nameLang && (this.isModified(`name.${lang}`) || !this.slug[lang])) {
-      this.slug[lang] =
-        slugify(nameLang, {
-          lower: true,
-          strict: true,
-          locale: lang === "vi" ? "vi" : "en", // slugify hỗ trợ vi tốt
-        }) +
-        "-" +
-        Date.now().toString(36).slice(-4);
+      this.slug[lang] = slugify(nameLang, {
+        lower: true,
+        strict: true,
+        locale: lang === "vi" ? "vi" : "en",
+      });
+    }
+  }
+
+  for (const lang of languages) {
+    const nameLang = this.name[lang] || this.name.vi; // fallback về vi nếu thiếu
+    if (nameLang && (this.isModified(`name.${lang}`) || !this.value[lang])) {
+      this.value[lang] = slugify(nameLang, {
+        lower: true,
+        strict: true,
+        locale: lang === "vi" ? "vi" : "en",
+      });
     }
   }
 
@@ -97,6 +110,7 @@ CategorySchema.index({ "slug.en": 1 });
 CategorySchema.index({ "slug.cz": 1 });
 CategorySchema.index({ parent: 1, order: 1 });
 CategorySchema.index({ isActive: 1, isFeatured: 1, homeOrder: 1 });
+CategorySchema.index({ value: 1 }); // thêm index cho value để query nhanh
 
 // ==================== VIRTUALS ====================
 CategorySchema.virtual("children", {
@@ -109,7 +123,6 @@ CategorySchema.virtual("children", {
 // ==================== STATIC METHODS ====================
 CategorySchema.statics.getByLang = async function (lang = "vi") {
   return this.find({ isActive: true }).sort({ order: 1 });
-  // Sau này có thể filter theo lang nếu cần
 };
 
 CategorySchema.statics.getTreeByLang = async function (lang = "vi") {
@@ -128,6 +141,11 @@ CategorySchema.statics.getTreeByLang = async function (lang = "vi") {
   });
 
   return roots;
+};
+
+// Thêm static method tiện lợi để tìm theo value
+CategorySchema.statics.findByValue = async function (value) {
+  return this.findOne({ value, isActive: true }).lean();
 };
 
 module.exports = mongoose.model("Category", CategorySchema);

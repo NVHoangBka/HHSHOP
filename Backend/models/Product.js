@@ -72,7 +72,7 @@ const productSchema = new mongoose.Schema(
     highlightSections: [highlightSectionSchema], // MỚI – SIÊU ĐẸP
 
     // Phân loại tìm kiếm
-    category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
+    categories: [{ type: mongoose.Schema.Types.ObjectId, ref: "Category" }],
     subCategories: [{ type: mongoose.Schema.Types.ObjectId, ref: "Category" }],
 
     brand: { type: mongoose.Schema.Types.ObjectId, ref: "Brand", index: true },
