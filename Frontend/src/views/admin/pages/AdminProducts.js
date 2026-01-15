@@ -276,11 +276,10 @@ const AdminProducts = ({ adminController }) => {
       for (const catId of catIds) {
         const res = await adminController.getSubCategoriesByCategory(catId);
         if (res.success) {
-          allSubs.push(...(res.subcategories || []));
+          allSubs.push(...(res.subCategories || []));
         }
       }
-      console.log(allSubs);
-      // Loại bỏ trùng lặp (nếu một sub thuộc nhiều cha - hiếm xảy ra)
+
       const uniqueSubs = Array.from(
         new Map(allSubs.map((s) => [s._id, s])).values()
       );

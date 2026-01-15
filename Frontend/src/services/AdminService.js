@@ -263,9 +263,9 @@ class AdminService {
   async getSubCategoriesByCategory(categoryId) {
     try {
       const res = await api.get(`/categories/subcategories/${categoryId}`);
-      const subcategories = res.data.subcategories;
+      const subCategories = res.data.subCategories;
 
-      return { success: true, subcategories };
+      return { success: true, subCategories };
     } catch (error) {
       console.error("Login error:", error);
       return this.handleError(error);
