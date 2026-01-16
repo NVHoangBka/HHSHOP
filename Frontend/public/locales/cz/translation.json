@@ -151,6 +151,7 @@
             "home": "Domů"
         },
         "allProducts": "Všechny produkty",
+        "noCategory": "Žádné kategorie k zobrazení",
         "loading": "Načítání produktů...",
         "noProducts": "V této kategorii nebyly nalezeny žádné produkty.",
         "sort": {
@@ -232,7 +233,7 @@
     },
     "search": {
         "title": "Hledat",
-        "all-categories": "Všechny kategorie",
+        "allCategories": "Všechny kategorie",
         "product-name": "Hledat název produktu",
         "no-product": "Žádné produkty nenalezeny",
         "popular-keywords": "Populární klíčová slova",
@@ -258,9 +259,17 @@
         }
     },
     "menu": {
-        "product_all": "Všechny produkty",
-        "take_care_of_family": "Péče o rodinu",
-        "loading": "Načítání menu..."
+        "allProducts": "Všechny produkty",
+        "noCategory": "Žádné kategorie k zobrazení",
+        "loading": "Načítání menu...",
+        "introduce": "O nás",
+        "flashSale": "Akce",
+        "flashSaleSingleSlot": "Jednočasový Flash Sale",
+        "flashSaleMultipleSlots": "Vícečasový Flash Sale",
+        "news": "Novinky",
+        "checkOrder": "Sledování objednávky",
+        "contact": "Kontakt",
+        "storeSystem": "Síť prodejen"
     },
     "cart": {
         "title": "Košík",

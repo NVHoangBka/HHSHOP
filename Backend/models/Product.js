@@ -1,4 +1,4 @@
-// backend/models/Product.js → PHIÊN BẢN CUỐI CÙNG – ĐỈNH CAO THẬT SỰ
+// backend/models/Product.js
 const mongoose = require("mongoose");
 const slugify = require("slugify");
 const { updateTagCounts } = require("../utils/updateTagCounts");
@@ -48,7 +48,11 @@ const productSchema = new mongoose.Schema(
       en: { type: String, trim: true },
       cz: { type: String, trim: true },
     },
-    slug: { type: String, unique: true, sparse: true },
+    slug: {
+      vi: { type: String, unique: true, sparse: true },
+      en: { type: String, unique: true, sparse: true },
+      cz: { type: String, unique: true, sparse: true },
+    },
 
     // Giá cơ bản (nếu không có variants)
     price: { type: Number },
@@ -160,19 +164,16 @@ productSchema.index({ createdAt: -1 });
 
 // ==================== PRE SAVE – TỰ ĐỘNG HOÁ ====================
 productSchema.pre("save", function (next) {
+  const languages = ["vi", "en", "cz"];
   // Tạo slug
-  if (this.isModified("name") || !this.slug) {
-    const name = this.name.vi || this.name.en || this.name.cz || "";
-    if (name) {
-      this.slug =
-        slugify(name, {
-          lower: true,
-          strict: true,
-          locale: "vi",
-          remove: /[*+~.()'"!:@]/g,
-        }) +
-        "-" +
-        Date.now().toString(36);
+  for (const lang of languages) {
+    const nameLang = this.name[lang] || this.name.vi; // fallback về vi nếu thiếu
+    if (nameLang && (this.isModified(`name.${lang}`) || !this.slug[lang])) {
+      this.slug[lang] = slugify(nameLang, {
+        lower: true,
+        strict: true,
+        locale: lang === "vi" ? "vi" : "en",
+      });
     }
   }
 

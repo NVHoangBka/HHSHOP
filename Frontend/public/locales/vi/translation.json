@@ -233,7 +233,7 @@
     },
     "search": {
         "title": "Tìm kiếm",
-        "all-categories": "Tất cả danh mục",
+        "allCategories": "Tất cả danh mục",
         "product-name": "Tìm theo tên Sản phẩm",
         "no-product": "Không tìm thấy sản phẩm nào",
         "popular-keywords": "Từ khoá phổ biến",
@@ -259,9 +259,17 @@
         }
     },
     "menu": {
-        "product_all": "Tất cả sản phẩm",
-        "take_care_of_family": "Chăm sóc gia đình",
-        "loading": "Đang tải menu...."
+        "allProducts": "Tất cả sản phẩm",
+        "noCategory": "Không có danh mục để hiển thị",
+        "loading": "Đang tải menu....",
+        "introduce": "Giới thiệu",
+        "flashSale": "Khuyến mãi",
+        "flashSaleSingleSlot": "Flash Sale 1 khung giờ",
+        "flashSaleMultipleSlots": "Flash Sale nhiều khung giờ",
+        "news": "Tin tức",
+        "checkOrder": "Kiểm tra đơn hàng",
+        "contact": "Liên hệ",
+        "storeSystem": "Hệ thống cửa hàng"
     },
     "cart": {
         "title": "Giỏ hàng",

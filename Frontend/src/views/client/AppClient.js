@@ -122,6 +122,7 @@ const AppClient = () => {
         authController={authController}
         productController={productController}
         titleController={titleController}
+        categoryController={categoryController}
       />
       <div>
         <ClientRouter

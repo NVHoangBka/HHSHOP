@@ -233,7 +233,7 @@
     },
     "search": {
         "title": "Search",
-        "all-categories": "All Categories",
+        "allCategories": "All Categories",
         "product-name": "Search by Product Name",
         "no-product": "No products found",
         "popular-keywords": "Popular Keywords",
@@ -259,9 +259,17 @@
         }
     },
     "menu": {
-        "product_all": "All Products",
-        "take_care_of_family": "Family Care",
-        "loading": "Loading menu..."
+        "allProducts": "All Products",
+        "noCategory": "No categories to display",
+        "loading": "Loading menu...",
+        "introduce": "About us",
+        "flashSale": "Flash Sale",
+        "flashSaleSingleSlot": "Single Slot Flash Sale",
+        "flashSaleMultipleSlots": "Multi-Slot Flash Sale",
+        "news": "News",
+        "checkOrder": "Order Tracking",
+        "contact": "Contact",
+        "storeSystem": "Store Locator"
     },
     "cart": {
         "title": "Shopping Cart",

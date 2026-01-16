@@ -157,8 +157,6 @@ module.exports = {
       types: ["nuoc-giat", "hot", "san-deal"],
       tag: ["flashsale"],
       brands: ["Downy"],
-      titles: ["cham-soc-gia-dinh"],
-      subTitles: ["sap-thom"],
       sold: 567,
       highlightContent: `
         <p><strong>DOWNY HƯƠNG OẢI HƯƠNG NƯỚC PHÁP – THƠM SANG TRỌNG ĐẾN 30 NGÀY</strong></p>

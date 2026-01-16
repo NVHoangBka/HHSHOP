@@ -5,7 +5,7 @@ class Product {
 
     this.name = this.normalizeTranslatable(data.name, "Tên sản phẩm");
 
-    this.slug = data.slug || "";
+    this.slug = this.normalizeTranslatable(data.slug);
 
     // Giá cơ bản (nếu không có variants)
     this.price = data.price || 0;

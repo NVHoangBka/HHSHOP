@@ -3,7 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { debounce } from "lodash";
 import { t } from "i18next";
 
-const Search = ({ isOpen, onClose, productController, titleController }) => {
+const Search = ({
+  isOpen,
+  onClose,
+  productController,
+  categoryController,
+  getTranslated,
+}) => {
   const navigate = useNavigate();
   const searchRef = useRef(null);
   const inputRef = useRef(null);
@@ -13,24 +19,29 @@ const Search = ({ isOpen, onClose, productController, titleController }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [subTitles, setSubTitles] = useState([]);
-  const [titles, setTitles] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
+  const [categories, setCategories] = useState([]);
 
-  const fetchSubtitle = async () => {
-    const arrSubTitle = await titleController.getAllSubTitles();
-    setSubTitles(arrSubTitle);
+  const fetchCategory = async () => {
+    const result = await categoryController.getCategories();
+    if (result.success) {
+      const categories = result.categories;
+      setCategories(categories);
+    }
   };
 
-  const fetchTitle = async () => {
-    const arrTitles = await titleController.getAllTitles();
-    setTitles(arrTitles);
+  const fetchSubCategory = async () => {
+    const result = await categoryController.getSubCategories();
+    if (result.success) {
+      const subCategories = result.subCategories;
+      setSubCategories(subCategories);
+    }
   };
 
   useEffect(() => {
-    fetchSubtitle();
-
-    fetchTitle();
-  }, [titleController]);
+    fetchSubCategory();
+    fetchCategory();
+  }, [categoryController]);
   // Debounce search
   const debouncedSearch = useCallback(
     debounce(async (searchQuery, category) => {
@@ -77,7 +88,7 @@ const Search = ({ isOpen, onClose, productController, titleController }) => {
     console.log(product);
     setShowSuggestions(false);
     onClose();
-    navigate(`/products/slug/${product.slug}`); // hoặc /search?q=...
+    navigate(`/products/slug/${getTranslated(product.slug)}`);
   };
 
   // Focus input khi mở
@@ -112,9 +123,11 @@ const Search = ({ isOpen, onClose, productController, titleController }) => {
                   if (query) debouncedSearch(query, categoryRef.current.value);
                 }}
               >
-                <option value="all">{t("search.all-categories")}</option>
-                {titles?.map((title) => (
-                  <option value={title.value}>{title.name}</option>
+                <option value="all">{t("search.allCategories")}</option>
+                {categories?.map((catgory) => (
+                  <option value={getTranslated(catgory.value)}>
+                    {getTranslated(catgory.name)}
+                  </option>
                 ))}
               </select>
             </div>
@@ -164,7 +177,7 @@ const Search = ({ isOpen, onClose, productController, titleController }) => {
                       >
                         <img
                           src={image || "/placeholder.jpg"}
-                          alt={name}
+                          alt={getTranslated(name)}
                           className="me-xl-3"
                           style={{
                             width: 50,
@@ -175,7 +188,7 @@ const Search = ({ isOpen, onClose, productController, titleController }) => {
                         />
                         <div className="flex-grow-1">
                           <div className="fw-semibold text-dark text-hover">
-                            {name}
+                            {getTranslated(name)}
                           </div>
                           <div className="text-success small">
                             {price.toLocaleString("vi-VN")}₫
@@ -199,20 +212,18 @@ const Search = ({ isOpen, onClose, productController, titleController }) => {
               {t("search.popular-keywords")}
             </p>
             <div className="d-flex flex-wrap gap-2">
-              {subTitles
-                .filter((sub) => sub.regular === true)
-                .map((sub, index) => (
-                  <Link
-                    key={index}
-                    to={`/products/search?q=${encodeURIComponent(
-                      sub.name
-                    )}&category=all`}
-                    onClick={onClose}
-                    className="badge bg-light text-dark border px-xl-3 py-xl-2 text-decoration-none hover-bg-success hover-text-white transition btn"
-                  >
-                    {sub.name}
-                  </Link>
-                ))}
+              {subCategories.slice(0, 3).map((sub, index) => (
+                <Link
+                  key={index}
+                  to={`/products/search?q=${encodeURIComponent(
+                    getTranslated(sub.slug)
+                  )}&category=all`}
+                  onClick={onClose}
+                  className="badge bg-light text-dark border px-xl-3 py-xl-2 text-decoration-none hover-bg-success hover-text-white transition btn"
+                >
+                  {getTranslated(sub.name)}
+                </Link>
+              ))}
             </div>
           </div>
         </div>

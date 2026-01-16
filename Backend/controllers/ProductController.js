@@ -1,6 +1,7 @@
 // backend/controllers/ProductController.js
 const mongoose = require("mongoose");
 const Product = require("../models/Product");
+const slugify = require("slugify");
 
 class ProductController {
   // LẤY TẤT CẢ (có phân trang, lọc, tìm kiếm)
@@ -179,7 +180,26 @@ class ProductController {
     try {
       await Product.deleteMany({});
       const { products } = require("../data/products.js");
-      await Product.insertMany(products);
+      const seededProducts = [];
+      for (const prodData of products) {
+        // Tự động sinh slug đa ngôn ngữ nếu chưa có
+        const languages = ["vi", "en", "cz"];
+        prodData.slug = prodData.slug || {};
+
+        for (const lang of languages) {
+          const nameLang = prodData.name[lang] || prodData.name.vi;
+          if (nameLang && !prodData.slug[lang]) {
+            prodData.slug[lang] = slugify(nameLang, {
+              lower: true,
+              strict: true,
+              locale: lang === "vi" ? "vi" : "en",
+            });
+          }
+        }
+
+        const product = await Product.create(prodData);
+        seededProducts.push(product);
+      }
       res.json({ success: true, message: "Đã seed dữ liệu!" });
     } catch (error) {
       res.status(500).json({ success: false, message: error.message });

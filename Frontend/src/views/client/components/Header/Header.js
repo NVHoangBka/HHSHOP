@@ -15,10 +15,12 @@ const Header = ({
   authController,
   productController,
   titleController,
+  categoryController,
 }) => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const [currentUser, setCurrentUser] = useState(null);
+  const currentLanguage = localStorage.getItem("i18n_lang") || "en";
 
   // State cho 3 popup
   const [showCart, setShowCart] = useState(false);
@@ -29,6 +31,10 @@ const Header = ({
     (sum, item) => sum + (item.quantity || 0),
     0
   );
+
+  const getTranslated = (obj, fallback = "") => {
+    return obj?.[currentLanguage] || obj?.vi || obj?.en || obj?.cz || fallback;
+  };
 
   // Lấy user khi mount hoặc authController thay đổi
   useEffect(() => {
@@ -280,6 +286,8 @@ const Header = ({
             user={currentUser}
             titleController={titleController}
             useTranslation={useTranslation}
+            categoryController={categoryController}
+            getTranslated={getTranslated}
           />
         </Offcanvas.Body>
       </Offcanvas>
@@ -297,6 +305,8 @@ const Header = ({
             onClose={() => setShowSearch(false)}
             productController={productController}
             titleController={titleController}
+            categoryController={categoryController}
+            getTranslated={getTranslated}
           />
         </Offcanvas.Body>
       </Offcanvas>

@@ -4,9 +4,13 @@ import { useNavigate } from "react-router-dom";
 
 const ProductItem = ({ product, addToCart }) => {
   const navigate = useNavigate();
-  const [t, i18n] = useTranslation();
+  const [t] = useTranslation();
 
   const currentLanguage = localStorage.getItem("i18n_lang") || "en";
+
+  const getTranslated = (obj, fallback = "") => {
+    return obj?.[currentLanguage] || obj?.vi || obj?.en || obj?.cz || fallback;
+  };
 
   if (!product) {
     return (
@@ -16,9 +20,9 @@ const ProductItem = ({ product, addToCart }) => {
     );
   }
 
-  const { image, price, discountPrice, rating = 0, slug } = product;
+  const { name, image, price, discountPrice, rating = 0, slug } = product;
 
-  const name = product.getName(currentLanguage);
+  console.log(product);
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -45,7 +49,7 @@ const ProductItem = ({ product, addToCart }) => {
 
   const handleShowProductDetail = (e) => {
     e.stopPropagation();
-    navigate(`/products/slug/${slug}`);
+    navigate(`/products/slug/${getTranslated(slug)}`);
   };
 
   const handleAddToCart = (e) => {
@@ -61,11 +65,11 @@ const ProductItem = ({ product, addToCart }) => {
       <img
         src={image}
         className="img-fluid rounded-start w-100"
-        alt={name}
+        alt={getTranslated(name)}
         style={{ height: "158px" }}
       />
       <p className="mt-xl-3 line-clamp-2 fs-body fw-semibold text-hover fixed-two-lines">
-        {name}
+        {getTranslated(name)}
       </p>
       <div className="more d-flex justify-content-between mx-xl-1">
         <div className="price">
@@ -81,7 +85,7 @@ const ProductItem = ({ product, addToCart }) => {
         <button
           className="text-danger border px-xl-2 py-xl-1 rounded-circle bg-warning-subtle hover"
           onClick={handleAddToCart}
-          aria-label={`Add ${name} to cart`}
+          aria-label={`Add ${getTranslated(name)} to cart`}
         >
           <i className="bi bi-cart4 fs-4"></i>
         </button>

@@ -2,18 +2,29 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { t } from "i18next";
 
-const Menu = ({ menuRef, onClose, titleController }) => {
-  const [titles, setTitles] = useState([]);
+const Menu = ({
+  menuRef,
+  onClose,
+  titleController,
+  categoryController,
+  getTranslated,
+}) => {
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function loadTitles() {
-      const data = await titleController.getAllTitles();
-      setTitles(data);
-      setLoading(false);
+  const fetchCategories = async () => {
+    const result = await categoryController.getCategories();
+    if (result.success) {
+      const categories = result.categories;
+      setCategories(categories);
     }
-    loadTitles();
-  }, [titleController]);
+    setLoading(false);
+    return result;
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, [categoryController]);
 
   const handleItemClick = () => {
     onClose(false);
@@ -32,34 +43,38 @@ const Menu = ({ menuRef, onClose, titleController }) => {
                 onClick={handleItemClick}
                 className="menu-hover"
               >
-                <span className="fw-medium">{t("product.product_all")}</span>
+                <span className="fw-medium">{t("menu.allProducts")}</span>
               </Link>
             </li>
-            {Array.isArray(titles) && titles.length > 0 ? (
-              titles.map((title, index) => (
+            {categories.length > 0 ? (
+              categories.map((category, index) => (
                 <li key={index} className="dropdown-submenu">
                   <Link
-                    to={`/products/${title.path}`}
+                    to={`/products/${getTranslated(category.slug)}`}
                     className="d-flex justify-content-between menu-hover"
                     aria-haspopup="true"
                     aria-expanded={
-                      title.subTitles?.length > 0 ? "false" : undefined
+                      category.children?.length > 0 ? "false" : undefined
                     }
                   >
-                    <span className="fw-medium">{title.name}</span>
-                    {title.subTitles?.length > 0 && (
+                    <span className="fw-medium">
+                      {getTranslated(category.name)}
+                    </span>
+                    {category.children?.length > 0 && (
                       <i className="bi bi-caret-right-fill d-flex align-items-center"></i>
                     )}
                   </Link>
-                  {title.subTitles?.length > 0 && (
+                  {category.children?.length > 0 && (
                     <ul className="menu-list">
-                      {title.subTitles.map((subTitle, index) => (
+                      {category.children.map((subCategory, index) => (
                         <li key={index} className="menu-hover">
                           <Link
-                            to={`/products/${title.path}/${subTitle.value}`}
+                            to={`/products/${getTranslated(
+                              category.slug
+                            )}/${getTranslated(subCategory.slug)}`}
                             onClick={handleItemClick}
                           >
-                            {subTitle.name}
+                            {getTranslated(subCategory.name)}
                           </Link>
                         </li>
                       ))}
@@ -68,7 +83,7 @@ const Menu = ({ menuRef, onClose, titleController }) => {
                 </li>
               ))
             ) : (
-              <li>Không có danh mục để hiển thị.</li>
+              <li>{t("menu.noCategory")}</li>
             )}
           </ul>
           <ul className="menu-list">
@@ -78,34 +93,34 @@ const Menu = ({ menuRef, onClose, titleController }) => {
                 onClick={handleItemClick}
                 className="menu-hover"
               >
-                Giới thiệu
+                {t("menu.introduce")}
               </Link>
             </li>
             <li className="dropdown-submenu">
               <Link
                 to="#"
-                title="Thực phẩm tươi sống"
+                title={t("menu.flashSale")}
                 className="d-flex justify-content-between menu-hover"
               >
-                <span>Khuyến mãi</span>
+                <span>{t("menu.flashSale")}</span>
                 <i className="bi bi-caret-right-fill d-flex align-items-center"></i>
               </Link>
               <ul className="menu-list">
                 <li className="menu-hover">
                   <Link to="#" onClick={handleItemClick}>
-                    Flash Sale 1 khung giờ
+                    {t("menu.flashSaleSingleSlot")}
                   </Link>
                 </li>
                 <li className="menu-hover">
                   <Link to="#" onClick={handleItemClick}>
-                    Flash Sale nhiều khung giờ
+                    {t("menu.flashSaleMultipleSlots")}
                   </Link>
                 </li>
               </ul>
             </li>
             <li>
               <Link to="/news" onClick={handleItemClick} className="menu-hover">
-                Tin tức
+                {t("menu.news")}
               </Link>
             </li>
             <li>
@@ -114,12 +129,12 @@ const Menu = ({ menuRef, onClose, titleController }) => {
                 onClick={handleItemClick}
                 className="menu-hover"
               >
-                Kiểm tra đơn hàng
+                {t("menu.checkOrder")}
               </Link>
             </li>
             <li>
               <Link to="#" onClick={handleItemClick} className="menu-hover">
-                Liên hệ
+                {t("menu.contact")}
               </Link>
             </li>
           </ul>
@@ -127,7 +142,7 @@ const Menu = ({ menuRef, onClose, titleController }) => {
         <div className="menu-footer row mx-xl-0 border-top pt-xl-2">
           <div className="col-xl-6 py-xl-4 menu-hover">
             <i className="bi bi-shop border p-xl-2"></i>
-            <span className="ps-2">Hệ thống cửa hàng</span>
+            <span className="ps-2">{t("menu.storeSystem")}</span>
           </div>
           <div className="col-xl-6 py-xl-4 menu-hover">
             <i className="bi bi-telephone-outbound border p-xl-2"></i>
