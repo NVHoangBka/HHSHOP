@@ -89,7 +89,7 @@ class ProductController {
         });
       }
 
-      const filter = { category: categoryId, isActive: true };
+      const filter = { categories: categoryId, isActive: true };
 
       const [products, total] = await Promise.all([
         Product.find(filter)

@@ -145,13 +145,7 @@
     },
     "home": {
         "flash-sale-title": "Flash Sale - Grab the Deals",
-        "no-flash-sale": "No flash sale products available.",
-        "tabs": {
-            "family-care": "Family Care",
-            "trending": "Trending Products",
-            "fresh-food": "Fresh Food",
-            "stationery": "Stationery"
-        }
+        "no-flash-sale": "No flash sale products available."
     },
     "product": {
         "breadcrumb": {

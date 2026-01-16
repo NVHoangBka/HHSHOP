@@ -144,13 +144,7 @@
     },
     "home": {
         "flash-sale-title": "Časově omezené nabídky. Senzace ceny",
-        "no-flash-sale": "Žádné produkty v bleskovém výprodeji.",
-        "tabs": {
-            "family-care": "Péče o rodinu",
-            "trending": "Trendové produkty",
-            "fresh-food": "Čerstvé potraviny",
-            "stationery": "Papírnictví"
-        }
+        "no-flash-sale": "Žádné produkty v bleskovém výprodeji."
     },
     "product": {
         "breadcrumb": {

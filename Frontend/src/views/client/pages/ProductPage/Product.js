@@ -897,7 +897,8 @@ const Product = ({ path, addToCart, productController, titleController }) => {
                                 </label>
                               </li>
                               <li className="filter-item-toggle link text-secondary d-flex align-items-center ms-4 hover text-danger fw-bold">
-                                Xem thêm <i className="bi bi-chevron-down"></i>
+                                {t("product.features.showMore")}{" "}
+                                <i className="bi bi-chevron-down"></i>
                               </li>
                             </ul>
                           </div>
@@ -1036,7 +1037,8 @@ const Product = ({ path, addToCart, productController, titleController }) => {
                               </li>
 
                               <li className="filter-item-toggle link text-secondary d-flex align-items-center ms-4 hover text-danger fw-bold">
-                                Xem thêm <i className="bi bi-chevron-down"></i>
+                                {t("product.features.showMore")}
+                                <i className="bi bi-chevron-down"></i>
                               </li>
                             </ul>
                           </div>

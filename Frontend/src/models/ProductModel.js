@@ -28,8 +28,8 @@ class Product {
     this.highlightSections = data.highlightSections || [];
 
     // Phân loại
-    this.category = data.category || [];
-    this.subCategory = data.subCategory || [];
+    this.categories = data.categories || [];
+    this.subCategories = data.subCategories || [];
 
     this.brands = data.brands || [];
     this.colors = data.colors || [];

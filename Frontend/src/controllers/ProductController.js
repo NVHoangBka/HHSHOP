@@ -5,44 +5,58 @@ class ProductController {
     this.productService = new ProductService();
   }
 
-  getAllProducts() {
-    return this.productService.getAllProducts();
+  async getAllProducts() {
+    const result = await this.productService.getAllProducts();
+    return result;
   }
 
-  getProductsByTitle(titlePath) {
-    return this.productService.getProductsByTitle(titlePath);
+  async getProductsByTitle(titlePath) {
+    const result = await this.productService.getProductsByTitle(titlePath);
+    return result;
   }
 
-  getProductsBySubTitle(subTitlePath) {
-    return this.productService.getProductsBySubTitle(subTitlePath);
+  async getProductsBySubTitle(subTitlePath) {
+    const result = await this.productService.getProductsBySubTitle(
+      subTitlePath
+    );
+    return result;
   }
 
-  getProductsByTag(tag) {
-    return this.productService.getProductsByTag(tag);
+  async getProductsByTag(tag) {
+    const result = await this.productService.getProductsByTag(tag);
+    return result;
   }
 
-  getProductsByType(type) {
-    return this.productService.getProductsByType(type);
+  async getProductsByType(type) {
+    const result = await this.productService.getProductsByType(type);
+    return result;
   }
 
-  getProductById(id) {
-    return this.productService.getProductById(id);
+  async getProductById(id) {
+    const result = await this.productService.getProductById(id);
+    return result;
   }
 
-  getProductsByCategory(categoryId) {
-    return this.productService.getProductsByCategory(categoryId);
+  async getProductsByCategory(categoryId) {
+    const result = await this.productService.getProductsByCategory(categoryId);
+    return result;
   }
 
-  getProductsBySubCategory(subCategoryId) {
-    return this.productService.getProductsBySubCategory(subCategoryId);
+  async getProductsBySubCategory(subCategoryId) {
+    const result = await this.productService.getProductsBySubCategory(
+      subCategoryId
+    );
+    return result;
   }
 
-  search(query, category = "all") {
-    return this.productService.search(query, category);
+  async search(query, category = "all") {
+    const result = await this.productService.search(query, category);
+    return result;
   }
 
-  getProductBySlug(slug) {
-    return this.productService.getProductBySlug(slug);
+  async getProductBySlug(slug) {
+    const result = await this.productService.getProductBySlug(slug);
+    return result;
   }
 }
 

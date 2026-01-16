@@ -145,13 +145,7 @@
     },
     "home": {
         "flash-sale-title": "Chớp thời cơ. Giá như mơ",
-        "no-flash-sale": "Không có sản phẩm flash sale.",
-        "tabs": {
-            "family-care": "Chăm sóc gia đình",
-            "trending": "Sản phẩm được quan tâm",
-            "fresh-food": "Thực phẩm tươi sống",
-            "stationery": "Văn phòng phẩm"
-        }
+        "no-flash-sale": "Không có sản phẩm flash sale."
     },
     "product": {
         "breadcrumb": {

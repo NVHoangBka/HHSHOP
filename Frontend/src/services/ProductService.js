@@ -41,7 +41,7 @@ class ProductService {
 
   async getProductsByCategory(categoryId) {
     const res = await api.get(`/products/category/${categoryId}`);
-    return this.productModel.mapProduct(res.data.products);
+    return this.productModel.mapProducts(res.data.products);
   }
 
   async getProductsBySubCategory(subCategoryId) {
