@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import tagController from "../../../controllers/TagController";
 import { useTranslation } from "react-i18next";
+import { formatPrice } from "../../../utils/format";
 
 const AdminProducts = ({ adminController }) => {
   const [t] = useTranslation();
@@ -51,6 +52,7 @@ const AdminProducts = ({ adminController }) => {
     highlightSections: [
       { title: "", content: "", icon: "bi-star-fill", order: 0 },
     ],
+    variants: [],
   });
 
   const pagination = {
@@ -162,17 +164,7 @@ const AdminProducts = ({ adminController }) => {
         ? product.gallery.join("\n")
         : product.gallery || "";
 
-      // 1. Lấy categoryId từ sản phẩm
-      // const catId = product.category?._id || product.category || "";
-
-      // // 2. Tìm danh sách subcategory tương ứng
-      // let subs = [];
-      // if (catId) {
-      //   const selectedCat = categories.find((c) => c._id === catId);
-      //   subs = selectedCat?.children || [];
-      // }
-
-      // 3. Chuẩn hóa dữ liệu đa ngôn ngữ
+      // Chuẩn hóa dữ liệu đa ngôn ngữ
       const normalizeLang = (obj) => {
         if (typeof obj === "string") return { vi: obj, en: "", cz: "" };
         if (!obj || typeof obj !== "object") return { vi: "", en: "", cz: "" };
@@ -182,6 +174,17 @@ const AdminProducts = ({ adminController }) => {
           cz: obj.cz || "",
         };
       };
+
+      //Chuẩn hóa variants nếu có
+      const normalizedVariants =
+        product.variants?.map((v) => ({
+          value: v.value || "",
+          price: v.price || "",
+          discountPrice: v.discountPrice || "",
+          stock: v.stock || 0,
+          image: v.image || "",
+          sku: v.sku || "",
+        })) || [];
 
       let selectedCategories = [];
       if (product.categories) {
@@ -195,7 +198,7 @@ const AdminProducts = ({ adminController }) => {
         );
       }
 
-      // 4. Chuẩn hóa subCategories thành mảng ObjectId string
+      // Chuẩn hóa subCategories thành mảng ObjectId string
       let selectedSubIds = [];
       if (product.subCategories) {
         selectedSubIds = Array.isArray(product.subCategories)
@@ -231,6 +234,7 @@ const AdminProducts = ({ adminController }) => {
         highlightSections: product.highlightSections?.length
           ? product.highlightSections
           : [{ title: "", content: "", icon: "bi-star-fill", order: 0 }],
+        variants: normalizedVariants,
       });
 
       loadAllSubCategories(selectedCategories);
@@ -258,6 +262,7 @@ const AdminProducts = ({ adminController }) => {
         highlightSections: [
           { title: "", content: "", icon: "bi-star-fill", order: 0 },
         ],
+        variants: [],
       });
       setSubCategories([]);
     }
@@ -316,6 +321,13 @@ const AdminProducts = ({ adminController }) => {
       colors: formData.colors,
       inStock: Boolean(formData.inStock),
       flashSale: Boolean(formData.flashSale),
+      variants:
+        formData.variants?.map((v) => ({
+          ...v,
+          price: Number(v.price),
+          discountPrice: v.discountPrice ? Number(v.discountPrice) : undefined,
+          stock: Number(v.stock),
+        })) || [],
     };
 
     try {
@@ -398,6 +410,39 @@ const AdminProducts = ({ adminController }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleUploadVariantImage = async (e, index) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setLoading(true);
+    try {
+      const url = await adminController.uploadSingle(file);
+      updateVariant(index, "image", url);
+      showToast(t("admin.products.toast.uploadSuccess"), "success");
+    } catch (err) {
+      showToast(t("admin.products.toast.uploadFailed"), "danger");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateVariant = (index, field, value) => {
+    setFormData((prev) => {
+      const newVariants = [...(prev.variants || [])];
+      newVariants[index] = {
+        ...newVariants[index],
+        [field]: value,
+      };
+      return { ...prev, variants: newVariants };
+    });
+  };
+
+  const removeVariant = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      variants: prev.variants.filter((_, i) => i !== index),
+    }));
   };
 
   // === LỌC KHI BẤM ENTER ===
@@ -606,17 +651,42 @@ const AdminProducts = ({ adminController }) => {
                           </span>
                         </td>
                         <td>
-                          <div>
-                            <del className="text-muted small">
-                              {p.price.toLocaleString()}₫
-                            </del>
-                            <br />
-                            <span className="text-danger fw-bold fs-5">
-                              {(p.discountPrice || p.price).toLocaleString()}₫
-                            </span>
-                          </div>
+                          {p.variants && p.variants.length > 0 ? (
+                            <div>
+                              <span className="text-danger fw-bold fs-5">
+                                {formatPrice(p.finalPrice)}₫
+                              </span>
+                              {p.variants.length > 1 && (
+                                <small className="d-block text-muted">
+                                  →{" "}
+                                  {formatPrice(
+                                    Math.max(
+                                      ...p.variants.map(
+                                        (v) => v.discountPrice || v.price
+                                      )
+                                    )
+                                  )}
+                                  ₫ ({p.variants.length} loại)
+                                </small>
+                              )}
+                              <span className="badge bg-info text-dark ms-2">
+                                {p.variants.length} phân loại
+                              </span>
+                            </div>
+                          ) : (
+                            <div>
+                              <del className="text-muted small">
+                                {formatPrice(p.price)}
+                              </del>
+                              <br />
+                              <span className="text-danger fw-bold fs-5">
+                                {formatPrice(p.discountPrice) ||
+                                  formatPrice(p.price)}
+                              </span>
+                            </div>
+                          )}
                         </td>
-                        <td>
+                        {/* <td>
                           <span
                             className={`badge ${
                               p.stock > 10
@@ -628,6 +698,25 @@ const AdminProducts = ({ adminController }) => {
                           >
                             {p.stock || 0} {t("admin.products.table.unit")}
                           </span>
+                        </td> */}
+                        <td>
+                          <span
+                            className={`badge ${
+                              (p.totalStock || p.stock || 0) > 10
+                                ? "bg-success"
+                                : (p.totalStock || p.stock || 0) > 0
+                                ? "bg-warning"
+                                : "bg-danger"
+                            } fs-6`}
+                          >
+                            {p.totalStock || p.stock || 0}{" "}
+                            {t("admin.products.table.unit")}
+                          </span>
+                          {p.variants?.length > 0 && (
+                            <small className="d-block text-muted mt-1">
+                              Tổng từ {p.variants.length} loại
+                            </small>
+                          )}
                         </td>
                         <td className="text-center">
                           <button
@@ -720,499 +809,696 @@ const AdminProducts = ({ adminController }) => {
                     className="modal-body px-5"
                     style={{ maxHeight: "70vh", overflowY: "auto" }}
                   >
-                    <div className="row g-3">
-                      {/* TÊN + GIÁ */}
-                      <div className="col-12">
-                        <div className="d-flex">
-                          <div className="mb-4 col-xl-10">
-                            <label className="form-label fw-bold text-danger">
-                              {t("admin.products.form.name")} *
+                    <ul className="nav nav-tabs mb-4" role="tablist">
+                      <li className="nav-item" role="presentation">
+                        <button
+                          className="nav-link btn active"
+                          id="basic-tab"
+                          data-bs-toggle="tab"
+                          data-bs-target="#basic"
+                          type="button"
+                          role="tab"
+                          aria-controls="basic"
+                          aria-selected="true"
+                        >
+                          Thông tin cơ bản
+                        </button>
+                      </li>
+                      <li className="nav-item" role="presentation">
+                        <button
+                          className="nav-link"
+                          id="variants-tab"
+                          data-bs-toggle="tab"
+                          data-bs-target="#variants"
+                          type="button"
+                          role="tab"
+                          aria-controls="variants"
+                          aria-selected="false"
+                        >
+                          Phân loại sản phẩm ({formData.variants?.length || 0})
+                        </button>
+                      </li>
+                    </ul>
+                    <div
+                      className="tab-content"
+                      style={{ backgroundColor: "#ffffff" }}
+                    >
+                      <div
+                        className="tab-pane fade show active"
+                        id="basic"
+                        role="tabpanel"
+                        aria-labelledby="basic-tab"
+                      >
+                        <div className="row g-3">
+                          {/* TÊN + GIÁ */}
+                          <div className="col-12">
+                            <div className="d-flex">
+                              <div className="mb-4 col-xl-10">
+                                <label className="form-label fw-bold text-danger">
+                                  {t("admin.products.form.name")} *
+                                </label>
+                                <input
+                                  type="text"
+                                  className="form-control form-control-lg"
+                                  value={formData.name?.vi || ""}
+                                  onChange={(e) =>
+                                    setFormData({
+                                      ...formData,
+                                      name: {
+                                        ...formData.name,
+                                        vi: e.target.value,
+                                      },
+                                    })
+                                  }
+                                  required
+                                />
+                              </div>
+                              <button
+                                type="button"
+                                className="btn btn-primary mb-4 ms-3 align-self-end"
+                                onClick={autoTranslateAll}
+                              >
+                                {t("admin.products.form.autoTranslate")}
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Giá */}
+                          <div className="col-md-4">
+                            <label className="form-label fw-bold">
+                              {t("admin.products.form.price")} (₫) *
                             </label>
                             <input
-                              type="text"
-                              className="form-control form-control-lg"
-                              value={formData.name?.vi || ""}
+                              type="number"
+                              className="form-control"
+                              value={formData.price}
                               onChange={(e) =>
                                 setFormData({
                                   ...formData,
-                                  name: {
-                                    ...formData.name,
-                                    vi: e.target.value,
-                                  },
+                                  price: e.target.value,
                                 })
                               }
                               required
                             />
                           </div>
-                          <button
-                            type="button"
-                            className="btn btn-primary mb-4 ms-3 align-self-end"
-                            onClick={autoTranslateAll}
-                          >
-                            {t("admin.products.form.autoTranslate")}
-                          </button>
-                        </div>
-                      </div>
 
-                      {/* Giá */}
-                      <div className="col-md-4">
-                        <label className="form-label fw-bold">
-                          {t("admin.products.form.price")} (₫) *
-                        </label>
-                        <input
-                          type="number"
-                          className="form-control"
-                          value={formData.price}
-                          onChange={(e) =>
-                            setFormData({ ...formData, price: e.target.value })
-                          }
-                          required
-                        />
-                      </div>
-
-                      {/**Giá khuyến mãi */}
-                      <div className="col-md-4">
-                        <label className="form-label fw-bold">
-                          {t("admin.products.form.priceSale")} (₫)
-                        </label>
-                        <input
-                          type="number"
-                          className="form-control"
-                          value={formData.discountPrice}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              discountPrice: e.target.value,
-                            })
-                          }
-                          placeholder={t("admin.products.form.priceSaleHint")}
-                        />
-                      </div>
-                      <div className="col-4">
-                        <label className="form-label fw-bold">
-                          {t("admin.products.form.brand")}
-                        </label>
-                        <select
-                          className="form-select"
-                          value={formData.brand}
-                          onChange={(e) =>
-                            setFormData({ ...formData, brand: e.target.value })
-                          }
-                        >
-                          <option value="">
-                            {t("admin.products.form.selectBrand")}
-                          </option>
-                          {popularBrands.map((b) => (
-                            <option key={b} value={b}>
-                              {b}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      {/* ẢNH CHÍNH */}
-                      <div className="col-12 mb-4">
-                        <label className="form-label fw-bold text-danger">
-                          {t("admin.products.form.image")} *
-                        </label>
-
-                        {/* Input dán link */}
-                        <div className="input-group mb-2">
-                          <input
-                            type="url"
-                            className="form-control"
-                            placeholder={t(
-                              "admin.products.form.imagePlaceholderLink"
-                            )}
-                            value={formData.image || ""}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                image: e.target.value,
-                              })
-                            }
-                          />
-                          <span className="input-group-text">
-                            {t("admin.products.form.or")}
-                          </span>
-                        </div>
-
-                        {/* Upload file */}
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="form-control"
-                          onChange={handleUploadSingle}
-                        />
-
-                        {/* Preview ảnh chính */}
-                        {formData.image && (
-                          <div className="mt-3 text-center">
-                            <img
-                              src={formData.image}
-                              alt="Preview"
-                              className="rounded shadow border"
-                              style={{ maxHeight: "320px", maxWidth: "100%" }}
-                              onError={(e) => {
-                                e.target.src = "/placeholder.jpg";
-                                e.target.alt = t(
-                                  "admin.products.form.imageLoadError"
-                                );
-                              }}
+                          {/**Giá khuyến mãi */}
+                          <div className="col-md-4">
+                            <label className="form-label fw-bold">
+                              {t("admin.products.form.priceSale")} (₫)
+                            </label>
+                            <input
+                              type="number"
+                              className="form-control"
+                              value={formData.discountPrice}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  discountPrice: e.target.value,
+                                })
+                              }
+                              placeholder={t(
+                                "admin.products.form.priceSaleHint"
+                              )}
                             />
-                            <div className="mt-2">
-                              <small className="text-muted">
-                                {t("admin.products.form.imagePreview")}:
-                              </small>
-                              <br />
-                              <code className="bg-light p-1 rounded">
-                                {formData.image}
-                              </code>
-                            </div>
-                            <button
-                              type="button"
-                              className="btn btn-sm btn-outline-danger mt-2"
-                              onClick={() =>
-                                setFormData({ ...formData, image: "" })
+                          </div>
+                          <div className="col-4">
+                            <label className="form-label fw-bold">
+                              {t("admin.products.form.brand")}
+                            </label>
+                            <select
+                              className="form-select"
+                              value={formData.brand}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  brand: e.target.value,
+                                })
                               }
                             >
-                              {t("admin.products.form.removeImage")}
-                            </button>
+                              <option value="">
+                                {t("admin.products.form.selectBrand")}
+                              </option>
+                              {popularBrands.map((b) => (
+                                <option key={b} value={b}>
+                                  {b}
+                                </option>
+                              ))}
+                            </select>
                           </div>
-                        )}
-                      </div>
 
-                      {/* GALLERY – CẢ DÁN NHIỀU LINK + UPLOAD NHIỀU ẢNH */}
-                      <div className="col-12">
-                        <label className="form-label fw-bold">
-                          Gallery (
-                          {formData.gallery
-                            ? formData.gallery.split("\n").filter(Boolean)
-                                .length
-                            : 0}{" "}
-                          {t("admin.products.form.countImage")})
-                        </label>
+                          {/* ẢNH CHÍNH */}
+                          <div className="col-12 mb-4">
+                            <label className="form-label fw-bold text-danger">
+                              {t("admin.products.form.image")} *
+                            </label>
 
-                        {/* Dán nhiều link (mỗi link 1 dòng) */}
-                        <textarea
-                          className="form-control mb-3"
-                          rows="4"
-                          placeholder={t(
-                            "admin.products.form.galleryPlaceholder"
-                          )}
-                          value={formData.gallery || ""}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              gallery: e.target.value,
-                            })
-                          }
-                        />
+                            {/* Input dán link */}
+                            <div className="input-group mb-2">
+                              <input
+                                type="url"
+                                className="form-control"
+                                placeholder={t(
+                                  "admin.products.form.imagePlaceholderLink"
+                                )}
+                                value={formData.image || ""}
+                                onChange={(e) =>
+                                  setFormData({
+                                    ...formData,
+                                    image: e.target.value,
+                                  })
+                                }
+                              />
+                              <span className="input-group-text">
+                                {t("admin.products.form.or")}
+                              </span>
+                            </div>
 
-                        {/* Upload nhiều ảnh */}
-                        <input
-                          type="file"
-                          accept="image/*"
-                          multiple
-                          className="form-control mb-3"
-                          onChange={handleUploadMultiple}
-                        />
+                            {/* Upload file */}
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="form-control"
+                              onChange={handleUploadSingle}
+                            />
 
-                        {/* Preview Gallery đẹp lung linh */}
-                        {formData.gallery && (
-                          <div className="row g-3">
-                            {formData.gallery
-                              .split("\n")
-                              .map((s) => s.trim())
-                              .filter(Boolean)
-                              .map((url, i) => (
-                                <div
-                                  key={i}
-                                  className="col-6 col-md-4 col-lg-3 position-relative"
+                            {/* Preview ảnh chính */}
+                            {formData.image && (
+                              <div className="mt-3 text-center">
+                                <img
+                                  src={formData.image}
+                                  alt="Preview"
+                                  className="rounded shadow border"
+                                  style={{
+                                    maxHeight: "320px",
+                                    maxWidth: "100%",
+                                  }}
+                                  onError={(e) => {
+                                    e.target.src = "/placeholder.jpg";
+                                    e.target.alt = t(
+                                      "admin.products.form.imageLoadError"
+                                    );
+                                  }}
+                                />
+                                <div className="mt-2">
+                                  <small className="text-muted">
+                                    {t("admin.products.form.imagePreview")}:
+                                  </small>
+                                  <br />
+                                  <code className="bg-light p-1 rounded">
+                                    {formData.image}
+                                  </code>
+                                </div>
+                                <button
+                                  type="button"
+                                  className="btn btn-sm btn-outline-danger mt-2"
+                                  onClick={() =>
+                                    setFormData({ ...formData, image: "" })
+                                  }
                                 >
-                                  <img
-                                    src={url}
-                                    alt={`Gallery ${i + 1}`}
-                                    className="img-fluid rounded shadow"
-                                    style={{
-                                      height: "180px",
-                                      objectFit: "cover",
-                                    }}
-                                    onError={(e) =>
-                                      (e.target.src = "/placeholder.jpg")
-                                    }
-                                  />
-                                  <button
-                                    type="button"
-                                    className="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle"
-                                    style={{
-                                      width: "30px",
-                                      height: "30px",
-                                      padding: 0,
-                                    }}
-                                    onClick={() => {
-                                      const lines = formData.gallery
-                                        .split("\n")
-                                        .map((s) => s.trim())
-                                        .filter(Boolean);
-                                      lines.splice(i, 1);
-                                      setFormData({
-                                        ...formData,
-                                        gallery: lines.join("\n"),
-                                      });
-                                    }}
+                                  {t("admin.products.form.removeImage")}
+                                </button>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* GALLERY – CẢ DÁN NHIỀU LINK + UPLOAD NHIỀU ẢNH */}
+                          <div className="col-12">
+                            <label className="form-label fw-bold">
+                              Gallery (
+                              {formData.gallery
+                                ? formData.gallery.split("\n").filter(Boolean)
+                                    .length
+                                : 0}{" "}
+                              {t("admin.products.form.countImage")})
+                            </label>
+
+                            {/* Dán nhiều link (mỗi link 1 dòng) */}
+                            <textarea
+                              className="form-control mb-3"
+                              rows="4"
+                              placeholder={t(
+                                "admin.products.form.galleryPlaceholder"
+                              )}
+                              value={formData.gallery || ""}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  gallery: e.target.value,
+                                })
+                              }
+                            />
+
+                            {/* Upload nhiều ảnh */}
+                            <input
+                              type="file"
+                              accept="image/*"
+                              multiple
+                              className="form-control mb-3"
+                              onChange={handleUploadMultiple}
+                            />
+
+                            {/* Preview Gallery đẹp lung linh */}
+                            {formData.gallery && (
+                              <div className="row g-3">
+                                {formData.gallery
+                                  .split("\n")
+                                  .map((s) => s.trim())
+                                  .filter(Boolean)
+                                  .map((url, i) => (
+                                    <div
+                                      key={i}
+                                      className="col-6 col-md-4 col-lg-3 position-relative"
+                                    >
+                                      <img
+                                        src={url}
+                                        alt={`Gallery ${i + 1}`}
+                                        className="img-fluid rounded shadow"
+                                        style={{
+                                          height: "180px",
+                                          objectFit: "cover",
+                                        }}
+                                        onError={(e) =>
+                                          (e.target.src = "/placeholder.jpg")
+                                        }
+                                      />
+                                      <button
+                                        type="button"
+                                        className="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle"
+                                        style={{
+                                          width: "30px",
+                                          height: "30px",
+                                          padding: 0,
+                                        }}
+                                        onClick={() => {
+                                          const lines = formData.gallery
+                                            .split("\n")
+                                            .map((s) => s.trim())
+                                            .filter(Boolean);
+                                          lines.splice(i, 1);
+                                          setFormData({
+                                            ...formData,
+                                            gallery: lines.join("\n"),
+                                          });
+                                        }}
+                                      >
+                                        ×
+                                      </button>
+                                    </div>
+                                  ))}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* MÔ TẢ */}
+                          <div className="col-12">
+                            <label className="form-label fw-bold">
+                              {t("admin.products.form.shortDescription")}
+                            </label>
+                            <textarea
+                              className="form-control"
+                              rows="2"
+                              value={formData.shortDescription}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  shortDescription: e.target.value,
+                                })
+                              }
+                            />
+                          </div>
+
+                          <div className="col-12 mb-2">
+                            <label className="form-label fw-bold">
+                              {t("admin.products.form.description")}
+                            </label>
+                            <textarea
+                              className="form-control"
+                              rows="5"
+                              value={formData.description}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  description: {
+                                    ...formData.description,
+                                    vi: e.target.value,
+                                  },
+                                })
+                              }
+                            />
+                          </div>
+
+                          {/* DANH MỤC CHÍNH */}
+                          <div className="col-md-6">
+                            <label className="form-label fw-bold">
+                              {t("admin.products.form.category")} *
+                            </label>
+                            {categories.length === 0 ? (
+                              <div className="text-muted small fst-italic">
+                                {t("admin.products.form.noCategory")}
+                              </div>
+                            ) : (
+                              <div
+                                className="border rounded p-3 bg-light"
+                                style={{
+                                  maxHeight: "220px",
+                                  overflowY: "auto",
+                                }}
+                              >
+                                {categories.map((cat) => (
+                                  <div
+                                    key={cat._id}
+                                    className="form-check mb-2"
                                   >
-                                    ×
-                                  </button>
+                                    <input
+                                      className="form-check-input"
+                                      type="checkbox"
+                                      id={`cat-${cat._id}`}
+                                      checked={formData.categories.includes(
+                                        cat._id
+                                      )}
+                                      onChange={() =>
+                                        handleCategoryChange(cat._id)
+                                      }
+                                    />
+                                    <label
+                                      className="form-check-label"
+                                      htmlFor={`cat-${cat._id}`}
+                                    >
+                                      {getTranslated(cat.name)}
+                                    </label>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* DANH MỤC CON - CHECKBOX */}
+                          <div className="col-md-6">
+                            <label className="form-label fw-bold">
+                              {t("admin.products.form.subCategory")}{" "}
+                              {formData.subCategories?.length > 0 &&
+                                `(${formData.subCategories.length} đã chọn)`}
+                            </label>
+                            {subCategories.length === 0 ? (
+                              <div className="text-muted small fst-italic">
+                                {formData.category
+                                  ? t("admin.products.form.noSubCategory")
+                                  : t(
+                                      "admin.products.form.selectCategoryFirst"
+                                    )}
+                              </div>
+                            ) : (
+                              <div
+                                className="border rounded p-3 bg-light"
+                                style={{
+                                  maxHeight: "220px",
+                                  overflowY: "auto",
+                                }}
+                              >
+                                {subCategories.map((sub) => (
+                                  <div
+                                    key={sub._id}
+                                    className="form-check mb-2"
+                                  >
+                                    <input
+                                      className="form-check-input"
+                                      type="checkbox"
+                                      id={`subcat-${sub._id}`}
+                                      checked={formData.subCategories.includes(
+                                        sub._id
+                                      )}
+                                      onChange={(e) => {
+                                        setFormData((prev) => ({
+                                          ...prev,
+                                          subCategories: e.target.checked
+                                            ? [...prev.subCategories, sub._id]
+                                            : prev.subCategories.filter(
+                                                (id) => id !== sub._id
+                                              ),
+                                        }));
+                                      }}
+                                    />
+                                    <label
+                                      className="form-check-label"
+                                      htmlFor={`subcat-${sub._id}`}
+                                    >
+                                      {getTranslated(sub.name)}
+                                    </label>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* MÀU SẮC */}
+                          <div className="col-12 mb-2">
+                            <label className="form-label fw-bold">
+                              {t("admin.products.form.color")}
+                            </label>
+                            <div className="d-flex flex-wrap px-3 py-2 rounded border align-items-center">
+                              {colors.length === 0 ? (
+                                <div className="text-muted small fst-italic">
+                                  Đang tải danh sách màu...
+                                </div>
+                              ) : (
+                                colors.map((color, index) => (
+                                  <div
+                                    key={index}
+                                    className="col-3 form-check mb-2"
+                                  >
+                                    <input
+                                      className="form-check-input"
+                                      type="checkbox"
+                                      id={`color-${color._id}`}
+                                      checked={formData.colors.includes(
+                                        color._id
+                                      )}
+                                      onChange={() => {
+                                        setFormData((prev) => ({
+                                          ...prev,
+                                          colors: toggleArray(
+                                            prev.colors,
+                                            color._id
+                                          ),
+                                        }));
+                                      }}
+                                    />
+                                    <label
+                                      className="form-check-label text-capitalize"
+                                      htmlFor={`color-${color._id}`}
+                                    >
+                                      {getTranslated(color.name)}
+                                    </label>
+                                  </div>
+                                ))
+                              )}
+                            </div>
+                          </div>
+
+                          {/* TAGS */}
+                          <div className="col-12 ">
+                            <label className="form-label fw-bold">
+                              {t("admin.products.form.tags")}
+                            </label>
+                            <div className="d-flex flex-wrap px-3 py-2 rounded border align-items-center">
+                              {tagsProduct.map((tag) => (
+                                <div
+                                  key={tag._id}
+                                  className="col-3 form-check "
+                                >
+                                  <input
+                                    className="form-check-input"
+                                    type="checkbox"
+                                    checked={formData.tags.includes(tag._id)}
+                                    onChange={(e) => {
+                                      if (e.target.checked) {
+                                        setFormData({
+                                          ...formData,
+                                          tags: [...formData.tags, tag._id],
+                                        });
+                                      } else {
+                                        setFormData({
+                                          ...formData,
+                                          tags: formData.tags.filter(
+                                            (t) => t !== tag._id
+                                          ),
+                                        });
+                                      }
+                                    }}
+                                  />
+                                  <span>{tag.name}</span>
                                 </div>
                               ))}
-                          </div>
-                        )}
-                      </div>
-
-                      {/* MÔ TẢ */}
-                      <div className="col-12">
-                        <label className="form-label fw-bold">
-                          {t("admin.products.form.shortDescription")}
-                        </label>
-                        <textarea
-                          className="form-control"
-                          rows="2"
-                          value={formData.shortDescription}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              shortDescription: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-
-                      <div className="col-12 mb-2">
-                        <label className="form-label fw-bold">
-                          {t("admin.products.form.description")}
-                        </label>
-                        <textarea
-                          className="form-control"
-                          rows="5"
-                          value={formData.description}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              description: {
-                                ...formData.description,
-                                vi: e.target.value,
-                              },
-                            })
-                          }
-                        />
-                      </div>
-
-                      {/* DANH MỤC CHÍNH */}
-                      <div className="col-md-6">
-                        <label className="form-label fw-bold">
-                          {t("admin.products.form.category")} *
-                        </label>
-                        {categories.length === 0 ? (
-                          <div className="text-muted small fst-italic">
-                            {t("admin.products.form.noCategory")}
-                          </div>
-                        ) : (
-                          <div
-                            className="border rounded p-3 bg-light"
-                            style={{ maxHeight: "220px", overflowY: "auto" }}
-                          >
-                            {categories.map((cat) => (
-                              <div key={cat._id} className="form-check mb-2">
-                                <input
-                                  className="form-check-input"
-                                  type="checkbox"
-                                  id={`cat-${cat._id}`}
-                                  checked={formData.categories.includes(
-                                    cat._id
-                                  )}
-                                  onChange={() => handleCategoryChange(cat._id)}
-                                />
-                                <label
-                                  className="form-check-label"
-                                  htmlFor={`cat-${cat._id}`}
-                                >
-                                  {getTranslated(cat.name)}
-                                </label>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-
-                      {/* DANH MỤC CON - CHECKBOX */}
-                      <div className="col-md-6">
-                        <label className="form-label fw-bold">
-                          {t("admin.products.form.subCategory")}{" "}
-                          {formData.subCategories?.length > 0 &&
-                            `(${formData.subCategories.length} đã chọn)`}
-                        </label>
-                        {subCategories.length === 0 ? (
-                          <div className="text-muted small fst-italic">
-                            {formData.category
-                              ? t("admin.products.form.noSubCategory")
-                              : t("admin.products.form.selectCategoryFirst")}
-                          </div>
-                        ) : (
-                          <div
-                            className="border rounded p-3 bg-light"
-                            style={{ maxHeight: "220px", overflowY: "auto" }}
-                          >
-                            {subCategories.map((sub) => (
-                              <div key={sub._id} className="form-check mb-2">
-                                <input
-                                  className="form-check-input"
-                                  type="checkbox"
-                                  id={`subcat-${sub._id}`}
-                                  checked={formData.subCategories.includes(
-                                    sub._id
-                                  )}
-                                  onChange={(e) => {
-                                    setFormData((prev) => ({
-                                      ...prev,
-                                      subCategories: e.target.checked
-                                        ? [...prev.subCategories, sub._id]
-                                        : prev.subCategories.filter(
-                                            (id) => id !== sub._id
-                                          ),
-                                    }));
-                                  }}
-                                />
-                                <label
-                                  className="form-check-label"
-                                  htmlFor={`subcat-${sub._id}`}
-                                >
-                                  {getTranslated(sub.name)}
-                                </label>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-
-                      {/* MÀU SẮC */}
-                      <div className="col-12 mb-2">
-                        <label className="form-label fw-bold">
-                          {t("admin.products.form.color")}
-                        </label>
-                        <div className="d-flex flex-wrap px-3 py-2 rounded border align-items-center">
-                          {colors.length === 0 ? (
-                            <div className="text-muted small fst-italic">
-                              Đang tải danh sách màu...
                             </div>
-                          ) : (
-                            colors.map((color, index) => (
-                              <div
-                                key={index}
-                                className="col-3 form-check mb-2"
-                              >
-                                <input
-                                  className="form-check-input"
-                                  type="checkbox"
-                                  id={`color-${color._id}`}
-                                  checked={formData.colors.includes(color._id)}
-                                  onChange={() => {
-                                    setFormData((prev) => ({
-                                      ...prev,
-                                      colors: toggleArray(
-                                        prev.colors,
-                                        color._id
-                                      ),
-                                    }));
-                                  }}
-                                />
-                                <label
-                                  className="form-check-label text-capitalize"
-                                  htmlFor={`color-${color._id}`}
-                                >
-                                  {getTranslated(color.name)}
-                                </label>
-                              </div>
-                            ))
-                          )}
-                        </div>
-                      </div>
+                          </div>
 
-                      {/* TAGS */}
-                      <div className="col-12 ">
-                        <label className="form-label fw-bold">
-                          {t("admin.products.form.tags")}
-                        </label>
-                        <div className="d-flex flex-wrap px-3 py-2 rounded border align-items-center">
-                          {tagsProduct.map((tag) => (
-                            <div key={tag._id} className="col-3 form-check ">
+                          {/* CÁC TRƯỜNG KHÁC */}
+                          <div className="col-md-6">
+                            <label className="form-label fw-bold">
+                              {t("admin.products.form.isStock")}
+                            </label>
+                            <select
+                              className="form-select"
+                              value={formData.inStock}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  inStock: e.target.value === "true",
+                                })
+                              }
+                            >
+                              <option value={true}>
+                                {t("admin.products.form.inStock")}
+                              </option>
+                              <option value={false}>
+                                {t("admin.products.form.outOfStock")}
+                              </option>
+                            </select>
+                          </div>
+
+                          <div className="col-12">
+                            <div className="form-check form-switch">
                               <input
                                 className="form-check-input"
                                 type="checkbox"
-                                checked={formData.tags.includes(tag._id)}
-                                onChange={(e) => {
-                                  if (e.target.checked) {
-                                    setFormData({
-                                      ...formData,
-                                      tags: [...formData.tags, tag._id],
-                                    });
-                                  } else {
-                                    setFormData({
-                                      ...formData,
-                                      tags: formData.tags.filter(
-                                        (t) => t !== tag._id
-                                      ),
-                                    });
-                                  }
-                                }}
+                                checked={formData.flashSale}
+                                onChange={(e) =>
+                                  setFormData({
+                                    ...formData,
+                                    flashSale: e.target.checked,
+                                  })
+                                }
                               />
-                              <span>{tag.name}</span>
+                              <label className="form-check-label fw-bold text-danger">
+                                {t("admin.products.form.flashSale")}
+                              </label>
                             </div>
-                          ))}
+                          </div>
                         </div>
                       </div>
-
-                      {/* CÁC TRƯỜNG KHÁC */}
-                      <div className="col-md-6">
-                        <label className="form-label fw-bold">
-                          {t("admin.products.form.isStock")}
-                        </label>
-                        <select
-                          className="form-select"
-                          value={formData.inStock}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              inStock: e.target.value === "true",
-                            })
-                          }
-                        >
-                          <option value={true}>
-                            {t("admin.products.form.inStock")}
-                          </option>
-                          <option value={false}>
-                            {t("admin.products.form.outOfStock")}
-                          </option>
-                        </select>
-                      </div>
-
-                      <div className="col-12">
-                        <div className="form-check form-switch">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            checked={formData.flashSale}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                flashSale: e.target.checked,
-                              })
-                            }
-                          />
-                          <label className="form-check-label fw-bold text-danger">
-                            {t("admin.products.form.flashSale")}
-                          </label>
+                      {/* TAB VARIANT */}
+                      <div
+                        className="tab-pane fade"
+                        id="variants"
+                        role="tabpanel"
+                        aria-labelledby="variants-tab"
+                      >
+                        <div className="mb-3">
+                          <button
+                            type="button"
+                            className="btn btn-outline-primary btn-sm"
+                            onClick={() => {
+                              setFormData((prev) => ({
+                                ...prev,
+                                variants: [
+                                  ...(prev.variants || []),
+                                  {
+                                    value: "",
+                                    price: "",
+                                    discountPrice: "",
+                                    stock: 0,
+                                    image: "",
+                                    sku: "",
+                                  },
+                                ],
+                              }));
+                            }}
+                          >
+                            + {t("admin.products.form.addClassification")}
+                          </button>
                         </div>
+                        {formData.variants?.map((variant, idx) => (
+                          <div
+                            key={idx}
+                            className="border rounded p-3 mb-3 bg-light"
+                          >
+                            <div className="row g-3">
+                              <div className="col-md-3">
+                                <label>
+                                  {t("admin.products.form.nameClassification")}
+                                </label>
+                                <input
+                                  className="form-control"
+                                  value={variant.value || ""}
+                                  onChange={(e) =>
+                                    updateVariant(idx, "value", e.target.value)
+                                  }
+                                />
+                              </div>
+                              <div className="col-md-2">
+                                <label>{t("admin.products.form.price")}</label>
+                                <input
+                                  type="number"
+                                  className="form-control"
+                                  value={variant.price}
+                                  onChange={(e) =>
+                                    updateVariant(idx, "price", e.target.value)
+                                  }
+                                />
+                              </div>
+                              <div className="col-md-2">
+                                <label>
+                                  {t("admin.products.form.priceSale")}
+                                </label>
+                                <input
+                                  type="number"
+                                  className="form-control"
+                                  value={variant.discountPrice}
+                                  onChange={(e) =>
+                                    updateVariant(
+                                      idx,
+                                      "discountPrice",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </div>
+                              <div className="col-md-2">
+                                <label>{t("admin.products.table.stock")}</label>
+                                <input
+                                  type="number"
+                                  className="form-control"
+                                  value={variant.stock}
+                                  onChange={(e) =>
+                                    updateVariant(
+                                      idx,
+                                      "stock",
+                                      Number(e.target.value)
+                                    )
+                                  }
+                                />
+                              </div>
+                              <div className="col-md-2">
+                                <label>{t("admin.products.form.image")}</label>
+                                <input
+                                  type="file"
+                                  className="form-control"
+                                  onChange={(e) =>
+                                    handleUploadVariantImage(e, idx)
+                                  }
+                                />
+                              </div>
+                              <div className="col-md-1 d-flex align-items-end">
+                                <button
+                                  type="button"
+                                  className="btn btn-danger btn-sm"
+                                  onClick={() => removeVariant(idx)}
+                                >
+                                  X
+                                </button>
+                              </div>
+                            </div>
+                            {variant.image && (
+                              <img
+                                src={variant.image}
+                                className="mt-2 rounded"
+                                style={{ maxHeight: "100px" }}
+                                alt=""
+                              />
+                            )}
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>

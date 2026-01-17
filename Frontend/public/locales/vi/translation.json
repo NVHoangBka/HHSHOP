@@ -602,7 +602,9 @@
                 "isStock": "Còn hàng?",
                 "inStock": "Còn hàng",
                 "outOfStock": "Hết hàng",
-                "flashSale": "Sản phẩm Flash Sale?"
+                "flashSale": "Sản phẩm Flash Sale?",
+                "nameClassification": "Tên phân loại",
+                "addClassification": "Thêm phân loại"
             },
             "toast": {
                 "loading": "Đang xử lý...",

@@ -602,7 +602,9 @@
                 "isStock": "Skladem?",
                 "inStock": "Skladem",
                 "outOfStock": "Není skladem",
-                "flashSale": "Produkt ve Flash Sale?"
+                "flashSale": "Produkt ve Flash Sale?",
+                "nameClassification": "Název klasifikace",
+                "addClassification": "Přidat klasifikaci"
             },
             "toast": {
                 "loading": "Zpracovávání...",

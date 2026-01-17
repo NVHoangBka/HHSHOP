@@ -93,6 +93,8 @@ const ProductTabSection = ({
     fetchProducts();
   }, [activeTab, categoryId]);
 
+  console.log(filteredProducts);
+
   return (
     <div className="section-product-tabs mt-xl-5">
       <div className="container">
@@ -111,7 +113,7 @@ const ProductTabSection = ({
             <button
               key={sub._id}
               className={`btn product-tab col-xl-3 col-lg-3 mx-xl-3 ${
-                activeTab === sub._id ? "active" : "bg-white border"
+                activeTab === sub._id ? "btn active" : "bg-white border"
               } hover`}
               onClick={() => setActiveTab(sub._id)}
             >

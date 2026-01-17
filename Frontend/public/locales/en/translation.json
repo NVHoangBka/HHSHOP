@@ -602,7 +602,9 @@
                 "isStock": "In stock?",
                 "inStock": "In stock",
                 "outOfStock": "Out of stock",
-                "flashSale": "Flash Sale product?"
+                "flashSale": "Flash Sale product?",
+                "nameClassification": "Classification Name",
+                "addClassification": "Add Classification"
             },
             "toast": {
                 "loading": "Processing...",
