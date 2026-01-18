@@ -93,8 +93,6 @@ const ProductTabSection = ({
     fetchProducts();
   }, [activeTab, categoryId]);
 
-  console.log(filteredProducts);
-
   return (
     <div className="section-product-tabs mt-xl-5">
       <div className="container">

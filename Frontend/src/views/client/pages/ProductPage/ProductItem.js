@@ -22,8 +22,6 @@ const ProductItem = ({ product, addToCart }) => {
 
   const { name, image, price, discountPrice, rating = 0, slug } = product;
 
-  console.log(product);
-
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",

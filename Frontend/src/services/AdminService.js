@@ -288,7 +288,6 @@ class AdminService {
   handleError(error) {
     const message = error.response?.data?.message || "Lỗi hệ thống";
     const status = error.response?.status;
-    console.log(message);
     return { success: false, message, status };
   }
 }

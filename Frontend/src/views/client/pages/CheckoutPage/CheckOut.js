@@ -114,7 +114,6 @@ const Checkout = ({ cartController, orderController, authController }) => {
   useEffect(() => {
     if (city) {
       const citys = vietnamData.find((p) => p.name === city);
-      console.log(citys);
 
       setDistricts(citys?.districts || []);
     } else {

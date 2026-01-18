@@ -239,7 +239,11 @@ class ProductController {
   static async getBySlug(req, res) {
     try {
       const { slug } = req.params;
-      const product = await Product.findOne({ slug }).lean();
+      const product = await Product.findOne({
+        $or: [{ "slug.vi": slug }, { "slug.en": slug }, { "slug.cz": slug }],
+        isActive: true,
+      }).lean();
+
       if (!product)
         return res
           .status(404)
@@ -248,7 +252,7 @@ class ProductController {
       // Tăng view count
       await Product.updateOne({ _id: product._id }, { $inc: { viewCount: 1 } });
 
-      res.json({ success: true, product });
+      res.json({ success: true, products: product });
     } catch (error) {
       res.status(500).json({ success: false });
     }

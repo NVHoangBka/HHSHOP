@@ -51,7 +51,7 @@ class ProductService {
 
   async getProductBySlug(slug) {
     const res = await api.get(`/products/slug/${slug}`);
-    return this.productModel.mapProducts(res.data.products);
+    return this.productModel.mapProduct(res.data.products);
   }
 
   // async filterProducts(criteria) {
