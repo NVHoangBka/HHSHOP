@@ -85,7 +85,6 @@ const Search = ({
 
   // Click gợi ý
   const handleSuggestionClick = (product) => {
-    console.log(product);
     setShowSuggestions(false);
     onClose();
     navigate(`/products/slug/${getTranslated(product.slug)}`);

@@ -51,7 +51,6 @@ class ProductController {
 
   async search(query, category = "all") {
     const result = await this.productService.search(query, category);
-    console.log(result);
     return result;
   }
 

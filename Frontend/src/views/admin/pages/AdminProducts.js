@@ -596,14 +596,14 @@ const AdminProducts = ({ adminController }) => {
         <div className="card shadow border-0">
           <div className="card-body p-0">
             <div className="table-responsive">
-              <table className="table table-hover mb-0 align-middle">
+              <table className="table table-hover mb-0 align-middle table-fixed">
                 <thead className="table-primary text-white">
                   <tr>
                     <th className="text-center">
                       {t("admin.products.table.stt")}
                     </th>
                     <th className="ps-4">{t("admin.products.table.image")}</th>
-                    <th>{t("admin.products.table.info")}</th>
+                    <th className="col-6">{t("admin.products.table.info")}</th>
                     <th>{t("admin.products.table.price")}</th>
                     <th>{t("admin.products.table.stock")}</th>
                     <th className="text-center">
@@ -654,19 +654,19 @@ const AdminProducts = ({ adminController }) => {
                           {p.variants && p.variants.length > 0 ? (
                             <div>
                               <span className="text-danger fw-bold fs-5">
-                                {formatPrice(p.finalPrice)}₫
+                                {formatPrice(p.price)}
                               </span>
                               {p.variants.length > 1 && (
                                 <small className="d-block text-muted">
                                   →{" "}
                                   {formatPrice(
-                                    Math.max(
+                                    Math.min(
                                       ...p.variants.map(
                                         (v) => v.discountPrice || v.price
                                       )
                                     )
                                   )}
-                                  ₫ ({p.variants.length} loại)
+                                  ({p.variants.length} loại)
                                 </small>
                               )}
                               <span className="badge bg-info text-dark ms-2">
@@ -922,6 +922,8 @@ const AdminProducts = ({ adminController }) => {
                               )}
                             />
                           </div>
+
+                          {/* Thương hiệu*/}
                           <div className="col-4">
                             <label className="form-label fw-bold">
                               {t("admin.products.form.brand")}

@@ -5,7 +5,9 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 const ProductDetail = ({ addToCart, productController }) => {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const [t, i18n] = useTranslation();
+  const [t] = useTranslation();
+  const currentLanguage = localStorage.getItem("i18n_lang") || "en";
+
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
@@ -56,8 +58,8 @@ const ProductDetail = ({ addToCart, productController }) => {
       selectedVariant: selectedVariant ? { ...selectedVariant } : null,
       // Tên hiển thị trong giỏ
       displayName: selectedVariant
-        ? `${product.name} - ${selectedVariant.value}`
-        : product.name,
+        ? `${getTranslated(product.name)} - ${selectedVariant.value}`
+        : getTranslated(product.name),
       // Giá thực tế
       finalPrice: selectedVariant
         ? selectedVariant.discountPrice || selectedVariant.price
@@ -77,8 +79,8 @@ const ProductDetail = ({ addToCart, productController }) => {
       quantity,
       selectedVariant: selectedVariant ? { ...selectedVariant } : null,
       displayName: selectedVariant
-        ? `${product.name} - ${selectedVariant.value}`
-        : product.name,
+        ? `${getTranslated(product.name)} - ${selectedVariant.value}`
+        : getTranslated(product.name),
       finalPrice: selectedVariant
         ? selectedVariant.discountPrice || selectedVariant.price
         : product.discountPrice || product.price,
@@ -121,6 +123,9 @@ const ProductDetail = ({ addToCart, productController }) => {
       </div>
     );
   }
+  const getTranslated = (obj, fallback = "") => {
+    return obj?.[currentLanguage] || obj?.vi || obj?.en || obj?.cz || fallback;
+  };
 
   const currentPrice =
     selectedVariant?.discountPrice ||
@@ -155,7 +160,7 @@ const ProductDetail = ({ addToCart, productController }) => {
               </li>
               <li>
                 <span className="fs-7" style={{ color: "#BFBFBF" }}>
-                  {product.name}
+                  {getTranslated(product.name)}
                 </span>
               </li>
             </ul>
@@ -174,7 +179,7 @@ const ProductDetail = ({ addToCart, productController }) => {
                     <div className="text-center">
                       <img
                         src={mainImage || "/placeholder.jpg"}
-                        alt={product.name}
+                        alt={getTranslated(product.name)}
                         className="object-contain rounded-lg gallery-main-img w-100"
                       />
                     </div>
@@ -252,7 +257,9 @@ const ProductDetail = ({ addToCart, productController }) => {
               <div className="bg-background">
                 <div className="">
                   <div className="product-title mb-xl-4">
-                    <h1 className="fw-semibold fs-4">{product.name}</h1>
+                    <h1 className="fw-semibold fs-4">
+                      {getTranslated(product.name)}
+                    </h1>
                     <div className="d-flex flex-wrap align-items-center  my-xl-2 ">
                       <button
                         aria-label="So sánh"
