@@ -838,5 +838,15 @@
                 "confirmFailed": "Xác nhận thanh toán thất bại!"
             }
         }
+    },
+    "mbBar": {
+        "call": "Gọi điện",
+        "chat": "Nhắn tin",
+        "cart": "Giỏ hàng",
+        "promotion": "Khuyến mãi",
+        "store": "Cửa hàng",
+        "product": "Sản phẩm",
+        "outOfStock": "Hết hàng",
+        "addToCart": "Thêm vào giỏ"
     }
 }

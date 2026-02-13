@@ -839,5 +839,15 @@
                 "confirmFailed": "Failed to confirm payment!"
             }
         }
+    },
+    "mbBar": {
+        "call": "Call",
+        "chat": "Chat",
+        "cart": "Cart",
+        "promotion": "Promotion",
+        "store": "Store Locator",
+        "product": "Product",
+        "outOfStock": "Out of Stock",
+        "addToCart": "Add to Cart"
     }
 }

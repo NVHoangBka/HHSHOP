@@ -839,5 +839,15 @@
                 "confirmFailed": "Potvrzení platby selhalo!"
             }
         }
+    },
+    "mbBar": {
+        "call": "Zavolat nyní",
+        "chat": "Chatovat",
+        "cart": "Zobrazit košík",
+        "promotion": "Aktuální akce",
+        "store": " Najít prodejnu",
+        "product": "Zobrazit produkt",
+        "outOfStock": "VYPRODÁNO",
+        "addToCart": "Přidat do košíku"
     }
 }

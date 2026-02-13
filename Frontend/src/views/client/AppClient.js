@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
+import MobileBottomBar from "./components/MobileBottomBar";
 import ToastMessage from "./components/ToastMessage/ToastMessage";
 
 import titleController from "../../controllers/TitleController";
@@ -143,6 +144,7 @@ const AppClient = () => {
         />
       </div>
       <Footer />
+      <MobileBottomBar cartCount={cartItems.length} />
       <div className="toast-container position-fixed bottom-0 top-0 end-0">
         <ToastMessage
           show={toast.show}
