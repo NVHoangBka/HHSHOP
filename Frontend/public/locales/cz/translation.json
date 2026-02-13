@@ -143,8 +143,17 @@
         }
     },
     "home": {
-        "flash-sale-title": "Časově omezené nabídky. Senzace ceny",
-        "no-flash-sale": "Žádné produkty v bleskovém výprodeji."
+        "flash-sale-title": "Časově omezené nabídky. Senzace ceny!",
+        "no-flash-sale": "Žádné produkty v bleskovém výprodeji.",
+        "flash-sale-single-slot": "Flash Sale jedno časové okno",
+        "flash-sale-multiple-slots": "Flash Sale více časových oken",
+        "not-started": "Bleskový výprodej ještě nezačal",
+        "ongoing_line1": "Rychle!",
+        "ongoing_line2": "Událost skončí za",
+        "ended": "Bleskový výprodej skončil",
+        "hours": "Hodiny",
+        "minutes": "Minuty",
+        "seconds": "Sekundy"
     },
     "product": {
         "breadcrumb": {

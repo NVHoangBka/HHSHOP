@@ -29,7 +29,7 @@ const Header = ({
 
   const totalQuantity = cartItems.reduce(
     (sum, item) => sum + (item.quantity || 0),
-    0
+    0,
   );
 
   const getTranslated = (obj, fallback = "") => {
@@ -77,7 +77,7 @@ const Header = ({
     (updatedCart) => {
       onCartChange(updatedCart);
     },
-    [onCartChange]
+    [onCartChange],
   );
 
   const changeLanguage = (lng) => {
@@ -89,7 +89,7 @@ const Header = ({
   const currentLang = i18n.language || "vi";
 
   const languages = (i18n.options.supportedLngs || ["vi", "en", "cz"]).filter(
-    (lng) => lng !== "cimode"
+    (lng) => lng !== "cimode",
   );
 
   const languageNames = {
@@ -103,38 +103,38 @@ const Header = ({
       className="header shadow-sm bg-white sticky-top "
       style={{ zIndex: "1500" }}
     >
-      <div className="header-top py-xl-2">
+      <div className="header-top py-xl-2 py-lg-2 py-md-2 py-sm-2 py-2">
         <div className="container ">
-          <div className="d-flex justify-content-between align-items-center row py-xl-1">
+          <div className="d-flex justify-content-between align-items-center row py-xl-1 py-lg-1 py-md-1 py-sm-1 py-1">
             {/* Left: Menu */}
-            <div className="header-top-left d-flex align-items-center col-xl-3">
+            <div className="header-top-left d-flex align-items-center col-xl-3 col-lg-2 col-md-2 col-sm-4 col-1">
               <button
                 className="btn btn-outline-secondary border rounded-circle"
                 onClick={toggleMenu}
               >
                 <i className="bi bi-list fs-5"></i>
               </button>
-              <span className="header-top-left-text ms-xl-1 	d-none d-xl-block">
+              <span className="header-top-left-text ms-xl-1 ms-lg-1 ms-md-1 ms-sm-1 ms-1 d-none d-xl-block">
                 {t("header.product_category")}
               </span>
             </div>
             {/* Center: Logo */}
             <div
-              className="header-top-center text-center col-xl-4 "
+              className="header-top-center text-center col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4 ms-1"
               onClick={goHome}
               style={{ background: "transparent", cursor: "pointer" }}
             >
               <img
                 src={`/img/logo/LOGO.png`}
                 alt="logo"
-                class="img-fluid col-8"
+                className="img-fluid col-12 col-md-8 col-lg-8 col-xl-8"
               />
             </div>
 
             {/* Right: Search, Account, Cart */}
-            <div className="d-flex align-items-center justify-content-end col-xl-5">
-              <div className="row justify-content-end align-items-center">
-                <div className="col-xl-2">
+            <div className="d-flex align-items-center justify-content-end col-xl-4 col-lg-5 col-md-5 col-sm-4 col-6">
+              <div className="row justify-content-end align-items-center w-100 gx-2">
+                <div className="col-xl-3 col-lg-3 col-md-4 col-sm-4 col-4">
                   <Dropdown>
                     <Dropdown.Toggle
                       variant="outline-secondary"
@@ -148,7 +148,7 @@ const Header = ({
                           `/img/flags/${currentLang}.jpg`
                         }
                         alt={currentLang.toUpperCase()}
-                        className="me-xl-1 rounded col-xl-12"
+                        className="me-xl-1 rounded col-12 col-md-8 col-lg-8 col-xl-10"
                       />
                     </Dropdown.Toggle>
 
@@ -159,15 +159,15 @@ const Header = ({
                           key={index}
                           className={
                             currentLang === language
-                              ? "py-xl-2 bg-secondary-subtle"
-                              : "py-xl-2"
+                              ? "py-2 bg-secondary-subtle"
+                              : "py-2"
                           }
                           onClick={() => {
                             changeLanguage(language);
                           }}
                         >
                           <img
-                            className="me-xl-2"
+                            className="me-2"
                             src={`/img/flags/${language}.png`}
                             alt={language.toUpperCase()}
                             style={{
@@ -187,7 +187,7 @@ const Header = ({
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>
-                <div className="col-xl-2">
+                <div className="col-xl-2 col-lg-2 col-md-3 col-sm-2 col-4">
                   <button
                     className="btn btn-outline-secondary border rounded-circle"
                     onClick={toggleSearch}
@@ -195,7 +195,7 @@ const Header = ({
                     <i className="bi bi-search fs-5"></i>
                   </button>
                 </div>
-                <div className="col-xl-2">
+                <div className="col-xl-2 col-lg-2 col-md-3 d-none d-md-block">
                   <button
                     className="btn btn-outline-secondary border rounded-circle d-none d-md-block"
                     onClick={goToAccount}
@@ -203,7 +203,7 @@ const Header = ({
                     <i className="bi bi-person fs-5"></i>
                   </button>
                 </div>
-                <div className="col-xl-4">
+                <div className="col-xl-4 col-lg-2 col-md-2 col-sm-2 col-4">
                   <button
                     className="btn btn-outline-secondary border position-relative d-flex align-items-center"
                     onClick={toggleCart}
@@ -259,7 +259,7 @@ const Header = ({
           <Offcanvas.Title>
             <Link
               to={"/account/login"}
-              className="header-icon-group text-reset d-flex align-items-center text-decoration-none py-xl-1 px-xl-2 menu-hover"
+              className="header-icon-group text-reset d-flex align-items-center text-decoration-none py-xl-1 px-xl-2 py-1 px-2 menu-hover"
             >
               <div className="header-icon align-content-center me-xl-2">
                 <i className="bi bi-person fs-3 border px-1"></i>

@@ -144,8 +144,17 @@
         }
     },
     "home": {
-        "flash-sale-title": "Flash Sale - Grab the Deals",
-        "no-flash-sale": "No flash sale products available."
+        "flash-sale-title": "Flash Sale - Grab the Deals!",
+        "no-flash-sale": "No flash sale products available.",
+        "flash-sale-single-slot": "Flash Sale single slot",
+        "flash-sale-multiple-slots": "Flash Sale multiple slots",
+        "not-started": "Flash sale not started yet",
+        "ongoing_line1": "Hurry up!",
+        "ongoing_line2": "The event will end in",
+        "ended": "Flash sale has ended",
+        "hours": "Hours",
+        "minutes": "Minutes",
+        "seconds": "Seconds"
     },
     "product": {
         "breadcrumb": {

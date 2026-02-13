@@ -70,7 +70,7 @@ const Menu = ({
                         <li key={index} className="menu-hover">
                           <Link
                             to={`/products/${getTranslated(
-                              category.slug
+                              category.slug,
                             )}/${getTranslated(subCategory.slug)}`}
                             onClick={handleItemClick}
                           >
@@ -139,13 +139,13 @@ const Menu = ({
             </li>
           </ul>
         </div>
-        <div className="menu-footer row mx-xl-0 border-top pt-xl-2">
-          <div className="col-xl-6 py-xl-4 menu-hover">
-            <i className="bi bi-shop border p-xl-2"></i>
+        <div className="menu-footer row mx-xl-0 border-top pt-xl-2 mx-0 pt-2 align-items-center">
+          <div className="col-xl-6 py-xl-4 col-6 py-3 menu-hover">
+            <i className="bi bi-shop border p-xl-2 p-1"></i>
             <span className="ps-2">{t("menu.storeSystem")}</span>
           </div>
-          <div className="col-xl-6 py-xl-4 menu-hover">
-            <i className="bi bi-telephone-outbound border p-xl-2"></i>
+          <div className="col-xl-6 py-xl-4 col-6 py-2 menu-hover ">
+            <i className="bi bi-telephone-outbound border p-xl-2 p-1"></i>
             <span className="ps-xl-2">Holine: 0999999998</span>
           </div>
         </div>
