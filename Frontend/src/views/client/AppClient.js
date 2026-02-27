@@ -14,6 +14,8 @@ import orderController from "../../controllers/OrderController";
 import categoryController from "../../controllers/CategoryController";
 
 import ClientRouter from "../../routers/ClientRouter/ClientRouter";
+import FloatingButtons from "./components/FloatingButtons";
+import PromotionModal from "./components/PromotionModal";
 
 const AppClient = () => {
   const navigate = useNavigate();
@@ -143,6 +145,8 @@ const AppClient = () => {
           categoryController={categoryController}
         />
       </div>
+      <PromotionModal />
+      <FloatingButtons />
       <Footer />
       <MobileBottomBar cartCount={cartItems.length} />
       <div className="toast-container position-fixed bottom-0 top-0 end-0">
