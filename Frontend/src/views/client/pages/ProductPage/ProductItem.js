@@ -57,7 +57,7 @@ const ProductItem = ({ product, addToCart }) => {
 
   return (
     <div
-      className="product-item w-100 p-xl-3 p-lg-3 p-md-2 p-sm-1 p-2 border mx-xl-2 mx-lg-2 mx-2 bg-white h-100 rounded-4 cursor-pointer hover"
+      className="product-item w-100 p-xl-3 p-lg-3 p-md-2 p-sm-1 p-2 border mx-xl-2 mx-lg-2 mx-1 bg-white h-100 rounded-4 cursor-pointer hover"
       onClick={handleShowProductDetail}
     >
       <img

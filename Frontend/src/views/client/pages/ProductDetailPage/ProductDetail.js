@@ -146,7 +146,7 @@ const ProductDetail = ({ addToCart, productController }) => {
       <div className="bg-success-subtle">
         <div className="container">
           <div className="breadcrumbs">
-            <ul className="breadcrumb py-xl-2 flex flex-wrap items-center text-xs">
+            <ul className="breadcrumb py-xl-2 py-lg-2 py-md-2 flex flex-wrap items-center text-xs">
               <li className="home ">
                 <Link
                   className="link hover fs-7"
@@ -168,11 +168,11 @@ const ProductDetail = ({ addToCart, productController }) => {
         </div>
       </div>
 
-      <div className="container mt-xl-4">
+      <div className="container mt-xl-4 mt-lg-4 mt-md-4">
         <product-form id="main-product">
           <div className="product-detail row justify-content-between">
             {/* Gallery */}
-            <div className="product-gallery-wrapper col-xl-5">
+            <div className="product-gallery-wrapper col-xl-5 col-lg-5">
               <div className="product-gallery-container">
                 <div className="product-gallery">
                   <div>
@@ -186,7 +186,7 @@ const ProductDetail = ({ addToCart, productController }) => {
 
                     {/* Thumbnails (nếu có nhiều ảnh) */}
                     {allImages.length > 1 && (
-                      <div className="d-flex justify-content-center gap-3 mt-xl-3">
+                      <div className="d-flex justify-content-center gap-3 mt-xl-3 mt-lg-3">
                         {allImages.map((img, i) => (
                           <div
                             key={i}
@@ -210,15 +210,15 @@ const ProductDetail = ({ addToCart, productController }) => {
                 </div>
 
                 {/* Chia sẻ */}
-                <div className="mb-xl-3">
-                  <div className="share-group d-flex justify-content-center align-items-center mt-xl-5">
+                <div className="mb-xl-3 mb-lg-3 mb-md-3">
+                  <div className="share-group d-flex justify-content-center align-items-center mt-xl-5 mt-lg-5 mt-md-5">
                     <p className="share-group__heading m-0">
                       {t("product.share")}
                     </p>
-                    <div className="share-group__list d-flex ms-xl-3">
+                    <div className="share-group__list d-flex ms-xl-3 ms-lg-3 ms-md-3">
                       <Link
                         title="facebook-share"
-                        className="share-group__item p-xl-2 border rounded-5 d-flex align-items-center justify-content-center facebook mx-1"
+                        className="share-group__item p-xl-2 p-lg-2 p-md-2 border rounded-5 d-flex align-items-center justify-content-center facebook mx-1"
                         target="_blank"
                         to={`https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`}
                       >
@@ -233,7 +233,7 @@ const ProductDetail = ({ addToCart, productController }) => {
                       </Link>
                       <Link
                         title="messenger-share"
-                        className="share-group__item messenger p-xl-2 border rounded-5 d-flex align-items-center justify-content-center mx-1"
+                        className="share-group__item messenger p-xl-2 p-lg-2 p-md-2 border rounded-5 d-flex align-items-center justify-content-center mx-1"
                         target="_blank"
                         to={`https://m.me/?app_scoped_user_id=&link=${window.location.href}`}
                       >
@@ -253,14 +253,14 @@ const ProductDetail = ({ addToCart, productController }) => {
             </div>
 
             {/* Thông tin sản phẩm */}
-            <div className="product-form-wrapper col-xl-6">
+            <div className="product-form-wrapper col-xl-6 col-lg-6">
               <div className="bg-background">
                 <div className="">
-                  <div className="product-title mb-xl-4">
+                  <div className="product-title mb-xl-4 mb-lg-4 mb-md-4">
                     <h1 className="fw-semibold fs-4">
                       {getTranslated(product.name)}
                     </h1>
-                    <div className="d-flex flex-wrap align-items-center  my-xl-2 ">
+                    <div className="d-flex flex-wrap align-items-center my-xl-2 my-lg-2 my-md-2">
                       <button
                         aria-label="So sánh"
                         type="button"
@@ -271,8 +271,8 @@ const ProductDetail = ({ addToCart, productController }) => {
                       </button>
                     </div>
 
-                    <div className="group-status  d-flex flex-wrap pb-xl-2 align-items-center">
-                      <div className="status status-vendor col-xl-4">
+                    <div className="group-status d-flex flex-wrap pb-xl-2 pb-lg-2 pb-md-2 align-items-center">
+                      <div className="status status-vendor col-xl-4 col-lg-4">
                         <span className="fs-7 me-1">{t("product.brand")}</span>
 
                         <span className="fs-7 fw-semibold text-black">
@@ -296,18 +296,18 @@ const ProductDetail = ({ addToCart, productController }) => {
                     </div>
 
                     {/* Giá */}
-                    <div className="product-price-group rounded-sm overflow-hidden mb-xl-4">
+                    <div className="product-price-group rounded-sm overflow-hidden mb-xl-4 mb-lg-4">
                       <div className="price-box d-flex align-items-center flex-wrap">
                         <div className="d-flex flex-wrap">
-                          <span className="price fs-2 fw-bold text-active ms-xl-3">
+                          <span className="price fs-2 fw-bold text-active ms-xl-3 ms-lg-3">
                             {formatPrice(currentPrice)}
                           </span>
                           {hasDiscount && (
                             <>
-                              <del className="text-muted ms-xl-2 fs-6">
+                              <del className="text-muted ms-xl-2 ms-lg-2 fs-6">
                                 {formatPrice(originalPrice)}
                               </del>
-                              <span className="ms-xl-2 badge bg-danger">
+                              <span className="ms-xl-2 ms-lg-2 badge bg-danger">
                                 {t("product.price.discount", {
                                   percent: discountPercent,
                                 })}
@@ -320,16 +320,16 @@ const ProductDetail = ({ addToCart, productController }) => {
                   </div>
 
                   {/* Khuyến mãi */}
-                  <div className="promo-box mb-xl-4">
+                  <div className="promo-box mb-xl-4 mb-lg-4 mb-md-4">
                     <div className="promo-box-group border rounded-2 ">
-                      <div className="promo-box__header d-flex align-items-center px-xl-4 py-1 bg-success-subtle text-success">
+                      <div className="promo-box__header d-flex align-items-center px-xl-4 px-lg-4 py-1 bg-success-subtle text-success">
                         <i className="bi bi-gift"></i>
-                        <div className="promo-box__header-title ms-xl-2">
+                        <div className="promo-box__header-title ms-2 fs-7 fw-semibold">
                           {t("product.promo.title")}
                         </div>
                       </div>
 
-                      <div className="promo-box__body px-xl-5 bg-background py-xl-3">
+                      <div className="promo-box__body bg-background px-xl-5 px-lg-4 py-xl-3 py-lg-3 py-md-3">
                         <div className="promo-box__body-item">
                           1. {t("product.promo.item1")}
                         </div>
@@ -346,34 +346,34 @@ const ProductDetail = ({ addToCart, productController }) => {
                     </div>
                   </div>
 
-                  <div className="coupon-box mb-xl-4">
+                  <div className="coupon-box mb-xl-4 mb-lg-4 mb-md-4">
                     <div className="coupon-group d-flex align-items-center justify-content-between">
-                      <div className="coupon-group-header col-xl-2">
+                      <div className="coupon-group-header col-xl-2 col-lg-3">
                         {t("product.coupon.title")}
                       </div>
                       <div className="d-flex" data-portal="#coupon-drawer">
                         <div className="d-flex align-items-center cursor-pointer">
-                          <div className="coupon-group-item overflow-hidden d-flex align-items-center px-xl-3 py-xl-2 fs-7 bg-warning-subtle mx-1 text-active rounded-3 col-3">
+                          <div className="coupon-group-item overflow-hidden d-flex align-items-center px-xl-3 px-lg-3 py-xl-2 py-lg-2 fs-7 bg-warning-subtle mx-1 text-active rounded-3 col-xl-3 col-lg-2">
                             <i class="bi bi-ticket-perforated"></i>
                             <div class="coupon-group-item__code fw-semibold ms-1 text-truncate">
                               EGA50THANG10
                             </div>
                           </div>
 
-                          <div className="coupon-group-item overflow-hidden d-flex align-items-center px-xl-3 py-xl-2 fs-7 bg-warning-subtle mx-1 text-active rounded-3 col-3">
+                          <div className="coupon-group-item overflow-hidden d-flex align-items-center px-xl-3 px-lg-3 py-xl-2 py-lg-2 fs-7 bg-warning-subtle mx-1 text-active rounded-3 col-xl-3 col-lg-2">
                             <i className="bi bi-ticket-perforated"></i>
                             <div className="coupon-group-item__code fw-semibold ms-1 text-truncate">
                               EGA30THANG10
                             </div>
                           </div>
 
-                          <div className="coupon-group-item overflow-hidden d-flex align-items-center px-xl-3 py-xl-2 fs-7 bg-warning-subtle mx-1 text-active rounded-3 col-3">
+                          <div className="coupon-group-item overflow-hidden d-flex align-items-center px-xl-3 px-lg-3 py-xl-2 py-lg-2 fs-7 bg-warning-subtle mx-1 text-active rounded-3 col-xl-3 col-lg-2">
                             <i className="bi bi-ticket-perforated"></i>
                             <div className="coupon-group-item__code fw-semibold ms-1 text-truncate">
                               FREESHIPTHANG10
                             </div>
                           </div>
-                          <div className="px-xl-3 py-xl-2 bg-warning-subtle mx-1 text-active rounded-3">
+                          <div className="px-xl-3 px-lg-3 py-xl-2 py-lg-2 bg-warning-subtle mx-1 text-active rounded-3">
                             <i className="bi bi-caret-right-fill"></i>
                           </div>
                         </div>
@@ -383,10 +383,10 @@ const ProductDetail = ({ addToCart, productController }) => {
 
                   {/* Variant (nếu có) dung tích */}
                   {product.variants && product.variants.length > 0 && (
-                    <div className="mb-xl-4">
+                    <div className="mb-xl-4 mb-lg-4 mb-md-4">
                       <div className="variant-picker d-flex">
                         <div className="variant-picker__input d-flex align-items-center w-100">
-                          <div className="mb-1 col-xl-2">
+                          <div className="mb-1 col-xl-2 col-lg-3">
                             {t("product.variant.label")}
                           </div>
                           <div
@@ -408,7 +408,7 @@ const ProductDetail = ({ addToCart, productController }) => {
                                   <small className="ms-1">
                                     (−
                                     {Math.round(
-                                      100 - (v.discountPrice / v.price) * 100
+                                      100 - (v.discountPrice / v.price) * 100,
                                     )}
                                     %)
                                   </small>
@@ -423,20 +423,19 @@ const ProductDetail = ({ addToCart, productController }) => {
                 </div>
 
                 {/* Số lượng + CTA */}
-                <div className="product-cta mb-0 mt-xl-4">
+                <div className="product-cta mb-0 mt-xl-4 mt-lg-4 mt-md-4 mt-4">
                   {product.stock === 0 ? (
                     <div>
-                      <div className="d-none btn fw-semibold mt-xl-2 btn w-100">
+                      <div className="d-none btn fw-semibold mt-xl-2 mt-lg-2 mt-md-2 mt-2 btn w-100">
                         {t("product.buttons.outOfStock")}
                       </div>
                       <input type="hidden" name="variantId" value="118468360" />
                     </div>
                   ) : (
                     <div>
-                      <div className="d-flex align-items-center mb-xl-4">
-                        <div className="col-xl-2">
-                          {" "}
-                          {t("product.quantity.label")}{" "}
+                      <div className="d-flex align-items-center mb-xl-4 mb-lg-4 mb-md-4 mb-4">
+                        <div className="col-xl-2 col-lg-3 me-2 fs-7">
+                          {t("product.quantity.label")}
                         </div>
                         <quantity-input>
                           <div className="custom-number-input product-quantity">
@@ -444,7 +443,7 @@ const ProductDetail = ({ addToCart, productController }) => {
                               <button
                                 type="button"
                                 name="minus"
-                                className="cursor-pointer p-xl-2 bg-transparent border-0 text-hover"
+                                className="cursor-pointer p-xl-2 p-lg-2 bg-transparent border-0 text-hover"
                                 onClick={() =>
                                   setQuantity(Math.max(1, quantity - 1))
                                 }
@@ -461,7 +460,7 @@ const ProductDetail = ({ addToCart, productController }) => {
                               <button
                                 type="button"
                                 name="plus"
-                                className="cursor-pointer p-xl-2 bg-transparent border-0 text-hover"
+                                className="cursor-pointer p-xl-2 p-lg-2 bg-transparent border-0 text-hover"
                                 onClick={() => setQuantity(quantity + 1)}
                               >
                                 <i className="m-auto bi bi-plus"></i>
@@ -471,11 +470,11 @@ const ProductDetail = ({ addToCart, productController }) => {
                         </quantity-input>
                       </div>
 
-                      <div className="d-flex mt-xl-4 border-top pt-xl-4">
+                      <div className="d-flex border-top mt-xl-4 mt-lg-4 pt-xl-4 pt-lg-4">
                         <button
                           onClick={handleBuyNow}
                           name="buynow"
-                          className=" fw-semibold btn border border-danger btn-buynow w-100 py-2 text-danger col mx-xl-2 rounded-5"
+                          className=" fw-semibold btn border border-danger btn-buynow w-100 py-2 text-danger col mx-xl-2 mx-lg-2 rounded-5"
                         >
                           <span> {t("product.buttons.buyNow")} </span>
                           <span className="loading-icon hidden align-items-center justify-content-center">
@@ -487,7 +486,7 @@ const ProductDetail = ({ addToCart, productController }) => {
 
                         <button
                           name="addtocart"
-                          className=" fw-semibold btn btn-add-to-cart w-100 bg-danger text-white py-xl-2 col mx-xl-2 rounded-5"
+                          className=" fw-semibold btn btn-add-to-cart w-100 bg-danger text-white col py-xl-2 py-lg-2 mx-xl-2 mx-lg-2 rounded-5"
                           onClick={handleAddToCart}
                         >
                           <span> {t("product.buttons.addToCart")}</span>
@@ -504,10 +503,10 @@ const ProductDetail = ({ addToCart, productController }) => {
                   )}
                 </div>
 
-                <div className="card-product__badges d-none space-y-2 col-span-full mt-xl-4 "></div>
+                <div className="card-product__badges d-none space-y-2 col-span-full mt-xl-4 mt-lg-4"></div>
 
                 {/* Chính sách */}
-                <ul className="pt-xl-3 d-flex flex-column   product-polices">
+                <ul className="d-flex flex-column product-polices pt-xl-3 pt-lg-3 pt-md-3">
                   <li className="item d-flex align-items-center my-1">
                     <div className="max-w-5">
                       <img
@@ -519,7 +518,7 @@ const ProductDetail = ({ addToCart, productController }) => {
                         alt={t("product.policies.freeShipping")}
                       />
                     </div>
-                    <div className="fs-7 ms-xl-2">
+                    <div className="fs-7 ms-xl-2 ms-lg-2">
                       {t("product.policies.freeShipping")}
                     </div>
                   </li>
@@ -535,7 +534,7 @@ const ProductDetail = ({ addToCart, productController }) => {
                         alt={t("product.policies.installment")}
                       />
                     </div>
-                    <div className="fs-7 ms-xl-2">
+                    <div className="fs-7 ms-xl-2 ms-lg-2">
                       {t("product.policies.installment")}
                     </div>
                   </li>
@@ -551,7 +550,7 @@ const ProductDetail = ({ addToCart, productController }) => {
                         alt={t("product.policies.return")}
                       />
                     </div>
-                    <div className="fs-7 ms-xl-2">
+                    <div className="fs-7 ms-xl-2 ms-lg-2">
                       {t("product.policies.return")}
                     </div>
                   </li>
@@ -564,7 +563,7 @@ const ProductDetail = ({ addToCart, productController }) => {
 
       <div className="">
         <div className="product-description relative">
-          <div className="tab-nav container tab-nav--style3 d-none justify-content-center align-items-center ">
+          <div className="tab-nav container tab-nav--style3 d-none justify-content-center align-items-center">
             <button
               className="tab-btn btn rounded-0 active fw-semibold "
               aria-controls="product-content"
@@ -573,16 +572,19 @@ const ProductDetail = ({ addToCart, productController }) => {
             </button>
           </div>
 
-          <div className="tab-content  bg-white py-xl-5" id="product-content">
-            <div className="bg-success-subtle pb-xl-4">
+          <div
+            className="tab-content  bg-white py-xl-5 py-lg-5"
+            id="product-content"
+          >
+            <div className="bg-success-subtle pb-xl-4 pb-lg-4">
               <h3 className="fs-5 text-center block py-3 fw-semibold text-success m-0">
                 {t("product.features.title")}
               </h3>
-              <div className=" bg-white pb-xl-4 mb-xl-4">
+              <div className=" bg-white pb-xl-4 pb-lg-4 mb-xl-4 mb-lg-4">
                 <div className="container">
                   {product.highlightContent ? (
                     <div
-                      className={`expandable-content mb-xl-3 position-relative overflow-hidden px-xl-5 pt-xl-5 ${
+                      className={`expandable-content mb-xl-3 mb-lg-3 position-relative overflow-hidden px-xl-5 px-lg-3 pt-xl-5 pt-lg-3 ${
                         showMore ? "show-all" : ""
                       }`}
                     >
@@ -606,13 +608,13 @@ const ProductDetail = ({ addToCart, productController }) => {
                       </div>
                     </div>
                   ) : (
-                    <p className="text-center text-muted py-xl-5">
+                    <p className="text-center text-muted py-xl-5 py-lg-5">
                       {t("product.features.noContent")}
                     </p>
                   )}
                   {product.highlightContent && (
                     <button
-                      className="btn-showmore px-xl-3 py-xl-2 rounded-5 fs-7"
+                      className="btn-showmore rounded-5 fs-7 px-xl-3 py-xl-2 px-lg-3 py-lg-2"
                       id="btn-showmore"
                       onClick={handleShowMore}
                     >

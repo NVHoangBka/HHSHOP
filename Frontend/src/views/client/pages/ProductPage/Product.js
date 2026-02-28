@@ -27,6 +27,8 @@ const Product = ({ path, addToCart, productController, titleController }) => {
     color: [],
   });
 
+  const [showFilter, setShowFilter] = useState(false);
+
   // TẢI DANH MỤC TRƯỚC
   useEffect(() => {
     async function loadTitles() {
@@ -46,7 +48,7 @@ const Product = ({ path, addToCart, productController, titleController }) => {
       if (subTitlePath) {
         const subTitleObj = titleController.getSubTitlesByPath(
           titlePath,
-          subTitlePath
+          subTitlePath,
         );
         const subTitleName = subTitleObj?.name || subTitlePath;
         setTitlePathConver(`${titleName} / ${subTitleName}`);
@@ -96,7 +98,7 @@ const Product = ({ path, addToCart, productController, titleController }) => {
           }
         } else {
           updated[key] = (updated[key] || []).filter(
-            (item) => item.value !== value
+            (item) => item.value !== value,
           );
         }
 
@@ -122,7 +124,7 @@ const Product = ({ path, addToCart, productController, titleController }) => {
 
     // Bỏ tích / bỏ chọn input tương ứng
     const input = document.querySelector(
-      `input[name="${key}"][value="${value}"]`
+      `input[name="${key}"][value="${value}"]`,
     );
     if (input) input.checked = false;
   };
@@ -143,7 +145,7 @@ const Product = ({ path, addToCart, productController, titleController }) => {
         // B2: Lọc theo subTitle (nếu có)
         if (subTitlePath) {
           products = products.filter((p) =>
-            p.subTitles?.includes(subTitlePath)
+            p.subTitles?.includes(subTitlePath),
           );
         }
 
@@ -156,35 +158,35 @@ const Product = ({ path, addToCart, productController, titleController }) => {
             (p) =>
               (p.price >= min && (max === Infinity || p.price <= max)) ||
               (p.discountPrice >= min &&
-                (max === Infinity || p.discountPrice <= max))
+                (max === Infinity || p.discountPrice <= max)),
           );
         }
 
         if (filters.brand?.length > 0) {
           const brands = filters.brand.map((b) => b.value);
           products = products.filter((p) =>
-            p.brands?.some((b) => brands.includes(b))
+            p.brands?.some((b) => brands.includes(b)),
           );
         }
 
         if (filters.type?.length > 0) {
           const types = filters.type.map((t) => t.value);
           products = products.filter((p) =>
-            p.types?.some((t) => types.includes(t))
+            p.types?.some((t) => types.includes(t)),
           );
         }
 
         if (filters.color?.length > 0) {
           const colors = filters.color.map((c) => c.value);
           products = products.filter((p) =>
-            p.colors?.some((c) => colors.includes(c))
+            p.colors?.some((c) => colors.includes(c)),
           );
         }
 
         if (filters.tag?.length > 0) {
           const tags = filters.tag.map((t) => t.value);
           products = products.filter((p) =>
-            p.tag?.some((t) => tags.includes(t))
+            p.tag?.some((t) => tags.includes(t)),
           );
         }
 
@@ -212,7 +214,7 @@ const Product = ({ path, addToCart, productController, titleController }) => {
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = filteredProducts.slice(
     indexOfFirstProduct,
-    indexOfLastProduct
+    indexOfLastProduct,
   );
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
@@ -232,12 +234,12 @@ const Product = ({ path, addToCart, productController, titleController }) => {
     <div className="product bg-success-subtle">
       <div className="container">
         <div className="breadcrumbs">
-          <ul className="breadcrumb py-xl-3 flex flex-wrap items-center">
+          <ul className="breadcrumb d-flex flex-wrap align-items-center py-xl-3 py-lg-3 py-md-2 py-sm-1 py-1 mb-0 ">
             <li className="home">
               <Link
                 className="link hover"
                 to="/"
-                title={t("product.breadcrumbs.home")}
+                title={t("product.breadcrumb.home")}
                 style={{ textDecoration: "none", color: "black" }}
               >
                 <span>{t("product.breadcrumbs.home")}</span>
@@ -250,7 +252,7 @@ const Product = ({ path, addToCart, productController, titleController }) => {
           </ul>
         </div>
         <section className="section section-collection-banner">
-          <div className="collection_banner mb-xl-5 container text-center px-0">
+          <div className="collection_banner container text-center mb-xl-5 mb-lg-5 mb-md-4 mb-3 px-0">
             <Link className="banner" to="#" title={t("product.allProducts")}>
               <picture>
                 <source
@@ -271,39 +273,26 @@ const Product = ({ path, addToCart, productController, titleController }) => {
         </section>
         <section className="section grid w-100" id="product-list-0">
           <div className="row mx-0">
-            <div className="col-xl-9 content-product-left">
-              <h2 className="text-success fs-1 fw-semibold">{title}</h2>
-              <div className="d-left flex-row-reverse align-items-center mb-xl-2">
-                <div className="d-flex justify-content-end">
+            <div className="content-product-left col-xl-9 col-lg-9 col-md-9 col-12 pe-0">
+              <h2 className="text-success fs-1 fw-semibold text-center text-md-start">
+                {title}
+              </h2>
+              <div className="d-left flex-row-reverse align-items-center mb-xl-2 mb-lg-2 mb-md-1 mb-1">
+                <div className="d-flex justify-content-between justify-content-md-end">
                   <button
-                    className="btn d-flex d-lg-none bg-white border align-items-center"
-                    type="button"
-                    data-toggle-facet=""
-                    hidden
+                    className="btn btn-outline-dark d-md-none rounded-pill d-flex align-items-center me-2 bg-white border-0"
+                    onClick={() => setShowFilter(true)}
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="icon w-4"
-                      viewBox="0 0 20 20"
-                      fill="none"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
-                        d="M9.79166 6.45835C9.79166 5.53788 10.5379 4.79169 11.4583 4.79169C12.3788 4.79169 13.125 5.53788 13.125 6.45835C13.125 7.37883 12.3788 8.12502 11.4583 8.12502C10.5379 8.12502 9.79166 7.37883 9.79166 6.45835ZM8.60878 7.08335C8.89489 8.39384 10.062 9.37502 11.4583 9.37502C12.8546 9.37502 14.0218 8.39384 14.3079 7.08335H17.5C17.8452 7.08335 18.125 6.80353 18.125 6.45835C18.125 6.11317 17.8452 5.83335 17.5 5.83335H14.3079C14.0218 4.52286 12.8546 3.54169 11.4583 3.54169C10.062 3.54169 8.89489 4.52286 8.60878 5.83335H2.5C2.15482 5.83335 1.875 6.11317 1.875 6.45835C1.875 6.80353 2.15482 7.08335 2.5 7.08335H8.60878ZM4.79166 13.125C4.79166 12.2045 5.53786 11.4583 6.45833 11.4583C7.3788 11.4583 8.125 12.2045 8.125 13.125C8.125 14.0455 7.3788 14.7917 6.45833 14.7917C5.53786 14.7917 4.79166 14.0455 4.79166 13.125ZM6.45833 16.0417C5.06203 16.0417 3.8949 15.0605 3.60879 13.75H2.5C2.15482 13.75 1.875 13.4702 1.875 13.125C1.875 12.7798 2.15482 12.5 2.5 12.5H3.60879C3.8949 11.1895 5.06203 10.2083 6.45833 10.2083C7.85463 10.2083 9.02176 11.1895 9.30787 12.5H17.5C17.8452 12.5 18.125 12.7798 18.125 13.125C18.125 13.4702 17.8452 13.75 17.5 13.75H9.30787C9.02176 15.0605 7.85463 16.0417 6.45833 16.0417Z"
-                        fill="currentColor"
-                        fill-opacity="0.1"
-                      ></path>
-                    </svg>
+                    <i className="bi bi-funnel me-2"></i>
                     {t("product.filter.title")}
-                    <span className="filter-count w-5 h-5 inline-flex alignitems-center justify-content-center text-white rounded-full  ms-1">
+                    <span className="filter-count inline-flex align-items-center justify-content-center text-white rounded-circle ms-2 bg-danger px-2">
                       0
                     </span>
                   </button>
-                  <div className="sort-mobile whitespace-nowrap d-flex align-items-center gap-2 me-xl-3">
+                  <div className="sort-mobile whitespace-nowrap d-flex align-items-center me-xl-3 me-lg-3 me-md-2 me-1">
                     <label
                       htmlFor="sort-mobile"
-                      className="labbel text-light-emphasis"
+                      className="labbel text-light-emphasis me-2"
                     >
                       {t("product.sort.label")}
                     </label>
@@ -311,7 +300,7 @@ const Product = ({ path, addToCart, productController, titleController }) => {
                       <select
                         name="sort_by"
                         id="sort-mobile"
-                        className="form-select bg-white rounded-pill"
+                        className="form-select bg-white rounded-2"
                       >
                         <option value="manual">
                           {t("product.sort.default")}
@@ -338,18 +327,18 @@ const Product = ({ path, addToCart, productController, titleController }) => {
                     </sort-by>
                   </div>
                 </div>
-                <div className="filter-items w-100 d-flex flex-wrap mb-xl-3">
+                <div className="filter-items w-100 d-flex flex-wrap mb-xl-3 mb-lg-3 mb-md-2 mb-1 mt-3 align-items-center">
                   {Object.entries(filters || {}).flatMap(
                     ([key, items]) =>
                       Array.isArray(items)
                         ? items.map((item) => (
                             <div
                               key={`${key}-${item.value}`}
-                              className="filter-item bg-white d-flex fw-semibold items-center justify-content-center border rounded-1 py-1 px-xl-3 relative cursor-pointer link mx-1 hover"
+                              className="filter-item bg-white d-flex fw-semibold items-center justify-content-center border rounded-1 py-1 px-xl-3 px-lg-2 px-md-2 px-2 relative cursor-pointer link mx-1 hover"
                             >
                               {item.label}
                               <span
-                                className="js-remove-filter cursor-pointer"
+                                className="js-remove-filter cursor-pointer ms-2"
                                 onClick={() =>
                                   removeFilterItem(key, item.value)
                                 }
@@ -358,15 +347,15 @@ const Product = ({ path, addToCart, productController, titleController }) => {
                               </span>
                             </div>
                           ))
-                        : [] // 👈 nếu items = null hoặc không phải mảng thì bỏ qua
+                        : [], // 👈 nếu items = null hoặc không phải mảng thì bỏ qua
                   )}
 
                   {/* Nút reset tất cả */}
                   {Object.values(filters).some(
-                    (v) => Array.isArray(v) && v.length > 0
+                    (v) => Array.isArray(v) && v.length > 0,
                   ) && (
                     <div
-                      className="filter-item text-danger border rounded-1 py-1 px-xl-3 mx-1 my-1 cursor-pointer"
+                      className="filter-item text-danger border rounded-1 py-1 px-xl-3 px-lg-2 px-md-2 px-2 mx-1 my-1 cursor-pointer fw-semibold"
                       onClick={resetAllFilters}
                     >
                       {t("product.filter.resetAll")}
@@ -374,12 +363,15 @@ const Product = ({ path, addToCart, productController, titleController }) => {
                   )}
                 </div>
               </div>
-              <div className="product-list grid me-xl-2">
+              <div className="product-list grid mt-4 me-xl-2 me-lg-2 me-md-2 me-3">
                 <div className="product-items" style={{ minHeight: "1200px" }}>
                   <div className="row">
                     {currentProducts.length > 0 ? (
                       currentProducts.map((product) => (
-                        <div className="col-xl-3 my-xl-3" key={product.id}>
+                        <div
+                          className="col-xl-3 col-lg-3 col-md-4 col-6 my-xl-3 my-lg-3 my-md-2 my-2"
+                          key={product.id}
+                        >
                           <ProductItem
                             product={product}
                             addToCart={addToCart}
@@ -387,7 +379,9 @@ const Product = ({ path, addToCart, productController, titleController }) => {
                         </div>
                       ))
                     ) : (
-                      <p className="text-center">{t("product.noProducts")}</p>
+                      <p className="text-center bg-light py-3 rounded-3">
+                        {t("product.noProducts")}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -428,12 +422,27 @@ const Product = ({ path, addToCart, productController, titleController }) => {
                 </div>
               </div>
             </div>
-            <div className="col-xl-3 content-product-right pe-0">
+            <div
+              className={`col-xl-3 col-lg-3 col-md-4 ${
+                showFilter
+                  ? `d-block position-fixed position-md-static top-0 end-0 bg-white overflow-auto p-3`
+                  : "d-none"
+              }  
+              content-product-right pe-0 d-md-block h-100`}
+              style={{ zIndex: "3000" }}
+            >
+              <div className="d-flex justify-content-between align-items-center py-2 ms-2 me-3 border-bottom">
+                <h3 className="mb-0 fw-bold">{t("product.filter.title")}</h3>
+                <button
+                  className="btn-close d-md-none"
+                  onClick={() => setShowFilter(false)}
+                ></button>
+              </div>
               <facet-drawer data-collection="0">
-                <div className="collection-filter bg-white pb-xl-5 rounded-3">
-                  <div className="facet-inner overflow-auto bg-background  h-full px-xl-2 z-10 relative ml-auto">
+                <div className="collection-filter bg-white pb-xl-5 pb-lg-5 pb-md-5 pb-sm-5 pb-5  rounded-3">
+                  <div className="facet-inner overflow-auto h-100 px-xl-2 px-lg-3 px-md-3 px-sm-2 px-3">
                     <form className="facet-form">
-                      <div className="filter-container d-flex flex-column rounded-sm ps-xl-4 pt-xl-4 ">
+                      <div className="filter-container d-flex flex-column rounded-sm ps-xl-4 pt-xl-4 ps-lg-3 pt-lg-3 ps-md-2 ps-2 pt-md-2 ps-sm-1 pt-sm-1 ps-1 pt-1">
                         {/* Giá */}
                         <aside
                           className="aside-item filter-price py-xl-2"

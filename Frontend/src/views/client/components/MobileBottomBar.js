@@ -1,14 +1,18 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
+// import { useLocation } from "react-router-dom";
 
-const MobileBottomBar = ({ cartCount = 0, isOutOfStock = false }) => {
-  const location = useLocation();
+const MobileBottomBar = ({
+  cartCount = 0,
+  isOutOfStock = false,
+  isProductDetail = false,
+}) => {
+  // const location = useLocation();
   const { t } = useTranslation();
 
-  const isProductDetail =
-    location.pathname.includes("/product/slug") ||
-    location.pathname.includes("/product");
+  // const isProductDetail =
+  //   location.pathname.includes("/product/slug") ||
+  //   location.pathname.includes("/product");
 
   return (
     <div className="mobile-bottom-menu d-md-none bg-white border-top shadow-sm sticky-bottom">
