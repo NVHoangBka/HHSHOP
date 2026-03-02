@@ -18,6 +18,7 @@ const ProductRouter = ({ addToCart, productController, titleController }) => {
         const uniqueTitles = [
           ...new Set(products.map((p) => p.titles[0]).filter(Boolean)),
         ];
+
         setPaths(["all", ...uniqueTitles]);
       } catch (error) {
         console.error("Lỗi tải paths:", error);
@@ -32,7 +33,6 @@ const ProductRouter = ({ addToCart, productController, titleController }) => {
   if (loading) {
     return <div>Đang tải danh mục...</div>; // Hoặc spinner
   }
-
   return (
     <Routes>
       {paths.map((path, index) => (
@@ -49,6 +49,18 @@ const ProductRouter = ({ addToCart, productController, titleController }) => {
           }
         />
       ))}
+
+      <Route
+        path="/:categorySlug/:subCategorySlug?"
+        element={
+          <Product
+            addToCart={addToCart}
+            path={null}
+            productController={productController}
+            titleController={titleController}
+          />
+        }
+      />
 
       <Route
         path={`/slug/:slug`}

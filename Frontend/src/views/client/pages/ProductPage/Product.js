@@ -2,18 +2,17 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import ProductItem from "./ProductItem";
 import { useTranslation } from "react-i18next";
+import categoryController from "../../../../controllers/CategoryController";
 
-const Product = ({ path, addToCart, productController, titleController }) => {
+const Product = ({ path, addToCart, productController }) => {
   const [t] = useTranslation();
   const params = useParams();
-  const fullPath = params["*"];
-  const [titlePath, subTitlePath] = fullPath
-    ? fullPath.split("/")
-    : [path, null];
+  const titlePath = params.subCategorySlug || params.categorySlug || path;
   const [titlePathCover, setTitlePathConver] = useState();
   const [activeTab, setActiveTab] = useState(path || "all");
   const [title, setTitle] = useState();
-  const [titlesLoaded, setTitlesLoaded] = useState(false);
+  const [categoryId, setCategoryId] = useState(null);
+  const [subCategoryId, setSubCategoryId] = useState(null);
 
   // state cho phân trang
   const [currentPage, setCurrentPage] = useState(1);
@@ -28,41 +27,44 @@ const Product = ({ path, addToCart, productController, titleController }) => {
   });
 
   const [showFilter, setShowFilter] = useState(false);
+  const currentLanguage = localStorage.getItem("i18n_lang");
 
-  // TẢI DANH MỤC TRƯỚC
-  useEffect(() => {
-    async function loadTitles() {
-      await titleController.getAllTitles(); // TẢI VÀO BỘ NHỚ
-      setTitlesLoaded(true);
-    }
-    loadTitles();
-  }, [titleController]);
+  const getTranslated = (obj, fallback = "") => {
+    return obj?.[currentLanguage] || obj?.vi || obj?.en || obj?.cz || fallback;
+  };
 
   // === 1. CẬP NHẬT TITLE + activeTab ===
-  useEffect(() => {
+  const updateTitleAndActiveTab = async () => {
     if (titlePath !== "all") {
       setActiveTab(titlePath);
-      const titleObj = titleController.getTitlesByPath(titlePath)[0];
-      const titleName = titleObj?.name || titlePath;
-      // Nếu có subcategory thì hiển thị song song
-      if (subTitlePath) {
-        const subTitleObj = titleController.getSubTitlesByPath(
-          titlePath,
-          subTitlePath,
-        );
-        const subTitleName = subTitleObj?.name || subTitlePath;
-        setTitlePathConver(`${titleName} / ${subTitleName}`);
-        setTitle(subTitleName);
+      let result;
+      if (params.subCategorySlug) {
+        result = await categoryController.getCategoriesByValue(titlePath);
+        setSubCategoryId(result?.category?._id);
       } else {
-        setTitlePathConver(titleName);
-        setTitle(titleName);
+        result = await categoryController.getCategoriesByValue(titlePath);
+        setCategoryId(result?.category?._id);
+        setSubCategoryId(null);
+      }
+      if (result?.success) {
+        const category = result.category;
+        const titleName = category?.name;
+        setTitlePathConver(getTranslated(titleName));
+        setTitle(getTranslated(titleName));
+      } else {
+        setTitlePathConver(titlePath);
+        setTitle(getTranslated(titlePath));
       }
     } else {
       setActiveTab("all");
       setTitle("Tất cả sản phẩm");
       setTitlePathConver("Tất cả sản phẩm");
     }
-  }, [titlePath, subTitlePath, titleController]);
+  };
+
+  useEffect(() => {
+    updateTitleAndActiveTab();
+  }, [categoryController, activeTab, titlePath]);
 
   const resetAllFilters = () => {
     setFilters({
@@ -136,19 +138,19 @@ const Product = ({ path, addToCart, productController, titleController }) => {
     async function loadAndFilter() {
       setLoading(true);
       try {
-        // B1: Lấy danh sách sản phẩm (await)
-        let products =
-          activeTab === "all"
-            ? await productController.getAllProducts()
-            : await productController.getProductsByTitle(activeTab);
-
-        // B2: Lọc theo subTitle (nếu có)
-        if (subTitlePath) {
-          products = products.filter((p) =>
-            p.subTitles?.includes(subTitlePath),
-          );
+        // B1: Lấy sản phẩm theo category/subCategory nếu có
+        let products = [];
+        if (subCategoryId) {
+          products =
+            activeTab === "all"
+              ? await productController.getAllProducts()
+              : await productController.getProductsBySubCategory(subCategoryId);
+        } else {
+          products =
+            activeTab === "all"
+              ? await productController.getAllProducts()
+              : await productController.getProductsByCategory(categoryId);
         }
-
         // B3: Áp dụng các filter
         if (filters.price?.length > 0) {
           const [min, max] = filters.price[0].value
@@ -207,7 +209,14 @@ const Product = ({ path, addToCart, productController, titleController }) => {
     return () => {
       isMounted = false;
     };
-  }, [activeTab, subTitlePath, filters, productController]);
+  }, [
+    activeTab,
+    titlePath,
+    filters,
+    categoryId,
+    subCategoryId,
+    productController,
+  ]);
 
   // tính toán vị trí sản phẩm
   const indexOfLastProduct = currentPage * productsPerPage;
@@ -242,7 +251,7 @@ const Product = ({ path, addToCart, productController, titleController }) => {
                 title={t("product.breadcrumb.home")}
                 style={{ textDecoration: "none", color: "black" }}
               >
-                <span>{t("product.breadcrumbs.home")}</span>
+                <span>{t("product.breadcrumb.home")}</span>
               </Link>
               <span className="mx-1 inline-block">&nbsp;/&nbsp;</span>
             </li>
@@ -429,7 +438,7 @@ const Product = ({ path, addToCart, productController, titleController }) => {
                   : "d-none"
               }  
               content-product-right pe-0 d-md-block h-100`}
-              style={{ zIndex: "3000" }}
+              style={{ zIndex: showFilter ? "2000" : "1000" }}
             >
               <div className="d-flex justify-content-between align-items-center py-2 ms-2 me-3 border-bottom">
                 <h3 className="mb-0 fw-bold">{t("product.filter.title")}</h3>

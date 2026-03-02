@@ -13,8 +13,8 @@ const FloatingButtons = () => {
 
   return (
     <div
-      className="position-fixed bottom-0 end-0 p-3 d-flex flex-column gap-2 "
-      style={{ zIndex: 999 }}
+      className="position-fixed  end-0 p-3 d-flex flex-column gap-2 "
+      style={{ zIndex: 999, bottom: "15%" }}
     >
       {/* Scroll to top */}
       {show && (

@@ -16,9 +16,8 @@ class ProductController {
   }
 
   async getProductsBySubTitle(subTitlePath) {
-    const result = await this.productService.getProductsBySubTitle(
-      subTitlePath
-    );
+    const result =
+      await this.productService.getProductsBySubTitle(subTitlePath);
     return result;
   }
 
@@ -43,9 +42,8 @@ class ProductController {
   }
 
   async getProductsBySubCategory(subCategoryId) {
-    const result = await this.productService.getProductsBySubCategory(
-      subCategoryId
-    );
+    const result =
+      await this.productService.getProductsBySubCategory(subCategoryId);
     return result;
   }
 
