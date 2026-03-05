@@ -145,7 +145,7 @@ class ColorController {
       const color = await Color.findByIdAndUpdate(
         id,
         { isActive: false },
-        { new: true }
+        { new: true },
       ).lean();
 
       if (!color) {

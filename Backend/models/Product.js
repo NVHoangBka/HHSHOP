@@ -13,7 +13,7 @@ const variantSchema = new mongoose.Schema(
     sku: { type: String, unique: true, sparse: true }, // mã riêng
     sold: { type: Number, default: 0 }, // bán riêng từng loại
   },
-  { _id: false, timestamps: true }
+  { _id: false, timestamps: true },
 );
 
 const highlightSectionSchema = new mongoose.Schema(
@@ -23,7 +23,7 @@ const highlightSectionSchema = new mongoose.Schema(
     icon: { type: String, default: "bi bi-star-fill" },
     order: { type: Number, default: 0 },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const reviewSchema = new mongoose.Schema(
@@ -38,7 +38,7 @@ const reviewSchema = new mongoose.Schema(
     images: [{ type: String }],
     helpful: { type: Number, default: 0 },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const productSchema = new mongoose.Schema(
@@ -88,6 +88,12 @@ const productSchema = new mongoose.Schema(
         index: true,
       },
     ],
+    types: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Type",
+      },
+    ],
     // Thuộc tính động (dung tích, kích thước, chất liệu...)
     attributes: [
       {
@@ -115,7 +121,7 @@ const productSchema = new mongoose.Schema(
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-  }
+  },
 );
 
 // ==================== VIRTUALS SIÊU MẠNH ====================
