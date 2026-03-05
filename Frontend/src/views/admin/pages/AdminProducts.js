@@ -13,6 +13,7 @@ const AdminProducts = ({ adminController }) => {
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [colors, setColors] = useState([]);
+  const [types, setTypes] = useState([]);
 
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState({ show: false, message: "", type: "" });
@@ -88,10 +89,21 @@ const AdminProducts = ({ adminController }) => {
       if (result.success) {
         const tags = result.tags;
         const tagsProduct = tags.filter(
-          (tag) => tag.type === "product" || tag.type === "both"
+          (tag) => tag.type === "product" || tag.type === "both",
         );
 
         setTagsProduct(tagsProduct);
+      }
+    } catch (error) {}
+  };
+
+  const fetchTypes = async () => {
+    try {
+      const result = await tagController.getAllTypes();
+      if (result.success) {
+        const types = result.types;
+
+        setTypes(types);
       }
     } catch (error) {}
   };
@@ -123,6 +135,7 @@ const AdminProducts = ({ adminController }) => {
     setCurrentPage(1);
     loadProducts();
     fetchTagsProduct();
+    fetchTypes();
     fetchCategories();
     fetchColors();
   }, [searchTerm]);
@@ -130,6 +143,7 @@ const AdminProducts = ({ adminController }) => {
   useEffect(() => {
     loadProducts();
     fetchTagsProduct();
+    fetchTypes();
     fetchCategories();
     fetchColors();
   }, [currentPage]);
@@ -194,7 +208,7 @@ const AdminProducts = ({ adminController }) => {
       } else if (product.category) {
         // Fallback nếu model cũ dùng single category
         selectedCategories = [product.category?._id || product.category].filter(
-          Boolean
+          Boolean,
         );
       }
 
@@ -204,8 +218,8 @@ const AdminProducts = ({ adminController }) => {
         selectedSubIds = Array.isArray(product.subCategories)
           ? product.subCategories.map((s) => s?._id || s)
           : product.subCategories?._id
-          ? [product.subCategories._id]
-          : [];
+            ? [product.subCategories._id]
+            : [];
       } else if (product.subCategory) {
         // Fallback nếu model cũ dùng subCategory single
         selectedSubIds = [
@@ -229,6 +243,8 @@ const AdminProducts = ({ adminController }) => {
         categories: selectedCategories,
         subCategories: selectedSubIds,
         colors: selectedColors,
+        types: product.types || [],
+        tags: product.tags || [],
         inStock: product.inStock !== false,
         flashSale: !!product.flashSale,
         highlightSections: product.highlightSections?.length
@@ -286,7 +302,7 @@ const AdminProducts = ({ adminController }) => {
       }
 
       const uniqueSubs = Array.from(
-        new Map(allSubs.map((s) => [s._id, s])).values()
+        new Map(allSubs.map((s) => [s._id, s])).values(),
       );
       setSubCategories(uniqueSubs);
     } catch (err) {
@@ -335,7 +351,7 @@ const AdminProducts = ({ adminController }) => {
       if (isEditing) {
         result = await adminController.updateProductAdmin(
           currentId,
-          submitData
+          submitData,
         );
       } else {
         result = await adminController.createProductAdmin(submitData);
@@ -346,7 +362,7 @@ const AdminProducts = ({ adminController }) => {
           isEditing
             ? t("admin.products.toast.updateSuccess")
             : t("admin.products.toast.addSuccess"),
-          "success"
+          "success",
         );
         setModalOpen(false);
         // Reload danh sách
@@ -490,8 +506,8 @@ const AdminProducts = ({ adminController }) => {
     try {
       const res = await fetch(
         `https://translate.googleapis.com/translate_a/single?client=gtx&sl=vi&tl=${lang}&dt=t&q=${encodeURIComponent(
-          text
-        )}`
+          text,
+        )}`,
       );
       const data = await res.json();
       return data?.[0]?.[0]?.[0] || text;
@@ -662,9 +678,9 @@ const AdminProducts = ({ adminController }) => {
                                   {formatPrice(
                                     Math.min(
                                       ...p.variants.map(
-                                        (v) => v.discountPrice || v.price
-                                      )
-                                    )
+                                        (v) => v.discountPrice || v.price,
+                                      ),
+                                    ),
                                   )}
                                   ({p.variants.length} loại)
                                 </small>
@@ -686,27 +702,14 @@ const AdminProducts = ({ adminController }) => {
                             </div>
                           )}
                         </td>
-                        {/* <td>
-                          <span
-                            className={`badge ${
-                              p.stock > 10
-                                ? "bg-success"
-                                : p.stock > 0
-                                ? "bg-warning"
-                                : "bg-danger"
-                            } fs-6`}
-                          >
-                            {p.stock || 0} {t("admin.products.table.unit")}
-                          </span>
-                        </td> */}
                         <td>
                           <span
                             className={`badge ${
                               (p.totalStock || p.stock || 0) > 10
                                 ? "bg-success"
                                 : (p.totalStock || p.stock || 0) > 0
-                                ? "bg-warning"
-                                : "bg-danger"
+                                  ? "bg-warning"
+                                  : "bg-danger"
                             } fs-6`}
                           >
                             {p.totalStock || p.stock || 0}{" "}
@@ -918,7 +921,7 @@ const AdminProducts = ({ adminController }) => {
                                 })
                               }
                               placeholder={t(
-                                "admin.products.form.priceSaleHint"
+                                "admin.products.form.priceSaleHint",
                               )}
                             />
                           </div>
@@ -961,7 +964,7 @@ const AdminProducts = ({ adminController }) => {
                                 type="url"
                                 className="form-control"
                                 placeholder={t(
-                                  "admin.products.form.imagePlaceholderLink"
+                                  "admin.products.form.imagePlaceholderLink",
                                 )}
                                 value={formData.image || ""}
                                 onChange={(e) =>
@@ -998,7 +1001,7 @@ const AdminProducts = ({ adminController }) => {
                                   onError={(e) => {
                                     e.target.src = "/placeholder.jpg";
                                     e.target.alt = t(
-                                      "admin.products.form.imageLoadError"
+                                      "admin.products.form.imageLoadError",
                                     );
                                   }}
                                 />
@@ -1040,7 +1043,7 @@ const AdminProducts = ({ adminController }) => {
                               className="form-control mb-3"
                               rows="4"
                               placeholder={t(
-                                "admin.products.form.galleryPlaceholder"
+                                "admin.products.form.galleryPlaceholder",
                               )}
                               value={formData.gallery || ""}
                               onChange={(e) =>
@@ -1177,7 +1180,7 @@ const AdminProducts = ({ adminController }) => {
                                       type="checkbox"
                                       id={`cat-${cat._id}`}
                                       checked={formData.categories.includes(
-                                        cat._id
+                                        cat._id,
                                       )}
                                       onChange={() =>
                                         handleCategoryChange(cat._id)
@@ -1207,7 +1210,7 @@ const AdminProducts = ({ adminController }) => {
                                 {formData.category
                                   ? t("admin.products.form.noSubCategory")
                                   : t(
-                                      "admin.products.form.selectCategoryFirst"
+                                      "admin.products.form.selectCategoryFirst",
                                     )}
                               </div>
                             ) : (
@@ -1228,7 +1231,7 @@ const AdminProducts = ({ adminController }) => {
                                       type="checkbox"
                                       id={`subcat-${sub._id}`}
                                       checked={formData.subCategories.includes(
-                                        sub._id
+                                        sub._id,
                                       )}
                                       onChange={(e) => {
                                         setFormData((prev) => ({
@@ -1236,7 +1239,7 @@ const AdminProducts = ({ adminController }) => {
                                           subCategories: e.target.checked
                                             ? [...prev.subCategories, sub._id]
                                             : prev.subCategories.filter(
-                                                (id) => id !== sub._id
+                                                (id) => id !== sub._id,
                                               ),
                                         }));
                                       }}
@@ -1274,14 +1277,14 @@ const AdminProducts = ({ adminController }) => {
                                       type="checkbox"
                                       id={`color-${color._id}`}
                                       checked={formData.colors.includes(
-                                        color._id
+                                        color._id,
                                       )}
                                       onChange={() => {
                                         setFormData((prev) => ({
                                           ...prev,
                                           colors: toggleArray(
                                             prev.colors,
-                                            color._id
+                                            color._id,
                                           ),
                                         }));
                                       }}
@@ -1323,13 +1326,50 @@ const AdminProducts = ({ adminController }) => {
                                         setFormData({
                                           ...formData,
                                           tags: formData.tags.filter(
-                                            (t) => t !== tag._id
+                                            (t) => t !== tag._id,
                                           ),
                                         });
                                       }
                                     }}
                                   />
                                   <span>{tag.name}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* TYPES */}
+                          <div className="col-12 ">
+                            <label className="form-label fw-bold">
+                              {t("admin.products.form.type")}
+                            </label>
+                            <div className="d-flex flex-wrap px-3 py-2 rounded border align-items-center">
+                              {types.map((type) => (
+                                <div
+                                  key={type._id}
+                                  className="col-3 form-check "
+                                >
+                                  <input
+                                    className="form-check-input"
+                                    type="checkbox"
+                                    checked={formData.types.includes(type._id)}
+                                    onChange={(e) => {
+                                      if (e.target.checked) {
+                                        setFormData({
+                                          ...formData,
+                                          types: [...formData.types, type._id],
+                                        });
+                                      } else {
+                                        setFormData({
+                                          ...formData,
+                                          types: formData.types.filter(
+                                            (t) => t !== type._id,
+                                          ),
+                                        });
+                                      }
+                                    }}
+                                  />
+                                  <span>{getTranslated(type.name)}</span>
                                 </div>
                               ))}
                             </div>
@@ -1451,7 +1491,7 @@ const AdminProducts = ({ adminController }) => {
                                     updateVariant(
                                       idx,
                                       "discountPrice",
-                                      e.target.value
+                                      e.target.value,
                                     )
                                   }
                                 />
@@ -1466,7 +1506,7 @@ const AdminProducts = ({ adminController }) => {
                                     updateVariant(
                                       idx,
                                       "stock",
-                                      Number(e.target.value)
+                                      Number(e.target.value),
                                     )
                                   }
                                 />

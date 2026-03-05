@@ -29,7 +29,7 @@ const tagSchema = new mongoose.Schema(
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-  }
+  },
 );
 
 // Tạo slug tiếng Việt đẹp

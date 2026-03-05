@@ -103,26 +103,6 @@ const ProductDetail = ({ addToCart, productController }) => {
     setShowMore(!showMore);
   };
 
-  if (loading) {
-    return (
-      <div className="container py-xl-5 text-center">
-        <div className="spinner-border text-success" role="status">
-          <span className="visually-hidden">{t("product.loading")}</span>
-        </div>
-      </div>
-    );
-  }
-
-  if (!product) {
-    return (
-      <div className="container py-xl-5 text-center">
-        <p className="text-muted">{t("product.notFound")}</p>
-        <Link to="/" className="btn btn-outline-success">
-          {t("product.backHome")}
-        </Link>
-      </div>
-    );
-  }
   const getTranslated = (obj, fallback = "") => {
     return obj?.[currentLanguage] || obj?.vi || obj?.en || obj?.cz || fallback;
   };
@@ -140,13 +120,34 @@ const ProductDetail = ({ addToCart, productController }) => {
 
   const allImages = product?.gallery || [product?.image];
 
+  if (loading) {
+    return (
+      <div className="container py-5 text-center">
+        <div className="spinner-border text-success" role="status">
+          <span className="visually-hidden">{t("product.loading")}</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="container py-5 text-center">
+        <p className="text-muted">{t("product.notFound")}</p>
+        <Link to="/" className="btn btn-outline-success">
+          {t("product.backHome")}
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <>
       {/* Breadcrumb */}
       <div className="bg-success-subtle">
         <div className="container">
           <div className="breadcrumbs">
-            <ul className="breadcrumb py-xl-2 py-lg-2 py-md-2 flex flex-wrap items-center text-xs">
+            <ul className="breadcrumb py-xl-2 py-lg-2 py-md-2 py-1 d-flex flex-wrap align-items-center fs-7">
               <li className="home ">
                 <Link
                   className="link hover fs-7"
@@ -168,11 +169,11 @@ const ProductDetail = ({ addToCart, productController }) => {
         </div>
       </div>
 
-      <div className="container mt-xl-4 mt-lg-4 mt-md-4">
+      <div className="container mt-xl-4 mt-lg-4 mt-md-4 mt-3">
         <product-form id="main-product">
           <div className="product-detail row justify-content-between">
             {/* Gallery */}
-            <div className="product-gallery-wrapper col-xl-5 col-lg-5">
+            <div className="product-gallery-wrapper col-xl-5 col-lg-5 col-12">
               <div className="product-gallery-container">
                 <div className="product-gallery">
                   <div>
@@ -180,23 +181,23 @@ const ProductDetail = ({ addToCart, productController }) => {
                       <img
                         src={mainImage || "/placeholder.jpg"}
                         alt={getTranslated(product.name)}
-                        className="object-contain rounded-lg gallery-main-img w-100"
+                        className="object-contain rounded-lg gallery-main-img w-100 rounded-4"
                       />
                     </div>
 
                     {/* Thumbnails (nếu có nhiều ảnh) */}
                     {allImages.length > 1 && (
-                      <div className="d-flex justify-content-center gap-3 mt-xl-3 mt-lg-3">
+                      <div className="d-flex justify-content-center gap-3 mt-3 rounded-4">
                         {allImages.map((img, i) => (
                           <div
                             key={i}
-                            className={`border p-1 cursor-pointer ${
+                            className={`border p-1 cursor-pointer rounded-4 ${
                               mainImage === img ? "border-danger" : "border"
                             }`}
                             onClick={() => setMainImage(img)}
                           >
                             <img
-                              className="object-contain"
+                              className="object-contain rounded-4"
                               src={img}
                               alt=""
                               width="64px"
@@ -210,15 +211,15 @@ const ProductDetail = ({ addToCart, productController }) => {
                 </div>
 
                 {/* Chia sẻ */}
-                <div className="mb-xl-3 mb-lg-3 mb-md-3">
-                  <div className="share-group d-flex justify-content-center align-items-center mt-xl-5 mt-lg-5 mt-md-5">
+                <div className="mb-3">
+                  <div className="share-group d-flex justify-content-center align-items-center mt-xl-5 mt-lg-5 mt-md-5 mt-3">
                     <p className="share-group__heading m-0">
                       {t("product.share")}
                     </p>
-                    <div className="share-group__list d-flex ms-xl-3 ms-lg-3 ms-md-3">
+                    <div className="share-group__list d-flex ms-3">
                       <Link
                         title="facebook-share"
-                        className="share-group__item p-xl-2 p-lg-2 p-md-2 border rounded-5 d-flex align-items-center justify-content-center facebook mx-1"
+                        className="share-group__item p-2 border rounded-5 d-flex align-items-center justify-content-center facebook mx-1"
                         target="_blank"
                         to={`https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`}
                       >
@@ -233,7 +234,7 @@ const ProductDetail = ({ addToCart, productController }) => {
                       </Link>
                       <Link
                         title="messenger-share"
-                        className="share-group__item messenger p-xl-2 p-lg-2 p-md-2 border rounded-5 d-flex align-items-center justify-content-center mx-1"
+                        className="share-group__item messenger p-2 border rounded-5 d-flex align-items-center justify-content-center mx-1"
                         target="_blank"
                         to={`https://m.me/?app_scoped_user_id=&link=${window.location.href}`}
                       >
@@ -253,14 +254,14 @@ const ProductDetail = ({ addToCart, productController }) => {
             </div>
 
             {/* Thông tin sản phẩm */}
-            <div className="product-form-wrapper col-xl-6 col-lg-6">
+            <div className="product-form-wrapper col-xl-6 col-lg-6 col-12">
               <div className="bg-background">
                 <div className="">
-                  <div className="product-title mb-xl-4 mb-lg-4 mb-md-4">
+                  <div className="product-title mb-4">
                     <h1 className="fw-semibold fs-4">
                       {getTranslated(product.name)}
                     </h1>
-                    <div className="d-flex flex-wrap align-items-center my-xl-2 my-lg-2 my-md-2">
+                    <div className="d-flex flex-wrap align-items-center my-2">
                       <button
                         aria-label="So sánh"
                         type="button"
@@ -271,20 +272,21 @@ const ProductDetail = ({ addToCart, productController }) => {
                       </button>
                     </div>
 
-                    <div className="group-status d-flex flex-wrap pb-xl-2 pb-lg-2 pb-md-2 align-items-center">
-                      <div className="status status-vendor col-xl-4 col-lg-4">
+                    <div className="group-status d-flex flex-wrap pb-2 align-items-center">
+                      <div className="status status-vendor col-xl-4 col-lg-4 col">
                         <span className="fs-7 me-1">{t("product.brand")}</span>
 
-                        <span className="fs-7 fw-semibold text-black">
-                          {Array.isArray(product.brands)
+                        <span className="fs-7 fw-semibold text-black text-decoration-underline">
+                          {(Array.isArray(product.brands)
                             ? product.brands.join(", ")
-                            : product.brands || "Minimart"}
+                            : product.brands) || "Khác"}
                         </span>
                       </div>
-                      <div className="status status-sku col-4">
+                      <div className="status status-sku col-lg-4 col">
                         <span className="fs-7">{t("product.sku")}:</span>
                         <span className="fs-7">
-                          {product._id?.slice(-8).toUpperCase() || "N/A"}
+                          {product._id?.slice(-8).toUpperCase() ||
+                            "Đang cập nhật"}
                         </span>
                       </div>
                       {product.stock !== undefined && product.stock < 10 && (
@@ -296,18 +298,18 @@ const ProductDetail = ({ addToCart, productController }) => {
                     </div>
 
                     {/* Giá */}
-                    <div className="product-price-group rounded-sm overflow-hidden mb-xl-4 mb-lg-4">
+                    <div className="product-price-group rounded-sm overflow-hidden mb-lg-4 mb-2">
                       <div className="price-box d-flex align-items-center flex-wrap">
-                        <div className="d-flex flex-wrap">
-                          <span className="price fs-2 fw-bold text-active ms-xl-3 ms-lg-3">
+                        <div className="d-flex flex-wrap align-items-center">
+                          <span className="price fs-2 fw-bold text-active ms-3">
                             {formatPrice(currentPrice)}
                           </span>
                           {hasDiscount && (
                             <>
-                              <del className="text-muted ms-xl-2 ms-lg-2 fs-6">
+                              <del className="text-muted ms-2 fs-6">
                                 {formatPrice(originalPrice)}
                               </del>
-                              <span className="ms-xl-2 ms-lg-2 badge bg-danger">
+                              <span className="ms-2 badge bg-danger">
                                 {t("product.price.discount", {
                                   percent: discountPercent,
                                 })}
@@ -320,16 +322,16 @@ const ProductDetail = ({ addToCart, productController }) => {
                   </div>
 
                   {/* Khuyến mãi */}
-                  <div className="promo-box mb-xl-4 mb-lg-4 mb-md-4">
-                    <div className="promo-box-group border rounded-2 ">
-                      <div className="promo-box__header d-flex align-items-center px-xl-4 px-lg-4 py-1 bg-success-subtle text-success">
+                  <div className="promo-box mb-md-4 mb-3">
+                    <div className="promo-box-group border rounded-2">
+                      <div className="promo-box__header d-flex align-items-center px-lg-4 px-2 py-1 bg-success-subtle text-success">
                         <i className="bi bi-gift"></i>
                         <div className="promo-box__header-title ms-2 fs-7 fw-semibold">
                           {t("product.promo.title")}
                         </div>
                       </div>
 
-                      <div className="promo-box__body bg-background px-xl-5 px-lg-4 py-xl-3 py-lg-3 py-md-3">
+                      <div className="promo-box__body bg-background px-xl-5 px-lg-4 px-3 py-md-3 py-2">
                         <div className="promo-box__body-item">
                           1. {t("product.promo.item1")}
                         </div>
@@ -346,34 +348,34 @@ const ProductDetail = ({ addToCart, productController }) => {
                     </div>
                   </div>
 
-                  <div className="coupon-box mb-xl-4 mb-lg-4 mb-md-4">
+                  <div className="coupon-box mb-lg-4 mb-md-4 mb-3">
                     <div className="coupon-group d-flex align-items-center justify-content-between">
-                      <div className="coupon-group-header col-xl-2 col-lg-3">
+                      <div className="coupon-group-header col-xl-2 col-lg-3 col-3">
                         {t("product.coupon.title")}
                       </div>
                       <div className="d-flex" data-portal="#coupon-drawer">
                         <div className="d-flex align-items-center cursor-pointer">
-                          <div className="coupon-group-item overflow-hidden d-flex align-items-center px-xl-3 px-lg-3 py-xl-2 py-lg-2 fs-7 bg-warning-subtle mx-1 text-active rounded-3 col-xl-3 col-lg-2">
+                          <div className="coupon-group-item overflow-hidden d-flex align-items-center px-lg-3 px-2 py-2 fs-7 bg-warning-subtle mx-1 text-active rounded-3 col-xl-3 col-lg-2 col-2">
                             <i class="bi bi-ticket-perforated"></i>
                             <div class="coupon-group-item__code fw-semibold ms-1 text-truncate">
                               EGA50THANG10
                             </div>
                           </div>
 
-                          <div className="coupon-group-item overflow-hidden d-flex align-items-center px-xl-3 px-lg-3 py-xl-2 py-lg-2 fs-7 bg-warning-subtle mx-1 text-active rounded-3 col-xl-3 col-lg-2">
+                          <div className="coupon-group-item overflow-hidden d-flex align-items-center px-lg-3 px-2 py-2 fs-7 bg-warning-subtle mx-1 text-active rounded-3 col-xl-3 col-lg-2 col-2">
                             <i className="bi bi-ticket-perforated"></i>
                             <div className="coupon-group-item__code fw-semibold ms-1 text-truncate">
                               EGA30THANG10
                             </div>
                           </div>
 
-                          <div className="coupon-group-item overflow-hidden d-flex align-items-center px-xl-3 px-lg-3 py-xl-2 py-lg-2 fs-7 bg-warning-subtle mx-1 text-active rounded-3 col-xl-3 col-lg-2">
+                          <div className="coupon-group-item overflow-hidden d-flex align-items-center px-lg-3 px-2 py-2 fs-7 bg-warning-subtle mx-1 text-active rounded-3 col-xl-3 col-lg-2 col-2">
                             <i className="bi bi-ticket-perforated"></i>
                             <div className="coupon-group-item__code fw-semibold ms-1 text-truncate">
                               FREESHIPTHANG10
                             </div>
                           </div>
-                          <div className="px-xl-3 px-lg-3 py-xl-2 py-lg-2 bg-warning-subtle mx-1 text-active rounded-3">
+                          <div className="px-lg-3 px-2 py-2 bg-warning-subtle mx-1 text-active rounded-3">
                             <i className="bi bi-caret-right-fill"></i>
                           </div>
                         </div>
@@ -383,10 +385,10 @@ const ProductDetail = ({ addToCart, productController }) => {
 
                   {/* Variant (nếu có) dung tích */}
                   {product.variants && product.variants.length > 0 && (
-                    <div className="mb-xl-4 mb-lg-4 mb-md-4">
+                    <div className="mb-md-4 mb-3">
                       <div className="variant-picker d-flex">
                         <div className="variant-picker__input d-flex align-items-center w-100">
-                          <div className="mb-1 col-xl-2 col-lg-3">
+                          <div className="mb-1 col-xl-2 col-lg-3 col-3">
                             {t("product.variant.label")}
                           </div>
                           <div
@@ -423,18 +425,18 @@ const ProductDetail = ({ addToCart, productController }) => {
                 </div>
 
                 {/* Số lượng + CTA */}
-                <div className="product-cta mb-0 mt-xl-4 mt-lg-4 mt-md-4 mt-4">
+                <div className="product-cta mb-0 mt-md-4 mt-3">
                   {product.stock === 0 ? (
                     <div>
-                      <div className="d-none btn fw-semibold mt-xl-2 mt-lg-2 mt-md-2 mt-2 btn w-100">
+                      <div className="d-none btn fw-semibold mt-2 btn w-100">
                         {t("product.buttons.outOfStock")}
                       </div>
                       <input type="hidden" name="variantId" value="118468360" />
                     </div>
                   ) : (
                     <div>
-                      <div className="d-flex align-items-center mb-xl-4 mb-lg-4 mb-md-4 mb-4">
-                        <div className="col-xl-2 col-lg-3 me-2 fs-7">
+                      <div className="d-flex align-items-center mb-md-4 mb-3">
+                        <div className="col-xl-2 col-lg-3 col-3 me-2 fs-7">
                           {t("product.quantity.label")}
                         </div>
                         <quantity-input>
@@ -443,7 +445,7 @@ const ProductDetail = ({ addToCart, productController }) => {
                               <button
                                 type="button"
                                 name="minus"
-                                className="cursor-pointer p-xl-2 p-lg-2 bg-transparent border-0 text-hover"
+                                className="cursor-pointer p-lg-2 p-1 bg-transparent border-0 text-hover"
                                 onClick={() =>
                                   setQuantity(Math.max(1, quantity - 1))
                                 }
@@ -460,7 +462,7 @@ const ProductDetail = ({ addToCart, productController }) => {
                               <button
                                 type="button"
                                 name="plus"
-                                className="cursor-pointer p-xl-2 p-lg-2 bg-transparent border-0 text-hover"
+                                className="cursor-pointer p-lg-2 p-1 bg-transparent border-0 text-hover"
                                 onClick={() => setQuantity(quantity + 1)}
                               >
                                 <i className="m-auto bi bi-plus"></i>
@@ -470,11 +472,11 @@ const ProductDetail = ({ addToCart, productController }) => {
                         </quantity-input>
                       </div>
 
-                      <div className="d-flex border-top mt-xl-4 mt-lg-4 pt-xl-4 pt-lg-4">
+                      <div className="d-flex border-top mt-lg-4 mt-3 pt-lg-4 pt-3">
                         <button
                           onClick={handleBuyNow}
                           name="buynow"
-                          className=" fw-semibold btn border border-danger btn-buynow w-100 py-2 text-danger col mx-xl-2 mx-lg-2 rounded-5"
+                          className=" fw-semibold btn border border-danger btn-buynow w-100 py-2 text-danger col mx-2  rounded-5"
                         >
                           <span> {t("product.buttons.buyNow")} </span>
                           <span className="loading-icon hidden align-items-center justify-content-center">
@@ -486,15 +488,13 @@ const ProductDetail = ({ addToCart, productController }) => {
 
                         <button
                           name="addtocart"
-                          className=" fw-semibold btn btn-add-to-cart w-100 bg-danger text-white col py-xl-2 py-lg-2 mx-xl-2 mx-lg-2 rounded-5"
+                          className=" fw-semibold btn btn-add-to-cart w-100 bg-danger text-white col py-2 mx-2 rounded-5"
                           onClick={handleAddToCart}
                         >
                           <span> {t("product.buttons.addToCart")}</span>
                           <span className="loading-icon  hidden align-items-center justify-content-center">
                             <span className="rounded-full animate-pulse"></span>
-
                             <span className="rounded-full animate-pulse"></span>
-
                             <span className="rounded-full animate-pulse"></span>
                           </span>
                         </button>
@@ -503,10 +503,10 @@ const ProductDetail = ({ addToCart, productController }) => {
                   )}
                 </div>
 
-                <div className="card-product__badges d-none space-y-2 col-span-full mt-xl-4 mt-lg-4"></div>
+                <div className="card-product__badges d-none space-y-2 col-span-full mt-4"></div>
 
                 {/* Chính sách */}
-                <ul className="d-flex flex-column product-polices pt-xl-3 pt-lg-3 pt-md-3">
+                <ul className="d-flex flex-column product-polices pt-3 ps-lg-5 ps-3">
                   <li className="item d-flex align-items-center my-1">
                     <div className="max-w-5">
                       <img
@@ -518,7 +518,7 @@ const ProductDetail = ({ addToCart, productController }) => {
                         alt={t("product.policies.freeShipping")}
                       />
                     </div>
-                    <div className="fs-7 ms-xl-2 ms-lg-2">
+                    <div className="fs-7 ms-2">
                       {t("product.policies.freeShipping")}
                     </div>
                   </li>
@@ -534,7 +534,7 @@ const ProductDetail = ({ addToCart, productController }) => {
                         alt={t("product.policies.installment")}
                       />
                     </div>
-                    <div className="fs-7 ms-xl-2 ms-lg-2">
+                    <div className="fs-7 ms-2">
                       {t("product.policies.installment")}
                     </div>
                   </li>
@@ -550,7 +550,7 @@ const ProductDetail = ({ addToCart, productController }) => {
                         alt={t("product.policies.return")}
                       />
                     </div>
-                    <div className="fs-7 ms-xl-2 ms-lg-2">
+                    <div className="fs-7 ms-2">
                       {t("product.policies.return")}
                     </div>
                   </li>
@@ -573,18 +573,18 @@ const ProductDetail = ({ addToCart, productController }) => {
           </div>
 
           <div
-            className="tab-content  bg-white py-xl-5 py-lg-5"
+            className="tab-content bg-white py-lg-5 py-3"
             id="product-content"
           >
-            <div className="bg-success-subtle pb-xl-4 pb-lg-4">
+            <div className="bg-success-subtle pb-4">
               <h3 className="fs-5 text-center block py-3 fw-semibold text-success m-0">
                 {t("product.features.title")}
               </h3>
-              <div className=" bg-white pb-xl-4 pb-lg-4 mb-xl-4 mb-lg-4">
+              <div className=" bg-white pb-lg-4 pb-3 mb-lg-4 mb-3">
                 <div className="container">
                   {product.highlightContent ? (
                     <div
-                      className={`expandable-content mb-xl-3 mb-lg-3 position-relative overflow-hidden px-xl-5 px-lg-3 pt-xl-5 pt-lg-3 ${
+                      className={`expandable-content mb-xl-3 mb-lg-3 position-relative overflow-hidden px-xl-5 px-3 pt-xl-5 pt-3 ${
                         showMore ? "show-all" : ""
                       }`}
                     >
@@ -608,20 +608,27 @@ const ProductDetail = ({ addToCart, productController }) => {
                       </div>
                     </div>
                   ) : (
-                    <p className="text-center text-muted py-xl-5 py-lg-5">
+                    <p className="text-center text-muted py-lg-5 py-4">
                       {t("product.features.noContent")}
                     </p>
                   )}
                   {product.highlightContent && (
                     <button
-                      className="btn-showmore rounded-5 fs-7 px-xl-3 py-xl-2 px-lg-3 py-lg-2"
+                      className="btn-showmore rounded-5 fs-7 px-3 py-2"
                       id="btn-showmore"
                       onClick={handleShowMore}
                     >
-                      {showMore
-                        ? t("product.features.showLess")
-                        : t("product.features.showMore")}
-                      <i class="bi bi-chevron-down"></i>
+                      {showMore ? (
+                        <span>
+                          {t("product.features.showLess")}
+                          <i className="bi bi-chevron-up ms-1"></i>
+                        </span>
+                      ) : (
+                        <span>
+                          {t("product.features.showMore")}
+                          <i className="bi bi-chevron-down ms-1"></i>
+                        </span>
+                      )}
                     </button>
                   )}
                 </div>
