@@ -18,6 +18,7 @@ const newRouter = require("./New");
 const categoryRouter = require("./Category");
 const colorRoutes = require("./Color");
 const typeRoutes = require("./Type");
+const brandRoutes = require("./Brand");
 // const searchRouter = require("./Search");
 
 router.use("/auth", authRouter);
@@ -36,6 +37,7 @@ router.use("/tags", tagRouter);
 router.use("/categories", categoryRouter);
 router.use("/colors", colorRoutes);
 router.use("/types", typeRoutes);
+router.use("/brands", brandRoutes);
 // router.use("/search", searchRouter);
 
 module.exports = router;

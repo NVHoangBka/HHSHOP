@@ -15,6 +15,20 @@ class TagService {
       return response.data.types;
     } catch (error) {}
   }
+
+  async getAllColors() {
+    try {
+      const response = await api.get("/colors");
+      return response.data.colors;
+    } catch (error) {}
+  }
+
+  async getAllBrands() {
+    try {
+      const response = await api.get("/brands");
+      return response.data.brands;
+    } catch (error) {}
+  }
 }
 
 export default TagService;

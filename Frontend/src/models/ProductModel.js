@@ -22,7 +22,7 @@ class Product {
     this.shortDescription = data.shortDescription || "";
     this.description = this.normalizeTranslatable(
       data.description,
-      "Mô tả sản phẩm"
+      "Mô tả sản phẩm",
     );
     this.highlightContent = data.highlightContent || "";
     this.highlightSections = data.highlightSections || [];
@@ -35,6 +35,7 @@ class Product {
     this.colors = data.colors || [];
 
     this.tags = data.tags || [];
+    this.types = data.types || [];
     this.titles = data.titles || [];
     this.subTitles = data.subTitles || [];
 

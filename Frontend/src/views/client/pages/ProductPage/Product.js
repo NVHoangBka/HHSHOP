@@ -14,29 +14,33 @@ const Product = ({ path, addToCart, productController }) => {
   const [t] = useTranslation();
   const params = useParams();
   const titlePath = params.subCategorySlug || params.categorySlug || path;
+
   const [titlePathCover, setTitlePathConver] = useState();
   const [activeTab, setActiveTab] = useState(path || "all");
   const [title, setTitle] = useState();
   const [categoryId, setCategoryId] = useState(null);
   const [subCategoryId, setSubCategoryId] = useState(null);
   const [priceRange, setPriceRange] = useState([0, 10000000]);
+
   // state cho phân trang
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 12;
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
-    price: null,
+    price: [],
     brand: [],
     type: [],
     tag: [],
     color: [],
   });
-  const filtersLength = Object.values(filters).flat().length - 1;
+  const filtersLength = Object.values(filters).flat().length;
 
   const [showFilter, setShowFilter] = useState(false);
   const [tags, setTags] = useState();
   const [types, setTypes] = useState();
+  const [colors, setColors] = useState();
+  const [brands, setBrands] = useState();
 
   // === 1. CẬP NHẬT TITLE + activeTab ===
   const updateTitleAndActiveTab = async () => {
@@ -71,34 +75,67 @@ const Product = ({ path, addToCart, productController }) => {
     updateTitleAndActiveTab();
   }, [categoryController, activeTab, titlePath]);
 
-  const fetchTagsProduct = async () => {
-    try {
-      const result = await tagController.getAllTags();
-      if (result.success) {
-        const tags = result.tags;
-        const tagsProduct = tags.filter(
-          (tag) => tag.type === "product" || tag.type === "both",
-        );
-        setTags(tagsProduct);
-      }
-    } catch (error) {}
-  };
-
-  const fetchTypes = async () => {
-    const types = (await tagController.getAllTypes())?.types || "";
-    setTypes(types);
-  };
-
   useEffect(() => {
-    fetchTagsProduct();
-    fetchTypes();
+    const fetchData = async () => {
+      try {
+        const [tagsRes, typesRes, colorsRes, brandsRes] = await Promise.all([
+          tagController.getAllTags(),
+          tagController.getAllTypes(),
+          tagController.getAllColors(),
+          tagController.getAllBrands(),
+        ]);
+
+        if (tagsRes.success) {
+          setTags(
+            tagsRes.tags.filter(
+              (tag) => tag.type === "product" || tag.type === "both",
+            ),
+          );
+        }
+        setTypes(typesRes?.types || []);
+        if (colorsRes?.success) setColors(colorsRes.colors || []);
+        if (brandsRes?.success) setBrands(brandsRes.brands || []);
+      } catch (error) {
+        console.error("Lỗi fetch filter data:", error);
+      }
+    };
+    fetchData();
   }, []);
 
-  console.log(tags);
+  // ============= Đồng bộ priceRange ===================
+  useEffect(() => {
+    const min = priceRange[0];
+    const max = priceRange[1];
+
+    let label = "";
+    let value = `${min}:${max >= 10000000 ? "max" : max}`;
+
+    if (min === 0 && max >= 10000000) {
+      setFilters((prev) => ({ ...prev, price: [] }));
+      return;
+    }
+
+    if (max >= 10000000) {
+      label = `${min.toLocaleString("vi-VN")} ₫ - 10tr+`;
+    } else if (max === 0) {
+      label = `${min.toLocaleString("vi-VN")} ₫`;
+    } else {
+      label = `${min.toLocaleString("vi-VN")} ₫ - ${max.toLocaleString("vi-VN")} ₫`;
+    }
+
+    // Tránh cập nhật không cần thiết → ngăn loop vô hạn
+    const current = filters.price?.[0];
+    if (current?.value === value && current?.label === label) return;
+
+    setFilters((prev) => ({
+      ...prev,
+      price: [{ value, label }],
+    }));
+  }, [priceRange]);
 
   const resetAllFilters = () => {
     setFilters({
-      price: null,
+      price: [],
       brand: [],
       type: [],
       color: [],
@@ -115,7 +152,22 @@ const Product = ({ path, addToCart, productController }) => {
   // Hàm thay đổi filter
   const handleFilterChange = (key, e) => {
     const { type, checked, value } = e.target;
-    const label = e.target.getAttribute("data-value");
+
+    let label, item;
+    switch (key) {
+      case "type":
+        item = types.filter((t) => t._id === value);
+        break;
+      case "color":
+        item = colors.filter((c) => c._id === value);
+        break;
+      case "brand":
+        item = brands.filter((b) => b._id === value);
+        break;
+      default:
+        break;
+    }
+    label = getTranslated(item[0]?.name);
 
     setFilters((prev) => {
       let updated = { ...prev };
@@ -125,6 +177,7 @@ const Product = ({ path, addToCart, productController }) => {
         if (checked) {
           // 🔒 Kiểm tra trùng trước khi push
           const exist = updated[key]?.some((item) => item.value === value);
+
           if (!exist) {
             updated[key] = [...(updated[key] || []), { value, label }];
           }
@@ -186,12 +239,19 @@ const Product = ({ path, addToCart, productController }) => {
           const [min, max] = filters.price[0].value
             .split(":")
             .map((v) => (v === "max" ? Infinity : Number(v)));
-          products = products.filter(
-            (p) =>
-              (p.price >= min && (max === Infinity || p.price <= max)) ||
-              (p.discountPrice >= min &&
-                (max === Infinity || p.discountPrice <= max)),
-          );
+          products = products.filter((p) => {
+            const priceToCheck =
+              p.discountPrice !== null && p.discountPrice !== undefined
+                ? p.discountPrice
+                : p.price;
+
+            if (priceToCheck === null || priceToCheck === undefined)
+              return false;
+
+            return (
+              priceToCheck >= min && (max === Infinity || priceToCheck <= max)
+            );
+          });
         }
 
         if (filters.brand?.length > 0) {
@@ -512,31 +572,8 @@ const Product = ({ path, addToCart, productController }) => {
                               max={10000000}
                               step={50000}
                               pearling
-                              minDistance={100000}
+                              minDistance={0}
                             />
-
-                            {/* Nút Apply nếu muốn filter thủ công */}
-                            <div className="d-grid gap-2 mt-4">
-                              <button
-                                className="btn btn-success rounded-pill"
-                                onClick={() => {
-                                  setFilters((prev) => ({
-                                    ...prev,
-                                    price:
-                                      priceRange[0] === 0 &&
-                                      priceRange[1] === 10000000
-                                        ? null
-                                        : [
-                                            {
-                                              value: `${priceRange[0]}:${priceRange[1]}`,
-                                            },
-                                          ],
-                                  }));
-                                }}
-                              >
-                                Áp dụng
-                              </button>
-                            </div>
                           </div>
                         </aside>
                         {/* Hãng sản xuất */}
@@ -551,86 +588,26 @@ const Product = ({ path, addToCart, productController }) => {
                           </div>
                           <div className="aside-content filter-group">
                             <ul className="space-y-3 ps-0">
-                              <li className="filter-item link filter-item--check-box mb-1 d-flex align-items-center ">
-                                <input
-                                  type="checkbox"
-                                  className="form-checkbox form-checkbox_md"
-                                  id="filter-vendor-minimart"
-                                  data-group="PRODUCT_VENDOR"
-                                  data-field="vendor.filter_key"
-                                  data-value="Minimart"
-                                  value="Minimart"
-                                  data-operator="OR"
-                                  name="vendor"
-                                  onChange={onBrandChange}
-                                />
-                                <label
-                                  className="custom-checkbox ms-2 fw-100"
-                                  htmlFor="filter-vendor-minimart"
-                                >
-                                  Minimart
-                                </label>
-                              </li>
-                              <li className="filter-item link filter-item--check-box mb-1 d-flex align-items-center ">
-                                <input
-                                  type="checkbox"
-                                  className="form-checkbox form-checkbox_md"
-                                  id="filter-vendor-ega"
-                                  data-group="PRODUCT_VENDOR"
-                                  data-field="vendor.filter_key"
-                                  data-value="EGA"
-                                  value="EGA"
-                                  data-operator="OR"
-                                  name="vendor"
-                                  onChange={onBrandChange}
-                                />
-                                <label
-                                  className="custom-checkbox ms-2 fw-100"
-                                  htmlFor="filter-vendor-ega"
-                                >
-                                  EGA
-                                </label>
-                              </li>
-                              <li className="filter-item link filter-item--check-box mb-1 d-flex align-items-center ">
-                                <input
-                                  type="checkbox"
-                                  className="form-checkbox form-checkbox_md"
-                                  id="filter-vendor-ega-green"
-                                  data-group="PRODUCT_VENDOR"
-                                  data-field="vendor.filter_key"
-                                  data-value="EGA GREEN"
-                                  value="EGA GREEN"
-                                  data-operator="OR"
-                                  name="vendor"
-                                  onChange={onBrandChange}
-                                />
-                                <label
-                                  className="custom-checkbox ms-2 fw-100"
-                                  htmlFor="filter-vendor-ega-green"
-                                >
-                                  EGA GREEN
-                                </label>
-                              </li>
-                              <li className="filter-item link filter-item--check-box mb-1 d-flex align-items-center ">
-                                <input
-                                  type="checkbox"
-                                  className="form-checkbox form-checkbox_md"
-                                  id="filter-vendor-khac"
-                                  data-group="PRODUCT_VENDOR"
-                                  data-field="vendor.filter_key"
-                                  data-value="Khác"
-                                  value="Khác"
-                                  data-operator="OR"
-                                  name="vendor"
-                                  onChange={onBrandChange}
-                                />
-                                <label
-                                  className="custom-checkbox ms-2 fw-100"
-                                  htmlFor="filter-vendor-khac"
-                                >
-                                  Khác
-                                </label>
-                              </li>
+                              {brands?.length > 0 &&
+                                brands?.map((brand) => (
+                                  <li className="filter-item link filter-item--check-box mb-1 d-flex align-items-center ">
+                                    <input
+                                      type="checkbox"
+                                      className="form-checkbox form-checkbox_md"
+                                      id={`filter-${brand._id}`}
+                                      value={`${brand._id}`}
+                                      data-operator="OR"
+                                      name="vendor"
+                                      onChange={onBrandChange}
+                                    />
+                                    <label
+                                      className="custom-checkbox ms-2 fw-100"
+                                      htmlFor={`filter-${brand._id}`}
+                                    >
+                                      {brand.name}
+                                    </label>
+                                  </li>
+                                ))}
                             </ul>
                           </div>
                         </aside>
@@ -666,7 +643,7 @@ const Product = ({ path, addToCart, productController }) => {
                                   </li>
                                 ))}
 
-                              <li className="filter-item-toggle link text-secondary d-flex align-items-center ms-4 hover text-danger fw-bold">
+                              <li className="filter-item-toggle link text-secondary d-flex align-items-center ms-4 text-hover text-danger fw-bold">
                                 {t("product.features.showMore")}{" "}
                                 <i className="bi bi-chevron-down"></i>
                               </li>
@@ -685,128 +662,28 @@ const Product = ({ path, addToCart, productController }) => {
                           </div>
                           <div className="aside-content filter-group">
                             <ul className="space-y-3 ps-0">
-                              <li className="filter-item link filter-item--check-box mb-1 d-flex align-items-center">
-                                <input
-                                  type="checkbox"
-                                  className="form-checkbox form-checkbox_md"
-                                  id="filter-tag1-trang"
-                                  data-group="PRODUCT_TAG"
-                                  data-field="tag.key"
-                                  data-value="Trắng"
-                                  value="white"
-                                  data-operator="OR"
-                                  name="color"
-                                  onChange={onColorChange}
-                                />
-                                <label
-                                  className="custom-checkbox cursor-pointer flex gap-2 items-center ms-2 fw-100"
-                                  htmlFor="filter-tag1-trang"
-                                >
-                                  Trắng
-                                </label>
-                              </li>
-                              <li className="filter-item link filter-item--check-box mb-1 d-flex align-items-center">
-                                <input
-                                  type="checkbox"
-                                  className="form-checkbox form-checkbox_md"
-                                  id="filter-tag1-den"
-                                  data-group="PRODUCT_TAG"
-                                  data-field="tag.key"
-                                  data-value="Đen"
-                                  value="black"
-                                  data-operator="OR"
-                                  name="color"
-                                  onChange={onColorChange}
-                                />
-                                <label
-                                  className="custom-checkbox cursor-pointer flex gap-2 items-center ms-2 fw-100"
-                                  htmlFor="filter-tag1-den"
-                                >
-                                  Đen
-                                </label>
-                              </li>
-                              <li className="filter-item link filter-item--check-box mb-1 d-flex align-items-center">
-                                <input
-                                  type="checkbox"
-                                  className="form-checkbox form-checkbox_md"
-                                  id="filter-tag1-hong"
-                                  data-group="PRODUCT_TAG"
-                                  data-field="tag.key"
-                                  data-value="Hồng"
-                                  value="pink"
-                                  data-operator="OR"
-                                  name="color"
-                                  onChange={onColorChange}
-                                />
-                                <label
-                                  className="custom-checkbox cursor-pointer flex gap-2 items-center ms-2 fw-100"
-                                  htmlFor="filter-tag1-hong"
-                                >
-                                  Hồng
-                                </label>
-                              </li>
-                              <li className="filter-item link filter-item--check-box mb-1 d-flex align-items-center">
-                                <input
-                                  type="checkbox"
-                                  className="form-checkbox form-checkbox_md"
-                                  id="filter-tag1-xam"
-                                  data-group="PRODUCT_TAG"
-                                  data-field="tag.key"
-                                  data-value="Xám"
-                                  value="gray"
-                                  data-operator="OR"
-                                  name="color"
-                                  onChange={onColorChange}
-                                />
-                                <label
-                                  className="custom-checkbox cursor-pointer flex gap-2 items-center ms-2 fw-100"
-                                  htmlFor="filter-tag1-xam"
-                                >
-                                  Xám
-                                </label>
-                              </li>
-                              <li className="filter-item link filter-item--check-box mb-1 d-flex align-items-center">
-                                <input
-                                  type="checkbox"
-                                  className="form-checkbox form-checkbox_md"
-                                  id="filter-tag1-xanh"
-                                  data-group="PRODUCT_TAG"
-                                  data-field="tag.key"
-                                  data-value="Xanh"
-                                  value="blue"
-                                  data-operator="OR"
-                                  name="color"
-                                  onChange={onColorChange}
-                                />
-                                <label
-                                  className="custom-checkbox cursor-pointer flex gap-2 items-center ms-2 fw-100"
-                                  htmlFor="filter-tag1-xanh"
-                                >
-                                  Xanh
-                                </label>
-                              </li>
-                              <li className="filter-item link filter-item--check-box mb-1 d-flex align-items-center">
-                                <input
-                                  type="checkbox"
-                                  className="form-checkbox form-checkbox_md"
-                                  id="filter-tag1-nau"
-                                  data-group="PRODUCT_TAG"
-                                  data-field="tag.key"
-                                  data-value="Nâu"
-                                  value="brown"
-                                  data-operator="OR"
-                                  name="color"
-                                  onChange={onColorChange}
-                                />
-                                <label
-                                  className="custom-checkbox cursor-pointer flex gap-2 items-center ms-2 fw-100"
-                                  htmlFor="filter-tag1-nau"
-                                >
-                                  Nâu
-                                </label>
-                              </li>
+                              {colors?.length > 0 &&
+                                colors?.map((color) => (
+                                  <li className="filter-item link filter-item--check-box mb-1 d-flex align-items-center">
+                                    <input
+                                      type="checkbox"
+                                      className="form-checkbox form-checkbox_md"
+                                      id={`filter-${color._id}`}
+                                      value={`${color._id}`}
+                                      data-operator="OR"
+                                      name="color"
+                                      onChange={onColorChange}
+                                    />
+                                    <label
+                                      className="custom-checkbox cursor-pointer flex gap-2 items-center ms-2 fw-100"
+                                      htmlFor={`filter-${color._id}`}
+                                    >
+                                      {getTranslated(color?.name)}
+                                    </label>
+                                  </li>
+                                ))}
 
-                              <li className="filter-item-toggle link text-secondary d-flex align-items-center ms-4 hover text-danger fw-bold">
+                              <li className="filter-item-toggle link text-secondary d-flex align-items-center ms-4 text-hover text-danger fw-bold">
                                 {t("product.features.showMore")}
                                 <i className="bi bi-chevron-down"></i>
                               </li>
@@ -825,66 +702,26 @@ const Product = ({ path, addToCart, productController }) => {
                           </div>
                           <div className="aside-content filter-group">
                             <ul className="space-y-3 ps-0">
-                              <li className="filter-item link filter-item--check-box mb-1 d-flex align-items-center">
-                                <input
-                                  type="checkbox"
-                                  className="form-checkbox form-checkbox_md"
-                                  id="filter-tag1-flash-sale"
-                                  data-group="PRODUCT_TAG"
-                                  data-field="tag.key"
-                                  data-value="Flash Sale"
-                                  value="Flash Sale"
-                                  data-operator="OR"
-                                  name="tag"
-                                  onChange={onTagChange}
-                                />
-                                <label
-                                  className="custom-checkbox ms-2 fw-100"
-                                  htmlFor="filter-tag1-flash-sale"
-                                >
-                                  Flash Sale
-                                </label>
-                              </li>
-                              <li className="filter-item link filter-item--check-box ">
-                                <input
-                                  type="checkbox"
-                                  className="form-checkbox form-checkbox_md"
-                                  id="filter-tag1-giao-nhanh-24h"
-                                  data-group="PRODUCT_TAG"
-                                  data-field="tag.key"
-                                  data-value="Giao Nhanh 24h"
-                                  value="Giao Nhanh 24h"
-                                  data-operator="OR"
-                                  name="tag"
-                                  onChange={onTagChange}
-                                />
-                                <label
-                                  className="custom-checkbox ms-2 fw-100"
-                                  htmlFor="filter-tag1-giao-nhanh-24h"
-                                >
-                                  Giao Nhanh 24h
-                                </label>
-                              </li>
-                              <li className="filter-item link filter-item--check-box ">
-                                <input
-                                  type="checkbox"
-                                  className="form-checkbox form-checkbox_md"
-                                  id="filter-tag1-rau-tuoi"
-                                  data-group="PRODUCT_TAG"
-                                  data-field="tag.key"
-                                  data-value="Rau Tươi"
-                                  value="Rau Tươi"
-                                  data-operator="OR"
-                                  name="tag"
-                                  onChange={onTagChange}
-                                />
-                                <label
-                                  className="custom-checkbox ms-2 fw-100"
-                                  htmlFor="filter-tag1-rau-tuoi"
-                                >
-                                  Rau Tươi
-                                </label>
-                              </li>
+                              {tags?.length > 0 &&
+                                tags?.map((tag) => (
+                                  <li className="filter-item link filter-item--check-box mb-1 d-flex align-items-center">
+                                    <input
+                                      type="checkbox"
+                                      className="form-checkbox form-checkbox_md"
+                                      id={`filter-${tag._id}`}
+                                      value={`${tag._id}`}
+                                      data-operator="OR"
+                                      name="tag"
+                                      onChange={onTagChange}
+                                    />
+                                    <label
+                                      className="custom-checkbox ms-2 fw-100"
+                                      htmlFor={`filter-${tag._id}`}
+                                    >
+                                      {tag?.name}
+                                    </label>
+                                  </li>
+                                ))}
                             </ul>
                           </div>
                         </aside>

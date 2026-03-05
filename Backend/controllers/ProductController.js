@@ -63,7 +63,7 @@ class ProductController {
   static async getByTag(req, res) {
     const { tag } = req.params;
     const products = await Product.find({ tags: tag, isActive: true }).limit(
-      20
+      20,
     );
     res.json({ success: true, products });
   }
@@ -71,7 +71,7 @@ class ProductController {
   static async getByType(req, res) {
     const { type } = req.params;
     const products = await Product.find({ types: type, isActive: true }).limit(
-      20
+      20,
     );
     res.json({ success: true, products });
   }
@@ -211,7 +211,7 @@ class ProductController {
       const { q, category = "all" } = req.query;
       const products = await Product.find(
         { $text: { $search: q } },
-        { score: { $meta: "textScore" } }
+        { score: { $meta: "textScore" } },
       )
         .sort({ score: { $meta: "textScore" }, createdAt: -1 })
         .limit(20)
