@@ -16,7 +16,7 @@ const orderItemSchema = new mongoose.Schema(
     quantity: { type: Number, required: true, min: 1 },
     variant: { type: String },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const orderSchema = new mongoose.Schema(
@@ -25,9 +25,8 @@ const orderSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      index: true,
     },
-    orderId: { type: String, required: true, unique: true, index: true },
+    orderId: { type: String, required: true, unique: true },
 
     shippingAddress: {
       recipientName: String,
@@ -80,7 +79,6 @@ const orderSchema = new mongoose.Schema(
         "returned",
       ],
       default: "pending",
-      index: true,
     },
 
     // Thời gian theo trạng thái đơn hàng
@@ -91,7 +89,7 @@ const orderSchema = new mongoose.Schema(
     canceledAt: Date,
     returnedAt: Date,
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // ===========================================================================
@@ -188,7 +186,7 @@ orderSchema.pre(
     } catch (err) {
       next(err);
     }
-  }
+  },
 );
 
 // Index tìm kiếm nhanh

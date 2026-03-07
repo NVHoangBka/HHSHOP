@@ -79,13 +79,12 @@ const productSchema = new mongoose.Schema(
     categories: [{ type: mongoose.Schema.Types.ObjectId, ref: "Category" }],
     subCategories: [{ type: mongoose.Schema.Types.ObjectId, ref: "Category" }],
 
-    brand: { type: mongoose.Schema.Types.ObjectId, ref: "Brand", index: true },
+    brand: { type: mongoose.Schema.Types.ObjectId, ref: "Brand" },
     colors: [{ type: mongoose.Schema.Types.ObjectId, ref: "Color" }],
     tags: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Tag",
-        index: true,
       },
     ],
     types: [
@@ -108,7 +107,7 @@ const productSchema = new mongoose.Schema(
     reviewCount: { type: Number, default: 0 },
 
     // Trạng thái & số liệu
-    isActive: { type: Boolean, default: true, index: true },
+    isActive: { type: Boolean, default: true },
     isFeatured: { type: Boolean, default: false },
     inStock: { type: Boolean, default: true },
     totalStock: { type: Number, default: 0 }, // tổng tồn tất cả variants

@@ -33,9 +33,8 @@ const CategorySchema = new mongoose.Schema(
     parent: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
-      index: true,
     },
-    level: { type: Number, default: 0, index: true },
+    level: { type: Number, default: 0 },
 
     // SEO đa ngôn ngữ
     metaTitle: {
@@ -49,8 +48,8 @@ const CategorySchema = new mongoose.Schema(
       cz: { type: String, maxlength: 300 },
     },
 
-    isActive: { type: Boolean, default: true, index: true },
-    isFeatured: { type: Boolean, default: false, index: true },
+    isActive: { type: Boolean, default: true },
+    isFeatured: { type: Boolean, default: false },
     homeOrder: { type: Number, default: 0 },
 
     // Cache (tùy chọn)
@@ -60,7 +59,7 @@ const CategorySchema = new mongoose.Schema(
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-  }
+  },
 );
 
 // ==================== PRE SAVE – TỰ ĐỘNG SLUG ĐA NGÔN NGỮ ====================

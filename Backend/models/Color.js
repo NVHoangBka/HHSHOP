@@ -20,10 +20,10 @@ const ColorSchema = new mongoose.Schema(
             /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(v) || // hex
             /^rgb\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*\)$/.test(v) ||
             /^rgba\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*[0-1]?\.?\d+\s*\)$/.test(
-              v
+              v,
             ) ||
             /^(red|blue|green|yellow|black|white|gray|grey|purple|pink|orange|brown|cyan|magenta|teal|indigo|violet|olive|maroon|navy|aquamarine|turquoise|gold|silver|coral|salmon|plum|orchid|beige|ivory|khaki|lavender|linen|mintcream|oldlace|papayawhip|peachpuff|seashell|snow|thistle|wheat)$/i.test(
-              v
+              v,
             )
           );
         },
@@ -41,13 +41,13 @@ const ColorSchema = new mongoose.Schema(
       en: { type: String, maxlength: 200 },
       cz: { type: String, maxlength: 200 },
     },
-    isActive: { type: Boolean, default: true, index: true },
+    isActive: { type: Boolean, default: true },
   },
   {
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-  }
+  },
 );
 
 // ==================== PRE SAVE ====================

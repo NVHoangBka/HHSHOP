@@ -15,7 +15,6 @@ const paymentQRSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      index: true,
     },
 
     // === SỐ TIỀN ===
@@ -43,14 +42,12 @@ const paymentQRSchema = new mongoose.Schema(
       type: String,
       enum: ["pending", "scanned", "paid", "expired", "canceled"],
       default: "pending",
-      index: true,
     },
 
     // === THỜI GIAN ===
     expiredAt: {
       type: Date,
       required: true,
-      index: true, // tìm QR hết hạn nhanh
     },
     scannedAt: Date,
     paidAt: Date,
@@ -59,7 +56,7 @@ const paymentQRSchema = new mongoose.Schema(
     // === GHI CHÚ (nếu cần) ===
     note: String,
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // === TỰ ĐỘNG XÓA QR HẾT HẠN (tùy chọn - chạy bằng cron job) ===

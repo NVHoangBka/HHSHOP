@@ -9,7 +9,7 @@ const BrandSchema = new mongoose.Schema(
     description: { type: String },
     isActive: { type: Boolean, default: true, index: true },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 BrandSchema.pre("save", function (next) {
