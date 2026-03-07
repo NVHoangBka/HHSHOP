@@ -30,7 +30,7 @@ app.use(
     credentials: true, // Bắt buộc để gửi cookie httpOnly
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Các method cho phép
     allowedHeaders: ["Content-Type", "Authorization"], // Headers cho phép
-  })
+  }),
 );
 
 app.use(express.json());
@@ -44,6 +44,10 @@ mongoose
 // Routes
 app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
 app.use("/api", appRouter);
+
+app.get("/", (req, res) => {
+  res.send("HHSHOP Backend API is running 🚀");
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
