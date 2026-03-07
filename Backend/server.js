@@ -11,27 +11,10 @@ const app = express();
 const appRouter = require("./routes/appRoutes");
 require("./models");
 // Middleware
-const allowedOrigins = [
-  "http://localhost:3000", // React CRA
-];
 
 app.use(cookieParser());
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // Cho phép request không có origin (mobile app, Postman, curl)
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    }, // Chỉ cho phép frontend này
-    credentials: true, // Bắt buộc để gửi cookie httpOnly
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Các method cho phép
-    allowedHeaders: ["Content-Type", "Authorization"], // Headers cho phép
-  }),
-);
+app.use(cors());
 
 app.use(express.json());
 
