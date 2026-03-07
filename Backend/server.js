@@ -14,7 +14,16 @@ require("./models");
 
 app.use(cookieParser());
 
-app.use(cors());
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      callback(null, origin);
+    },
+    credentials: true,
+  }),
+);
+
+app.use(express.json());
 
 app.use(express.json());
 
