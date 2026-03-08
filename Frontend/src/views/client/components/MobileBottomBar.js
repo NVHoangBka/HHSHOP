@@ -7,12 +7,7 @@ const MobileBottomBar = ({
   isOutOfStock = false,
   isProductDetail = false,
 }) => {
-  // const location = useLocation();
   const { t } = useTranslation();
-
-  // const isProductDetail =
-  //   location.pathname.includes("/product/slug") ||
-  //   location.pathname.includes("/product");
 
   return (
     <div className="mobile-bottom-menu d-md-none bg-white border-top shadow-sm sticky-bottom">

@@ -103,7 +103,7 @@ const Home = ({
   return (
     <>
       <Slider />
-      <div className="home bg-success-subtle py-xl-4 py-lg-4 py-md-3 py-sm-2 py-1">
+      <div className="home bg-success-subtle py-md-4 py-sm-2 py-3">
         <div className="container">
           <div className="section-banner-group row flex-nowrap flex-lg-wrap overflow-auto overflow-lg-visible my-3">
             {bannerHome
@@ -202,12 +202,12 @@ const Home = ({
             className="w-100 position-absolute h-100"
           />
           <div className="container">
-            <div className="collection-list row py-xl-5 position-relative fs-6">
-              {titlesHome.map((title, index) => (
+            <div className="collection-list row position-relative fs-6">
+              {titlesHome.slice(0, 6).map((title, index) => (
                 <Link
                   key={index}
                   to="#"
-                  className="collection-item text-center col text-white text-decoration-none"
+                  className="collection-item text-center col-lg-2 col-4 text-white text-decoration-none py-xl-5 py-lg-4 py-3 "
                 >
                   <img
                     src={title.image}
