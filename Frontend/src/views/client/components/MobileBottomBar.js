@@ -15,15 +15,15 @@ const MobileBottomBar = ({
         {isProductDetail ? (
           <div className="row align-items-center text-center pt-2">
             <div className="col-2">
-              <i className="bi bi-telephone fs-6 text-success"></i>
               <a href="tel:0900000000">
+                <i className="bi bi-telephone fs-6 text-success"></i>
                 <div className="fs-8">{t("mbBar.call")}</div>
               </a>
             </div>
 
             <div className="col-2">
-              <i className="bi bi-chat-dots fs-6 text-success"></i>
               <a href="https://zalo.me/0900000000">
+                <i className="bi bi-chat-dots fs-6 text-success"></i>
                 <div className="fs-8">{t("mbBar.chat")}</div>
               </a>
             </div>
@@ -52,23 +52,37 @@ const MobileBottomBar = ({
         ) : (
           <div className="row text-center py-2">
             <div className="col">
-              <i className="bi bi-telephone text-success"></i>
-              <div className="fs-8">{t("mbBar.call")}</div>
+              <a
+                href="tel:0900000000"
+                className="text-decoration-none text-black"
+              >
+                <i className="bi bi-telephone text-success"></i>
+                <div className="fs-8">{t("mbBar.call")}</div>
+              </a>
             </div>
 
             <div className="col">
-              <i className="bi bi-chat-dots text-success"></i>
-              <div className="fs-8">{t("mbBar.chat")}</div>
+              <a
+                href="https://zalo.me/0900000000"
+                className="text-decoration-none text-black"
+              >
+                <i className="bi bi-chat-dots text-success"></i>
+                <div className="fs-8">{t("mbBar.chat")}</div>
+              </a>
             </div>
 
             <div className="col">
-              <i className="bi bi-fire text-danger"></i>
-              <div className="fs-8">{t("mbBar.promotion")}</div>
+              <a href="#" className="text-decoration-none text-black">
+                <i className="bi bi-fire text-danger"></i>
+                <div className="fs-8">{t("mbBar.promotion")}</div>
+              </a>
             </div>
 
             <div className="col">
-              <i className="bi bi-geo-alt text-success"></i>
-              <div className="fs-8">{t("mbBar.store")}</div>
+              <a href="#" className="text-decoration-none text-black">
+                <i className="bi bi-geo-alt text-success"></i>
+                <div className="fs-8">{t("mbBar.store")}</div>
+              </a>
             </div>
 
             <div className="col">
