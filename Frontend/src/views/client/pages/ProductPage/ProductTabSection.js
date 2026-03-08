@@ -92,7 +92,7 @@ const ProductTabSection = ({
   }, [activeTab, categoryId]);
 
   return (
-    <div className="section-product-tabs mt-xl-5 mt-md-4  mt-3">
+    <div className="section-product-tabs mt-xl-5 mt-4">
       <div className="container">
         <div className="heading-bar position-relative d-flex">
           <h2 className="w-auto mx-auto text-center position-relative z-2 bg-success-subtle d-inline px-xl-3 px-lg-2 px-md-2 px-sm-2 px-2">
@@ -141,7 +141,7 @@ const ProductTabSection = ({
           <Link
             to={`/products/${path}`}
             alt={t("product.features.showMore")}
-            className="bg-white w-100 d-flex mt-xl-4 mt-lg-3 mt-md-3 mt-2 p-xl-2 p-lg-2 p-md-1 p-sm-1 p-1 justify-content-center text-decoration-none text-success hover rounded-2"
+            className="bg-white w-100 d-flex mt-xl-4 mt-3 p-xl-2 p-lg-2 p-md-1 p-sm-1 p-1 justify-content-center text-decoration-none text-success hover rounded-2"
           >
             {t("common.view-all")}
             <i className="ms-1 bi bi-arrow-right"></i>
