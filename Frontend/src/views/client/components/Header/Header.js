@@ -134,8 +134,8 @@ const Header = ({
             {/* Right: Search, Account, Cart */}
             <div className="d-flex align-items-center justify-content-end col-xl-4 col-lg-5 col-md-5 col-sm-4 col-6">
               <div className="row justify-content-end align-items-center w-100 gx-2">
-                <div className="col-xl-3 col-lg-3 col-md-4 col-sm-4 col-4">
-                  <Dropdown>
+                <div className="col-xl-3 col-lg-3 col-md-4 col-sm-4 col-4 ">
+                  <Dropdown className="mx-lg-2">
                     <Dropdown.Toggle
                       variant="outline-secondary"
                       id="language-dropdown"

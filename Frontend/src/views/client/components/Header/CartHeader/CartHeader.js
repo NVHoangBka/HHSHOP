@@ -19,6 +19,9 @@ const CartHeader = ({
 
   const currentLanguage = localStorage.getItem("i18n_lang") || "en";
 
+  const getTranslated = (obj, fallback = "") => {
+    return obj?.[currentLanguage] || obj?.vi || obj?.en || obj?.cz || fallback;
+  };
   // Đồng bộ state với props khi có thay đổi
   useEffect(() => {
     setCartItems(propCartItems || []);
@@ -30,7 +33,7 @@ const CartHeader = ({
     if (currentItem) {
       const updatedCart = cartController.updateQuantity(
         id,
-        currentItem.quantity + 1
+        currentItem.quantity + 1,
       );
       setCartItems([...updatedCart]);
       setTotal(cartController.getTotalPrice());
@@ -43,7 +46,7 @@ const CartHeader = ({
     if (currentItem && currentItem.quantity > 1) {
       const updatedCart = cartController.updateQuantity(
         id,
-        currentItem.quantity - 1
+        currentItem.quantity - 1,
       );
       setCartItems([...updatedCart]);
       setTotal(cartController.getTotalPrice());
@@ -135,7 +138,7 @@ const CartHeader = ({
                           <div className="d-flex">
                             <Link
                               className="cart-item__image"
-                              to={`/products/slug/${product.slug}`}
+                              to={`/products/slug/${getTranslated(product.slug)}`}
                               title={productName(product)}
                             >
                               <img
@@ -155,7 +158,7 @@ const CartHeader = ({
                             <div>
                               <p className="cart-item__name mb-xl-0 fw-semibold small">
                                 <Link
-                                  to={`/products/slug/${product.slug}`}
+                                  to={`/products/slug/${getTranslated(product.slug)}`}
                                   title={productName(product)}
                                   className="link text-decoration-none text-dark"
                                 >
@@ -377,10 +380,11 @@ const CartHeader = ({
                                 {t("cart.receive-time")}
                               </label>
                               <select
-                                class="form-select"
+                                className="form-select"
                                 aria-label="Default select example"
+                                defaultValue="active"
                               >
-                                <option selected>
+                                <option value="active">
                                   ---{t("cart.chose-time")}---
                                 </option>
                                 <option value="1">08h00 - 12h00</option>
@@ -511,7 +515,7 @@ const CartHeader = ({
                               className="d-flex align-items-center flex-column w-100 m-xl-0 cursor-pointer text-secondary"
                               onClick={toggleShowVocher}
                             >
-                              <i class="bi bi-ticket-perforated"></i>
+                              <i className="bi bi-ticket-perforated"></i>
                               <span className="line-clamp-1 text-truncate w-100 fs-7">
                                 {t("cart.promo-code")}
                               </span>

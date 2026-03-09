@@ -356,8 +356,8 @@ const ProductDetail = ({ addToCart, productController }) => {
                       <div className="d-flex" data-portal="#coupon-drawer">
                         <div className="d-flex align-items-center cursor-pointer">
                           <div className="coupon-group-item overflow-hidden d-flex align-items-center px-lg-3 px-2 py-2 fs-7 bg-warning-subtle mx-1 text-active rounded-3 col-xl-3 col-lg-2 col-2">
-                            <i class="bi bi-ticket-perforated"></i>
-                            <div class="coupon-group-item__code fw-semibold ms-1 text-truncate">
+                            <i className="bi bi-ticket-perforated"></i>
+                            <div className="coupon-group-item__code fw-semibold ms-1 text-truncate">
                               EGA50THANG10
                             </div>
                           </div>
@@ -431,7 +431,7 @@ const ProductDetail = ({ addToCart, productController }) => {
                       <div className="d-none btn fw-semibold mt-2 btn w-100">
                         {t("product.buttons.outOfStock")}
                       </div>
-                      <input type="hidden" name="variantId" value="118468360" />
+                      <input type="hidden" name="variantId" />
                     </div>
                   ) : (
                     <div>
@@ -439,37 +439,41 @@ const ProductDetail = ({ addToCart, productController }) => {
                         <div className="col-xl-2 col-lg-3 col-3 me-2 fs-7">
                           {t("product.quantity.label")}
                         </div>
-                        <quantity-input>
-                          <div className="custom-number-input product-quantity">
-                            <div className="d-flex border rounded-1 w-50">
-                              <button
-                                type="button"
-                                name="minus"
-                                className="cursor-pointer p-lg-2 p-1 bg-transparent border-0 text-hover"
-                                onClick={() =>
-                                  setQuantity(Math.max(1, quantity - 1))
-                                }
-                              >
-                                <i className="m-auto bi bi-dash"></i>
-                              </button>
-                              <input
-                                type="text"
-                                className="form-quantity w-100 fw-semibold d-flex align-items-center bg-transparent border-0 text-center"
-                                name="quantity"
-                                value={quantity}
-                                min="1"
-                              />
-                              <button
-                                type="button"
-                                name="plus"
-                                className="cursor-pointer p-lg-2 p-1 bg-transparent border-0 text-hover"
-                                onClick={() => setQuantity(quantity + 1)}
-                              >
-                                <i className="m-auto bi bi-plus"></i>
-                              </button>
-                            </div>
+                        <div className="custom-number-input product-quantity">
+                          <div className="d-flex border rounded-1 w-50">
+                            <button
+                              type="button"
+                              name="minus"
+                              className="cursor-pointer p-lg-2 p-1 bg-transparent border-0 text-hover"
+                              onClick={() =>
+                                setQuantity(Math.max(1, quantity - 1))
+                              }
+                            >
+                              <i className="m-auto bi bi-dash"></i>
+                            </button>
+
+                            <input
+                              type="text"
+                              className="form-quantity w-100 fw-semibold d-flex align-items-center bg-transparent border-0 text-center"
+                              name="quantity"
+                              value={quantity}
+                              min="1"
+                              onChange={(e) =>
+                                setQuantity(
+                                  Math.max(1, Number(e.target.value) || 1),
+                                )
+                              }
+                            />
+
+                            <button
+                              type="button"
+                              className="cursor-pointer p-lg-2 p-1 bg-transparent border-0 text-hover"
+                              onClick={() => setQuantity(quantity + 1)}
+                            >
+                              <i className="m-auto bi bi-plus"></i>
+                            </button>
                           </div>
-                        </quantity-input>
+                        </div>
                       </div>
 
                       <div className="d-flex border-top mt-lg-4 mt-3 pt-lg-4 pt-3">

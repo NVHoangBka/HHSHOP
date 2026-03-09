@@ -37,6 +37,11 @@ const Checkout = ({ cartController, orderController, authController }) => {
   const [voucherCode, setVoucherCode] = useState("");
   const [voucherDiscount, setVoucherDiscount] = useState(0);
 
+  const currentLanguage = localStorage.getItem("i18n_lang") || "en";
+  const getTranslated = (obj, fallback = "") => {
+    return obj?.[currentLanguage] || obj?.vi || obj?.en || obj?.cz || fallback;
+  };
+
   // ==================== LOAD DATA ====================
   useEffect(() => {
     const init = async () => {
@@ -241,7 +246,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
           alert(
             t("checkout.alert.orderSuccess", {
               orderId: result.order.orderId || result.order.id,
-            })
+            }),
           );
           navigate("/checkout/order-success", {
             state: { order: result.order, paymentMethod: "COD" },
@@ -614,12 +619,12 @@ const Checkout = ({ cartController, orderController, authController }) => {
                 <div key={item.id} className="d-flex py-xl-3 px-xl-4">
                   <img
                     src={item.image || "/placeholder.jpg"}
-                    alt={item.name}
+                    alt={getTranslated(item.name)}
                     className="rounded me-xl-3"
                     style={{ width: 80, height: 80, objectFit: "cover" }}
                   />
                   <div className="flex-grow-1">
-                    <p className="mb-1 fs-6">{item.name}</p>
+                    <p className="mb-1 fs-6">{getTranslated(item.name)}</p>
                     {item.size && (
                       <small className="text-muted">
                         {t("checkout.cartSummary.size", { size: item.size })}
