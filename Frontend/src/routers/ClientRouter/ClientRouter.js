@@ -115,6 +115,8 @@ const ClientRouter = (props, index) => (
         />
       }
     />
+
+    <Route path="/store-system" element={<Contact />} />
   </Routes>
 );
 
