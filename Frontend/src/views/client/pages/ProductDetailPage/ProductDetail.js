@@ -62,8 +62,8 @@ const ProductDetail = ({ addToCart, productController }) => {
         : getTranslated(product.name),
       // Giá thực tế
       finalPrice: selectedVariant
-        ? selectedVariant.discountPrice || selectedVariant.price
-        : product.discountPrice || product.price,
+        ? selectedVariant?.discountPrice || selectedVariant?.price
+        : product?.discountPrice || product?.price,
       // Ảnh trong giỏ
       cartImage: mainImage,
     };
@@ -82,8 +82,8 @@ const ProductDetail = ({ addToCart, productController }) => {
         ? `${getTranslated(product.name)} - ${selectedVariant.value}`
         : getTranslated(product.name),
       finalPrice: selectedVariant
-        ? selectedVariant.discountPrice || selectedVariant.price
-        : product.discountPrice || product.price,
+        ? selectedVariant?.discountPrice || selectedVariant?.price
+        : product?.discountPrice || product?.price,
       cartImage: mainImage,
     };
     // TRUYỀN RIÊNG DANH SÁCH CHỈ CÓ 1 MÓN NÀY → CHECKOUT SẼ ƯU TIÊN HIỂN THỊ
@@ -110,9 +110,9 @@ const ProductDetail = ({ addToCart, productController }) => {
   const currentPrice =
     selectedVariant?.discountPrice ||
     selectedVariant?.price ||
-    product.discountPrice ||
-    product.price;
-  const originalPrice = selectedVariant?.price || product.price;
+    product?.discountPrice ||
+    product?.price;
+  const originalPrice = selectedVariant?.price || product?.price;
   const hasDiscount = currentPrice < originalPrice;
   const discountPercent = hasDiscount
     ? Math.round(100 - (currentPrice / originalPrice) * 100)
