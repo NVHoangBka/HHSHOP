@@ -90,12 +90,12 @@ const CartHeader = ({
 
   return (
     <div className="d-flex flex-column end-0 h-100">
-      <div className="cart-header d-flex justify-content-between align-items-center border-bottom me-xl-2">
+      <div className="cart-header d-flex justify-content-between align-items-center border-bottom me-xl-2 me-2 pb-2">
         <h2 className="card-title text-black pb-xl-3 pt-xl-4 px-xl-4">
           {t("cart.title")}
         </h2>
         <button
-          className="btn border rounded-circle px-xl-2 py-xl-0"
+          className="btn border rounded-circle px-xl-2 py-0 px-1 "
           onClick={onClose}
         >
           <i className="bi bi-x fs-4"></i>
@@ -105,7 +105,7 @@ const CartHeader = ({
     
     */}
       <div className="card-body">
-        <div className="cart-content px-xl-4 py-xl-3 h-100">
+        <div className="cart-content px-xl-4 px-md-3 py-xl-3 pt-md-2 h-100">
           {cartItems.length === 0 ? (
             <div className="cart-empty">
               <div className="text-black text-center">
@@ -126,13 +126,13 @@ const CartHeader = ({
             </div>
           ) : (
             <div className="d-flex h-100 flex-column justify-content-between">
-              <div className="cart-top pt-xl-1 overflow-y-auto flex flex-col">
+              <div className="cart-top pt-1 overflow-y-auto flex flex-col">
                 <div className="cart-table">
                   <div className="cart-items">
                     {cartItems.map((product, index) => (
                       <div
                         key={index}
-                        className="cart-item py-xl-3 border-bottom"
+                        className="cart-item py-xl-3 py-2 border-bottom"
                       >
                         <div className="cart-product-col d-flex justify-content-between align-items-start">
                           <div className="d-flex">
@@ -155,8 +155,8 @@ const CartHeader = ({
                                 }}
                               />
                             </Link>
-                            <div>
-                              <p className="cart-item__name mb-xl-0 fw-semibold small">
+                            <div className="ms-md-2">
+                              <p className="cart-item__name mb-0 fw-semibold small">
                                 <Link
                                   to={`/products/slug/${getTranslated(product.slug)}`}
                                   title={productName(product)}
@@ -178,7 +178,7 @@ const CartHeader = ({
                           </button>
                         </div>
 
-                        <div className="px-xl-3 ms-xl-5 d-flex justify-content-between cart-quantity-col">
+                        <div className="px-xl-3 px-3 ms-xl-5 ms-5 d-flex justify-content-between cart-quantity-col">
                           <div className="cart-unit-price-col">
                             <div className="price text-danger fw-bold">
                               {(
@@ -195,14 +195,14 @@ const CartHeader = ({
                             <button
                               type="button"
                               name="minus"
-                              className="col-xl-3 d-flex justify-content-center align-items-center btn-outline-secondary border-0"
+                              className="col-3 d-flex justify-content-center align-items-center btn-outline-secondary border-0"
                               onClick={() => handleDecrease(product.id)}
                             >
                               <i className="bi bi-dash"></i>
                             </button>
                             <input
                               type="number"
-                              className="form-quantity col-xl-6 text-center no-spinner border-0"
+                              className="form-quantity col-6 text-center no-spinner border-0"
                               name="Lines"
                               data-line-index="1"
                               value={product.quantity || 1}
@@ -212,7 +212,7 @@ const CartHeader = ({
                             <button
                               type="button"
                               name="plus"
-                              className="col-xl-3 d-flex justify-content-center align-items-center btn-outline-secondary border-0"
+                              className="col-3 d-flex justify-content-center align-items-center btn-outline-secondary border-0"
                               onClick={() => handleIncrease(product.id)}
                             >
                               <i className="bi bi-plus"></i>
@@ -224,30 +224,30 @@ const CartHeader = ({
                   </div>
                 </div>
               </div>
-              <div className="cart-bottom pt-xl-4">
+              <div className="cart-bottom pt-xl-4 pt-4">
                 <div className="cart-summary">
                   <div className="cart-summary-info">
-                    <div className="cart-opener-group row align-items-center mb-xl-3 ">
-                      <div className="cart-opener-item col-xl-3 ">
+                    <div className="cart-opener-group row align-items-center mb-3">
+                      <div className="cart-opener-item col-3">
                         <div
-                          className="bill-field slide-right position-absolute py-xl-4 ps-xl-3 top-0 bg-white end-0 h-100 shadow-lg w-100"
+                          className="bill-field slide-right position-absolute py-xl-4 py-3 ps-3 top-0 bg-white end-0 h-100 shadow-lg w-100"
                           hidden={showBillInfo}
                         >
                           <div className=" bill-header">
-                            <div className="d-flex align-items-center mb-xl-3">
+                            <div className="d-flex align-items-center mb-3">
                               <p
-                                className="cursor-pointer m-xl-0"
+                                className="cursor-pointer m-0"
                                 onClick={toggleShowBillInfo}
                               >
-                                <i className="bi bi-arrow-left fs-4 me-xl-2"></i>
+                                <i className="bi bi-arrow-left fs-4 me-2"></i>
                               </p>
-                              <h3 className="fw-bold m-xl-0">
+                              <h3 className="fw-bold m-0">
                                 {t("cart.issue-company-invoices")}
                               </h3>
                             </div>
                           </div>
-                          <div className="px-xl-4">
-                            <div className="d-flex align-items-center mb-xl-3">
+                          <div className="px-4">
+                            <div className="d-flex align-items-center mb-xl-3 mb-2">
                               <input
                                 className="invoice fs-5"
                                 type="hidden"
@@ -258,56 +258,56 @@ const CartHeader = ({
                                 className="invoice-checkbox form-checkbox fs-5"
                                 type="checkbox"
                               />
-                              <div className="ms-xl-2 text-sm ">
+                              <div className="ms-2 text-sm ">
                                 <label>{t("cart.issue-invoices")}</label>
                               </div>
                             </div>
-                            <div className="form-group mb-xl-3">
-                              <label className="label d-block mb-xl-1">
+                            <div className="form-group mb-xl-3 mb-2">
+                              <label className="label d-block mb-1 ">
                                 {t("cart.name-company")}
                               </label>
                               <input
                                 type="text"
-                                className="form-input w-100 p-xl-2 rounded outline-none border"
+                                className="form-input w-100 p-xl-2 p-1 rounded outline-none border"
                                 name=""
                                 placeholder={t("cart.name-company")}
                               />
                               <span className="error  text-error"></span>
                             </div>
-                            <div className="form-group mb-xl-3">
-                              <label className="label d-block mb-xl-1">
+                            <div className="form-group mb-xl-3 mb-2">
+                              <label className="label d-block mb-1">
                                 {t("cart.tax-code")}
                               </label>
                               <input
                                 type="number"
-                                className="form-input w-100 p-xl-2 rounded outline-none border"
+                                className="form-input w-100 p-xl-2 p-xl-2 p-1 rounded outline-none border"
                                 placeholder={t("cart.tax-code")}
                               />
                               <span className="error text-error"></span>
                             </div>
-                            <div className="form-group mb-xl-3">
-                              <label className="label d-block mb-xl-1">
+                            <div className="form-group mb-xl-3 mb-2">
+                              <label className="label d-block mb-1">
                                 {t("cart.address-company")}
                               </label>
                               <textarea
-                                className="form-textarea w-100 p-xl-2 rounded outline-none border"
+                                className="form-textarea w-100 p-xl-2 p-1 rounded outline-none border"
                                 placeholder={t("cart.address-company")}
                               ></textarea>
                               <span className="error  text-error"></span>
                             </div>
-                            <div className="form-group mb-xl-3">
-                              <label className="label d-block mb-xl-1">
+                            <div className="form-group mb-xl-3 mb-2">
+                              <label className="label d-block mb-1">
                                 {t("cart.email-invoices")}
                               </label>
                               <input
                                 type="email"
-                                className="form-input w-100 p-xl-2 rounded outline-none border"
+                                className="form-input w-100 p-xl-2 p-1 rounded outline-none border"
                                 placeholder={t("cart.email-invoices")}
                               />
                               <span className="error  text-error"></span>
                             </div>
                           </div>
-                          <div className="mx-xl-5 mt-xl-4">
+                          <div className="mx-5 mt-4">
                             <button
                               type="button"
                               className="btn btn-success d-flex justify-content-center align-items-center rounded-5 py-xl-2 px-xl-4 mx-xl-3 mb-xl-4 text-white fw-semibold w-100"
@@ -322,7 +322,7 @@ const CartHeader = ({
                             data-portal="#cart-vat-drawer"
                           >
                             <p
-                              className="d-flex align-items-center flex-column w-100 m-xl-0 cursor-pointer text-secondary"
+                              className="d-flex align-items-center flex-column w-100 m-0 cursor-pointer text-secondary"
                               onClick={toggleShowBillInfo}
                             >
                               <i className="bi bi-receipt"></i>
@@ -333,49 +333,49 @@ const CartHeader = ({
                           </div>
                         </portal-opener>
                       </div>
-                      <div className="cart-opener-item col-xl-3">
+                      <div className="cart-opener-item col-3">
                         <div
-                          className="time-field slide-right position-absolute py-xl-4 ps-xl-3 top-0 bg-white end-0 h-100 shadow-lg w-100"
+                          className="time-field slide-right position-absolute py-xl-4 py-3 ps-3 top-0 bg-white end-0 h-100 shadow-lg w-100"
                           hidden={showTime}
                         >
                           <div className=" time-header">
                             <div className="d-flex align-items-center mb-3">
                               <p
-                                className="cursor-pointer m-xl-0"
+                                className="cursor-pointer m-0"
                                 onClick={toggleShowTime}
                               >
-                                <i className="bi bi-arrow-left fs-4 me-xl-2"></i>
+                                <i className="bi bi-arrow-left fs-4 me-2"></i>
                               </p>
-                              <h3 className="fw-bold m-xl-0">
+                              <h3 className="fw-bold m-0">
                                 {t("cart.schedule-receive-timer")}
                               </h3>
                             </div>
                           </div>
-                          <div className="px-xl-4">
-                            <div className="d-flex align-items-center mb-xl-3">
+                          <div className="px-4">
+                            <div className="d-flex align-items-center mb-xl-3 mb-2">
                               <input className="invoice fs-5" type="hidden" />
                               <input
                                 className="invoice-checkbox form-checkbox fs-5"
                                 type="checkbox"
                               />
-                              <div className="ms-xl-2 text-sm ">
+                              <div className="ms-2 text-sm ">
                                 <label>
                                   {t("cart.schedule-delivery-timer")}
                                 </label>
                               </div>
                             </div>
-                            <div className="form-group mb-xl-3">
+                            <div className="form-group mb-xl-3 mb-2">
                               <label className="label d-block mb-1">
                                 {t("cart.receive-day")}
                               </label>
                               <input
                                 type="date"
-                                className="form-input w-100 p-xl-2 rounded outline-none border"
+                                className="form-input w-100 p-xl-2 p-2 rounded outline-none border"
                                 name=""
                               />
                               <span className="error text-error"></span>
                             </div>
-                            <div className="form-group mb-xl-3">
+                            <div className="form-group mb-xl-3 mb-2">
                               <label className="label d-block mb-1">
                                 {t("cart.receive-time")}
                               </label>
@@ -394,7 +394,7 @@ const CartHeader = ({
                               <span className="error text-error"></span>
                             </div>
                           </div>
-                          <div className="mx-xl-5 mt-xl-4">
+                          <div className="mx-5 mt-4">
                             <button
                               type="button"
                               className="btn btn-success d-flex justify-content-center align-items-center rounded-5 py-2 px-4 mx-3 mb-4 text-white fw-semibold w-100"
@@ -409,7 +409,7 @@ const CartHeader = ({
                             data-portal="#cart-delivery-drawer"
                           >
                             <p
-                              className="d-flex align-items-center flex-column w-100 m-xl-0 cursor-pointer text-secondary"
+                              className="d-flex align-items-center flex-column w-100 m-0 cursor-pointer text-secondary"
                               onClick={toggleShowTime}
                             >
                               <i className="bi bi-clock"></i>
@@ -420,42 +420,42 @@ const CartHeader = ({
                           </div>
                         </portal-opener>
                       </div>
-                      <div className="cart-opener-item col-xl-3">
+                      <div className="cart-opener-item col-3">
                         <div
-                          className="note-field slide-right position-absolute py-xl-4 ps-xl-3 top-0 bg-white end-0 h-100 shadow-lg w-100"
+                          className="note-field slide-right position-absolute py-xl-4 py-3 ps-3 top-0 bg-white end-0 h-100 shadow-lg w-100"
                           hidden={showNote}
                         >
                           <div className=" note-header">
-                            <div className="d-flex align-items-center mb-xl-3">
+                            <div className="d-flex align-items-center mb-xl-3 mb-2">
                               <p
-                                className="cursor-pointer m-xl-0"
+                                className="cursor-pointer m-0"
                                 onClick={toggleShowNote}
                               >
-                                <i className="bi bi-arrow-left fs-4 me-xl-2"></i>
+                                <i className="bi bi-arrow-left fs-4 me-2 "></i>
                               </p>
-                              <h3 className="fw-bold m-xl-0">
+                              <h3 className="fw-bold m-0">
                                 {t("cart.note-order")}
                               </h3>
                             </div>
                           </div>
                           <div className="px-4">
-                            <div className="form-group mb-xl-3">
-                              <label className="label d-block mb-xl-1">
+                            <div className="form-group mb-xl-3 mb-2">
+                              <label className="label d-block mb-1">
                                 {t("cart.note")}
                               </label>
                               <textarea
-                                className="form-textarea w-100 p-xl-2 rounded outline-none border "
+                                className="form-textarea w-100 p-2 rounded outline-none border "
                                 style={{ height: "100px" }}
                                 name="note"
                                 placeholder={t("cart.note-order")}
                               ></textarea>
-                              <span className="error  text-error"></span>
+                              <span className="error text-error"></span>
                             </div>
                           </div>
-                          <div className="mx-xl-5 mt-xl-4">
+                          <div className="mx-5 mt-4">
                             <button
                               type="button"
-                              className="btn btn-success d-flex justify-content-center align-items-center rounded-5 py-xl-2 px-xl-4 mx-xl-3 mb-xl-4 text-white fw-semibold w-100"
+                              className="btn btn-success d-flex justify-content-center align-items-center rounded-5 py-2 px-4 mx-3 mb-4 text-white fw-semibold w-100"
                             >
                               {t("btn.save")}
                             </button>
@@ -463,11 +463,11 @@ const CartHeader = ({
                         </div>
                         <portal-opener>
                           <div
-                            className="cart-voucer text-neutral-300 py-xl-2 d-flex align-items-center justify-content-between w-100"
+                            className="cart-voucer text-neutral-300 py-2 d-flex align-items-center justify-content-between w-100"
                             data-portal="#cart-note-drawer"
                           >
                             <p
-                              className="d-flex align-items-center flex-column w-100 m-xl-0 cursor-pointer text-secondary"
+                              className="d-flex align-items-center flex-column w-100 m-0 cursor-pointer text-secondary"
                               onClick={toggleShowNote}
                             >
                               <i className="bi bi-stickies-fill"></i>
@@ -478,25 +478,25 @@ const CartHeader = ({
                           </div>
                         </portal-opener>
                       </div>
-                      <div className="cart-opener-item col-xl-3">
+                      <div className="cart-opener-item col-3">
                         <div
-                          className="vorcher-field slide-right position-absolute py-xl-4 ps-xl-3 top-0 bg-white end-0 h-100 shadow-lg w-100"
+                          className="vorcher-field slide-right position-absolute py-xl-4 py-3 ps-3 top-0 bg-white end-0 h-100 shadow-lg w-100"
                           hidden={showVocher}
                         >
                           <div className=" vorcher-header">
-                            <div className="d-flex align-items-center mb-xl-3">
+                            <div className="d-flex align-items-center mb-xl-3 mb-2">
                               <p
                                 className="cursor-pointer m-0"
                                 onClick={toggleShowVocher}
                               >
-                                <i className="bi bi-arrow-left fs-4 me-xl-2"></i>
+                                <i className="bi bi-arrow-left fs-4 me-2"></i>
                               </p>
-                              <h3 className="fw-bold m-xl-0">
+                              <h3 className="fw-bold m-0">
                                 {t("cart.choose-a-promo-code")}
                               </h3>
                             </div>
                           </div>
-                          <div className="px-xl-4"></div>
+                          <div className="px-4"></div>
                           {/* <div className="mx-5 mt-4">
                             <button
                               type="button"
@@ -508,11 +508,11 @@ const CartHeader = ({
                         </div>
                         <portal-opener>
                           <div
-                            className="cart-voucer text-neutral-300 py-xl-2 d-flex align-items-center justify-content-between w-100"
+                            className="cart-voucer text-neutral-300 py-2 d-flex align-items-center justify-content-between w-100"
                             data-portal="#coupon-drawer"
                           >
                             <p
-                              className="d-flex align-items-center flex-column w-100 m-xl-0 cursor-pointer text-secondary"
+                              className="d-flex align-items-center flex-column w-100 m-0 cursor-pointer text-secondary"
                               onClick={toggleShowVocher}
                             >
                               <i className="bi bi-ticket-perforated"></i>
@@ -525,7 +525,7 @@ const CartHeader = ({
                       </div>
                     </div>
                     <div className="border-top">
-                      <div className="cart-total py-xl-3 d-flex align-items-start justify-content-between w-100 ">
+                      <div className="cart-total py-xl-3 py-md-2 d-flex align-items-start justify-content-between w-100 ">
                         <p className="fw-semibold text-black text-uppercase">
                           {t("cart.total")}
                         </p>
@@ -548,11 +548,11 @@ const CartHeader = ({
                       <div className="cart-submit">
                         <button
                           type="submit"
-                          className="btn w-100 btn fw-semibold text-uppercase bg-success text-white d-flex justify-content-center align-items-center rounded-5 py-xl-2"
+                          className="btn w-100 btn fw-semibold text-uppercase bg-success text-white d-flex justify-content-center align-items-center rounded-5 py-2"
                           onClick={handleCheckout}
                         >
                           {t("cart.payment")}
-                          <i className="bi bi-arrow-bar-right ms-xl-1"></i>
+                          <i className="bi bi-arrow-bar-right ms-1"></i>
                         </button>
                       </div>
                     </div>

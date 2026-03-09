@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 const Checkout = ({ cartController, orderController, authController }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [t, i18n] = useTranslation();
+  const [t] = useTranslation();
   const [cartItems, setCartItems] = useState([]);
   const [user, setUser] = useState(null);
   const [addressList, setAddressList] = useState([]);
@@ -265,7 +265,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
 
   if (loading) {
     return (
-      <div className="container py-xl-5 text-center">
+      <div className="container py-5 text-center">
         <div className="spinner-border text-success" role="status">
           <span className="visually-hidden">{t("checkout.loading")}</span>
         </div>
@@ -275,7 +275,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
 
   if (cartItems.length === 0) {
     return (
-      <div className="container py-xl-5 text-center">
+      <div className="container py-5 text-center">
         <h3>{t("checkout.emptyCart")}</h3>
         <Link to="/products/all" className="btn btn-success">
           {t("checkout.continueShopping")}
@@ -285,21 +285,21 @@ const Checkout = ({ cartController, orderController, authController }) => {
   }
 
   return (
-    <div className="container py-xl-5">
+    <div className="container py-xl-5 pt-md-3 pb-md-5">
       <h2 className="mb-4 fw-bold">{t("checkout.pageTitle")}</h2>
 
       <div className="row">
         {/* Form thanh toán */}
-        <div className="row col-xl-8">
-          <div className="col-xl-6">
+        <div className="row col-lg-8 col-md-12">
+          <div className="col-lg-6 col-12">
             <div className="card shadow-sm sticky-top" style={{ top: 20 }}>
-              <div className="card-body p-xl-4">
-                <h5 className="mb-xl-4 fw-semibold">
+              <div className="card-body p-lg-4">
+                <h5 className="mb-4 fw-semibold">
                   {t("checkout.customerInfo")}
                 </h5>
 
                 <form onSubmit={handleSubmit}>
-                  <div className="mb-xl-3">
+                  <div className="mb-3">
                     <label for="customer-address" class="field__label">
                       {t("checkout.addressBook")}
                     </label>
@@ -325,7 +325,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
                       <i class="fa fa-caret-down"></i>
                     </div>
                   </div>
-                  <div className="mb-xl-3">
+                  <div className="mb-3">
                     <label className="form-label">{t("checkout.email")}</label>
                     <input
                       type="email"
@@ -337,7 +337,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
                       disabled
                     />
                   </div>
-                  <div className="mb-xl-3">
+                  <div className="mb-3">
                     <label className="form-label">
                       {t("checkout.fullName")}{" "}
                       <span className="text-danger">
@@ -354,7 +354,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
                       required
                     />
                   </div>
-                  <div className="mb-xl-3">
+                  <div className="mb-3">
                     <label className="form-label">
                       {t("checkout.phone")}{" "}
                       <span className="text-danger">
@@ -371,7 +371,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
                       required
                     />
                   </div>
-                  <div className="mb-xl-3">
+                  <div className="mb-3">
                     <label className="form-label">
                       {t("checkout.addressOptional")}
                     </label>
@@ -384,7 +384,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
                       }
                     />
                   </div>
-                  <div className="mb-xl-3">
+                  <div className="mb-3">
                     <label className="form-label">
                       {t("checkout.province")}
                     </label>
@@ -406,7 +406,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
                       ))}
                     </select>
                   </div>
-                  <div className="mb-xl-3">
+                  <div className="mb-3">
                     <label className="form-label">
                       {t("checkout.district")}
                     </label>
@@ -430,7 +430,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
                       ))}
                     </select>
                   </div>
-                  <div className="mb-xl-3">
+                  <div className="mb-3">
                     <label className="form-label">{t("checkout.ward")}</label>
                     <select
                       id="ward-address"
@@ -453,7 +453,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
                     </select>
                   </div>
 
-                  <div className="mb-xl-4">
+                  <div className="mb-4">
                     <label className="form-label">{t("checkout.note")}</label>
                     <textarea
                       className="form-control"
@@ -469,12 +469,12 @@ const Checkout = ({ cartController, orderController, authController }) => {
               </div>
             </div>
           </div>
-          <div className="col-xl-6">
-            <div className="border p-xl-4 shadow-sm rounded-3">
+          <div className="col-xl-6 col-12 mt-md-3">
+            <div className="border p-xl-4 p-md-3  shadow-sm rounded-3">
               {/* Vận chuyển */}
-              <div class="section mb-xl-4">
+              <div class="section mb-4">
                 <div class="header">
-                  <h5 className="mb-xl-2 fw-semibold">
+                  <h5 className="mb-2 fw-semibold">
                     {t("checkout.shipping.title")}
                   </h5>
                 </div>
@@ -496,7 +496,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
                   </div>
 
                   <div class="content-box">
-                    <div class="content-box border rounded-2 py-xl-2 px-xl-3">
+                    <div class="content-box border rounded-2 py-2 px-3">
                       <div class="radio-wrapper d-flex w-100 align-items-center">
                         <div class="radio__input">
                           <input
@@ -511,7 +511,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
                         </div>
                         <label
                           for="shippingMethod"
-                          class="radio__label d-flex ms-xl-2 justify-content-between align-items-center fs-7 w-100"
+                          class="radio__label d-flex ms-2 justify-content-between align-items-center fs-7 w-100"
                         >
                           <span class="radio__label__primary">
                             <span>{t("checkout.shipping.method")}</span>
@@ -530,7 +530,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
               {/* Thanh Toán */}
               <div class="section">
                 <div class="section__header">
-                  <h5 className="mb-xl-2 fw-semibold">
+                  <h5 className="mb-2 fw-semibold">
                     {t("checkout.payment.title")}
                   </h5>
                 </div>
@@ -544,7 +544,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
                     </svg>
                   </div>
                   <div class="content-box">
-                    <div class="content-box border rounded-2 py-xl-2 px-xl-3 mb-xl-1">
+                    <div class="content-box border rounded-2 py-lg-2 px-3 mb-1">
                       <div class="radio-wrapper d-flex align-items-center w-100">
                         <div class="radio__input">
                           <input
@@ -559,18 +559,18 @@ const Checkout = ({ cartController, orderController, authController }) => {
                         </div>
                         <label
                           for="paymentMethodBank"
-                          class="radio__label d-flex ms-xl-2 justify-content-between align-items-center fs-7 w-100"
+                          class="radio__label d-flex ms-2 justify-content-between align-items-center fs-7 w-100"
                         >
                           <span class="radio__label__primary">
                             <span>{t("checkout.payment.bankTransfer")}</span>
                           </span>
-                          <span class="radio__label__accessory me-xl-2">
+                          <span class="radio__label__accessory me-2">
                             <i class="bi bi-cash text-primary fs-4"></i>
                           </span>
                         </label>
                       </div>
                     </div>
-                    <div class="content-box border rounded-2 py-xl-2 px-xl-3">
+                    <div class="content-box border rounded-2 py-lg-2 px-3">
                       <div class="radio-wrapper d-flex w-100 align-items-center">
                         <div class="radio__input">
                           <input
@@ -587,12 +587,12 @@ const Checkout = ({ cartController, orderController, authController }) => {
                         </div>
                         <label
                           for="paymentMethodCOD"
-                          class="radio__label d-flex ms-xl-2 justify-content-between align-items-center fs-7 w-100"
+                          class="radio__label d-flex ms-2 justify-content-between align-items-center fs-7 w-100"
                         >
                           <span class="radio__label__primary">
                             <span>{t("checkout.payment.cod")}</span>
                           </span>
-                          <span class="radio__label__accessory me-xl-2">
+                          <span class="radio__label__accessory me-2">
                             <i class="bi bi-cash text-primary fs-4"></i>
                           </span>
                         </label>
@@ -606,21 +606,24 @@ const Checkout = ({ cartController, orderController, authController }) => {
         </div>
 
         {/* Danh sách sản phẩm */}
-        <div className="col-xl-4">
-          <div className="card border-bottom mb-xl-4">
+        <div className="col-xl-4 col-12 mt-lg-0 mt-3 ">
+          <div className="card border-bottom mb-4 me-4">
             <div className="cart-content">
-              <h5 className="card-title mb-xl-4 fw-semibold p-xl-3 border-bottom">
+              <h5 className="card-title mb-lg-4 fw-semibold p-3 border-bottom">
                 {t("checkout.cartSummary.title")}{" "}
                 {t("checkout.cartSummary.productCount", {
                   count: cartItems.length,
                 })}
               </h5>
               {cartItems.map((item) => (
-                <div key={item.id} className="d-flex py-xl-3 px-xl-4">
+                <div
+                  key={item.id}
+                  className="d-flex py-lg-3 py-2 px-lg-4 px-3 "
+                >
                   <img
                     src={item.image || "/placeholder.jpg"}
                     alt={getTranslated(item.name)}
-                    className="rounded me-xl-3"
+                    className="rounded me-lg-3 me-2"
                     style={{ width: 80, height: 80, objectFit: "cover" }}
                   />
                   <div className="flex-grow-1">
@@ -630,13 +633,13 @@ const Checkout = ({ cartController, orderController, authController }) => {
                         {t("checkout.cartSummary.size", { size: item.size })}
                       </small>
                     )}
-                    <span className="ms-xl-2 text-muted">
+                    <span className="ms-2 text-muted">
                       {t("checkout.cartSummary.quantity", {
                         quantity: item.quantity,
                       })}
                     </span>
                   </div>
-                  <div className="text-danger fw-bold text-end ms-xl-2">
+                  <div className="text-danger fw-bold text-end ms-2">
                     {(
                       (item.discountPrice || item.price) * item.quantity
                     ).toLocaleString("vi-VN")}
@@ -648,11 +651,11 @@ const Checkout = ({ cartController, orderController, authController }) => {
           </div>
           <div>
             {/* Mã giảm giá */}
-            <div className="mb-xl-4">
+            <div className="mb-4">
               <div className="input-group">
                 <input
                   type="text"
-                  className="form-control py-xl-2"
+                  className="form-control py-lg-2 py-1"
                   placeholder={t("checkout.cartSummary.voucher.placeholder")}
                   value={voucherCode}
                   onChange={(e) => setVoucherCode(e.target.value)}
@@ -669,7 +672,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
                 </button>
               </div>
               {voucherDiscount > 0 && (
-                <div className="text-success mt-xl-2 small">
+                <div className="text-success mt-2 small">
                   {t("checkout.cartSummary.voucher.applied", {
                     amount: voucherDiscount.toLocaleString("vi-VN"),
                   })}
@@ -678,27 +681,27 @@ const Checkout = ({ cartController, orderController, authController }) => {
             </div>
 
             {/* Tổng tiền */}
-            <div className="border-top pt-xl-3">
-              <div className="d-flex justify-content-between mb-xl-2">
+            <div className="border-top pt-lg-3 pt-2">
+              <div className="d-flex justify-content-between mb-2">
                 <span>{t("checkout.cartSummary.subtotal")}</span>
                 <span>{subTotal.toLocaleString("vi-VN")}₫</span>
               </div>
-              <div className="d-flex justify-content-between mb-xl-2">
+              <div className="d-flex justify-content-between mb-2">
                 <span>{t("checkout.cartSummary.shippingFee")}</span>
                 <span>{shippingFee.toLocaleString("vi-VN")}₫</span>
               </div>
               {voucherDiscount > 0 && (
-                <div className="d-flex justify-content-between text-success mb-xl-2">
+                <div className="d-flex justify-content-between text-success mb-2">
                   <span>{t("checkout.cartSummary.discount")}</span>
                   <span>-{voucherDiscount.toLocaleString("vi-VN")}₫</span>
                 </div>
               )}
-              <div className="d-flex justify-content-between fw-bold fs-4 text-danger border-top mt-xl-3 pt-xl-2">
+              <div className="d-flex justify-content-between fw-bold fs-4 text-danger border-top mt-3 pt-2">
                 <span>{t("checkout.cartSummary.total")}</span>
                 <span>{totalAmount.toLocaleString("vi-VN")}₫</span>
               </div>
             </div>
-            <div className="d-flex justify-content-between align-items-center mt-xl-4">
+            <div className="d-flex justify-content-between align-items-center mt-4">
               <div className="text-center">
                 <Link to="/cart" className="text-muted text-hover">
                   {t("checkout.cartSummary.backToCart")}
@@ -707,7 +710,7 @@ const Checkout = ({ cartController, orderController, authController }) => {
               <button
                 type="button"
                 disabled={submitting}
-                className="btn btn-success w-50 py-xl-3 fw-bold text-white"
+                className="btn btn-success w-50 py-lg-3 py-2 fw-bold text-white"
                 onClick={handleSubmit}
               >
                 {submitting
