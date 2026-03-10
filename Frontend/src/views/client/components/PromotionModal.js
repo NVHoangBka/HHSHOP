@@ -30,6 +30,7 @@ const PromotionModal = () => {
             <button
               type="button"
               className="btn-close position-absolute top-0 end-0 m-3"
+              data-bs-dismiss="modal"
             ></button>
 
             <img
