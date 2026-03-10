@@ -459,6 +459,10 @@
                     }
                 ]
             }
+        },
+        "store": {
+            "search": "Tìm cửa hàng",
+            "selectStore": "Chọn cửa hàng"
         }
     },
     "news": {

@@ -459,6 +459,10 @@
                     }
                 ]
             }
+        },
+        "store": {
+            "search": "Najít obchod",
+            "selectStore": "Vybrat obchod"
         }
     },
     "news": {

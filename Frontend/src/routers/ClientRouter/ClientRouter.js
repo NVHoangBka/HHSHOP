@@ -12,6 +12,7 @@ import Introduce from "../../views/client/pages/IntroducePage/Introduce";
 import CheckOrder from "../../views/client/pages/CheckOrderPage/CheckOrder";
 import Contact from "../../views/client/pages/ContactPage/Contact";
 import News from "../../views/client/pages/NewsPage/News";
+import Store from "../../views/client/pages/Store/Store";
 
 const ClientRouter = (props, index) => (
   <Routes>
@@ -116,7 +117,7 @@ const ClientRouter = (props, index) => (
       }
     />
 
-    <Route path="/store-system" element={<Contact />} />
+    <Route path="/store-system" element={<Store />} />
   </Routes>
 );
 

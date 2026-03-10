@@ -32,7 +32,7 @@ const Contact = ({ authController }) => {
     <div className="bg-success-subtle">
       <div className="breadcrumbs">
         <div className="container">
-          <ul className="breadcrumb py-xl-3 d-flex flex-wrap align-items-center">
+          <ul className="breadcrumb py-lg-3 pt-md-2 d-flex flex-wrap align-items-center">
             <li className="home">
               <Link
                 className="link hover"
@@ -52,23 +52,23 @@ const Contact = ({ authController }) => {
           </ul>
         </div>
       </div>
-      <section class="section main-page pb-xl-5">
+      <section class="section main-page pb-xl-5 pb-md-3">
         <div class="container">
-          <div class="bg-white rounded  mb-xl-5 px-xl-4 pt-xl-2 pb-xl-4">
+          <div class="bg-white rounded mb-xl-5 mb-md-3 px-xl-4 px-md-3 pt-xl-2 pt-md-2 pb-xl-4 pb-md-3">
             <div class="grid pt-xl-4 row">
-              <div className="col-xl-6">
-                <h1 class="fw-semibold mb-xl-2">{t("info.name")}</h1>
-                <div class="d-flex align-items-start mb-xl-2 ms-xl-4">
+              <div className="col-xl-6 col-md-5">
+                <h1 class="fw-semibold mb-xl-2 mb-2">{t("info.name")}</h1>
+                <div class="d-flex align-items-start mb-xl-2 ms-xl-4 mb-2 ms-2">
                   <i class="bi bi-geo-alt text-secondary"></i>
-                  <div class="ms-xl-1">
+                  <div class="ms-1">
                     <p class="text-forground m-0">{t("info.address")}</p>
                     <p class="fw-semibold mb-1">
                       <span>{companyAddress}</span>
                     </p>
                   </div>
                 </div>
-                <div class="grid justify-content-between ms-xl-4">
-                  <div class="d-flex align-items-start mb-xl-2">
+                <div class="grid justify-content-between ms-lg-4 ms-2">
+                  <div class="d-flex align-items-start mb-lg-2 mb-2">
                     <i class="bi bi-telephone text-secondary"></i>
                     <div class="ms-1">
                       <p class="text-forground m-0">{t("info.hotline")}</p>
@@ -94,8 +94,8 @@ const Contact = ({ authController }) => {
                     </div>
                   </div>
                 </div>
-                <div class="py-xl-4 ms-xl-4 ">
-                  <h2 class="fw-semibold mb-xl-2 fs-4">
+                <div class="py-lg-4 ms-lg-4 py-3 ms-2">
+                  <h2 class="fw-semibold mb-lg-2 mb-2 fs-4">
                     {t("info.contact.pageTitle")}
                   </h2>
                   <form
@@ -109,11 +109,11 @@ const Contact = ({ authController }) => {
 
                     <div class="form-signup clearfix">
                       <div class="group_contact ">
-                        <fieldset class="form-group my-xl-2 ">
+                        <div class="form-group my-2">
                           <input
                             placeholder={t("info.fullName")}
                             type="text"
-                            class="form-input w-100 p-xl-2"
+                            class="form-input w-100 p-lg-2 p-1"
                             name="FullName"
                             value={fullName}
                             onChange={(e) => {
@@ -121,14 +121,14 @@ const Contact = ({ authController }) => {
                             }}
                             required
                           />
-                        </fieldset>
-                        <fieldset class="form-group my-xl-2 ">
+                        </div>
+                        <fieldset class="form-group my-2 ">
                           <input
                             placeholder="Email*"
                             type="email"
                             pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
                             id="email1"
-                            class="form-input w-100 p-xl-2"
+                            class="form-input w-100 p-lg-2 p-1"
                             value={email}
                             onChange={(e) => {
                               setEmail(e.target.value);
@@ -137,11 +137,11 @@ const Contact = ({ authController }) => {
                             required
                           />
                         </fieldset>
-                        <fieldset class="form-group my-xl-2 ">
+                        <fieldset class="form-group my-2 ">
                           <input
                             placeholder={t("info.phoneNumber")}
                             type="text"
-                            class="form-input w-100 p-xl-2"
+                            class="form-input w-100 p-lg-2 p-1"
                             required
                             pattern="\d+"
                             name="PhoneNumber"
@@ -151,12 +151,12 @@ const Contact = ({ authController }) => {
                             }}
                           />
                         </fieldset>
-                        <fieldset class="form-group my-xl-2 ">
+                        <fieldset class="form-group my-2 ">
                           <textarea
                             placeholder="Nhập nội dung*"
                             name="Body"
                             id="comment"
-                            class="form-textarea w-100 p-xl-2"
+                            class="form-textarea w-100 p-lg-2 p-1"
                             rows="5"
                             required
                           ></textarea>
@@ -164,7 +164,7 @@ const Contact = ({ authController }) => {
                         <div class="">
                           <button
                             type="submit"
-                            class="btn bg-success text-white fw-semibold py-xl-2 px-xl-4 rounded-5"
+                            class="btn bg-success text-white fw-semibold py-lg-2 px-lg-4 py-2 px-4  rounded-5"
                           >
                             {t("info.contact.header")}
                           </button>
@@ -174,7 +174,7 @@ const Contact = ({ authController }) => {
                   </form>
                 </div>
               </div>
-              <div className="col-xl-6">
+              <div className="col-xl-6 col-7">
                 <div className="position-sticky top-0">
                   <div className="ratio ratio-1x1 rounded overflow-hidden shadow-lg">
                     <iframe
@@ -188,7 +188,7 @@ const Contact = ({ authController }) => {
                       title="Bản đồ HHGroup"
                     ></iframe>
                   </div>
-                  <p className="text-center mt-xl-3 text-muted small">
+                  <p className="text-center mt-lg-3 mt-2 text-muted small">
                     <i className="bi bi-geo-alt-fill"></i>{" "}
                     {t("info.contact.map.instruction")}
                   </p>
