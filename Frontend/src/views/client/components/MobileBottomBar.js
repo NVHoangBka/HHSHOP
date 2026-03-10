@@ -1,5 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 // import { useLocation } from "react-router-dom";
 
 const MobileBottomBar = ({
@@ -15,17 +16,17 @@ const MobileBottomBar = ({
         {isProductDetail ? (
           <div className="row align-items-center text-center pt-2">
             <div className="col-2">
-              <a href="tel:0900000000">
+              <Link to="tel:0900000000">
                 <i className="bi bi-telephone fs-6 text-success"></i>
                 <div className="fs-8">{t("mbBar.call")}</div>
-              </a>
+              </Link>
             </div>
 
             <div className="col-2">
-              <a href="https://zalo.me/0900000000">
+              <Link to="https://zalo.me/0900000000">
                 <i className="bi bi-chat-dots fs-6 text-success"></i>
                 <div className="fs-8">{t("mbBar.chat")}</div>
-              </a>
+              </Link>
             </div>
 
             <div className="col-2 position-relative">
@@ -52,37 +53,40 @@ const MobileBottomBar = ({
         ) : (
           <div className="row text-center py-2">
             <div className="col">
-              <a
-                href="tel:0900000000"
+              <Link
+                to="tel:0900000000"
                 className="text-decoration-none text-black"
               >
                 <i className="bi bi-telephone text-success"></i>
                 <div className="fs-8">{t("mbBar.call")}</div>
-              </a>
+              </Link>
             </div>
 
             <div className="col">
-              <a
-                href="https://zalo.me/0900000000"
+              <Link
+                to="https://zalo.me/0900000000"
                 className="text-decoration-none text-black"
               >
                 <i className="bi bi-chat-dots text-success"></i>
                 <div className="fs-8">{t("mbBar.chat")}</div>
-              </a>
+              </Link>
             </div>
 
             <div className="col">
-              <a href="#" className="text-decoration-none text-black">
+              <Link to="#" className="text-decoration-none text-black">
                 <i className="bi bi-fire text-danger"></i>
                 <div className="fs-8">{t("mbBar.promotion")}</div>
-              </a>
+              </Link>
             </div>
 
             <div className="col">
-              <a href="#" className="text-decoration-none text-black">
+              <Link
+                to="/store-system"
+                className="text-decoration-none text-black"
+              >
                 <i className="bi bi-geo-alt text-success"></i>
                 <div className="fs-8">{t("mbBar.store")}</div>
-              </a>
+              </Link>
             </div>
 
             <div className="col">

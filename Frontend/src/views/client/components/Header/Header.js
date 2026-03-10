@@ -279,7 +279,7 @@ const Header = ({
             </Link>
           </Offcanvas.Title>
         </Offcanvas.Header>
-        <Offcanvas.Body className="p-xl-0">
+        <Offcanvas.Body className="p-0">
           <Menu
             isOpen={showMenu}
             onClose={() => setShowMenu(false)}
@@ -299,7 +299,7 @@ const Header = ({
         placement="end"
         style={{ zIndex: "3000" }}
       >
-        <Offcanvas.Body className="p-xl-0">
+        <Offcanvas.Body className="p-0">
           <Search
             isOpen={showSearch}
             onClose={() => setShowSearch(false)}

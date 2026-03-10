@@ -2,50 +2,25 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import Select from "react-select";
+import storeController from "../../../../controllers/StoreController";
 
 const Store = () => {
   const [t] = useTranslation();
+  const [storeOptions, setStoreOptions] = useState([]);
   const [selectedStore, setSelectedStore] = useState(null);
   const [selectedInput, setSelectedInput] = useState(null);
   // const [error, setError] = useState("");
   // const [loading, setLoading] = useState(false);
   const fetchStore = async () => {
-    // const result =
+    const result = await storeController.getAllStores();
+    if (result?.success) {
+      setStoreOptions(result?.stores);
+      setSelectedStore(result?.stores[0]);
+    }
   };
 
-  const storeOptions = [
-    {
-      value: "thanhhoa",
-      label: "Chi nhánh Thanh Hoá",
-      address: "91 Lê Hoàn, P. Lam Sơn, TP Thanh Hoá",
-      phoneNumber: "1900 8686",
-      map: "https://www.google.com/maps?q=91+Lê+Hoàn+Thanh+Hóa&output=embed",
-    },
-    {
-      value: "hanoi",
-      label: "Chi nhánh Hà Nội",
-      address: "1 Tràng Tiền, Hoàn Kiếm, Hà Nội",
-      phoneNumber: "1900 8686",
-      map: "https://www.google.com/maps?q=1+Tràng+Tiền+Hà+Nội&output=embed",
-    },
-    {
-      value: "hcm",
-      label: "Chi nhánh Hồ Chí Minh",
-      address: "135 Nguyễn Huệ, Quận 1, TP Hồ Chí Minh",
-      phoneNumber: "1900 8686",
-      map: "https://www.google.com/maps?q=135+Nguyễn+Huệ+Quận+1+HCM&output=embed",
-    },
-    {
-      value: "danang",
-      label: "Chi nhánh Đà Nẵng",
-      address: "254 Bạch Đằng, Hải Châu, Đà Nẵng",
-      phoneNumber: "1900 8686",
-      map: "https://www.google.com/maps?q=254+Bạch+Đằng+Đà+Nẵng&output=embed",
-    },
-  ];
-
   useEffect(() => {
-    setSelectedStore(storeOptions[0]);
+    fetchStore();
   }, []);
 
   const displayStores = selectedInput
@@ -77,17 +52,17 @@ const Store = () => {
         </div>
       </div>
 
-      <section className="section main-page pb-xl-5 pb-md-3">
+      <section className="section main-page pb-5">
         <div className="container">
-          <h2 className="fw-semibold text-center mb-lg-4 mb-md-3">
+          <h2 className="fw-semibold text-center mb-lg-4 mb-3">
             {t("menu.storeSystem")}
           </h2>
 
-          <div className="mb-xl-5 mb-md-3 px-xl-4 px-md-3 pt-xl-2 pt-md-2 pb-xl-4 pb-md-3">
+          <div className="mb-lg-5 mb-md-3 mb-3 px-lg-4 px-md-3 px-2 pt-xl-2 pt-2">
             <div className="row pt-lg-4 align-items-stretch">
               {/* STORE LIST */}
               <div
-                className="bg-white col-lg-4 col-md-6 col-12 py-lg-4 py-md-3 px-md-3 overflow-auto border border-secondary rounded"
+                className="bg-white col-lg-4 col-md-6 col-12 py-lg-4 py-3 px-3 overflow-auto border border-secondary rounded"
                 style={{
                   maxHeight: window.innerWidth >= 992 ? "820px" : "320px",
                 }}
@@ -112,11 +87,11 @@ const Store = () => {
                 </div>
 
                 {/* STORE LIST */}
-                <div className="my-lg-4 my-md-3">
+                <div className="my-lg-4 my-md-3 my-3">
                   {displayStores.map((s) => (
                     <div
                       key={s.value}
-                      className={`border rounded py-lg-3 py-md-2 px-lg-3 px-md-2 my-md-2 cursor-pointer ${
+                      className={`border rounded py-lg-3 py-2 px-lg-3 px-2 my-2 cursor-pointer ${
                         selectedStore?.value === s.value
                           ? "border-success shadow"
                           : ""
@@ -145,7 +120,7 @@ const Store = () => {
               </div>
 
               {/* MAP */}
-              <div className="col-lg-8 col-md-6 col-12 mt-3 mt-md-0">
+              <div className="col-lg-8 col-md-6 col-12 mt-4 mt-md-0">
                 <div className="ratio ratio-1x1 rounded overflow-hidden shadow-lg">
                   <iframe
                     src={

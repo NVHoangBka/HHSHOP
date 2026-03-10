@@ -60,7 +60,7 @@ const Search = ({
       }
       setLoading(false);
     }, 300),
-    [productController]
+    [productController],
   );
 
   const handleInputChange = (e) => {
@@ -78,7 +78,7 @@ const Search = ({
       onClose();
       const category = categoryRef.current?.value || "all";
       navigate(
-        `/products/search?q=${encodeURIComponent(query)}&category=${category}`
+        `/products/search?q=${encodeURIComponent(query)}&category=${category}`,
       );
     }
   };
@@ -103,20 +103,22 @@ const Search = ({
     <nav className="d-flex flex-column end-0 h-100" ref={searchRef}>
       <div className="container text-black">
         {/* Header */}
-        <div className="mt-xl-3">
-          <div className="search-header d-flex align-items-center">
+        <div className="mt-lg-3 mt-md-2 mt-1">
+          <div className="search-header d-flex align-items-center border-bottom mb-4">
             <button onClick={onClose} className="btn">
               <i className="bi bi-arrow-left fs-4"></i>
             </button>
-            <h4 className="fw-bold m-xl-0 px-xl-3 fs-3">{t("search.title")}</h4>
+            <h4 className="fw-bold m-0 px-lg-3 px-1 fs-3">
+              {t("search.title")}
+            </h4>
           </div>
 
           {/* Search Bar */}
-          <form onSubmit={handleSearch} className="mb-xl-4 mx-xl-3">
-            <div className="input-group my-xl-3">
+          <form onSubmit={handleSearch} className="mb-4 mx-3">
+            <div className="input-group my-3">
               <select
                 ref={categoryRef}
-                className="form-select border-success py-xl-2 ps-xl-4 rounded-pill"
+                className="form-select border-success py-2 ps-lg-4 rounded-pill"
                 defaultValue="all"
                 onChange={() => {
                   if (query) debouncedSearch(query, categoryRef.current.value);
@@ -130,14 +132,14 @@ const Search = ({
                 ))}
               </select>
             </div>
-            <div className="input-group my-xl-3">
+            <div className="input-group my-3">
               <input
                 ref={inputRef}
                 type="text"
                 value={query}
                 onChange={handleInputChange}
                 onFocus={() => query && setShowSuggestions(true)}
-                className="form-control py-xl-2 ps-xl-4 rounded-start-pill"
+                className="form-control py-2 ps-lg-4 rounded-start-pill"
                 placeholder={t("search.product-name")}
               />
               <button
@@ -151,7 +153,7 @@ const Search = ({
             {/* GỢI Ý TÌM KIẾM */}
             {showSuggestions && (
               <div
-                className="position-absolute start-0 end-0 bg-white border rounded-bottom shadow-sm mt-xl-1 mx-xl-3"
+                className="position-absolute start-0 end-0 bg-white border rounded-bottom shadow-sm mt-1 mx-3"
                 style={{
                   zIndex: 1000,
                   maxHeight: "60vh",
@@ -161,7 +163,7 @@ const Search = ({
               >
                 {loading ? (
                   <div className="p-3 text-center text-muted">
-                    <span className="spinner-border spinner-border-sm me-xl-2"></span>
+                    <span className="spinner-border spinner-border-sm me-2"></span>
                     Đang tìm...
                   </div>
                 ) : suggestions.length > 0 ? (
@@ -171,13 +173,13 @@ const Search = ({
                     return (
                       <div
                         key={id}
-                        className="d-flex align-items-center p-xl-3 border-bottom hover-bg-light cursor-pointer "
+                        className="d-flex align-items-center p-lg-3 p-2 border-bottom hover-bg-light cursor-pointer "
                         onClick={() => handleSuggestionClick(product)}
                       >
                         <img
                           src={image || "/placeholder.jpg"}
                           alt={getTranslated(name)}
-                          className="me-xl-3"
+                          className="me-lg-3 me-2"
                           style={{
                             width: 50,
                             height: 50,
@@ -189,7 +191,7 @@ const Search = ({
                           <div className="fw-semibold text-dark text-hover">
                             {getTranslated(name)}
                           </div>
-                          <div className="text-success small">
+                          <div className="text-danger fw-semibold">
                             {price.toLocaleString("vi-VN")}₫
                           </div>
                         </div>
@@ -197,7 +199,7 @@ const Search = ({
                     );
                   })
                 ) : query ? (
-                  <div className="p-xl-3 text-center text-muted">
+                  <div className="p-3 text-center text-muted">
                     {t("search.no-product")}
                   </div>
                 ) : null}
@@ -206,8 +208,8 @@ const Search = ({
           </form>
 
           {/* Hot Keywords */}
-          <div className="mx-xl-3">
-            <p className="text-success fw-semibold mb-xl-2">
+          <div className="mx-3">
+            <p className="text-success fw-semibold mb-2">
               {t("search.popular-keywords")}
             </p>
             <div className="d-flex flex-wrap gap-2">
@@ -215,10 +217,10 @@ const Search = ({
                 <Link
                   key={index}
                   to={`/products/search?q=${encodeURIComponent(
-                    getTranslated(sub.slug)
+                    getTranslated(sub.slug),
                   )}&category=all`}
                   onClick={onClose}
-                  className="badge bg-light text-dark border px-xl-3 py-xl-2 text-decoration-none hover-bg-success hover-text-white transition btn"
+                  className="badge bg-light text-dark border px-3 py-2 text-decoration-none hover-bg-success hover-text-white transition btn"
                 >
                   {getTranslated(sub.name)}
                 </Link>

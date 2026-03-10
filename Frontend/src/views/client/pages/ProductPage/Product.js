@@ -333,7 +333,7 @@ const Product = ({ path, addToCart, productController }) => {
     <div className="product bg-success-subtle">
       <div className="container">
         <div className="breadcrumbs">
-          <ul className="breadcrumb d-flex flex-wrap align-items-center py-xl-3 py-lg-3 py-md-2 py-sm-1 py-1 mb-0 ">
+          <ul className="breadcrumb d-flex flex-wrap align-items-center py-xl-3 py-lg-3 py-md-2 py-1 mb-0 ">
             <li className="home">
               <Link
                 className="link hover"
@@ -379,7 +379,7 @@ const Product = ({ path, addToCart, productController }) => {
               <div className="d-left flex-row-reverse align-items-center mb-xl-2 mb-lg-2 mb-md-1 mb-1">
                 <div className="d-flex justify-content-between justify-content-md-end">
                   <button
-                    className="btn btn-outline-dark d-md-none rounded-pill d-flex align-items-center me-2 bg-white border-0"
+                    className="btn btn-outline-dark d-lg-none rounded-pill d-flex align-items-center me-2 bg-white border-0"
                     onClick={() => setShowFilter(true)}
                   >
                     <i className="bi bi-funnel me-2"></i>
@@ -524,7 +524,7 @@ const Product = ({ path, addToCart, productController }) => {
                   ? `d-block position-fixed position-md-static top-0 end-0 bg-white overflow-auto p-3`
                   : "d-none"
               }  
-              content-product-right pe-0 d-md-block h-100`}
+              content-product-right pe-0 d-lg-block h-100`}
               style={{ zIndex: showFilter ? "2000" : "1000" }}
             >
               <div className="d-flex justify-content-between align-items-center py-2 ms-2 me-3 border-bottom">
