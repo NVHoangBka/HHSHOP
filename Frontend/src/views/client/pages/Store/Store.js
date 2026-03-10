@@ -9,6 +9,10 @@ const Store = () => {
   const [selectedInput, setSelectedInput] = useState(null);
   // const [error, setError] = useState("");
   // const [loading, setLoading] = useState(false);
+  const fetchStore = async () => {
+    // const result =
+  };
+
   const storeOptions = [
     {
       value: "thanhhoa",

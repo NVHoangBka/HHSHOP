@@ -5,7 +5,7 @@ class StoreController {
   // Lấy tất cả stores (dùng cho filter frontend + admin)
   static async getAllStores(req, res) {
     try {
-      const stores = await Store.find({ isActive: true });
+      const stores = await Store.find();
       res.json({ success: true, stores });
     } catch (err) {
       res.status(500).json({ success: false, message: err.message });
