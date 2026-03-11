@@ -47,9 +47,9 @@ router.put("/tags/:id", AdminController.updateTag);
 router.delete("/tags/:id", AdminController.deleteTag);
 
 // ==================== QUẢN LÝ BRAND ====================
-router.get("/brands", AdminController.getTagsAdmin);
-router.post("/brands", AdminController.createTag);
-router.put("/brands/:id", AdminController.updateTag);
-router.delete("/brands/:id", AdminController.deleteTag);
+router.get("/brands", AdminController.getBrandsAdmin);
+router.post("/brands", AdminController.createBrand);
+router.put("/brands/:id", AdminController.updateBrand);
+router.delete("/brands/:id", AdminController.deleteBrand);
 
 module.exports = router;

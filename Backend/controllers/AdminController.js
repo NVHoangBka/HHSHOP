@@ -7,6 +7,7 @@ const Product = require("../models/Product");
 
 const New = require("../models/New");
 const Tag = require("../models/Tag");
+const Brand = require("../models/Brand");
 const { updateTagCounts } = require("../utils/updateTagCounts");
 
 class AdminController {
@@ -21,7 +22,7 @@ class AdminController {
       }
 
       const admin = await User.findOne({ email, role: "admin" }).select(
-        "+password"
+        "+password",
       );
       if (!admin || !(await bcrypt.compare(password, admin.password))) {
         return res
@@ -33,13 +34,13 @@ class AdminController {
       const accessToken = jwt.sign(
         { id: admin._id, role: "admin" },
         process.env.ADMIN_JWT_SECRET, // <-- SECRET RIÊNG!
-        { expiresIn: "15m" }
+        { expiresIn: "15m" },
       );
 
       const refreshToken = jwt.sign(
         { id: admin._id },
         process.env.ADMIN_JWT_REFRESH_SECRET, // <-- REFRESH RIÊNG!
-        { expiresIn: "7d" }
+        { expiresIn: "7d" },
       );
 
       admin.refreshToken = await bcrypt.hash(refreshToken, 10);
@@ -88,7 +89,7 @@ class AdminController {
       const newAccessToken = jwt.sign(
         { id: admin._id, role: "admin" },
         process.env.ADMIN_JWT_SECRET,
-        { expiresIn: "15m" }
+        { expiresIn: "15m" },
       );
 
       res.json({ success: true, accessToken: newAccessToken });
@@ -102,7 +103,7 @@ class AdminController {
     if (req.user) {
       await User.updateOne(
         { _id: req.user.id },
-        { $unset: { refreshToken: 1 } }
+        { $unset: { refreshToken: 1 } },
       );
     }
     res.json({ success: true, message: "Admin đăng xuất thành công" });
@@ -114,7 +115,7 @@ class AdminController {
       // req.user được gán bởi middleware `auth`
       const userId = req.user.id;
       const user = await User.findById(userId).select(
-        "-password -refreshToken"
+        "-password -refreshToken",
       );
 
       if (!user) {
@@ -219,7 +220,7 @@ class AdminController {
 
       const order = await Order.findOneAndUpdate(
         { _id: id },
-        { paymentStatus }
+        { paymentStatus },
       );
       if (!order) {
         return res
@@ -552,6 +553,76 @@ class AdminController {
       res.json({ success: true, message: "Xóa tag thành công" });
     } catch (error) {
       res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
+  // ==================== QUẢN LÝ BRANDS ADMIN ====================
+  static async getBrandsAdmin(req, res) {
+    try {
+      const brands = await Brand.find({ isActive: true }).sort({
+        order: 1,
+        "name.vi": 1,
+      });
+      res.json({ success: true, brands });
+    } catch (error) {
+      res.status(500).json({ success: false });
+    }
+  }
+
+  // Admin: Tạo mới
+  static async createBrand(req, res) {
+    try {
+      const { name, description, logo, isActive } = req.body;
+      const brand = new Brand({
+        name,
+        description: description || {},
+        logo,
+        isActive,
+      });
+      await brand.save();
+      res.status(201).json({ success: true, brand });
+    } catch (err) {
+      res.status(400).json({ success: false, message: err.message });
+    }
+  }
+
+  // ======== CẬP NHẬT Brand ============
+  static async updateBrand(req, res) {
+    try {
+      const { id } = req.params;
+      const updates = req.body;
+      const brand = await Brand.findByIdAndUpdate(id, updates, {
+        new: true,
+        runValidators: true,
+      });
+      if (!brand)
+        return res
+          .status(404)
+          .json({ success: false, message: "Không tìm thấy" });
+      res.json({ success: true, brand });
+    } catch (err) {
+      res.status(400).json({ success: false, message: err.message });
+    }
+  }
+
+  //===== XOÁ TAG =====
+  static async deleteBrand(req, res) {
+    try {
+      const { id } = req.params;
+      const brand = await Brand.findById(id);
+      if (brand) return res.status(404).json({ success: false });
+
+      if (brand.productCount > 0) {
+        return res.status(400).json({
+          success: false,
+          message: `Còn ${brand.productCount} sản phẩm đang dùng loại này. Không thể xóa.`,
+        });
+      }
+
+      await Brand.findByIdAndDelete(id);
+      res.json({ success: true, message: "Xóa thành công" });
+    } catch (err) {
+      res.status(500).json({ success: false, message: err.message });
     }
   }
 }

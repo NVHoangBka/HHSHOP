@@ -288,6 +288,8 @@ class AdminService {
   async getBrandsAllAdmin() {
     try {
       const res = await api.get("/admin/brands");
+
+      console.log(res);
       const brands = res.data.brands;
       return { success: true, brands };
     } catch (error) {
