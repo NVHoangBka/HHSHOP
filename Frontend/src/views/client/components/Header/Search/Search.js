@@ -129,6 +129,7 @@ const Search = ({
 
   if (!isOpen) return null;
 
+  console.log(keywords);
   return (
     <nav className="d-flex flex-column end-0 h-100" ref={searchRef}>
       <div className="container text-black">
@@ -247,12 +248,12 @@ const Search = ({
                 <Link
                   key={index}
                   to={`/products/search?q=${encodeURIComponent(
-                    getTranslated(item.keywords),
+                    item.keyword,
                   )}&category=all`}
                   onClick={onClose}
                   className="badge bg-light text-dark border px-3 py-2 text-decoration-none hover-bg-success hover-text-white transition btn"
                 >
-                  {getTranslated(item.keyword)}
+                  {item.keyword}
                 </Link>
               ))}
             </div>

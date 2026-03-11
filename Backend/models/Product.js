@@ -10,7 +10,7 @@ const variantSchema = new mongoose.Schema(
     discountPrice: { type: Number },
     image: { type: String }, // ảnh riêng cho từng phân loại
     stock: { type: Number, default: 0 },
-    sku: { type: String, unique: true, sparse: true }, // mã riêng
+    sku: { type: String, sparse: true }, // mã riêng
     sold: { type: Number, default: 0 }, // bán riêng từng loại
   },
   { _id: false, timestamps: true },
