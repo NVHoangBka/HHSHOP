@@ -284,6 +284,48 @@ class AdminService {
     }
   }
 
+  // === BRANDS ADMIN=====
+  async getBrandsAllAdmin() {
+    try {
+      const res = await api.get("/admin/brands");
+      const brands = res.data.brands;
+      return { success: true, brands };
+    } catch (error) {
+      console.error("Login error:", error);
+      return this.handleError(error);
+    }
+  }
+
+  async createBrandAdmin(brandData) {
+    try {
+      const res = await api.post("/admin/brands", brandData);
+      const brands = res.data.brands;
+      return { success: true, brands };
+    } catch (error) {
+      console.error("Login error:", error);
+      return this.handleError(error);
+    }
+  }
+
+  async updateBrandAdmin(brandId, brandData) {
+    try {
+      const res = await api.put(`/admin/brands/${brandId}`, brandData);
+      const brands = res.data.brands;
+      return { success: true, brands };
+    } catch (error) {
+      return this.handleError(error);
+    }
+  }
+
+  async deleteBrandAdmin(brandId) {
+    try {
+      const res = await api.delete(`/admin/brands/${brandId}`);
+      return { success: true, message: res.data.message };
+    } catch (error) {
+      return this.handleError(error);
+    }
+  }
+
   // === XỬ LÝ LỖI CHUNG ===
   handleError(error) {
     const message = error.response?.data?.message || "Lỗi hệ thống";

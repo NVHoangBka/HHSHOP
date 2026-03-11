@@ -139,6 +139,12 @@
   }
 }
 
+@media (min-width: 992.98px) {
+   .dropdown-submenu:hover > .submenu-desktop {
+    display: block !important;
+  }
+}
+
 .activeOpen {
   display: block !important;
 }

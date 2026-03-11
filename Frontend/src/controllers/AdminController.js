@@ -74,7 +74,7 @@ class AdminController {
     try {
       const result = await this.adminService.updateOrderPaymentStatus(
         orderId,
-        paymentStatus
+        paymentStatus,
       );
       return result;
     } catch (error) {
@@ -108,7 +108,7 @@ class AdminController {
     try {
       const result = await this.adminService.updateProductAdmin(
         productId,
-        productData
+        productData,
       );
       return result;
     } catch (error) {
@@ -229,9 +229,8 @@ class AdminController {
 
   async getSubCategoriesByCategory(categoryId) {
     try {
-      const result = await this.adminService.getSubCategoriesByCategory(
-        categoryId
-      );
+      const result =
+        await this.adminService.getSubCategoriesByCategory(categoryId);
       return result;
     } catch (error) {
       return { success: false, message: "Lấy danh mục con thất bại" };
@@ -245,6 +244,16 @@ class AdminController {
       return result;
     } catch (error) {
       return { success: false, message: "Lấy màu sắc thất bại" };
+    }
+  }
+
+  // ================BRANDS ADMIN =======================
+  async getBrandsAllAdmin() {
+    try {
+      const result = await this.adminService.getBrandsAllAdmin();
+      return result;
+    } catch (error) {
+      return { success: false, message: "Lấy thương hiệu thất bại" };
     }
   }
 }

@@ -5,13 +5,13 @@ const { updateTagCounts } = require("../utils/updateTagCounts");
 
 const variantSchema = new mongoose.Schema(
   {
-    value: { type: String, required: true, trim: true }, // vd: "Đỏ", "128GB", "Size L"
+    value: { type: String, required: true, trim: true },
     price: { type: Number, required: true },
     discountPrice: { type: Number },
-    image: { type: String }, // ảnh riêng cho từng phân loại
+    image: { type: String },
     stock: { type: Number, default: 0 },
-    sku: { type: String, sparse: true }, // mã riêng
-    sold: { type: Number, default: 0 }, // bán riêng từng loại
+    sku: { type: String, sparse: true },
+    sold: { type: Number, default: 0 },
   },
   { _id: false, timestamps: true },
 );
@@ -19,7 +19,7 @@ const variantSchema = new mongoose.Schema(
 const highlightSectionSchema = new mongoose.Schema(
   {
     title: { type: String },
-    content: { type: String }, // hỗ trợ HTML
+    content: { type: String },
     icon: { type: String, default: "bi bi-star-fill" },
     order: { type: Number, default: 0 },
   },
@@ -72,8 +72,8 @@ const productSchema = new mongoose.Schema(
       en: { type: String },
       cz: { type: String },
     }, // HTML content
-    highlightContent: { type: String }, // fallback cũ
-    highlightSections: [highlightSectionSchema], // MỚI – SIÊU ĐẸP
+    highlightContent: { type: String },
+    highlightSections: [highlightSectionSchema],
 
     // Phân loại tìm kiếm
     categories: [{ type: mongoose.Schema.Types.ObjectId, ref: "Category" }],

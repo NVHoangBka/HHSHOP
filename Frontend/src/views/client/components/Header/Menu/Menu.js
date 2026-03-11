@@ -111,7 +111,7 @@ const Menu = ({ menuRef, onClose, categoryController, getTranslated }) => {
                   {/* Submenu*/}
                   {category.children?.length > 0 && (
                     <div
-                      className={`submenu-container position-absolute top-0 start-100 bottom-0 bg-white w-100 border
+                      className={`submenu-container submenu-desktop position-absolute top-0 start-100 bottom-0 bg-white w-100 border
                       ${openIndex === index ? "d-lg-flex" : "d-lg-none"} d-none`}
                       style={{ zIndex: "2000" }}
                     >

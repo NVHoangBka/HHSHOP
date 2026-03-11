@@ -14,6 +14,7 @@ const AdminProducts = ({ adminController }) => {
   const [subCategories, setSubCategories] = useState([]);
   const [colors, setColors] = useState([]);
   const [types, setTypes] = useState([]);
+  const [brands, setBrands] = useState([]);
 
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState({ show: false, message: "", type: "" });
@@ -44,7 +45,7 @@ const AdminProducts = ({ adminController }) => {
     subCategories: [],
     types: [],
     tags: [],
-    brand: "",
+    brand: [],
     colors: [],
     titles: [],
     subTitles: [],
@@ -130,6 +131,18 @@ const AdminProducts = ({ adminController }) => {
     }
   };
 
+  const fetchBrands = async () => {
+    try {
+      const res = await adminController.getBrandsAllAdmin();
+
+      if (res.success) {
+        setBrands(res.brands || []);
+      }
+    } catch (error) {
+      console.error("Lỗi load brands:", error);
+    }
+  };
+
   // Load lần đầu + khi search hoặc đổi trang
   useEffect(() => {
     setCurrentPage(1);
@@ -138,6 +151,7 @@ const AdminProducts = ({ adminController }) => {
     fetchTypes();
     fetchCategories();
     fetchColors();
+    fetchBrands();
   }, [searchTerm]);
 
   useEffect(() => {
@@ -146,6 +160,7 @@ const AdminProducts = ({ adminController }) => {
     fetchTypes();
     fetchCategories();
     fetchColors();
+    fetchBrands();
   }, [currentPage]);
 
   const showToast = (msg, type = "success") => {
@@ -244,6 +259,7 @@ const AdminProducts = ({ adminController }) => {
         subCategories: selectedSubIds,
         colors: selectedColors,
         types: product.types || [],
+        brands: product.brands || [],
         tags: product.tags || [],
         inStock: product.inStock !== false,
         flashSale: !!product.flashSale,
@@ -269,7 +285,7 @@ const AdminProducts = ({ adminController }) => {
         subCategories: [],
         types: [],
         tags: [],
-        brand: "",
+        brand: [],
         colors: [],
         titles: [],
         subTitles: [],
@@ -944,9 +960,9 @@ const AdminProducts = ({ adminController }) => {
                               <option value="">
                                 {t("admin.products.form.selectBrand")}
                               </option>
-                              {popularBrands.map((b) => (
-                                <option key={b} value={b}>
-                                  {b}
+                              {brands.map((b) => (
+                                <option key={b._id} value={b.slug}>
+                                  {b.name}
                                 </option>
                               ))}
                             </select>

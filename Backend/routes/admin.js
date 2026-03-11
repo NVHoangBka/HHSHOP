@@ -25,7 +25,7 @@ router.get("/orders", AdminController.getOrdersAllAdmin);
 router.put("/orders/:id/status", AdminController.updateOrderStatus);
 router.put(
   "/orders/:id/payment-status",
-  AdminController.updateOrderPaymentStatus
+  AdminController.updateOrderPaymentStatus,
 );
 
 // // Quản lý sản phẩm
@@ -45,5 +45,11 @@ router.get("/tags", AdminController.getTagsAdmin);
 router.post("/tags", AdminController.createTag);
 router.put("/tags/:id", AdminController.updateTag);
 router.delete("/tags/:id", AdminController.deleteTag);
+
+// ==================== QUẢN LÝ BRAND ====================
+router.get("/brands", AdminController.getTagsAdmin);
+router.post("/brands", AdminController.createTag);
+router.put("/brands/:id", AdminController.updateTag);
+router.delete("/brands/:id", AdminController.deleteTag);
 
 module.exports = router;
