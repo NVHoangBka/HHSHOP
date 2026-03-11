@@ -9,6 +9,7 @@ const SearchResults = ({ productController, addToCart }) => {
   const [searchParams] = useSearchParams();
   const q = searchParams.get("q") || "";
   const category = searchParams.get("category") || "all";
+  const lang = localStorage.getItem("i18n_lang" || "en");
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,7 +18,7 @@ const SearchResults = ({ productController, addToCart }) => {
     const fetchResults = async () => {
       setLoading(true);
       try {
-        const results = await productController.search(q, category);
+        const results = await productController.search(q, category, lang);
         setProducts(results);
       } catch (err) {
         console.error("Lỗi tìm kiếm:", err);
@@ -27,7 +28,7 @@ const SearchResults = ({ productController, addToCart }) => {
       }
     };
     if (q) fetchResults();
-  }, [q, category, productController]);
+  }, [q, category, lang, productController]);
 
   if (!q) {
     return (

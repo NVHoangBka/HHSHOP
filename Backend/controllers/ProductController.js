@@ -208,12 +208,13 @@ class ProductController {
 
   static async search(req, res) {
     try {
-      const { q, category = "all" } = req.query;
+      const { q, category = "all", lang } = req.query;
 
       const filter = {};
+      const nameField = `name.${lang}`;
 
       if (q.trim() !== "") {
-        filter.name = { $regex: q, $options: "i" };
+        filter[nameField] = { $regex: q, $options: "i" };
       }
 
       if (category !== "all") {

@@ -47,8 +47,8 @@ class ProductController {
     return result;
   }
 
-  async search(query, category = "all") {
-    const result = await this.productService.search(query, category);
+  async search(query, category, lang) {
+    const result = await this.productService.search(query, category, lang);
     return result;
   }
 

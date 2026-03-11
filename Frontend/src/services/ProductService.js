@@ -66,9 +66,9 @@ class ProductService {
   //   return products;
   // }
 
-  async search(query, category = "all") {
+  async search(query, category, lang) {
     if (!query?.trim()) return [];
-    const params = { q: query };
+    const params = { q: query, lang };
     if (category !== "all") params.category = category;
 
     const res = await api.get("/products/search/live", { params });
