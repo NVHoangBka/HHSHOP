@@ -1,6 +1,7 @@
 // backend/controllers/ProductController.js
 const mongoose = require("mongoose");
 const Product = require("../models/Product");
+const SearchKeyword = require("../models/SearchKeyword");
 const slugify = require("slugify");
 
 class ProductController {
@@ -208,12 +209,22 @@ class ProductController {
 
   static async search(req, res) {
     try {
-      const { q, category = "all", lang } = req.query;
+      const { q = "", category = "all", lang = "vi" } = req.query;
 
       const filter = {};
       const nameField = `name.${lang}`;
 
-      if (q.trim() !== "") {
+      if (q.trim()) {
+        // update keyword trending
+        await SearchKeyword.findOneAndUpdate(
+          { [`keyword.${lang}`]: q },
+          {
+            $inc: { count: 1 },
+            $setOnInsert: { [`keyword.${lang}`]: q },
+          },
+          { upsert: true },
+        );
+
         filter[nameField] = { $regex: q, $options: "i" };
       }
 
@@ -221,15 +232,38 @@ class ProductController {
         filter.types = category;
       }
 
-      const products = await Product.find(filter)
-        .sort({ createdAt: -1 })
-        .limit(20)
+      const products = await Product.find(filter).limit(10).lean();
+
+      res.json({
+        success: true,
+        products,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+      });
+    }
+  }
+
+  static async getPopularKeywords(req, res) {
+    try {
+      const { lang = "vi" } = req.query;
+
+      const keywords = await SearchKeyword.find({
+        [`keyword.${lang}`]: { $exists: true },
+      })
+        .sort({ count: -1 })
+        .limit(8)
         .lean();
 
-      res.json({ success: true, products });
+      res.json({
+        success: true,
+        keywords,
+      });
     } catch (error) {
-      console.error("SearchLive error:", error);
-      res.status(500).json({ success: false, message: "Lỗi hệ thống" });
+      res.status(500).json({
+        success: false,
+      });
     }
   }
 

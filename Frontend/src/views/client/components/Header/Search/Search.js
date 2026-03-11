@@ -17,6 +17,8 @@ const Search = ({
 
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+  const lang = localStorage.getItem("i18n_lang" || "en");
+
   const [loading, setLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [subCategories, setSubCategories] = useState([]);
@@ -53,7 +55,11 @@ const Search = ({
 
       setLoading(true);
       try {
-        const results = await productController.search(searchQuery, category);
+        const results = await productController.search(
+          searchQuery,
+          category,
+          lang,
+        );
         setSuggestions(results);
       } catch (error) {
         console.error("Error fetching search suggestions:", error);
@@ -78,7 +84,7 @@ const Search = ({
       onClose();
       const category = categoryRef.current?.value || "all";
       navigate(
-        `/products/search?q=${encodeURIComponent(query)}&category=${category}`,
+        `/products/search?q=${encodeURIComponent(query)}&category=${category}&lang=${lang}`,
       );
     }
   };
@@ -125,8 +131,8 @@ const Search = ({
                 }}
               >
                 <option value="all">{t("search.allCategories")}</option>
-                {categories?.map((catgory) => (
-                  <option value={getTranslated(catgory.value)}>
+                {categories?.map((catgory, index) => (
+                  <option key={index} value={getTranslated(catgory.value)}>
                     {getTranslated(catgory.name)}
                   </option>
                 ))}
@@ -213,18 +219,18 @@ const Search = ({
               {t("search.popular-keywords")}
             </p>
             <div className="d-flex flex-wrap gap-2">
-              {subCategories.slice(0, 3).map((sub, index) => (
+              {/* {subCategories.slice(0, 3).map((sub, index) => (
                 <Link
                   key={index}
                   to={`/products/search?q=${encodeURIComponent(
-                    getTranslated(sub.slug),
+                    getTranslated(sub.name),
                   )}&category=all`}
                   onClick={onClose}
                   className="badge bg-light text-dark border px-3 py-2 text-decoration-none hover-bg-success hover-text-white transition btn"
                 >
                   {getTranslated(sub.name)}
                 </Link>
-              ))}
+              ))} */}
             </div>
           </div>
         </div>

@@ -75,6 +75,15 @@ class ProductService {
     return this.productModel.mapProducts(res.data.products);
   }
 
+  async getPopularKeywords(lang) {
+    const params = { lang };
+    const res = await api.get("/products/search/live", { params });
+    if (res.data.success) {
+      return res.data.keywords;
+    }
+    return [];
+  }
+
   // Bonus: Lấy sản phẩm nổi bật, mới nhất, v.v.
   async getFeaturedProducts(limit = 12) {
     const res = await api.get("/products?sort=-createdAt&limit=" + limit);
