@@ -5,7 +5,7 @@ import ProductItem from "../ProductPage/ProductItem";
 import { useTranslation } from "react-i18next";
 
 const SearchResults = ({ productController, addToCart }) => {
-  const [t, i18n] = useTranslation();
+  const [t] = useTranslation();
   const [searchParams] = useSearchParams();
   const q = searchParams.get("q") || "";
   const category = searchParams.get("category") || "all";
@@ -42,9 +42,9 @@ const SearchResults = ({ productController, addToCart }) => {
 
   return (
     <div className="bg-success-subtle">
-      <div className="container pb-xl-4">
+      <div className="container pb-lg-4 pb-md-4">
         <div className="breadcrumbs">
-          <ul className="breadcrumb py-xl-3 flex flex-wrap items-center">
+          <ul className="breadcrumb py-xl-3 py-md-3 d-flex flex-wrap items-center">
             <li className="home">
               <Link
                 className="link hover"
@@ -63,13 +63,13 @@ const SearchResults = ({ productController, addToCart }) => {
             </li>
           </ul>
         </div>
-        <div className="py-xl-3 px-xl-4  bg-white rounded-3">
-          <h2 className="mb-4 mt-2 text-center fst-italic">
+        <div className="">
+          <h2 className="mb-4 mt-2 text-center fst-italic bg-white py-md-3 px-md-4 rounded-3">
             {t("search.searchResults.title")} <strong>{q}</strong>
             {category !== "all" && ` trong ${getCategoryName(category)}`}
           </h2>
           {loading ? (
-            <div className="text-center py-xl-5">
+            <div className="text-center py-5">
               <div className="spinner-border text-success" role="status">
                 <span className="visually-hidden">
                   {t("search.searchResults.loading")}
@@ -77,8 +77,8 @@ const SearchResults = ({ productController, addToCart }) => {
               </div>
             </div>
           ) : products.length === 0 ? (
-            <div className="text-center py-xl-5">
-              <p className="text-muted mb-xl-3">
+            <div className="text-center py-5">
+              <p className="text-muted mb-3">
                 {t("search.searchResults.noResults")}
               </p>
               <Link to="/" className="btn btn-outline-success">
@@ -88,7 +88,7 @@ const SearchResults = ({ productController, addToCart }) => {
           ) : (
             <div className="row justify-content-center">
               {products.map((product) => (
-                <div key={product.id} className="col-xl-2 mb-xl-4">
+                <div key={product.id} className="col-lg-2 col-md-6 mb-xl-4">
                   <ProductItem product={product} addToCart={addToCart} />
                 </div>
               ))}

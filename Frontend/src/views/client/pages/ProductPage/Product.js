@@ -356,7 +356,7 @@ const Product = ({ path, addToCart, productController }) => {
               <picture>
                 <source
                   media="(max-width: 767px)"
-                  srcset="//bizweb.dktcdn.net/thumb/large/100/518/448/themes/953339/assets/collection_main_banner.jpg?1758526220617"
+                  srcSet="//bizweb.dktcdn.net/thumb/large/100/518/448/themes/953339/assets/collection_main_banner.jpg?1758526220617"
                 />
                 <img
                   className="object-contain mx-auto"
@@ -589,8 +589,11 @@ const Product = ({ path, addToCart, productController }) => {
                           <div className="aside-content filter-group">
                             <ul className="space-y-3 ps-0">
                               {brands?.length > 0 &&
-                                brands?.map((brand) => (
-                                  <li className="filter-item link filter-item--check-box mb-1 d-flex align-items-center ">
+                                brands?.map((brand, index) => (
+                                  <li
+                                    className="filter-item link filter-item--check-box mb-1 d-flex align-items-center"
+                                    key={index}
+                                  >
                                     <input
                                       type="checkbox"
                                       className="form-checkbox form-checkbox_md"
@@ -624,8 +627,11 @@ const Product = ({ path, addToCart, productController }) => {
                           <div className="aside-content filter-group">
                             <ul className="space-y-3 ps-0">
                               {types?.length > 0 &&
-                                types?.map((type) => (
-                                  <li className="filter-item link filter-item--check-box mb-1 d-flex align-items-center">
+                                types?.map((type, index) => (
+                                  <li
+                                    className="filter-item link filter-item--check-box mb-1 d-flex align-items-center"
+                                    key={index}
+                                  >
                                     <input
                                       type="checkbox"
                                       className="form-checkbox form-checkbox_md"
@@ -663,8 +669,11 @@ const Product = ({ path, addToCart, productController }) => {
                           <div className="aside-content filter-group">
                             <ul className="space-y-3 ps-0">
                               {colors?.length > 0 &&
-                                colors?.map((color) => (
-                                  <li className="filter-item link filter-item--check-box mb-1 d-flex align-items-center">
+                                colors?.map((color, index) => (
+                                  <li
+                                    className="filter-item link filter-item--check-box mb-1 d-flex align-items-center"
+                                    key={index}
+                                  >
                                     <input
                                       type="checkbox"
                                       className="form-checkbox form-checkbox_md"
@@ -703,8 +712,11 @@ const Product = ({ path, addToCart, productController }) => {
                           <div className="aside-content filter-group">
                             <ul className="space-y-3 ps-0">
                               {tags?.length > 0 &&
-                                tags?.map((tag) => (
-                                  <li className="filter-item link filter-item--check-box mb-1 d-flex align-items-center">
+                                tags?.map((tag, index) => (
+                                  <li
+                                    className="filter-item link filter-item--check-box mb-1 d-flex align-items-center"
+                                    key={index}
+                                  >
                                     <input
                                       type="checkbox"
                                       className="form-checkbox form-checkbox_md"

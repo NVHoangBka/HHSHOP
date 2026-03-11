@@ -27,6 +27,8 @@ const Store = () => {
     ? storeOptions.filter((s) => s.value === selectedStore.value)
     : storeOptions;
 
+  const mapLink = ``;
+
   return (
     <div className="bg-success-subtle">
       {/* Breadcrumb */}
@@ -124,8 +126,8 @@ const Store = () => {
                 <div className="ratio ratio-1x1 rounded overflow-hidden shadow-lg">
                   <iframe
                     src={
-                      selectedStore?.map ||
-                      "https://www.google.com/maps?q=Việt+Nam&output=embed"
+                      `https://www.google.com/maps?q=${encodeURIComponent(selectedStore?.address)}&output=embed` ||
+                      ""
                     }
                     style={{ border: 0 }}
                     allowFullScreen

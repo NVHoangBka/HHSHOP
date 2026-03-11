@@ -209,26 +209,23 @@ class ProductController {
   static async search(req, res) {
     try {
       const { q, category = "all" } = req.query;
-      const products = await Product.find(
-        { $text: { $search: q } },
-        { score: { $meta: "textScore" } },
-      )
-        .sort({ score: { $meta: "textScore" }, createdAt: -1 })
+
+      const filter = {};
+
+      if (q.trim() !== "") {
+        filter.name = { $regex: q, $options: "i" };
+      }
+
+      if (category !== "all") {
+        filter.types = category;
+      }
+
+      const products = await Product.find(filter)
+        .sort({ createdAt: -1 })
         .limit(20)
         .lean();
 
       res.json({ success: true, products });
-      // const filter = {};
-      // if (q) {
-      //   const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      //   filter.name = { $regex: escaped, $options: "i" };
-      // }
-      // if (category !== "all") {
-      //   filter.types = category;
-      // }
-
-      // const products = await Product.find(filter);
-      // res.json({ success: true, products });
     } catch (error) {
       console.error("SearchLive error:", error);
       res.status(500).json({ success: false, message: "Lỗi hệ thống" });
