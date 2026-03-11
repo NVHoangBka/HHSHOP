@@ -2,11 +2,8 @@ const mongoose = require("mongoose");
 
 const searchKeywordSchema = new mongoose.Schema(
   {
-    keyword: {
-      vi: String,
-      en: String,
-      cz: String,
-    },
+    keyword: String,
+    lang: String,
     count: { type: Number, default: 1 },
   },
   { timestamps: true },

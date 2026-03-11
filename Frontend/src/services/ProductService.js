@@ -54,18 +54,6 @@ class ProductService {
     return this.productModel.mapProduct(res.data.products);
   }
 
-  // async filterProducts(criteria) {
-  //   let products = await this.getAllProducts();
-
-  //   if (criteria.titlePath) {
-  //     products = await this.getProductsByTitle(criteria.titlePath);
-  //   }
-  //   if (criteria.subTitlePath) {
-  //     products = await this.getProductsBySubTitle(criteria.subTitlePath);
-  //   }
-  //   return products;
-  // }
-
   async search(query, category, lang) {
     if (!query?.trim()) return [];
     const params = { q: query, lang };
@@ -75,9 +63,16 @@ class ProductService {
     return this.productModel.mapProducts(res.data.products);
   }
 
+  async saveKeyword(keyword, lang) {
+    await api.post("/products/search/keyword", {
+      keyword,
+      lang,
+    });
+  }
+
   async getPopularKeywords(lang) {
     const params = { lang };
-    const res = await api.get("/products/search/live", { params });
+    const res = await api.get("/products/keywords/popular", { params });
     if (res.data.success) {
       return res.data.keywords;
     }

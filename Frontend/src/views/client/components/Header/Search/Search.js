@@ -23,6 +23,7 @@ const Search = ({
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [subCategories, setSubCategories] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [keywords, setKeywords] = useState([]);
 
   const fetchCategory = async () => {
     const result = await categoryController.getCategories();
@@ -44,6 +45,7 @@ const Search = ({
     fetchSubCategory();
     fetchCategory();
   }, [categoryController]);
+
   // Debounce search
   const debouncedSearch = useCallback(
     debounce(async (searchQuery, category) => {
@@ -54,12 +56,14 @@ const Search = ({
       }
 
       setLoading(true);
+
       try {
         const results = await productController.search(
           searchQuery,
           category,
           lang,
         );
+
         setSuggestions(results);
       } catch (error) {
         console.error("Error fetching search suggestions:", error);
@@ -71,18 +75,28 @@ const Search = ({
 
   const handleInputChange = (e) => {
     const value = e.target.value;
+
     setQuery(value);
     setShowSuggestions(true);
+
     const category = categoryRef.current?.value || "all";
+
     debouncedSearch(value, category);
   };
 
   // Submit form
-  const handleSearch = (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
     if (query.trim()) {
-      onClose();
       const category = categoryRef.current?.value || "all";
+      try {
+        // lưu keyword
+        await productController.saveKeyword(query, lang);
+      } catch (err) {
+        console.error("Save keyword error:", err);
+      }
+      onClose();
+
       navigate(
         `/products/search?q=${encodeURIComponent(query)}&category=${category}&lang=${lang}`,
       );
@@ -102,6 +116,16 @@ const Search = ({
       inputRef.current.focus();
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    const fetchKeywords = async () => {
+      const data = await productController.getPopularKeywords(lang);
+
+      setKeywords(data);
+    };
+
+    fetchKeywords();
+  }, [lang, productController]);
 
   if (!isOpen) return null;
 
@@ -219,18 +243,18 @@ const Search = ({
               {t("search.popular-keywords")}
             </p>
             <div className="d-flex flex-wrap gap-2">
-              {/* {subCategories.slice(0, 3).map((sub, index) => (
+              {keywords.slice(0, 3).map((item, index) => (
                 <Link
                   key={index}
                   to={`/products/search?q=${encodeURIComponent(
-                    getTranslated(sub.name),
+                    getTranslated(item.keywords),
                   )}&category=all`}
                   onClick={onClose}
                   className="badge bg-light text-dark border px-3 py-2 text-decoration-none hover-bg-success hover-text-white transition btn"
                 >
-                  {getTranslated(sub.name)}
+                  {getTranslated(item.keyword)}
                 </Link>
-              ))} */}
+              ))}
             </div>
           </div>
         </div>

@@ -25,8 +25,7 @@ app.use(
 
 app.use(express.json());
 
-app.use(express.json());
-
+app.use(express.urlencoded({ extended: true }));
 // Kết nối MongoDB
 mongoose
   .connect(process.env.MONGODB_URI)

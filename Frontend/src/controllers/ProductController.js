@@ -52,6 +52,16 @@ class ProductController {
     return result;
   }
 
+  async saveKeyword(keyword, lang) {
+    const result = await this.productService.saveKeyword(keyword, lang);
+    return result;
+  }
+
+  async getPopularKeywords(lang) {
+    const result = await this.productService.getPopularKeywords(lang);
+    return result;
+  }
+
   async getProductBySlug(slug) {
     const result = await this.productService.getProductBySlug(slug);
     return result;

@@ -212,48 +212,74 @@ class ProductController {
       const { q = "", category = "all", lang = "vi" } = req.query;
 
       const filter = {};
-      const nameField = `name.${lang}`;
 
-      if (q.trim()) {
-        // update keyword trending
-        await SearchKeyword.findOneAndUpdate(
-          { [`keyword.${lang}`]: q },
-          {
-            $inc: { count: 1 },
-            $setOnInsert: { [`keyword.${lang}`]: q },
-          },
-          { upsert: true },
-        );
-
-        filter[nameField] = { $regex: q, $options: "i" };
+      if (q.trim() !== "") {
+        filter[`name.${lang}`] = {
+          $regex: q,
+          $options: "i",
+        };
       }
 
       if (category !== "all") {
         filter.types = category;
       }
 
-      const products = await Product.find(filter).limit(10).lean();
+      const products = await Product.find(filter)
+        .sort({ createdAt: -1 })
+        .limit(10)
+        .lean();
 
       res.json({
         success: true,
         products,
       });
     } catch (error) {
+      console.error("SearchLive error:", error);
       res.status(500).json({
         success: false,
+        message: "Lỗi hệ thống",
       });
+    }
+  }
+
+  static async saveKeyword(req, res) {
+    try {
+      const { keyword, lang } = req.body;
+
+      if (!keyword?.trim()) {
+        return res.json({ success: true });
+      }
+
+      const existing = await SearchKeyword.findOne({
+        keyword,
+        lang,
+      });
+
+      if (existing) {
+        existing.count += 1;
+        await existing.save();
+      } else {
+        await SearchKeyword.create({
+          keyword,
+          lang,
+          count: 1,
+        });
+      }
+
+      res.json({ success: true });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ success: false });
     }
   }
 
   static async getPopularKeywords(req, res) {
     try {
-      const { lang = "vi" } = req.query;
+      const { lang } = req.query;
 
-      const keywords = await SearchKeyword.find({
-        [`keyword.${lang}`]: { $exists: true },
-      })
+      const keywords = await SearchKeyword.find({ lang })
         .sort({ count: -1 })
-        .limit(8)
+        .limit(10)
         .lean();
 
       res.json({

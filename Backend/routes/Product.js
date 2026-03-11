@@ -12,7 +12,8 @@ router.get("/category/:categoryId", ProductController.getByCategory);
 router.get("/subcategory/:subCategoryId", ProductController.getBySubCategory);
 router.post("/seed", ProductController.seed);
 router.get("/search/live", ProductController.search);
-router.get("/popular-keywords", ProductController.getPopularKeywords);
+router.post("/search/keyword", ProductController.saveKeyword);
+router.get("/keywords/popular", ProductController.getPopularKeywords);
 router.get("/slug/:slug", ProductController.getBySlug);
 
 module.exports = router;
