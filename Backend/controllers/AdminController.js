@@ -577,7 +577,7 @@ class AdminController {
       let logoUrl = "";
 
       if (req.file) {
-        logoUrl = `/uploads/brands/${req.file.filename}`;
+        logoUrl = req.file.path;
       }
 
       const brand = new Brand({
@@ -626,7 +626,7 @@ class AdminController {
           updates.isActive === "true" || updates.isActive === true;
 
       if (req.file) {
-        brand.logo = `/uploads/brands/${req.file.filename}`;
+        brand.logo = req.file.path;
       }
 
       await brand.save();
