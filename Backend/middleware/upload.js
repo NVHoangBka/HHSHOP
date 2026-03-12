@@ -1,7 +1,7 @@
 // backend/middleware/upload.js
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const { CloudinaryStorage } = require("@fluidjs/multer-cloudinary");
 
 // KHÔNG CẦN config thủ công nữa – Cloudinary SDK tự đọc CLOUDINARY_URL từ env
 
