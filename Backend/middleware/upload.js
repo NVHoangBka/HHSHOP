@@ -37,6 +37,11 @@ const upload = multer({
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB để thoải mái hơn
 });
 
+console.log("Cloudinary config check:");
+console.log("CLOUD_NAME:", !!process.env.CLOUDINARY_CLOUD_NAME);
+console.log("API_KEY:", !!process.env.CLOUDINARY_API_KEY);
+console.log("API_SECRET:", !!process.env.CLOUDINARY_API_SECRET);
+
 module.exports = {
   uploadBrand: upload.single("logo"),
   uploadProduct: upload.array("images", 8), // max 8 ảnh sản phẩm
