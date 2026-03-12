@@ -130,8 +130,6 @@ const AdminBrands = ({ adminController }) => {
 
     if (formData.logoFile) {
       data.append("logo", formData.logoFile);
-    } else if (isEditing && formData.logo) {
-      data.append("logo", formData.logo);
     }
 
     try {
