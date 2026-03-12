@@ -27,6 +27,8 @@ function configureCloudinary() {
 
     console.log("Cloudinary configured successfully");
     console.log("Cloud name used:", process.env.CLOUDINARY_CLOUD_NAME);
+    console.log("Cloud name used:", process.env.CLOUDINARY_API_KEY);
+    console.log("Cloud name used:", process.env.CLOUDINARY_API_SECRET);
     isCloudinaryConfigured = true;
   } catch (err) {
     console.error("Cloudinary configuration FAILED:", err.message);

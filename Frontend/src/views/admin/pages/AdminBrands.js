@@ -196,7 +196,7 @@ const AdminBrands = ({ adminController }) => {
   const filteredBrands = brands.filter(
     (brand) =>
       searchTerm === "" ||
-      brand.title.toLowerCase().includes(searchTerm.toLowerCase()),
+      brand.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
