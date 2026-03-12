@@ -127,19 +127,18 @@ class AdminController {
 
   async uploadSingle(file) {
     try {
-      const result = this.uploadService.uploadSingle(file);
+      const result = await this.uploadService.uploadSingle(file);
       return result;
     } catch (error) {
-      return { success: false, message: "Lỗi upload ảnh" };
+      throw error;
     }
   }
 
   async uploadMultiple(files) {
     try {
-      const result = this.uploadService.uploadMultiple(files);
-      return result;
+      return await this.uploadService.uploadMultiple(files);
     } catch (error) {
-      return { success: false, message: "Lỗi upload ảnh" };
+      throw error;
     }
   }
 

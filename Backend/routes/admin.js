@@ -5,7 +5,10 @@ const router = express.Router();
 const AdminController = require("../controllers/AdminController");
 
 const { adminProtect } = require("../middleware/admin");
-const uploadCloud = require("../config/cloudinary");
+const {
+  uploadBrandLogo,
+  uploadProductImages,
+} = require("../config/cloudinary");
 // const { uploadBrand, uploadProduct } = require("../middleware/upload");
 
 // PUBLIC: Đăng nhập admin
@@ -32,8 +35,30 @@ router.put(
 
 // // Quản lý sản phẩm
 router.get("/products", AdminController.getProductsAllAdmin);
-router.post("/products", AdminController.createProductAdmin);
-router.put("/products/:id", AdminController.updateProductAdmin);
+
+router.post("/upload", uploadProductImages, (req, res) => {
+  try {
+    const urls = [];
+    if (req.files?.mainImage?.[0]) urls.push(req.files.mainImage[0].path);
+    if (req.files?.galleryImages?.length) {
+      urls.push(...req.files.galleryImages.map((f) => f.path));
+    }
+    res.json({ success: true, urls });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+router.post(
+  "/products",
+  uploadProductImages,
+  AdminController.createProductAdmin,
+);
+router.put(
+  "/products/:id",
+  uploadProductImages,
+  AdminController.updateProductAdmin,
+);
 router.delete("/products/:id", AdminController.deleteProductAdmin);
 
 // ==================== QUẢN LÝ TIN TỨC (NEWS) ====================
@@ -50,12 +75,8 @@ router.delete("/tags/:id", AdminController.deleteTag);
 
 // ==================== QUẢN LÝ BRAND ====================
 router.get("/brands", AdminController.getBrandsAdmin);
-router.post("/brands", uploadCloud.single("logo"), AdminController.createBrand);
-router.put(
-  "/brands/:id",
-  uploadCloud.single("logo"),
-  AdminController.updateBrand,
-);
+router.post("/brands", uploadBrandLogo, AdminController.createBrand);
+router.put("/brands/:id", uploadBrandLogo, AdminController.updateBrand);
 router.delete("/brands/:id", AdminController.deleteBrand);
 
 module.exports = router;

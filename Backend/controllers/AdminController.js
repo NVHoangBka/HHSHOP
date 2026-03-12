@@ -278,10 +278,33 @@ class AdminController {
   // TẠO SẢN PHẨM MỚI
   static async createProductAdmin(req, res) {
     try {
-      const product = new Product(req.body);
+      const productData = req.body;
+      let mainImageUrl = "";
+      let galleryUrls = [];
+
+      if (req.files) {
+        if (req.files.mainImage && req.files.mainImage[0]) {
+          mainImageUrl = req.files.mainImage[0].path;
+        }
+        if (req.files.galleryImages && req.files.galleryImages.length > 0) {
+          galleryUrls = req.files.galleryImages.map((file) => file.path);
+        }
+      }
+
+      const product = new Product({
+        ...productData,
+        image: mainImageUrl || productData.image,
+        gallery:
+          galleryUrls.length > 0 ? galleryUrls : productData.gallery || [],
+      });
       await product.save();
-      res.json({ success: true, message: "Thêm sản phẩm thành công", product });
+      res.status(201).json({
+        success: true,
+        message: "Thêm sản phẩm thành công",
+        product,
+      });
     } catch (error) {
+      console.error("Create product error:", error);
       res.status(400).json({ success: false, message: error.message });
     }
   }
@@ -290,15 +313,43 @@ class AdminController {
   static async updateProductAdmin(req, res) {
     try {
       const { id } = req.params;
-      const product = await Product.findByIdAndUpdate(id, req.body, {
-        new: true,
-        runValidators: true,
-      });
-      if (!product)
+      const updates = req.body;
+
+      const product = await Product.findById(id);
+      if (!product) {
         return res
           .status(404)
-          .json({ success: false, message: "Không tìm thấy" });
-      res.json({ success: true, message: "Cập nhật thành công", product });
+          .json({ success: false, message: "Không tìm thấy sản phẩm" });
+      }
+
+      Object.keys(updates).forEach((key) => {
+        if (
+          updates[key] !== undefined &&
+          key !== "mainImage" &&
+          key !== "galleryImages"
+        ) {
+          product[key] = updates[key];
+        }
+      });
+
+      if (req.files) {
+        if (req.files.mainImage && req.files.mainImage[0]) {
+          product.image = req.files.mainImage[0].path;
+        }
+        if (req.files.galleryImages && req.files.galleryImages.length > 0) {
+          // Append gallery mới (hoặc thay thế tùy logic frontend)
+          const newGallery = req.files.galleryImages.map((file) => file.path);
+          product.gallery = [...(product.gallery || []), ...newGallery];
+        }
+      }
+
+      await product.save();
+
+      res.json({
+        success: true,
+        message: "Cập nhật sản phẩm thành công",
+        product,
+      });
     } catch (error) {
       res.status(400).json({ success: false, message: error.message });
     }

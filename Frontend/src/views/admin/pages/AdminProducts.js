@@ -37,15 +37,17 @@ const AdminProducts = ({ adminController }) => {
     name: { vi: "", en: "", cz: "" },
     price: "",
     discountPrice: "",
+    imageFile: null,
     image: "",
     gallery: "",
+    galleryFiles: [],
     shortDescription: "",
     description: { vi: "", en: "", cz: "" },
     categories: [],
     subCategories: [],
     types: [],
     tags: [],
-    brand: [],
+    brand: "",
     colors: [],
     titles: [],
     subTitles: [],
@@ -168,15 +170,6 @@ const AdminProducts = ({ adminController }) => {
     setTimeout(() => setToast({ show: false, message: "", type: "" }), 3000);
   };
 
-  const popularBrands = [
-    "Sunlight",
-    "Comfort",
-    "Omo",
-    "Downy",
-    "Lifebuoy",
-    "Vim",
-  ];
-
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages && page !== currentPage) {
       setCurrentPage(page);
@@ -285,7 +278,7 @@ const AdminProducts = ({ adminController }) => {
         subCategories: [],
         types: [],
         tags: [],
-        brand: [],
+        brand: "",
         colors: [],
         titles: [],
         subTitles: [],
@@ -327,68 +320,6 @@ const AdminProducts = ({ adminController }) => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const galleryArray = formData.gallery
-      ? formData.gallery
-          .split("\n")
-          .map((url) => url.trim())
-          .filter((url) => url.length > 0)
-      : [];
-
-    const submitData = {
-      ...formData,
-      price: Number(formData.price),
-      discountPrice: formData.discountPrice
-        ? Number(formData.discountPrice)
-        : undefined,
-      gallery: galleryArray,
-      categories:
-        formData.categories.length > 0 ? formData.categories : undefined,
-      subCategories:
-        formData.subCategories.length > 0 ? formData.subCategories : undefined,
-      types: formData.types,
-      tags: formData.tags,
-      colors: formData.colors,
-      inStock: Boolean(formData.inStock),
-      flashSale: Boolean(formData.flashSale),
-      variants:
-        formData.variants?.map((v) => ({
-          ...v,
-          price: Number(v.price),
-          discountPrice: v.discountPrice ? Number(v.discountPrice) : undefined,
-          stock: Number(v.stock),
-        })) || [],
-    };
-
-    try {
-      let result;
-      if (isEditing) {
-        result = await adminController.updateProductAdmin(
-          currentId,
-          submitData,
-        );
-      } else {
-        result = await adminController.createProductAdmin(submitData);
-      }
-
-      if (result.success) {
-        showToast(
-          isEditing
-            ? t("admin.products.toast.updateSuccess")
-            : t("admin.products.toast.addSuccess"),
-          "success",
-        );
-        setModalOpen(false);
-        // Reload danh sách
-        loadProducts();
-      }
-    } catch (err) {
-      showToast("Lỗi: " + (err.message || "Không thể lưu"), "danger");
-    }
-  };
-
   const toggleArray = (arr, value) => {
     return arr.includes(value)
       ? arr.filter((i) => i !== value)
@@ -410,37 +341,28 @@ const AdminProducts = ({ adminController }) => {
 
   const handleUploadSingle = async (e) => {
     const file = e.target.files[0];
-    if (!file) return;
-    setLoading(true);
-    try {
-      const url = await adminController.uploadSingle(file);
-      setFormData({ ...formData, image: url });
-      showToast(t("admin.products.toast.uploadSuccess"), "success");
-    } catch (err) {
-      showToast(t("admin.products.toast.uploadFailed"), "danger");
-    } finally {
-      setLoading(false);
+    if (file) {
+      setFormData({ ...formData, imageFile: file });
+      // Preview local
+      const previewUrl = URL.createObjectURL(file);
+      setFormData((prev) => ({ ...prev, image: previewUrl }));
     }
   };
+  // console.log(formData);
 
   const handleUploadMultiple = async (e) => {
     const files = Array.from(e.target.files);
-    if (files.length === 0) return;
-    setLoading(true);
-    try {
-      const urls = await adminController.uploadMultiple(files);
-
-      const currentGallery = formData.gallery || "";
-      const newGallery = currentGallery
-        ? currentGallery + "\n" + urls.join("\n")
-        : urls.join("\n");
-
-      setFormData({ ...formData, gallery: newGallery });
-      showToast(t("admin.products.toast.uploadSuccess"), "success");
-    } catch (err) {
-      showToast(t("admin.products.toast.uploadFailed"), "danger");
-    } finally {
-      setLoading(false);
+    if (files.length > 0) {
+      setFormData((prev) => ({
+        ...prev,
+        galleryFiles: [...prev.galleryFiles, ...files],
+      }));
+      // Preview local
+      const newPreviews = files.map((f) => URL.createObjectURL(f));
+      setFormData((prev) => ({
+        ...prev,
+        gallery: prev.gallery + "\n" + newPreviews.join("\n"),
+      }));
     }
   };
 
@@ -496,6 +418,82 @@ const AdminProducts = ({ adminController }) => {
 
   const getTranslated = (obj, fallback = "") => {
     return obj?.[currentLanguage] || obj?.vi || obj?.en || obj?.cz || fallback;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    let mainImageUrl = formData.image;
+    let galleryArray = formData.gallery
+      ? formData.gallery
+          .split("\n")
+          .map((u) => u.trim())
+          .filter(Boolean)
+      : [];
+
+    if (formData.imageFile) {
+      mainImageUrl = await adminController.uploadSingle(formData.imageFile);
+    }
+    if (formData.galleryFiles.length > 0) {
+      const newUrls = await adminController.uploadMultiple(
+        formData.galleryFiles,
+      );
+      galleryArray = [...galleryArray, ...newUrls];
+    }
+    const submitData = {
+      ...formData,
+      price: Number(formData.price),
+      discountPrice: formData.discountPrice
+        ? Number(formData.discountPrice)
+        : undefined,
+      image: mainImageUrl,
+      gallery: galleryArray,
+      imageFile: undefined,
+      galleryFiles: [],
+      categories:
+        formData.categories.length > 0 ? formData.categories : undefined,
+      subCategories:
+        formData.subCategories.length > 0 ? formData.subCategories : undefined,
+      types: formData.types,
+      tags: formData.tags,
+      colors: formData.colors,
+      inStock: Boolean(formData.inStock),
+      flashSale: Boolean(formData.flashSale),
+      variants:
+        formData.variants?.map((v) => ({
+          ...v,
+          price: Number(v.price),
+          discountPrice: v.discountPrice ? Number(v.discountPrice) : undefined,
+          stock: Number(v.stock),
+        })) || [],
+    };
+
+    try {
+      let result;
+      if (isEditing) {
+        result = await adminController.updateProductAdmin(
+          currentId,
+          submitData,
+        );
+      } else {
+        result = await adminController.createProductAdmin(submitData);
+      }
+
+      if (result.success) {
+        showToast(
+          isEditing
+            ? t("admin.products.toast.updateSuccess")
+            : t("admin.products.toast.addSuccess"),
+          "success",
+        );
+        setModalOpen(false);
+        // Reload danh sách
+        loadProducts();
+      }
+    } catch (err) {
+      showToast("Lỗi: " + (err.message || "Không thể lưu"), "danger");
+    }
   };
 
   // Lọc chỉ theo tên sản phẩm (không phân biệt hoa thường)
