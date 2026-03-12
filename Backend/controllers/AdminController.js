@@ -608,6 +608,13 @@ class AdminController {
   // ======== CẬP NHẬT Brand ============
   static async updateBrand(req, res) {
     try {
+      console.log("[UPDATE BRAND] START - ID:", req.params.id);
+      console.log("[UPDATE BRAND] Body:", req.body);
+      console.log("[UPDATE BRAND] File received?", !!req.file);
+      if (req.file) {
+        console.log("[UPDATE BRAND] Cloudinary path:", req.file.path);
+        console.log("[UPDATE BRAND] Full file object:", req.file);
+      }
       const { id } = req.params;
       const updates = req.body;
 
