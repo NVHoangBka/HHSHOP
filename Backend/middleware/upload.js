@@ -3,45 +3,20 @@ const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
-// Config Cloudinary chỉ khi cần (tránh crash lúc import)
-let isCloudinaryConfigured = false;
+// KHÔNG CẦN config thủ công nữa – Cloudinary SDK tự đọc CLOUDINARY_URL từ env
 
-function configureCloudinary() {
-  if (isCloudinaryConfigured) return;
+// Kiểm tra nhanh lúc load file (chỉ để debug)
+console.log("CLOUDINARY_URL exists:", !!process.env.CLOUDINARY_URL);
 
-  try {
-    if (
-      !process.env.CLOUDINARY_CLOUD_NAME ||
-      !process.env.CLOUDINARY_API_KEY ||
-      !process.env.CLOUDINARY_API_SECRET
-    ) {
-      throw new Error("Missing Cloudinary environment variables");
-    }
-
-    cloudinary.config({
-      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-      api_key: process.env.CLOUDINARY_API_KEY,
-      api_secret: process.env.CLOUDINARY_API_SECRET,
-      secure: true,
-    });
-
-    console.log("Cloudinary configured successfully");
-    console.log("Cloud name used:", process.env.CLOUDINARY_CLOUD_NAME);
-    console.log("Cloud name used:", process.env.CLOUDINARY_API_KEY);
-    console.log("Cloud name used:", process.env.CLOUDINARY_API_SECRET);
-    isCloudinaryConfigured = true;
-  } catch (err) {
-    console.error("Cloudinary configuration FAILED:", err.message);
-    throw err; // ném ra để server biết có vấn đề
-  }
-}
-
-// Storage (gọi configure khi tạo storage)
+// Storage
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: async (req, file) => {
-    // Đảm bảo config trước khi upload
-    configureCloudinary();
+    console.log(
+      "[CLOUDINARY PARAMS] Processing file:",
+      file.originalname,
+      file.size,
+    );
 
     let folder = "hhshop/brands";
     if (file.fieldname === "images") {

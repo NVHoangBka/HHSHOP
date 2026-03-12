@@ -435,7 +435,7 @@ const AdminBrands = ({ adminController }) => {
                         accept="image/*"
                         className="form-control"
                         onChange={handleLogoChange}
-                        required={!isEditing}
+                        // required={!isEditing}
                       />
                     </div>
 
