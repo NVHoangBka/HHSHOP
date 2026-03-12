@@ -5,7 +5,7 @@ const router = express.Router();
 const AdminController = require("../controllers/AdminController");
 
 const { adminProtect } = require("../middleware/admin");
-const { uploadBrand, uploadProduct } = require("../middleware/upload");
+// const { uploadBrand, uploadProduct } = require("../middleware/upload");
 
 // PUBLIC: Đăng nhập admin
 router.post("/login", AdminController.login);
@@ -49,8 +49,8 @@ router.delete("/tags/:id", AdminController.deleteTag);
 
 // ==================== QUẢN LÝ BRAND ====================
 router.get("/brands", AdminController.getBrandsAdmin);
-router.post("/brands", uploadBrand, AdminController.createBrand);
-router.put("/brands/:id", uploadBrand, AdminController.updateBrand);
+router.post("/brands", AdminController.createBrand);
+router.put("/brands/:id", AdminController.updateBrand);
 router.delete("/brands/:id", AdminController.deleteBrand);
 
 module.exports = router;

@@ -572,20 +572,6 @@ class AdminController {
   // Admin: Tạo mới
   static async createBrand(req, res) {
     try {
-      console.log("[CREATE BRAND] Headers:", req.headers);
-      console.log("[CREATE BRAND] Body fields:", Object.keys(req.body));
-      console.log("[CREATE BRAND] Has file?", !!req.file);
-      if (req.file) {
-        console.log("[CREATE BRAND] File details:", {
-          originalname: req.file.originalname,
-          mimetype: req.file.mimetype,
-          size: req.file.size,
-          path: req.file.path,
-          filename: req.file.filename,
-          destination: req.file.destination,
-        });
-      }
-
       const { name, description, isActive } = req.body;
 
       let logoUrl = "";
@@ -593,8 +579,6 @@ class AdminController {
       if (req.file) {
         logoUrl = req.file.path;
       }
-
-      console.log(name, description, isActive, logoUrl);
 
       const brand = new Brand({
         name: name?.trim(),
@@ -624,13 +608,6 @@ class AdminController {
   // ======== CẬP NHẬT Brand ============
   static async updateBrand(req, res) {
     try {
-      console.log("[UPDATE BRAND] START - ID:", req.params.id);
-      console.log("[UPDATE BRAND] Body:", req.body);
-      console.log("[UPDATE BRAND] File received?", !!req.file);
-      if (req.file) {
-        console.log("[UPDATE BRAND] Cloudinary path:", req.file.path);
-        console.log("[UPDATE BRAND] Full file object:", req.file);
-      }
       const { id } = req.params;
       const updates = req.body;
 
