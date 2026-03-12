@@ -5,6 +5,7 @@ const router = express.Router();
 const AdminController = require("../controllers/AdminController");
 
 const { adminProtect } = require("../middleware/admin");
+const uploadCloud = require("../config/cloudinary");
 // const { uploadBrand, uploadProduct } = require("../middleware/upload");
 
 // PUBLIC: Đăng nhập admin
@@ -49,8 +50,12 @@ router.delete("/tags/:id", AdminController.deleteTag);
 
 // ==================== QUẢN LÝ BRAND ====================
 router.get("/brands", AdminController.getBrandsAdmin);
-router.post("/brands", AdminController.createBrand);
-router.put("/brands/:id", AdminController.updateBrand);
+router.post("/brands", uploadCloud.single("logo"), AdminController.createBrand);
+router.put(
+  "/brands/:id",
+  uploadCloud.single("logo"),
+  AdminController.updateBrand,
+);
 router.delete("/brands/:id", AdminController.deleteBrand);
 
 module.exports = router;
