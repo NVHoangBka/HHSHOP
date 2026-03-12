@@ -20,7 +20,7 @@ const AdminLayout = ({ onLogoutAdmin }) => {
   const currentLang = i18n.language || "vi";
 
   const languages = (i18n.options.supportedLngs || ["vi", "en", "cz"]).filter(
-    (lng) => lng !== "cimode"
+    (lng) => lng !== "cimode",
   );
 
   const languageNames = {
@@ -139,6 +139,12 @@ const AdminLayout = ({ onLogoutAdmin }) => {
                 className="list-group-item list-group-item-action py-3 "
               >
                 {t("admin.tags.title")}
+              </Link>
+              <Link
+                to="/admin/brands"
+                className="list-group-item list-group-item-action py-3 "
+              >
+                {t("admin.brands.title")}
               </Link>
               <Link
                 to="/admin/setting"

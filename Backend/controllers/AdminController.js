@@ -572,17 +572,36 @@ class AdminController {
   // Admin: Tạo mới
   static async createBrand(req, res) {
     try {
-      const { name, description, logo, isActive } = req.body;
+      const { name, description, isActive } = req.body;
+
+      let logoUrl = "";
+
+      if (req.file) {
+        logoUrl = `/uploads/brands/${req.file.filename}`;
+      }
+
       const brand = new Brand({
-        name,
-        description: description || {},
-        logo,
-        isActive,
+        name: name?.trim(),
+        description: description?.trim() || "",
+        logo: logoUrl,
+        isActive: isActive === "true" || isActive === true,
       });
+
       await brand.save();
-      res.status(201).json({ success: true, brand });
+
+      res.status(201).json({
+        success: true,
+        message: "Tạo thương hiệu thành công",
+        brand,
+      });
     } catch (err) {
-      res.status(400).json({ success: false, message: err.message });
+      console.error(err);
+      if (err.code === 11000) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Tên thương hiệu đã tồn tại" });
+      }
+      res.status(500).json({ success: false, message: err.message });
     }
   }
 
@@ -591,15 +610,32 @@ class AdminController {
     try {
       const { id } = req.params;
       const updates = req.body;
-      const brand = await Brand.findByIdAndUpdate(id, updates, {
-        new: true,
-        runValidators: true,
-      });
+
+      const brand = await Brand.findById(id);
+
       if (!brand)
         return res
           .status(404)
           .json({ success: false, message: "Không tìm thấy" });
-      res.json({ success: true, brand });
+
+      if (updates.name) brand.name = updates.name.trim();
+      if (updates.description !== undefined)
+        brand.description = updates.description.trim();
+      if (updates.isActive !== undefined)
+        brand.isActive =
+          updates.isActive === "true" || updates.isActive === true;
+
+      if (req.file) {
+        brand.logo = `/uploads/brands/${req.file.filename}`;
+      }
+
+      await brand.save();
+
+      res.json({
+        success: true,
+        message: "Cập nhật thương hiệu thành công",
+        brand,
+      });
     } catch (err) {
       res.status(400).json({ success: false, message: err.message });
     }

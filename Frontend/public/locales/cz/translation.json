@@ -716,6 +716,44 @@
                 "errorLoadingTags": "Chyba při načítání štítků. Zkuste to znovu!"
             }
         },
+        "brands": {
+            "title": "Správa značek",
+            "searchPlaceholder": "Hledat značku podle názvu...",
+            "addBrand": "Přidat novou značku",
+            "editBrand": "Upravit značku",
+            "loading": "Načítání značek...",
+            "noResults": "Žádné značky nebyly nalezeny.",
+            "noBrands": "Zatím nejsou k dispozici žádné značky.",
+            "table": {
+                "stt": "Č.",
+                "logo": "Logo",
+                "name": "Název značky",
+                "description": "Popis",
+                "status": "Stav",
+                "createdAt": "Datum vytvoření",
+                "actions": "Akce"
+            },
+            "status": {
+                "active": "Aktivní",
+                "inactive": "Neaktivní"
+            },
+            "form": {
+                "name": "Název značky",
+                "description": "Popis",
+                "logo": "Logo",
+                "status": "Stav"
+            },
+            "toast": {
+                "loading": "Zpracování...",
+                "error": "Došlo k chybě. Zkuste to prosím znovu!",
+                "addSuccess": "Značka byla úspěšně přidána!",
+                "updateSuccess": "Značka byla úspěšně aktualizována!",
+                "confirmDelete": "Potvrdit smazání značky? Tuto akci nelze vrátit zpět!",
+                "deleteSuccess": "Značka byla úspěšně smazána!",
+                "deleteFailed": "Smazání značky se nezdařilo!",
+                "errorLoadingTags": "Chyba při načítání značek. Zkuste to prosím znovu!"
+            }
+        },
         "settings": "Nastavení",
         "orders": {
             "title": "Správa objednávek",

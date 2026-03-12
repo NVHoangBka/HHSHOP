@@ -99,6 +99,7 @@ class AdminService {
       return this.handleError(error);
     }
   }
+
   async updateOrderStatus(orderId, status) {
     try {
       const res = await api.put(`/admin/orders/${orderId}/status`, { status });
@@ -157,7 +158,7 @@ class AdminService {
     }
   }
 
-  // XÓA SẢN PHẨM
+  // DELETE ADMIN
   async deleteProductAdmin(productId) {
     try {
       const res = await api.delete(`/admin/products/${productId}`);
@@ -285,13 +286,13 @@ class AdminService {
   }
 
   // === BRANDS ADMIN=====
-  async getBrandsAllAdmin() {
+  async getBrandsAllAdmin(pagination) {
     try {
-      const res = await api.get("/admin/brands");
-
-      console.log(res);
+      const res = await api.get("/admin/brands", { params: pagination });
       const brands = res.data.brands;
-      return { success: true, brands };
+      const paginationData = res.data.pagination;
+
+      return { success: true, brands, paginationData };
     } catch (error) {
       console.error("Login error:", error);
       return this.handleError(error);

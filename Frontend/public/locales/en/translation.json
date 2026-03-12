@@ -716,6 +716,44 @@
                 "errorLoadingTags": "Error loading tags. Please try again!"
             }
         },
+        "brands": {
+            "title": "Brand Management",
+            "searchPlaceholder": "Search brands by name...",
+            "addBrand": "Add new brand",
+            "editBrand": "Edit brand",
+            "loading": "Loading brands...",
+            "noResults": "No brands found.",
+            "noBrands": "No brands available yet.",
+            "table": {
+                "stt": "No.",
+                "logo": "Logo",
+                "name": "Brand Name",
+                "description": "Description",
+                "status": "Status",
+                "createdAt": "Created At",
+                "actions": "Actions"
+            },
+            "status": {
+                "active": "Active",
+                "inactive": "Inactive"
+            },
+            "form": {
+                "name": "Brand Name",
+                "description": "Description",
+                "logo": "Logo",
+                "status": "Status"
+            },
+            "toast": {
+                "loading": "Processing...",
+                "error": "An error occurred. Please try again!",
+                "addSuccess": "Brand added successfully!",
+                "updateSuccess": "Brand updated successfully!",
+                "confirmDelete": "Confirm deleting this brand? This action cannot be undone!",
+                "deleteSuccess": "Brand deleted successfully!",
+                "deleteFailed": "Failed to delete brand!",
+                "errorLoadingTags": "Error loading brands. Please try again!"
+            }
+        },
         "settings": "Settings",
         "orders": {
             "title": "Order Management",

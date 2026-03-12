@@ -716,6 +716,81 @@
                 "errorLoadingTags": "Lỗi tải tags. Vui lòng thử lại!"
             }
         },
+        "brands": {
+            "title": "Quản lí Thương hiệu",
+            "searchPlaceholder": "Tìm thương hiệu theo tên...",
+            "addBrand": "Thêm thương hiệu  mới",
+            "editBrand": "Sửa thương hiệu ",
+            "loading": "Đang tải thương hiệu...",
+            "noResults": "Không tìm thấy thương hiệu  nào.",
+            "noBrands": "Chưa có thương hiệu  nào.",
+            "table": {
+                "stt": "STT",
+                "logo": "Logo",
+                "name": "Tên Thương hiệu",
+                "description": "Mô tả",
+                "status": "Trạng thái",
+                "createdAt": "Ngày tạo",
+                "actions": "Hành động"
+            },
+            "status": {
+                "active": "Hoạt động",
+                "inactive": "Không hoạt động"
+            },
+            "form": {
+                "name": "Tên Thương hiệu",
+                "description": "Mô tả",
+                "logo": "Logo",
+                "status": "Trạng thái"
+            },
+            "toast": {
+                "loading": "Đang xử lý...",
+                "error": "Đã có lỗi xảy ra. Vui lòng thử lại!",
+                "addSuccess": "Thêm Thương hiệu thành công!",
+                "updateSuccess": "Cập nhật Thương hiệu thành công!",
+                "confirmDelete": "Xác nhận xóa Thương hiệu? Không thể khôi phục!",
+                "deleteSuccess": "Xóa Thương hiệu thành công!",
+                "deleteFailed": "Xóa Thương hiệu thất bại!",
+                "errorLoadingTags": "Lỗi tải Thương hiệu. Vui lòng thử lại!"
+            }
+        },
+        "store": {
+            "title": "Quản lí cửa hàng",
+            "searchPlaceholder": "Tìm cửa hàng theo tên...",
+            "addBrand": "Thêm cửa hàng  mới",
+            "editBrand": "Sửa cửa hàng ",
+            "loading": "Đang tải cửa hàng...",
+            "noResults": "Không tìm thấy cửa hàng  nào.",
+            "noBrands": "Chưa có cửa hàng  nào.",
+            "table": {
+                "stt": "STT",
+                "name": "Tên Cửa hàng",
+                "description": "Mô tả",
+                "status": "Trạng thái",
+                "createdAt": "Ngày tạo",
+                "actions": "Hành động"
+            },
+            "status": {
+                "active": "Hoạt động",
+                "inactive": "Không hoạt động"
+            },
+            "form": {
+                "name": "Tên Cửa hàng",
+                "description": "Mô tả",
+                "logo": "Logo",
+                "status": "Trạng thái"
+            },
+            "toast": {
+                "loading": "Đang xử lý...",
+                "error": "Đã có lỗi xảy ra. Vui lòng thử lại!",
+                "addSuccess": "Thêm cửa hàng thành công!",
+                "updateSuccess": "Cập nhật cửa hàng thành công!",
+                "confirmDelete": "Xác nhận xóa cửa hàng? Không thể khôi phục!",
+                "deleteSuccess": "Xóa cửa hàng thành công!",
+                "deleteFailed": "Xóa cửa hàng thất bại!",
+                "errorLoadingTags": "Lỗi tải cửa hàng. Vui lòng thử lại!"
+            }
+        },
         "settings": "Cài đặt",
         "orders": {
             "title": "Quản lí đơn hàng",

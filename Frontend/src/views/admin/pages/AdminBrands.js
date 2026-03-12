@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 const AdminBrands = ({ adminController }) => {
   const [t] = useTranslation();
-  const [tags, setTags] = useState([]);
+  const [brands, setBrands] = useState([]);
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState({ show: false, message: "", type: "" });
 
@@ -18,16 +18,19 @@ const AdminBrands = ({ adminController }) => {
 
   // Phân trang
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalTags, setTotalTags] = useState(0);
+  const [totalBrands, setTotalBrands] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [limit, setLimit] = useState(10); // backend mặc định 10
 
   const [formData, setFormData] = useState({
     name: "",
-    type: "both",
+    logoFile: null,
+    logo: "",
     description: "",
     isActive: true,
   });
+
+  const [previewLogo, setPreviewLogo] = useState(null);
 
   const pagination = {
     page: currentPage,
@@ -35,18 +38,18 @@ const AdminBrands = ({ adminController }) => {
     search: searchTerm || undefined,
   };
 
-  const fetchTags = async () => {
+  const fetchBrands = async () => {
     try {
       setLoading(true);
-      const result = await adminController.getTagsAllAdmin(pagination);
+      const result = await adminController.getBrandsAllAdmin(pagination);
       if (result.success) {
-        setTags(result.tags || []);
-        setTotalTags(result.paginationData.totalTags);
+        setBrands(result.brands || []);
+        setTotalBrands(result.paginationData.totalBrands);
         setTotalPages(result.paginationData.totalPages);
         setCurrentPage(currentPage);
       }
     } catch (err) {
-      showToast("Lỗi tải tags", "danger");
+      showToast("Lỗi tải brands", "danger");
     } finally {
       setLoading(false);
     }
@@ -55,11 +58,11 @@ const AdminBrands = ({ adminController }) => {
   // Load lần đầu + khi search hoặc đổi trang
   useEffect(() => {
     setCurrentPage(1);
-    fetchTags();
+    fetchBrands();
   }, [searchTerm]);
 
   useEffect(() => {
-    fetchTags();
+    fetchBrands();
   }, [currentPage]);
 
   const showToast = (msg, type = "success") => {
@@ -80,7 +83,8 @@ const AdminBrands = ({ adminController }) => {
       setCurrentId(item._id);
       setFormData({
         name: item.name,
-        type: item.type,
+        logo: item.logo,
+        logoFile: null,
         description: item.description,
         isActive: item.isActive,
       });
@@ -89,7 +93,8 @@ const AdminBrands = ({ adminController }) => {
       setCurrentId(null);
       setFormData({
         name: "",
-        type: "both",
+        logo: "",
+        logoFile: null,
         description: "",
         isActive: true,
       });
@@ -97,47 +102,76 @@ const AdminBrands = ({ adminController }) => {
     setModalOpen(true);
   };
 
+  const handleLogoChange = (e) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      if (!file.type.startsWith("image/")) {
+        showToast("Vui lòng chọn file ảnh (jpg, png, webp...)", "danger");
+        return;
+      }
+      setFormData({ ...formData, logoFile: file });
+      setPreviewLogo(URL.createObjectURL(file));
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { name, type, description, isActive } = formData;
+    if (!formData.name.trim()) {
+      showToast("Tên thương hiệu là bắt buộc", "danger");
+      return;
+    }
 
-    const tagData = {
-      name,
-      type,
-      description,
-      isActive,
-    };
+    const data = new FormData();
+    data.append("name", formData.name.trim());
+    data.append("description", formData.description.trim());
+    data.append("isActive", formData.isActive);
+
+    if (formData.logoFile) {
+      data.append("logo", formData.logoFile);
+    } else if (isEditing && formData.logo) {
+      data.append("logo", formData.logo);
+    }
 
     try {
       const result = isEditing
-        ? await adminController.updateTagAdmin(currentId, tagData)
-        : await adminController.createTagAdmin(tagData);
+        ? await adminController.updateBrandAdmin(currentId, data)
+        : await adminController.createBrandAdmin(data);
+
       if (result.success) {
         showToast(
           isEditing
-            ? t("admin.tags.toast.updateSuccess")
-            : t("admin.tags.toast.addSuccess"),
+            ? t("admin.brands.toast.updateSuccess")
+            : t("admin.brands.toast.addSuccess"),
           "success",
         );
         setModalOpen(false);
-        fetchTags();
+        setPreviewLogo(null);
+        fetchBrands();
+      } else {
+        showToast(result.message || "Lưu thất bại", "danger");
       }
     } catch (err) {
-      showToast("Lỗi: " + (err.message || "Không thể lưu"), "danger");
+      showToast(
+        "Lỗi: " + (err.message || "Không thể lưu thương hiệu"),
+        "danger",
+      );
     }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm(t("admin.tags.toast.confirmDelete"))) return;
+    if (!window.confirm(t("admin.brands.toast.confirmDelete"))) return;
     try {
-      const result = await adminController.deleteTagAdmin(id);
+      const result = await adminController.deleteBrandAdmin(id);
       if (result.success) {
-        showToast(t("admin.tags.toast.deleteSuccess"), "success");
-        setTags((prev) => prev.filter((p) => p._id !== id));
+        showToast(t("admin.brands.toast.deleteSuccess"), "success");
+        setBrands((prev) => prev.filter((b) => b._id !== id));
+      } else {
+        showToast(result.message || "Xóa thất bại", "danger");
       }
     } catch (err) {
-      showToast(t("admin.tags.toast.deleteFailed"), "danger");
+      showToast(t("admin.brands.toast.deleteFailed"), "danger");
     }
   };
 
@@ -158,31 +192,20 @@ const AdminBrands = ({ adminController }) => {
     setSearchTerm("");
   };
 
-  // Lọc chỉ theo tên tagss (không phân biệt hoa thường)
-  const filteredTags = tags.filter(
-    (tag) =>
+  // Lọc chỉ theo tên brandss (không phân biệt hoa thường)
+  const filteredBrands = brands.filter(
+    (brand) =>
       searchTerm === "" ||
-      tag.title.toLowerCase().includes(searchTerm.toLowerCase()),
+      brand.title.toLowerCase().includes(searchTerm.toLowerCase()),
   );
-
-  const renderTagType = (type) => {
-    switch (type) {
-      case "article":
-        return t("admin.tags.type.article");
-      case "product":
-        return t("admin.tags.type.product");
-      default:
-        return t("admin.tags.type.both");
-    }
-  };
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <div className="tag-admin">
+      <div className="brand-admin">
         <div className="new-admin_header d-flex justify-content-between align-items-center mb-4">
           <div>
             <h2 className="fw-bold text-uppercase text-success">
-              {t("admin.tags.title")}
+              {t("admin.brands.title")}
             </h2>
           </div>
           <div className="d-flex justify-content-between align-items-center">
@@ -193,7 +216,7 @@ const AdminBrands = ({ adminController }) => {
               <input
                 type="text"
                 className="input-group border-0 mx-1 px-3 fs-6 outline-0 no-focus"
-                placeholder={t("admin.tags.searchPlaceholder")}
+                placeholder={t("admin.brands.searchPlaceholder")}
                 value={searchInput}
                 style={{ maxWidth: "230px" }}
                 onChange={(e) => setSearchInput(e.target.value)}
@@ -213,44 +236,64 @@ const AdminBrands = ({ adminController }) => {
               className="btn btn-success shadow "
               onClick={() => openModal()}
             >
-              + {t("admin.tags.addTag")}
+              + {t("admin.brands.addBrand")}
             </button>
           </div>
         </div>
         {/* Table */}
         {loading ? (
-          <div className="text-center py-10">{t("admin.tags.loading")}</div>
+          <div className="text-center py-10">{t("admin.brands.loading")}</div>
         ) : (
           <div className="bg-white border-0">
             <table className="table table-hover mb-0 align-middle table-bordered">
               <thead className="table-primary text-white text-center">
                 <tr className="align-middle">
-                  <th>{t("admin.tags.table.stt")}</th>
-                  <th>{t("admin.tags.table.name")}</th>
-                  <th>{t("admin.tags.table.type")}</th>
-                  <th>{t("admin.tags.table.description")}</th>
-                  <th>{t("admin.tags.table.status")}</th>
-                  <th>{t("admin.tags.table.action")}</th>
+                  <th>{t("admin.brands.table.stt")}</th>
+                  <th>{t("admin.brands.table.logo")}</th>
+                  <th>{t("admin.brands.table.name")}</th>
+                  <th>{t("admin.brands.table.description")}</th>
+                  <th>{t("admin.brands.table.status")}</th>
+                  <th>{t("admin.brands.table.action")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {filteredTags.length === 0 ? (
+                {filteredBrands.length === 0 ? (
                   <tr>
                     <td
-                      colSpan="7"
+                      colSpan="6"
                       className="text-center py-5 text-muted fs-4"
                     >
                       {searchTerm
-                        ? t("admin.tags.noResults")
-                        : t("admin.tags.noTags")}
+                        ? t("admin.brands.noResults")
+                        : t("admin.brands.noBrands")}
                     </td>
                   </tr>
                 ) : (
-                  filteredTags.map((item, index) => (
+                  filteredBrands.map((item, index) => (
                     <tr key={index} className="hover:bg-gray-50">
                       <td className="text-center fw-bold">{index + 1}</td>
+                      <td className="text-center">
+                        {item.logo ? (
+                          <img
+                            src={item.logo}
+                            alt={item.name}
+                            style={{
+                              width: "80px",
+                              height: "80px",
+                              objectFit: "contain",
+                              borderRadius: "6px",
+                            }}
+                            onError={(e) => {
+                              e.target.src =
+                                "https://via.placeholder.com/80?text=No+Logo";
+                              e.target.alt = "Logo lỗi";
+                            }}
+                          />
+                        ) : (
+                          <span className="text-muted">Empty logo</span>
+                        )}
+                      </td>
                       <td>{item.name}</td>
-                      <td>{renderTagType(item.type)}</td>
                       <td className="col-6">{item.description}</td>
 
                       <td>
@@ -262,8 +305,8 @@ const AdminBrands = ({ adminController }) => {
                           }`}
                         >
                           {item.isActive
-                            ? t("admin.tags.status.active")
-                            : t("admin.tags.status.inactive")}
+                            ? t("admin.brands.status.active")
+                            : t("admin.brands.status.inactive")}
                         </span>
                       </td>
                       <td className=" text-center col-1">
@@ -341,8 +384,8 @@ const AdminBrands = ({ adminController }) => {
                 <div className="modal-header bg-success text-white">
                   <h5 className="modal-title fw-bold">
                     {isEditing
-                      ? t("admin.tags.editTag")
-                      : t("admin.tags.addTag")}
+                      ? t("admin.brands.editBrand")
+                      : t("admin.brands.addBrand")}
                   </h5>
                   <button
                     className="btn-close btn-close-white"
@@ -356,7 +399,7 @@ const AdminBrands = ({ adminController }) => {
                   >
                     <div className="col-12 mb-2">
                       <label className="form-label fw-bold text-danger">
-                        {t("admin.tags.name")} *
+                        {t("admin.brands.form.name")} *
                       </label>
                       <input
                         type="text"
@@ -369,9 +412,36 @@ const AdminBrands = ({ adminController }) => {
                       />
                     </div>
 
+                    <div>
+                      <label className="form-label fw-bold text-danger">
+                        {t("admin.brands.form.logo")} *
+                      </label>
+                      {previewLogo && (
+                        <div className="text-center mb-3 p-2 border rounded bg-light">
+                          <img
+                            src={previewLogo}
+                            alt="Preview logo"
+                            style={{
+                              maxWidth: "200px",
+                              maxHeight: "150px",
+                              objectFit: "contain",
+                            }}
+                          />
+                        </div>
+                      )}
+
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="form-control"
+                        onChange={handleLogoChange}
+                        required={!isEditing}
+                      />
+                    </div>
+
                     <div className="col-12 mb-2">
                       <label className="form-label fw-bold">
-                        {t("admin.tags.description")} *
+                        {t("admin.brands.form.description")} *
                       </label>
                       <textarea
                         required
@@ -388,25 +458,8 @@ const AdminBrands = ({ adminController }) => {
                     </div>
                     <div className="mb-2 col-12">
                       <label className="form-label fw-bold text-danger">
-                        {t("admin.tags.type")} *
+                        {t("admin.brands.form.logo")} *
                       </label>
-                      <select
-                        value={formData.type}
-                        onChange={(e) =>
-                          setFormData({ ...formData, type: e.target.value })
-                        }
-                        className="w-100 border rounded px-3 py-2 mb-3"
-                      >
-                        <option value="both">
-                          {t("admin.tags.type.both")}
-                        </option>
-                        <option value="article">
-                          {t("admin.tags.type.article")}
-                        </option>
-                        <option value="product">
-                          {t("admin.tags.type.product")}
-                        </option>
-                      </select>
                     </div>
                     <div className="d-flex align-items-center mt-3">
                       <div className="form-check form-switch">
@@ -422,7 +475,7 @@ const AdminBrands = ({ adminController }) => {
                           }
                         />
                         <label className="form-check-label fw-bold text-danger">
-                          {t("admin.tags.status.active")}
+                          {t("admin.brands.status.active")}
                         </label>
                       </div>
                     </div>

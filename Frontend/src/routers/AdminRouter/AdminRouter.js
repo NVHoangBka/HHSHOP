@@ -13,6 +13,7 @@ import AdminUsers from "../../views/admin/pages/AdminUsers";
 import AdminSetting from "../../views/admin/pages/AdminSetting";
 import AdminNews from "../../views/admin/pages/AdminNews";
 import AdminTags from "../../views/admin/pages/AdminTags";
+import AdminBrands from "../../views/admin/pages/AdminBrands";
 
 const AdminRouter = ({
   isAuthenticatedAdmin,
@@ -63,6 +64,12 @@ const AdminRouter = ({
             path="tags/*"
             element={<AdminTags adminController={adminController} />}
           />
+
+          <Route
+            path="brands/*"
+            element={<AdminBrands adminController={adminController} />}
+          />
+
           <Route path="setting" element={<AdminSetting />} />
 
           {/* Nếu cần thêm nested route cho products */}

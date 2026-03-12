@@ -248,12 +248,42 @@ class AdminController {
   }
 
   // ================BRANDS ADMIN =======================
-  async getBrandsAllAdmin() {
+  async getBrandsAllAdmin(pagination) {
     try {
-      const result = await this.adminService.getBrandsAllAdmin();
+      const result = await this.adminService.getBrandsAllAdmin(pagination);
       return result;
     } catch (error) {
       return { success: false, message: "Lấy thương hiệu thất bại" };
+    }
+  }
+
+  async createBrandAdmin(brandData) {
+    try {
+      const result = await this.adminService.createBrandAdmin(brandData);
+      return result;
+    } catch (error) {
+      return { success: false, message: "Tạo thương hiệu thất bại" };
+    }
+  }
+
+  async updateBrandAdmin(brandId, brandData) {
+    try {
+      const result = await this.adminService.updateBrandAdmin(
+        brandId,
+        brandData,
+      );
+      return result;
+    } catch (error) {
+      return { success: false, message: "Update thương hiệu thất bại" };
+    }
+  }
+
+  async deleteBrandAdmin(brandId) {
+    try {
+      const result = await this.adminService.deleteBrandAdmin(brandId);
+      return result;
+    } catch (error) {
+      return { success: false, message: "delete brand thất bại" };
     }
   }
 }
