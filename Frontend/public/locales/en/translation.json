@@ -755,6 +755,7 @@
             }
         },
         "settings": "Settings",
+        "setups": "SetUps",
         "orders": {
             "title": "Order Management",
             "searchPlaceholder": "Search order by ID...",

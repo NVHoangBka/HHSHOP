@@ -79,4 +79,12 @@ router.post("/brands", uploadBrandLogo, AdminController.createBrand);
 router.put("/brands/:id", uploadBrandLogo, AdminController.updateBrand);
 router.delete("/brands/:id", AdminController.deleteBrand);
 
+// Quản lý Settings
+router.get("/settings", AdminController.getSettingsAdmin);
+router.put(
+  "/settings/:key",
+  uploadProductImages,
+  AdminController.updateSettingAdmin,
+); // dùng chung multer fields
+
 module.exports = router;

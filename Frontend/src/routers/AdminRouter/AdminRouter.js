@@ -14,6 +14,7 @@ import AdminSetting from "../../views/admin/pages/AdminSetting";
 import AdminNews from "../../views/admin/pages/AdminNews";
 import AdminTags from "../../views/admin/pages/AdminTags";
 import AdminBrands from "../../views/admin/pages/AdminBrands";
+import AdminSetup from "../../views/admin/pages/AdminSetup";
 
 const AdminRouter = ({
   isAuthenticatedAdmin,
@@ -71,6 +72,11 @@ const AdminRouter = ({
           />
 
           <Route path="setting" element={<AdminSetting />} />
+
+          <Route
+            path="/setup"
+            element={<AdminSetup adminController={adminController} />}
+          />
 
           {/* Nếu cần thêm nested route cho products */}
           {/* Ví dụ: /admin/products/add, /admin/products/edit/:id → để trong AdminProducts */}

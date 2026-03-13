@@ -755,6 +755,7 @@
             }
         },
         "settings": "Nastavení",
+        "setups": "Nastavení",
         "orders": {
             "title": "Správa objednávek",
             "searchPlaceholder": "Hledat objednávku podle čísla...",

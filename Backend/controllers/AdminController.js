@@ -712,6 +712,53 @@ class AdminController {
       res.status(500).json({ success: false, message: err.message });
     }
   }
+
+  // ==================== QUẢN LÝ SETTING ADMIN ====================
+
+  // LẤY TẤT CẢ SETTINGS
+  static async getSettingsAdmin(req, res) {
+    try {
+      const settings = await Setting.find().sort({ key: 1 });
+      res.json({ success: true, settings });
+    } catch (error) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
+  // CẬP NHẬT HOẶC TẠO MỚI SETTING
+  static async updateSettingAdmin(req, res) {
+    try {
+      const { key } = req.params;
+      const { value, type, description, name } = req.body;
+
+      let finalValue = value;
+
+      if (req.file) {
+        finalValue = req.file.path;
+      } else if (req.files?.bannerImages?.length && type === "array_image") {
+        const newUrls = req.files.bannerImages.map((f) => f.path);
+        const existing = await Setting.findOne({ key });
+        const oldArray =
+          existing && existing.value ? JSON.parse(existing.value) : [];
+        finalValue = JSON.stringify([...oldArray, ...newUrls]);
+      }
+
+      const setting = await Setting.findOneAndUpdate(
+        { key },
+        {
+          value: finalValue,
+          type,
+          description,
+          name: name || undefined, // chỉ update nếu có name
+        },
+        { upsert: true, new: true, runValidators: true },
+      );
+
+      res.json({ success: true, message: "Cập nhật thành công", setting });
+    } catch (error) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
 }
 
 module.exports = AdminController;

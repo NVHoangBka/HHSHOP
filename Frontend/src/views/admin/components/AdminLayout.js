@@ -147,6 +147,13 @@ const AdminLayout = ({ onLogoutAdmin }) => {
                 {t("admin.brands.title")}
               </Link>
               <Link
+                to="/admin/setup"
+                className="list-group-item list-group-item-action py-3 "
+              >
+                {t("admin.setups")}
+              </Link>
+
+              <Link
                 to="/admin/setting"
                 className="list-group-item list-group-item-action py-3 "
               >

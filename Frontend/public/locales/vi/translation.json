@@ -792,6 +792,7 @@
             }
         },
         "settings": "Cài đặt",
+        "setups": "Thiết lập",
         "orders": {
             "title": "Quản lí đơn hàng",
             "searchPlaceholder": "Tìm đơn hàng theo mã đơn...",

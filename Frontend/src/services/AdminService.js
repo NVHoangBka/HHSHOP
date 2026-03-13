@@ -329,6 +329,27 @@ class AdminService {
     }
   }
 
+  // === Setting ADMIN=====
+  async getSettingsAllAdmin() {
+    try {
+      const res = await api.get("/admin/settings");
+      return res.data;
+    } catch (error) {
+      return { success: false, message: "Lấy settings thất bại" };
+    }
+  }
+
+  async updateSettingAdmin(key, formData) {
+    try {
+      const res = await api.put(`/admin/settings/${key}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      return res.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   // === XỬ LÝ LỖI CHUNG ===
   handleError(error) {
     const message = error.response?.data?.message || "Lỗi hệ thống";

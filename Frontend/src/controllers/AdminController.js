@@ -285,6 +285,14 @@ class AdminController {
       return { success: false, message: "delete brand thất bại" };
     }
   }
+
+  // Quản lí Setting
+  async getSettingsAllAdmin() {
+    try {
+      const result = await this.adminService.getSettingsAllAdmin();
+      return result;
+    } catch (error) {}
+  }
 }
 
 export default AdminController;
