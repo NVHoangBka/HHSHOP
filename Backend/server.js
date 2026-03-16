@@ -10,8 +10,6 @@ const app = express();
 
 const appRouter = require("./routes/appRoutes");
 require("./models");
-// Middleware
-app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
 
 app.use(cookieParser());
 

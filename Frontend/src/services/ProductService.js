@@ -7,11 +7,20 @@ class ProductService {
   }
 
   async getAllProducts() {
+    if (this.allProducts) {
+      return this.allProducts;
+    }
+
     try {
       const res = await api.get("/products");
-      return this.productModel.mapProducts(res.data.products);
-    } catch (error) {}
-    return this.allProducts;
+
+      this.allProducts = this.productModel.mapProducts(res.data.products);
+
+      return this.allProducts;
+    } catch (error) {
+      console.error("getAllProducts error:", error);
+      return [];
+    }
   }
 
   async getProductsByTitle(titlePath) {
