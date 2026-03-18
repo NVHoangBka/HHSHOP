@@ -3,59 +3,66 @@ import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 
 const Cart = ({
-  isOpen,
-  onClose,
+  isAuthenticated,
+  cart,
+  removeFromCart,
   cartController,
-  cartItems: propCartItems,
   onCartChange,
 }) => {
   const navigate = useNavigate();
-  const [t, i18n] = useTranslation;
-  const [cartItems, setCartItems] = useState(propCartItems || []);
-  const [total, setTotal] = useState(cartController.getTotalPrice());
+  const [t] = useTranslation;
 
-  // Đồng bộ state với props khi có thay đổi
-  useEffect(() => {
-    setCartItems(propCartItems || []);
-    setTotal(cartController.getTotalPrice());
-  }, [propCartItems, cartController]);
+  const cartItems = cart?.items || [];
+  const total = cart?.totalPrice ?? 0;
 
-  const handleIncrease = (id) => {
-    const currentItem = cartItems.find((item) => item.id === id);
+  const handleIncrease = async (productId, variantValue) => {
+    const currentItem = cart.findItem(productId, variantValue);
     if (currentItem) {
-      const updatedCart = cartController.updateQuantity(
-        id,
-        currentItem.quantity + 1
-      );
-      setCartItems([...updatedCart]);
-      setTotal(cartController.getTotalPrice());
-      onCartChange(updatedCart);
+      try {
+        const updatedCart = await cartController.updateQuantity(
+          productId,
+          variantValue,
+          currentItem.quantity + 1,
+        );
+        onCartChange(updatedCart);
+      } catch (err) {
+        console.error("handleIncrease error:", err);
+      }
     }
   };
 
-  const handleDecrease = (id) => {
-    const currentItem = cartItems.find((item) => item.id === id);
+  const handleDecrease = async (productId, variantValue) => {
+    const currentItem = cart.findItem(productId, variantValue);
     if (currentItem && currentItem.quantity > 1) {
-      const updatedCart = cartController.updateQuantity(
-        id,
-        currentItem.quantity - 1
-      );
-      setCartItems([...updatedCart]);
-      setTotal(cartController.getTotalPrice());
-      onCartChange(updatedCart);
+      try {
+        const updatedCart = await cartController.updateQuantity(
+          productId,
+          variantValue,
+          currentItem.quantity - 1,
+        );
+        onCartChange(updatedCart);
+      } catch (err) {
+        console.error("handleDecrease error:", err);
+      }
     }
   };
 
-  const handleRemove = (id) => {
-    const updatedCart = cartController.removeFromCart(id);
-    setCartItems([...updatedCart]);
-    setTotal(cartController.getTotalPrice());
-    onCartChange(updatedCart);
+  const handleRemove = async (productId, variantValue) => {
+    try {
+      const updatedCart = await cartController.removeFromCart(
+        productId,
+        variantValue,
+      );
+      onCartChange(updatedCart);
+    } catch (err) {
+      console.error("handleRemove error:", err);
+    }
   };
 
   const handleCheckout = (e) => {
     navigate(`/checkout`);
   };
+
   return (
     <div className="bg-success-subtle">
       <div className="breadcrumbs">
@@ -78,18 +85,20 @@ const Cart = ({
           </ul>
         </div>
       </div>
+
       <div className="section section-main-cart pb-5">
         <div className="container bg-white">
-          <div className="row px-xl-4">
-            <div className="cart-left col-xl-8">
+          <div className="row px-lg-4">
+            {/* Danh sách sản phẩm */}
+            <div className="cart-left col-lg-8">
               <div className="cart-header d-flex justify-content-between align-items-center">
                 <h2 className="card-title text-black pb-3 pt-4 px-1 fw-bold">
                   {t("cart.title")}
                 </h2>
               </div>
               <div className="card-body">
-                <div className="cart-content px-xl-2 py-xl-3">
-                  <table class="table align-middle">
+                <div className="cart-content px-lg-2 py-lg-3">
+                  <table className="table align-middle">
                     <thead>
                       <tr className="text-center">
                         <th style={{ width: "50%" }}>{t("cart.product")}</th>
@@ -101,13 +110,17 @@ const Cart = ({
                     </thead>
                     {cartItems.length === 0 ? (
                       <tbody>
-                        <tr>{t("cart.no-cart")}</tr>
+                        <tr>
+                          <td colSpan={5} className="text-center py-4">
+                            {t("cart.no-cart")}
+                          </td>
+                        </tr>
                       </tbody>
                     ) : (
                       <tbody>
                         {cartItems.map((item) => (
                           <tr
-                            className="cart-item py-xl-3 border-bottom text-center"
+                            className="cart-item py-lg-3 border-bottom text-center"
                             key={item.id}
                           >
                             <td>
@@ -119,9 +132,10 @@ const Cart = ({
                                 >
                                   <img
                                     src={
+                                      item.displayImage ||
                                       item.image ||
                                       "https://via.placeholder.com/60"
-                                    } // Hiển thị placeholder nếu không có image
+                                    }
                                     className="me-xl-2 rounded"
                                     alt={item.name}
                                     style={{
@@ -141,36 +155,33 @@ const Cart = ({
                                       {item.name}
                                     </Link>
                                   </p>
-                                  <span className="cart-item__variant text-muted fs-7">
-                                    Size: {item.size || "default"}
-                                  </span>
+                                  {item.variantValue &&
+                                    item.variantValue !== "default" && (
+                                      <span className="cart-item__variant text-muted fs-7">
+                                        {item.variantValue}
+                                      </span>
+                                    )}
                                 </div>
                               </div>
                             </td>
                             <td className="price text-center">
-                              {item.discountPrice ? (
-                                <div>
-                                  <p className="m-0 text-danger fw-bold">
-                                    {item.discountPrice.toLocaleString("vi-VN")}
-                                    ₫
-                                  </p>
-                                  <p className="m-0 text-decoration-line-through">
-                                    {item.price.toLocaleString("vi-VN")}₫
-                                  </p>
-                                </div>
-                              ) : (
-                                <p className="m-0 text-danger fw-bold">
-                                  {item.price.toLocaleString("vi-VN")}₫
-                                </p>
-                              )}
+                              <p className="m-0 text-danger fw-bold">
+                                {item.displayPrice.toLocaleString("vi-VN")}₫
+                              </p>
                             </td>
+
                             <td className="quantity text-center">
                               <div className="input-group custom-number-input cart-item-quantity d-flex border rounded">
                                 <button
                                   type="button"
                                   name="minus"
                                   className="col-xl-3 d-flex justify-content-center align-items-center btn-outline-secondary border-0"
-                                  onClick={() => handleDecrease(item.id)}
+                                  onClick={() =>
+                                    handleDecrease(
+                                      item.productId,
+                                      item.variantValue,
+                                    )
+                                  }
                                 >
                                   <i className="bi bi-dash"></i>
                                 </button>
@@ -187,24 +198,30 @@ const Cart = ({
                                   type="button"
                                   name="plus"
                                   className="col-xl-3 d-flex justify-content-center align-items-center btn-outline-secondary border-0"
-                                  onClick={() => handleIncrease(item.id)}
+                                  onClick={() =>
+                                    handleIncrease(
+                                      item.productId,
+                                      item.variantValue,
+                                    )
+                                  }
                                 >
                                   <i className="bi bi-plus"></i>
                                 </button>
                               </div>
                             </td>
                             <td className="total text-danger fw-bold">
-                              {(
-                                (item.discountPrice || item.price) *
-                                item.quantity
-                              ).toLocaleString("vi-VN")}
-                              ₫
+                              {item.subtotal.toLocaleString("vi-VN")}₫
                             </td>
                             <td>
                               <div className="cart-product-col d-flex justify-content-between align-items-start">
                                 <button
                                   className="btn btn-sm px-xl-2 rounded-circle text-muted"
-                                  onClick={() => handleRemove(item.id)}
+                                  onClick={() =>
+                                    handleRemove(
+                                      item.productId,
+                                      item.variantValue,
+                                    )
+                                  }
                                 >
                                   <i className="bi bi-x-lg"></i>
                                 </button>
@@ -218,10 +235,13 @@ const Cart = ({
                 </div>
               </div>
             </div>
+
+            {/* Tổng đơn hàng */}
             <div className="cart-right my-xl-4 col-xl-4 border p-xl-3 border-success rounded-4">
               <div className="cart-summary">
                 <div className="cart-summary-info">
                   <div className="cart-opener-group  divide-dashed divide-y divide-neutral-50">
+                    {/* Xuất hóa đơn */}
                     <div className="cart-opener-item border-bottom">
                       <div
                         className="modal fade"
@@ -330,6 +350,8 @@ const Cart = ({
                         </div>
                       </portal-opener>
                     </div>
+
+                    {/* Hẹn giờ nhận */}
                     <div className="cart-opener-item border-bottom">
                       <div
                         className="modal fade"
@@ -422,6 +444,8 @@ const Cart = ({
                         </div>
                       </portal-opener>
                     </div>
+
+                    {/* Ghi chú */}
                     <div className="cart-opener-item border-bottom">
                       <div
                         className="modal fade"
@@ -486,6 +510,8 @@ const Cart = ({
                         </div>
                       </portal-opener>
                     </div>
+
+                    {/* Mã giảm giá */}
                     <div className="cart-opener-item border-bottom">
                       <portal-opener>
                         <div
@@ -509,6 +535,8 @@ const Cart = ({
                       </portal-opener>
                     </div>
                   </div>
+
+                  {/* Tổng tiền + thanh toán */}
                   <div className="mt-3">
                     <div className="cart-total py-xl-3 d-flex align-items-start justify-content-between w-100 ">
                       <p className="fw-semibold text-black">

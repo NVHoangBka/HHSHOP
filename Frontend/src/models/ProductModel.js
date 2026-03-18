@@ -30,10 +30,8 @@ class Product {
     // Phân loại
     this.categories = data.categories || [];
     this.subCategories = data.subCategories || [];
-
     this.brands = data.brands || [];
     this.colors = data.colors || [];
-
     this.tags = data.tags || [];
     this.types = data.types || [];
     this.titles = data.titles || [];
@@ -41,22 +39,22 @@ class Product {
 
     // Đánh giá & tương tác
     this.reviews = data.reviews || [];
-    this.ratingAverage = data.ratingAverage || [];
+    this.ratingAverage = data.ratingAverage || 0;
     this.reviewCount = data.reviewCount || 0;
 
     // Trạng thái & số liệu
     this.isActive = data.isActive !== false;
-    this.isFeatured = data.isFeatured !== false;
+    this.isFeatured = data.isFeatured === true;
     this.inStock = data.inStock !== false;
     this.totalStock = data.totalStock || 0; // tổng tồn tất cả variants
     this.totalSold = data.totalSold || 0; // tổng đã bán
     this.viewCount = data.viewCount || 0; // tổng lượt xem
-
-    this.flashSale = data.flashSale !== false; // flash sale giả
-    this.flashSaleEnd = data.flashSaleEnd;
+    this.flashSale = data.flashSale === true; // flash sale
+    this.flashSaleEnd = data.flashSaleEnd || null;
     this.isFeatured = data.isFeatured !== false;
 
-    this.finalPrice = this.discountPrice || this.price;
+    // Giá hiển thị cuối cùng
+    this.finalPrice = data.finalPrice || this.discountPrice || this.price;
   }
 
   normalizeTranslatable(value, fallback = "") {
@@ -83,8 +81,32 @@ class Product {
     return this.name?.[lang] || this.name?.vi || "Chưa đặt tên";
   }
 
+  getSlug(lang = "vi") {
+    return this.slug?.[lang] || this.slug?.vi || "";
+  }
+
   getDescription(lang = "vi") {
     return this.description?.[lang] || this.description?.vi || "";
+  }
+
+  // Lấy giá + ảnh của một variant cụ thể
+  getVariant(variantValue) {
+    if (!variantValue || variantValue === "default") return null;
+    return this.variants.find((v) => v.value === variantValue) || null;
+  }
+
+  // Giá hiển thị theo variant (nếu có)
+  getPriceForVariant(variantValue) {
+    const variant = this.getVariant(variantValue);
+    if (variant) return variant.discountPrice || variant.price || 0;
+    return this.finalPrice;
+  }
+
+  // Tồn kho theo variant
+  getStockForVariant(variantValue) {
+    const variant = this.getVariant(variantValue);
+    if (variant) return variant.stock || 0;
+    return this.totalStock;
   }
 }
 

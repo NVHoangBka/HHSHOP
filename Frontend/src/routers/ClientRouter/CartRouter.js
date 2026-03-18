@@ -4,8 +4,9 @@ import Cart from "../../views/client/pages/CartPage/Cart";
 
 const CartRouter = ({
   isAuthenticated,
-  cartItems,
+  cart,
   removeFromCart,
+  updateQuantity,
   cartController,
   onCartChange,
 }) => {
@@ -15,8 +16,10 @@ const CartRouter = ({
         path="/"
         element={
           <Cart
-            cartItems={cartItems}
+            isAuthenticated={isAuthenticated}
+            cart={cart}
             removeFromCart={removeFromCart}
+            updateQuantity={updateQuantity}
             cartController={cartController}
             onCartChange={onCartChange}
           />

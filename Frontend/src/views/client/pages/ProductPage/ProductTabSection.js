@@ -13,6 +13,7 @@ const ProductTabSection = ({
 }) => {
   const [t] = useTranslation();
   const currentLanguage = localStorage.getItem("i18n_lang") || "en";
+
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [activeTab, setActiveTab] = useState();
@@ -23,17 +24,19 @@ const ProductTabSection = ({
   };
 
   useEffect(() => {
-    const fetchCategoryId = async (value) => {
+    const fetchCategoryId = async () => {
       try {
         const result = await categoryController.getCategoriesByValue(value);
         if (result.success) {
           const categories = result.category;
           setCategoryId(categories?._id);
         }
-      } catch (error) {}
+      } catch (error) {
+        console.error("fetchCategoryId error:", error);
+      }
     };
-    fetchCategoryId(value);
-  }, [value]);
+    if (value) fetchCategoryId();
+  }, [value, categoryController]);
 
   // Lấy subTitles tương ứng với value của section này
   useEffect(() => {
@@ -48,21 +51,17 @@ const ProductTabSection = ({
           setSubCategories(subs);
 
           // Tự động chọn tab đầu tiên
-          if (subs.length > 0) {
-            setActiveTab(subs[0]._id);
-          } else {
-            setActiveTab("");
-          }
+          setActiveTab(subs.length > 0 ? subs[0]._id : null);
         }
       } catch (error) {
         console.error("Lỗi lấy subTitles:", error);
         setSubCategories([]);
-        setActiveTab("");
+        setActiveTab(null);
       }
     };
 
     fetchSubCategories();
-  }, [categoryId]);
+  }, [categoryId, categoryController]);
 
   // Logic lấy sản phẩm ()
   useEffect(() => {
@@ -70,16 +69,9 @@ const ProductTabSection = ({
       if (!categoryId) return;
 
       try {
-        let products = [];
-
-        if (activeTab) {
-          // Lọc theo subCategory cụ thể
-          products =
-            await productController.getProductsBySubCategory(activeTab);
-        } else {
-          // Lọc theo category cha (nếu không có sub hoặc tab "Tất cả")
-          products = await productController.getProductsByCategory(categoryId);
-        }
+        const products = activeTab
+          ? await productController.getProductsBySubCategory(activeTab)
+          : await productController.getProductsByCategory(categoryId);
 
         setFilteredProducts(products);
       } catch (error) {
@@ -89,7 +81,7 @@ const ProductTabSection = ({
     };
 
     fetchProducts();
-  }, [activeTab, categoryId]);
+  }, [activeTab, categoryId, productController]);
 
   return (
     <div className="section-product-tabs mt-xl-5 mt-4">
@@ -112,7 +104,6 @@ const ProductTabSection = ({
                 activeTab === sub._id ? "active" : "bg-white border"
               } text-hover`}
               onClick={() => setActiveTab(sub._id)}
-              onTouchStart={() => setActiveTab(sub._id)}
             >
               {getTranslated(sub.name)}
             </button>

@@ -2,16 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-const CartHeader = ({
-  onClose,
-  cartController,
-  cartItems: propCartItems,
-  onCartChange,
-}) => {
+const CartHeader = ({ onClose, cartController, cart, onCartChange }) => {
   const navigate = useNavigate();
-  const [t, i18n] = useTranslation();
-  const [cartItems, setCartItems] = useState(propCartItems || []);
-  const [total, setTotal] = useState(cartController.getTotalPrice());
+  const [t] = useTranslation();
+
   const [showBillInfo, setShowBillInfo] = useState(true);
   const [showTime, setShowTime] = useState(true);
   const [showNote, setShowNote] = useState(true);
@@ -22,43 +16,52 @@ const CartHeader = ({
   const getTranslated = (obj, fallback = "") => {
     return obj?.[currentLanguage] || obj?.vi || obj?.en || obj?.cz || fallback;
   };
-  // Đồng bộ state với props khi có thay đổi
-  useEffect(() => {
-    setCartItems(propCartItems || []);
-    setTotal(cartController.getTotalPrice());
-  }, [propCartItems, cartController]);
 
-  const handleIncrease = (id) => {
-    const currentItem = cartItems.find((item) => item.id === id);
+  const cartItems = cart?.items || [];
+  const total = cart?.totalPrice ?? 0;
+
+  const handleIncrease = async (productId, variantValue) => {
+    const currentItem = cart.findItem(productId, variantValue);
     if (currentItem) {
-      const updatedCart = cartController.updateQuantity(
-        id,
-        currentItem.quantity + 1,
-      );
-      setCartItems([...updatedCart]);
-      setTotal(cartController.getTotalPrice());
-      onCartChange(updatedCart);
+      try {
+        const updatedCart = await cartController.updateQuantity(
+          productId,
+          variantValue,
+          currentItem.quantity + 1,
+        );
+        onCartChange(updatedCart);
+      } catch (err) {
+        console.error("handleIncrease error:", err);
+      }
     }
   };
 
-  const handleDecrease = (id) => {
-    const currentItem = cartItems.find((item) => item.id === id);
+  const handleDecrease = async (productId, variantValue) => {
+    const currentItem = cart.findItem(productId, variantValue);
     if (currentItem && currentItem.quantity > 1) {
-      const updatedCart = cartController.updateQuantity(
-        id,
-        currentItem.quantity - 1,
-      );
-      setCartItems([...updatedCart]);
-      setTotal(cartController.getTotalPrice());
-      onCartChange(updatedCart);
+      try {
+        const updatedCart = await cartController.updateQuantity(
+          productId,
+          variantValue,
+          currentItem.quantity - 1,
+        );
+        onCartChange(updatedCart);
+      } catch (err) {
+        console.error("handleDecrease error:", err);
+      }
     }
   };
 
-  const handleRemove = (id) => {
-    const updatedCart = cartController.removeFromCart(id);
-    setCartItems([...updatedCart]);
-    setTotal(cartController.getTotalPrice());
-    onCartChange(updatedCart);
+  const handleRemove = async (productId, variantValue) => {
+    try {
+      const updatedCart = await cartController.removeFromCart(
+        productId,
+        variantValue,
+      );
+      onCartChange(updatedCart);
+    } catch (err) {
+      console.error("handleRemove error:", err);
+    }
   };
 
   const handleCheckout = (e) => {
@@ -126,101 +129,114 @@ const CartHeader = ({
             </div>
           ) : (
             <div className="d-flex h-100 flex-column justify-content-between">
-              <div className="cart-top pt-1 overflow-y-auto flex flex-col">
+              <div className="cart-top pt-1 overflow-y-auto ">
                 <div className="cart-table">
                   <div className="cart-items">
-                    {cartItems.map((product, index) => (
-                      <div
-                        key={index}
-                        className="cart-item py-xl-3 py-2 border-bottom"
-                      >
-                        <div className="cart-product-col d-flex justify-content-between align-items-start">
-                          <div className="d-flex">
-                            <Link
-                              className="cart-item__image"
-                              to={`/products/slug/${getTranslated(product.slug)}`}
-                              title={productName(product)}
-                            >
-                              <img
-                                src={
-                                  product.image ||
-                                  "https://via.placeholder.com/60"
-                                } // Hiển thị placeholder nếu không có image
-                                className="me-xl-2 rounded"
-                                alt={productName(product)}
-                                style={{
-                                  width: "60px",
-                                  height: "60px",
-                                  objectFit: "cover",
-                                }}
-                              />
-                            </Link>
-                            <div className="ms-md-2">
-                              <p className="cart-item__name mb-0 fw-semibold small">
-                                <Link
-                                  to={`/products/slug/${getTranslated(product.slug)}`}
-                                  title={productName(product)}
-                                  className="link text-decoration-none text-dark"
-                                >
-                                  {productName(product)}
-                                </Link>
-                              </p>
-                              <span className="cart-item__variant text-muted fs-7">
-                                Size: {product.size || "default"}
-                              </span>
-                            </div>
-                          </div>
-                          <button
-                            className="btn btn-sm px-xl-2 rounded-circle text-muted"
-                            onClick={() => handleRemove(product.id)}
-                          >
-                            <i className="bi bi-x-lg"></i>
-                          </button>
-                        </div>
+                    {cartItems.map((item, index) =>
+                      // <div
+                      //   key={index}
+                      //   className="cart-item py-xl-3 py-2 border-bottom"
+                      // >
+                      //   <div className="cart-product-col d-flex justify-content-between align-items-start">
+                      //     <div className="d-flex">
+                      //       <Link
+                      //         className="cart-item__image"
+                      //         to={`/products/slug/${getTranslated(item.slug) || item.slug}`}
+                      //         title={productName(item)}
+                      //       >
+                      //         <img
+                      //           src={
+                      //             item.displayImage ||
+                      //             item.image ||
+                      //             "https://via.placeholder.com/60"
+                      //           }
+                      //           className="me-xl-2 rounded"
+                      //           alt={productName(item)}
+                      //           style={{
+                      //             width: "60px",
+                      //             height: "60px",
+                      //             objectFit: "cover",
+                      //           }}
+                      //         />
+                      //       </Link>
+                      //       <div className="ms-md-2">
+                      //         <p className="cart-item__name mb-0 fw-semibold small">
+                      //           <Link
+                      //             to={`/products/slug/${getTranslated(item.slug)}`}
+                      //             title={productName(item)}
+                      //             className="link text-decoration-none text-dark"
+                      //           >
+                      //             {productName(item)}
+                      //           </Link>
+                      //         </p>
+                      //         {item.variantValue &&
+                      //           item.variantValue !== "default" && (
+                      //             <span className="cart-item__variant text-muted fs-7">
+                      //               {item.variantValue}
+                      //             </span>
+                      //           )}
+                      //       </div>
+                      //     </div>
+                      //     <button
+                      //       className="btn btn-sm px-xl-2 rounded-circle text-muted"
+                      //       onClick={() =>
+                      //         handleRemove(item.productId, item.variantValue)
+                      //       }
+                      //     >
+                      //       <i className="bi bi-x-lg"></i>
+                      //     </button>
+                      //   </div>
 
-                        <div className="px-xl-3 px-3 ms-xl-5 ms-5 d-flex justify-content-between cart-quantity-col">
-                          <div className="cart-unit-price-col">
-                            <div className="price text-danger fw-bold">
-                              {(
-                                (product.discountPrice || product.price) *
-                                product.quantity
-                              ).toLocaleString("vi-VN")}
-                              ₫
-                            </div>
-                          </div>
-                          <div
-                            className="input-group custom-number-input cart-item-quantity d-flex border rounded row"
-                            style={{ maxWidth: "100px", height: "28px" }}
-                          >
-                            <button
-                              type="button"
-                              name="minus"
-                              className="col-3 d-flex justify-content-center align-items-center btn-outline-secondary border-0"
-                              onClick={() => handleDecrease(product.id)}
-                            >
-                              <i className="bi bi-dash"></i>
-                            </button>
-                            <input
-                              type="number"
-                              className="form-quantity col-6 text-center no-spinner border-0"
-                              name="Lines"
-                              data-line-index="1"
-                              value={product.quantity || 1}
-                              min="1"
-                              readOnly
-                            />
-                            <button
-                              type="button"
-                              name="plus"
-                              className="col-3 d-flex justify-content-center align-items-center btn-outline-secondary border-0"
-                              onClick={() => handleIncrease(product.id)}
-                            >
-                              <i className="bi bi-plus"></i>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+                      //   <div className="px-xl-3 px-3 ms-xl-5 ms-5 d-flex justify-content-between cart-quantity-col">
+                      //     <div className="cart-unit-price-col">
+                      //       <div className="price text-danger fw-bold">
+                      //         {item.subtotal.toLocaleString("vi-VN")}₫
+                      //       </div>
+                      //     </div>
+                      //     <div
+                      //       className="input-group custom-number-input cart-item-quantity d-flex border rounded row"
+                      //       style={{ maxWidth: "100px", height: "28px" }}
+                      //     >
+                      //       <button
+                      //         type="button"
+                      //         name="minus"
+                      //         className="col-3 d-flex justify-content-center align-items-center btn-outline-secondary border-0"
+                      //         onClick={() =>
+                      //           handleDecrease(
+                      //             item.productId,
+                      //             item.variantValue,
+                      //           )
+                      //         }
+                      //       >
+                      //         <i className="bi bi-dash"></i>
+                      //       </button>
+                      //       <input
+                      //         type="number"
+                      //         className="form-quantity col-6 text-center no-spinner border-0"
+                      //         name="Lines"
+                      //         data-line-index="1"
+                      //         value={item.quantity}
+                      //         min="1"
+                      //         readOnly
+                      //       />
+                      //       <button
+                      //         type="button"
+                      //         name="plus"
+                      //         className="col-3 d-flex justify-content-center align-items-center btn-outline-secondary border-0"
+                      //         onClick={() =>
+                      //           handleIncrease(
+                      //             item.productId,
+                      //             item.variantValue,
+                      //           )
+                      //         }
+                      //       >
+                      //         <i className="bi bi-plus"></i>
+                      //       </button>
+                      //     </div>
+                      //   </div>
+                      // </div>
+                      console.log(item),
+                    )}
                   </div>
                 </div>
               </div>
@@ -228,6 +244,7 @@ const CartHeader = ({
                 <div className="cart-summary">
                   <div className="cart-summary-info">
                     <div className="cart-opener-group row align-items-center mb-3">
+                      {/* Xuất hóa đơn */}
                       <div className="cart-opener-item col-3">
                         <div
                           className="bill-field slide-right position-absolute py-xl-4 py-3 ps-3 top-0 bg-white end-0 h-100 shadow-lg w-100"
@@ -333,6 +350,8 @@ const CartHeader = ({
                           </div>
                         </portal-opener>
                       </div>
+
+                      {/* Hẹn giờ */}
                       <div className="cart-opener-item col-3">
                         <div
                           className="time-field slide-right position-absolute py-xl-4 py-3 ps-3 top-0 bg-white end-0 h-100 shadow-lg w-100"
@@ -420,6 +439,8 @@ const CartHeader = ({
                           </div>
                         </portal-opener>
                       </div>
+
+                      {/* Ghi chú */}
                       <div className="cart-opener-item col-3">
                         <div
                           className="note-field slide-right position-absolute py-xl-4 py-3 ps-3 top-0 bg-white end-0 h-100 shadow-lg w-100"
@@ -478,6 +499,8 @@ const CartHeader = ({
                           </div>
                         </portal-opener>
                       </div>
+
+                      {/* Voucher */}
                       <div className="cart-opener-item col-3">
                         <div
                           className="vorcher-field slide-right position-absolute py-xl-4 py-3 ps-3 top-0 bg-white end-0 h-100 shadow-lg w-100"
@@ -524,6 +547,7 @@ const CartHeader = ({
                         </portal-opener>
                       </div>
                     </div>
+
                     <div className="border-top">
                       <div className="cart-total py-xl-3 py-md-2 d-flex align-items-start justify-content-between w-100 ">
                         <p className="fw-semibold text-black text-uppercase">

@@ -5,7 +5,7 @@ const SearchKeyword = require("../models/SearchKeyword");
 const slugify = require("slugify");
 
 class ProductController {
-  // LẤY TẤT CẢ (có phân trang, lọc, tìm kiếm)
+  // ====================== LẤY TẤT CẢ ======================
   static async getAll(req, res) {
     try {
       const page = parseInt(req.query.page) || 1;
@@ -41,42 +41,73 @@ class ProductController {
     }
   }
 
-  static async getByTitle(req, res) {
-    const { title } = req.params;
-    try {
-      const products = await Product.find({ titles: title });
-      res.json({ success: true, products });
-    } catch (error) {
-      res.status(500).json({ success: false, message: "Lỗi hệ thống" });
-    }
-  }
-
-  static async getBySubTitle(req, res) {
-    const { subtitle } = req.params;
-    try {
-      const products = await Product.find({ subTitles: subtitle });
-      res.json({ success: true, products });
-    } catch (error) {
-      res.status(500).json({ success: false, message: "Lỗi hệ thống" });
-    }
-  }
-
+  // ====================== LẤY THEO TAG ======================
   static async getByTag(req, res) {
-    const { tag } = req.params;
-    const products = await Product.find({ tags: tag, isActive: true }).limit(
-      20,
-    );
-    res.json({ success: true, products });
+    try {
+      const { tag } = req.params;
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 20;
+      const skip = (page - 1) * limit;
+
+      const [products, total] = await Promise.all([
+        Product.find({ tags: tag, isActive: true })
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(limit)
+          .lean(),
+        Product.countDocuments({ tags: tag, isActive: true }),
+      ]);
+
+      res.json({
+        success: true,
+        products,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit),
+        },
+      });
+    } catch (error) {
+      console.error("getByTag error:", error);
+      res.status(500).json({ success: false, message: "Lỗi hệ thống" });
+    }
   }
 
+  // ====================== LẤY THEO TYPE ======================
   static async getByType(req, res) {
-    const { type } = req.params;
-    const products = await Product.find({ types: type, isActive: true }).limit(
-      20,
-    );
-    res.json({ success: true, products });
+    try {
+      const { type } = req.params;
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 20;
+      const skip = (page - 1) * limit;
+
+      const [products, total] = await Promise.all([
+        Product.find({ types: type, isActive: true })
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(limit)
+          .lean(),
+        Product.countDocuments({ types: type, isActive: true }),
+      ]);
+
+      res.json({
+        success: true,
+        products,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit),
+        },
+      });
+    } catch (error) {
+      console.error("getByType error:", error);
+      res.status(500).json({ success: false, message: "Lỗi hệ thống" });
+    }
   }
 
+  // ====================== LẤY THEO CATEGORY ======================
   static async getByCategory(req, res) {
     try {
       const { categoryId } = req.params;
@@ -122,6 +153,7 @@ class ProductController {
     }
   }
 
+  // ====================== LẤY THEO SUBCATEGORY ======================
   static async getBySubCategory(req, res) {
     try {
       const { subCategoryId } = req.params;
@@ -167,13 +199,50 @@ class ProductController {
     }
   }
 
+  // ====================== LẤY THEO ID ======================
   static async getById(req, res) {
     try {
-      const product = await Product.findById(req.params.id);
-      if (!product) return res.status(404).json({ success: false });
+      if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+        return res
+          .status(400)
+          .json({ success: false, message: "ID không hợp lệ" });
+      }
+      const product = await Product.findById(req.params.id).lean();
+      if (!product)
+        return res
+          .status(404)
+          .json({ success: false, message: "Không tìm thấy" });
       res.json({ success: true, product });
     } catch (error) {
-      res.status(500).json({ success: false });
+      console.error("getById error:", error);
+      res.status(500).json({ success: false, message: "Lỗi hệ thống" });
+    }
+  }
+
+  // ====================== LẤY THEO SLUG ======================
+  static async getBySlug(req, res) {
+    try {
+      const { slug } = req.params;
+      const product = await Product.findOne({
+        $or: [{ "slug.vi": slug }, { "slug.en": slug }, { "slug.cz": slug }],
+        isActive: true,
+      }).lean();
+
+      if (!product) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Không tìm thấy" });
+      }
+
+      // Tăng view count bất đồng bộ, không chặn response
+      Product.updateOne({ _id: product._id }, { $inc: { viewCount: 1 } }).catch(
+        (err) => console.error("viewCount update error:", err),
+      );
+
+      res.json({ success: true, products: product });
+    } catch (error) {
+      console.error("getBySlug error:", error);
+      res.status(500).json({ success: false, message: "Lỗi hệ thống" });
     }
   }
 
@@ -290,29 +359,6 @@ class ProductController {
       res.status(500).json({
         success: false,
       });
-    }
-  }
-
-  // Lấy theo slug (rất quan trọng cho trang chi tiết)
-  static async getBySlug(req, res) {
-    try {
-      const { slug } = req.params;
-      const product = await Product.findOne({
-        $or: [{ "slug.vi": slug }, { "slug.en": slug }, { "slug.cz": slug }],
-        isActive: true,
-      }).lean();
-
-      if (!product)
-        return res
-          .status(404)
-          .json({ success: false, message: "Không tìm thấy" });
-
-      // Tăng view count
-      await Product.updateOne({ _id: product._id }, { $inc: { viewCount: 1 } });
-
-      res.json({ success: true, products: product });
-    } catch (error) {
-      res.status(500).json({ success: false });
     }
   }
 }

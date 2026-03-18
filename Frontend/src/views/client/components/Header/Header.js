@@ -1,16 +1,16 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Dropdown, Offcanvas } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
 import Menu from "./Menu/Menu";
 import Search from "./Search/Search";
-import Cart from "./CartHeader/CartHeader";
+import CartHeader from "./CartHeader/CartHeader";
 
 const Header = ({
   cartController,
   isAuthenticated,
-  cartItems,
+  cart,
   onCartChange,
   authController,
   productController,
@@ -27,10 +27,7 @@ const Header = ({
   const [showMenu, setShowMenu] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
 
-  const totalQuantity = cartItems.reduce(
-    (sum, item) => sum + (item.quantity || 0),
-    0,
-  );
+  const totalQuantity = cart?.totalQuantity ?? 0; // Lấy số lượng sản phẩm trong giỏ hàng
 
   const getTranslated = (obj, fallback = "") => {
     return obj?.[currentLanguage] || obj?.vi || obj?.en || obj?.cz || fallback;
@@ -43,10 +40,11 @@ const Header = ({
       setCurrentUser(user);
     };
     fetchUser();
-  }, [authController]);
+  }, [authController, isAuthenticated]);
 
   // Handler
   const goHome = () => navigate("/");
+
   const goToAccount = () => {
     if (isAuthenticated) {
       navigate("/account/info");
@@ -72,13 +70,6 @@ const Header = ({
     setShowMenu(false);
     setShowSearch(false);
   };
-
-  const handleCartUpdate = useCallback(
-    (updatedCart) => {
-      onCartChange(updatedCart);
-    },
-    [onCartChange],
-  );
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
@@ -134,6 +125,7 @@ const Header = ({
             {/* Right: Search, Account, Cart */}
             <div className="d-flex align-items-center justify-content-end col-xl-4 col-lg-5 col-md-5 col-sm-4 col-6">
               <div className="row justify-content-end align-items-center w-100 gx-2">
+                {/* Language Dropdown */}
                 <div className="col-xl-3 col-lg-3 col-md-4 col-sm-4 col-4 ">
                   <Dropdown className="mx-lg-2">
                     <Dropdown.Toggle
@@ -187,6 +179,8 @@ const Header = ({
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>
+
+                {/* Search */}
                 <div className="col-xl-2 col-lg-2 col-md-3 col-sm-2 col-4">
                   <button
                     className="btn btn-outline-secondary border rounded-circle"
@@ -195,6 +189,8 @@ const Header = ({
                     <i className="bi bi-search fs-5"></i>
                   </button>
                 </div>
+
+                {/* Account */}
                 <div className="col-xl-2 col-lg-2 col-md-3 d-none d-md-block">
                   <button
                     className="btn btn-outline-secondary border rounded-circle d-none d-md-block"
@@ -203,6 +199,8 @@ const Header = ({
                     <i className="bi bi-person fs-5"></i>
                   </button>
                 </div>
+
+                {/* Cart Button */}
                 <div className="col-xl-4 col-lg-2 col-md-2 col-sm-2 col-4">
                   <button
                     className="btn btn-outline-secondary border position-relative d-flex align-items-center"
@@ -320,15 +318,15 @@ const Header = ({
       >
         <Offcanvas.Body className="p-xl-0 d-flex flex-column">
           <div className="flex-grow-1 overflow-auto">
-            <Cart
+            <CartHeader
               isOpen={showCart}
-              onClose={(e) => {
+              onClose={() => {
                 setShowCart(false);
               }}
-              cartItems={cartItems}
+              cart={cart}
               cartController={cartController}
               titleController={titleController}
-              onCartChange={handleCartUpdate}
+              onCartChange={onCartChange}
             />
           </div>
         </Offcanvas.Body>

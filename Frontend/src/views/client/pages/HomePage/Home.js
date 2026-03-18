@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Slider from "../../components/Slider";
 import ProductItem from "../ProductPage/ProductItem";
 import ProductTabSection from "../ProductPage/ProductTabSection";
@@ -25,10 +25,12 @@ const Home = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const orders = await productController.getAllProducts();
-        const banners = await bannerController.getBannersAll();
-        const titles = await titleController.getTitlesByType("h1");
-        const resCategories = await categoryController.getCategories();
+        const [orders, banners, titles, resCategories] = await Promise.all([
+          productController.getAllProducts(),
+          bannerController.getBannersAll(),
+          titleController.getTitlesByType("h1"),
+          categoryController.getCategories(),
+        ]);
 
         if (resCategories.success) {
           const categories = resCategories.categories;
@@ -59,52 +61,43 @@ const Home = ({
     return obj?.[currentLanguage] || obj?.vi || obj?.en || obj?.cz || fallback;
   };
 
-  const calculateTimeLeft = () => {
-    const startDate = new Date();
-    const endDate = new Date();
+  const calculateTimeLeft = useCallback(() => {
     const now = new Date();
+    const endDate = new Date();
+    endDate.setHours(23, 59, 59, 999);
 
-    endDate.setHours(23, 59, 59);
-
-    if (now < startDate) {
-      setStatus("not-started");
-      const diff = startDate - now;
-      return {
-        hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((diff / 1000 / 60) % 60),
-        seconds: Math.floor((diff / 1000) % 60),
-      };
-    }
-
-    // ĐANG DIỄN RA
-    if (now >= startDate && now <= endDate) {
-      setStatus("ongoing");
+    if (now <= endDate) {
       const diff = endDate - now;
       return {
+        newStatus: "ongoing",
         hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
         minutes: Math.floor((diff / 1000 / 60) % 60),
         seconds: Math.floor((diff / 1000) % 60),
       };
     }
 
-    // ĐÃ KẾT THÚC
-    setStatus("ended");
-    return { hours: 0, minutes: 0, seconds: 0 };
-  };
+    return { newStatus: "ended", hours: 0, minutes: 0, seconds: 0 };
+  }, []);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft());
-    }, 1000);
+    const tick = () => {
+      const { newStatus, hours, minutes, seconds } = calculateTimeLeft();
+      // ✅ Chỉ cập nhật status khi thực sự thay đổi
+      setStatus((prev) => (prev !== newStatus ? newStatus : prev));
+      setTimeLeft({ hours, minutes, seconds });
+    };
 
+    tick(); // Chạy ngay lần đầu
+    const timer = setInterval(tick, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [calculateTimeLeft]);
 
   return (
     <>
       <Slider />
       <div className="home bg-success-subtle py-md-4 py-sm-2 py-3">
         <div className="container">
+          {/* Banner */}
           <div className="section-banner-group row flex-nowrap flex-lg-wrap overflow-auto overflow-lg-visible my-3">
             {bannerHome
               .filter((banner) => banner.showHome === true)
@@ -118,6 +111,8 @@ const Home = ({
                 </div>
               ))}
           </div>
+
+          {/* Flash Sale */}
           <div className="section-flashsale bg-danger rounded-4 mt-xl-5 pb-xl-3 mt-lg-5 pb-lg-3 mt-md-4 pb-md-3 mt-sm-3 pb-sm-2">
             <div className="flashsale-header d-flex flex-column flex-lg-row align-items-center justify-content-lg-between text-center text-lg-start">
               <h1 className="text-white ps-xl-3 py-xl-4 m-0 py-lg-3 ps-lg-3 py-md-2 ps-md-2 py-sm-1 ps-sm-1 ps-2 py-2 fw-bold">
@@ -140,35 +135,20 @@ const Home = ({
                 </div>
                 <div className="flashsale__countdown">
                   <div className="row g-2 justify-content-center align-items-center">
-                    {/* Hours */}
-                    <div className="col-auto">
-                      <div className="bg-warning rounded text-center p-2 overflow-hidden countdown-box">
-                        <div key={timeLeft.hours} className="count-number">
-                          {String(timeLeft.hours || 0).padStart(2, "0")}
+                    {[
+                      { value: timeLeft.hours, label: t("home.hours") },
+                      { value: timeLeft.minutes, label: t("home.minutes") },
+                      { value: timeLeft.seconds, label: t("home.seconds") },
+                    ].map(({ value, label }, i) => (
+                      <div key={i} className="col-auto">
+                        <div className="bg-warning rounded text-center p-2 countdown-box">
+                          <div className="count-number">
+                            {String(value || 0).padStart(2, "0")}
+                          </div>
+                          <div className="small">{label}</div>
                         </div>
-                        <div className="small">{t("home.hours")}</div>
                       </div>
-                    </div>
-
-                    {/* Minutes */}
-                    <div className="col-auto">
-                      <div className="bg-warning rounded text-center p-2 overflow-hidden countdown-box">
-                        <div key={timeLeft.minutes} className="count-number">
-                          {String(timeLeft.minutes || 0).padStart(2, "0")}
-                        </div>
-                        <div className="small">{t("home.minutes")}</div>
-                      </div>
-                    </div>
-
-                    {/* Seconds */}
-                    <div className="col-auto">
-                      <div className="bg-warning rounded text-center p-2 overflow-hidden countdown-box">
-                        <div key={timeLeft.seconds} className="count-number">
-                          {String(timeLeft.seconds || 0).padStart(2, "0")}
-                        </div>
-                        <div className="small">{t("home.seconds")}</div>
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -195,6 +175,8 @@ const Home = ({
             </div>
           </div>
         </div>
+
+        {/* Collection */}
         <div className="section-collection mt-xl-5 mt-lg-4 mt-md-3 mt-sm-2 mt-3 position-relative">
           <img
             src="https://bizweb.dktcdn.net/100/518/448/themes/953339/assets/coll_bg.jpg?1733201190476"
@@ -221,6 +203,7 @@ const Home = ({
           </div>
         </div>
 
+        {/* Product sections theo category */}
         {[...categoriesHome]
           .sort((a, b) => (a.homeOrder ?? 9999) - (b.homeOrder ?? 9999))
           .map((category, index) => (

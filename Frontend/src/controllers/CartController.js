@@ -5,36 +5,56 @@ class CartController {
     this.cartService = new CartService();
   }
 
-  addToCart(product) {
-    const updatedCart = this.cartService.addToCart(product);
-    return updatedCart; // Trả về mảng đã cập nhật
+  // Gọi sau khi xác định trạng thái đăng nhập
+  setAuthenticated(isAuth) {
+    return this.cartService.setAuthenticated(isAuth);
   }
 
-  removeFromCart(productId) {
-    const updatedCart = this.cartService.removeFromCart(productId);
-    return updatedCart;
+  getCart() {
+    return this.cartService.getCart();
   }
 
-  updateQuantity(productId, quantity) {
-    const updatedCart = this.cartService.updateQuantity(productId, quantity);
-    return updatedCart;
+  async addToCart(productId, variantValue = "default", quantity = 1) {
+    return await this.cartService.addItem(productId, variantValue, quantity);
   }
 
-  clearCart() {
-    const updatedCart = this.cartService.clearCart();
-    return updatedCart;
+  // Xóa 1 sản phẩm theo productId + variantValue
+  async removeFromCart(productId, variantValue = "default") {
+    return await this.cartService.removeItem(productId, variantValue);
   }
 
+  // Cập nhật số lượng
+  async updateQuantity(productId, variantValue = "default", quantity) {
+    return await this.cartService.updateQuantity(
+      productId,
+      variantValue,
+      quantity,
+    );
+  }
+
+  // Xóa toàn bộ giỏ
+  async clearCart() {
+    return await this.cartService.clearCart();
+  }
+
+  // Lấy danh sách item
   getCartItems() {
-    return this.cartService.getCartItems();
+    return this.cartService.getCart().items;
   }
 
+  // Tổng số lượng (dùng cho badge icon giỏ hàng)
   getTotalQuantity() {
-    return this.cartService.getTotalQuantity();
+    return this.cartService.getCart().totalQuantity;
   }
 
+  // Tổng tiền
   getTotalPrice() {
-    return this.cartService.getTotalPrice();
+    return this.cartService.getCart().totalPrice;
+  }
+
+  // Kiểm tra giỏ trống
+  isEmpty() {
+    return this.cartService.getCart().isEmpty;
   }
 }
 

@@ -66,6 +66,14 @@ class ProductController {
     const result = await this.productService.getProductBySlug(slug);
     return result;
   }
+
+  async getFeaturedProducts(limit = 12) {
+    return await this.productService.getFeaturedProducts(limit);
+  }
+
+  clearCache() {
+    this.productService.clearCache();
+  }
 }
 
 export default ProductController;

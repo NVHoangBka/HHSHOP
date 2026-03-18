@@ -25,6 +25,7 @@ const Product = ({ path, addToCart, productController }) => {
   // state cho phân trang
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 12;
+  const [filterKey, setFilterKey] = useState(0);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
@@ -42,38 +43,40 @@ const Product = ({ path, addToCart, productController }) => {
   const [colors, setColors] = useState();
   const [brands, setBrands] = useState();
 
-  // === 1. CẬP NHẬT TITLE + activeTab ===
-  const updateTitleAndActiveTab = async () => {
-    if (titlePath !== "all") {
-      setActiveTab(titlePath);
-      let result;
-      if (params.subCategorySlug) {
-        result = await categoryController.getCategoriesByValue(titlePath);
-        setSubCategoryId(result?.category?._id);
-      } else {
-        result = await categoryController.getCategoriesByValue(titlePath);
-        setCategoryId(result?.category?._id);
-        setSubCategoryId(null);
-      }
-      if (result?.success) {
-        const category = result.category;
-        const titleName = category?.name;
-        setTitlePathConver(getTranslated(titleName));
-        setTitle(getTranslated(titleName));
-      } else {
-        setTitlePathConver(titlePath);
-        setTitle(getTranslated(titlePath));
-      }
-    } else {
-      setActiveTab("all");
-      setTitle("Tất cả sản phẩm");
-      setTitlePathConver("Tất cả sản phẩm");
-    }
-  };
-
   useEffect(() => {
+    // === 1. CẬP NHẬT TITLE + activeTab ===
+    const updateTitleAndActiveTab = async () => {
+      if (titlePath !== "all") {
+        setActiveTab(titlePath);
+        try {
+          const result =
+            await categoryController.getCategoriesByValue(titlePath);
+          if (params.subCategorySlug) {
+            setSubCategoryId(result?.category?._id);
+          } else {
+            setCategoryId(result?.category?._id);
+            setSubCategoryId(null);
+          }
+          if (result?.success) {
+            const name = getTranslated(result.category?.name);
+            setTitlePathConver(name);
+            setTitle(name);
+          } else {
+            setTitlePathConver(titlePath);
+            setTitle(titlePath);
+          }
+        } catch (err) {
+          console.error("updateTitle error:", err);
+        }
+      } else {
+        setActiveTab("all");
+        setTitle("Tất cả sản phẩm");
+        setTitlePathConver("Tất cả sản phẩm");
+      }
+    };
+
     updateTitleAndActiveTab();
-  }, [categoryController, activeTab, titlePath]);
+  }, [titlePath]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -107,21 +110,16 @@ const Product = ({ path, addToCart, productController }) => {
     const min = priceRange[0];
     const max = priceRange[1];
 
-    let label = "";
-    let value = `${min}:${max >= 10000000 ? "max" : max}`;
-
     if (min === 0 && max >= 10000000) {
       setFilters((prev) => ({ ...prev, price: [] }));
       return;
     }
 
-    if (max >= 10000000) {
-      label = `${min.toLocaleString("vi-VN")} ₫ - 10tr+`;
-    } else if (max === 0) {
-      label = `${min.toLocaleString("vi-VN")} ₫`;
-    } else {
-      label = `${min.toLocaleString("vi-VN")} ₫ - ${max.toLocaleString("vi-VN")} ₫`;
-    }
+    const value = `${min}:${max >= 10000000 ? "max" : max}`;
+    const label =
+      max >= 10000000
+        ? `${min.toLocaleString("vi-VN")} ₫ - 10tr+`
+        : `${min.toLocaleString("vi-VN")} ₫ - ${max.toLocaleString("vi-VN")} ₫`;
 
     // Tránh cập nhật không cần thiết → ngăn loop vô hạn
     const current = filters.price?.[0];
@@ -134,19 +132,9 @@ const Product = ({ path, addToCart, productController }) => {
   }, [priceRange]);
 
   const resetAllFilters = () => {
-    setFilters({
-      price: [],
-      brand: [],
-      type: [],
-      color: [],
-    });
-
-    // Bỏ tích tất cả checkbox & radio
-    document
-      .querySelectorAll('input[type="checkbox"], input[type="radio"]')
-      .forEach((input) => {
-        input.checked = false;
-      });
+    setFilters({ price: [], brand: [], type: [], tag: [], color: [] });
+    setPriceRange([0, 10000000]);
+    setFilterKey((k) => k + 1); // reset form inputs bằng key
   };
 
   // Hàm thay đổi filter
@@ -173,9 +161,7 @@ const Product = ({ path, addToCart, productController }) => {
       let updated = { ...prev };
 
       if (type === "checkbox") {
-        // --- Checkbox: có thể chọn nhiều ---
         if (checked) {
-          // 🔒 Kiểm tra trùng trước khi push
           const exist = updated[key]?.some((item) => item.value === value);
 
           if (!exist) {
@@ -191,7 +177,6 @@ const Product = ({ path, addToCart, productController }) => {
       }
 
       if (type === "radio") {
-        // --- Radio: chỉ chọn 1 ---
         updated[key] = [{ value, label }];
       }
 
@@ -206,12 +191,6 @@ const Product = ({ path, addToCart, productController }) => {
       if (updated[key].length === 0) delete updated[key];
       return updated;
     });
-
-    // Bỏ tích / bỏ chọn input tương ứng
-    const input = document.querySelector(
-      `input[name="${key}"][value="${value}"]`,
-    );
-    if (input) input.checked = false;
   };
 
   // Áp dụng filter khi filters thay đổi
@@ -234,22 +213,18 @@ const Product = ({ path, addToCart, productController }) => {
               ? await productController.getAllProducts()
               : await productController.getProductsByCategory(categoryId);
         }
+
         // B3: Áp dụng các filter
         if (filters.price?.length > 0) {
           const [min, max] = filters.price[0].value
             .split(":")
             .map((v) => (v === "max" ? Infinity : Number(v)));
           products = products.filter((p) => {
-            const priceToCheck =
-              p.discountPrice !== null && p.discountPrice !== undefined
-                ? p.discountPrice
-                : p.price;
-
-            if (priceToCheck === null || priceToCheck === undefined)
-              return false;
-
+            const price = p.discountPrice ?? p.price;
             return (
-              priceToCheck >= min && (max === Infinity || priceToCheck <= max)
+              price != null &&
+              price >= min &&
+              (max === Infinity || price <= max)
             );
           });
         }
@@ -320,7 +295,6 @@ const Product = ({ path, addToCart, productController }) => {
   const handlePageChange = (pageNumber) => {
     if (pageNumber < 1 || pageNumber > totalPages) return;
     setCurrentPage(pageNumber);
-    // window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const onColorChange = (e) => handleFilterChange("color", e);

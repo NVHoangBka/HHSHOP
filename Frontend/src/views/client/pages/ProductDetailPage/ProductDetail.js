@@ -22,7 +22,6 @@ const ProductDetail = ({ addToCart, productController }) => {
         const data = await productController.getProductBySlug(slug);
         if (!data) {
           console.error("Không có sản phẩm");
-          // navigate("/");
           return;
         }
         setProduct(data);
@@ -41,7 +40,7 @@ const ProductDetail = ({ addToCart, productController }) => {
     };
 
     fetchProduct();
-  }, [slug, productController, navigate]);
+  }, [slug, productController]);
 
   // Khi chọn variant → đổi ảnh + giá
   const handleVariantChange = (variant) => {
@@ -52,31 +51,20 @@ const ProductDetail = ({ addToCart, productController }) => {
 
   const handleAddToCart = () => {
     if (!product) return;
-    const item = {
-      ...product,
-      quantity,
-      selectedVariant: selectedVariant ? { ...selectedVariant } : null,
-      // Tên hiển thị trong giỏ
-      displayName: selectedVariant
-        ? `${getTranslated(product.name)} - ${selectedVariant.value}`
-        : getTranslated(product.name),
-      // Giá thực tế
-      finalPrice: selectedVariant
-        ? selectedVariant?.discountPrice || selectedVariant?.price
-        : product?.discountPrice || product?.price,
-      // Ảnh trong giỏ
-      cartImage: mainImage,
-    };
 
-    addToCart(item);
+    const variantValue = selectedVariant?.value || "default";
+
+    addToCart(product.id, variantValue, quantity);
   };
 
   const handleBuyNow = () => {
     if (!product) return;
+    const variantValue = selectedVariant?.value || "default";
 
     const buyNowItem = {
       ...product,
       quantity,
+      variantValue,
       selectedVariant: selectedVariant ? { ...selectedVariant } : null,
       displayName: selectedVariant
         ? `${getTranslated(product.name)} - ${selectedVariant.value}`
@@ -118,7 +106,15 @@ const ProductDetail = ({ addToCart, productController }) => {
     ? Math.round(100 - (currentPrice / originalPrice) * 100)
     : 0;
 
-  const allImages = product?.gallery || [product?.image];
+  // Tồn kho theo variant hoặc tổng
+  const availableStock = selectedVariant
+    ? (selectedVariant.stock ?? 0)
+    : (product?.totalStock ?? 0);
+
+  const allImages =
+    product?.gallery?.length > 0
+      ? product.gallery
+      : [product?.image].filter(Boolean);
 
   if (loading) {
     return (
@@ -289,10 +285,10 @@ const ProductDetail = ({ addToCart, productController }) => {
                             "Đang cập nhật"}
                         </span>
                       </div>
-                      {product.stock !== undefined && product.stock < 10 && (
+                      {availableStock > 0 && availableStock < 10 && (
                         <div className="text-danger fs-7">
                           <i className="bi bi-exclamation-triangle"></i>{" "}
-                          {t("product.lowStock", { count: product.stock })}
+                          {t("product.lowStock", { count: availableStock })}
                         </div>
                       )}
                     </div>
@@ -426,7 +422,7 @@ const ProductDetail = ({ addToCart, productController }) => {
 
                 {/* Số lượng + CTA */}
                 <div className="product-cta mb-0 mt-md-4 mt-3">
-                  {product.stock === 0 ? (
+                  {availableStock === 0 ? (
                     <div>
                       <div className="d-none btn fw-semibold mt-2 btn w-100">
                         {t("product.buttons.outOfStock")}
@@ -460,7 +456,13 @@ const ProductDetail = ({ addToCart, productController }) => {
                               min="1"
                               onChange={(e) =>
                                 setQuantity(
-                                  Math.max(1, Number(e.target.value) || 1),
+                                  Math.max(
+                                    1,
+                                    Math.min(
+                                      availableStock,
+                                      Number(e.target.value) || 1,
+                                    ),
+                                  ),
                                 )
                               }
                             />
@@ -468,18 +470,29 @@ const ProductDetail = ({ addToCart, productController }) => {
                             <button
                               type="button"
                               className="cursor-pointer p-lg-2 p-1 bg-transparent border-0 text-hover"
-                              onClick={() => setQuantity(quantity + 1)}
+                              onClick={() =>
+                                setQuantity(
+                                  Math.min(availableStock, quantity + 1),
+                                )
+                              }
+                              disabled={quantity >= availableStock}
                             >
                               <i className="m-auto bi bi-plus"></i>
                             </button>
                           </div>
+
+                          {quantity >= availableStock && (
+                            <span className="text-danger fs-7 ms-2">
+                              {t("product.maxStock") ||
+                                `Tối đa ${availableStock}`}
+                            </span>
+                          )}
                         </div>
                       </div>
 
                       <div className="d-flex border-top mt-lg-4 mt-3 pt-lg-4 pt-3">
                         <button
                           onClick={handleBuyNow}
-                          name="buynow"
                           className=" fw-semibold btn border border-danger btn-buynow w-100 py-2 text-danger col mx-2  rounded-5"
                         >
                           <span> {t("product.buttons.buyNow")} </span>
@@ -491,7 +504,6 @@ const ProductDetail = ({ addToCart, productController }) => {
                         </button>
 
                         <button
-                          name="addtocart"
                           className=" fw-semibold btn btn-add-to-cart w-100 bg-danger text-white col py-2 mx-2 rounded-5"
                           onClick={handleAddToCart}
                         >

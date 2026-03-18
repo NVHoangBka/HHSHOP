@@ -14,13 +14,15 @@ const ProductItem = ({ product, addToCart }) => {
 
   if (!product) {
     return (
-      <div className="product-item p-3 border mx-xl-2">
+      <div className="product-item p-3 border mx-2">
         {t("product.not-found")}
       </div>
     );
   }
 
-  const { name, image, price, discountPrice, rating = 0, slug } = product;
+  const { name, image, price, discountPrice, slug } = product;
+
+  const ratingAverage = product.ratingAverage || 0;
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -30,19 +32,12 @@ const ProductItem = ({ product, addToCart }) => {
   };
 
   const renderStars = (rating = 0) => {
-    const stars = [];
-    const maxStars = 5;
-    for (let i = 1; i <= maxStars; i++) {
-      stars.push(
-        <i
-          key={i}
-          className={`bi ${
-            i <= Math.floor(rating) ? "bi-star-fill" : "bi-star"
-          } text-warning`}
-        ></i>,
-      );
-    }
-    return stars;
+    return Array.from({ length: 5 }, (_, i) => (
+      <i
+        key={i}
+        className={`bi ${i < Math.floor(rating) ? "bi-star-fill" : "bi-star"} text-warning`}
+      />
+    ));
   };
 
   const handleShowProductDetail = (e) => {
@@ -51,8 +46,11 @@ const ProductItem = ({ product, addToCart }) => {
   };
 
   const handleAddToCart = (e) => {
-    e.stopPropagation(); // 👉 chặn navigate
-    addToCart(product);
+    e.stopPropagation();
+    if (!product.id) return;
+
+    const defaultVariant = product.variants?.[0]?.value || "default";
+    addToCart(product.id, defaultVariant, 1);
   };
 
   return (
@@ -88,7 +86,8 @@ const ProductItem = ({ product, addToCart }) => {
           <i className="bi bi-cart4 fs-4"></i>
         </button>
       </div>
-      <div className="rate">{renderStars(rating)}</div>
+
+      <div className="rate">{renderStars(ratingAverage)}</div>
     </div>
   );
 };

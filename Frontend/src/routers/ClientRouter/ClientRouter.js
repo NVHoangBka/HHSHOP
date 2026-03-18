@@ -97,8 +97,9 @@ const ClientRouter = (props, index) => (
       element={
         <CartRouter
           isAuthenticated={props.isAuthenticated}
-          cartItems={props.cartItems}
+          cart={props.cart}
           removeFromCart={props.removeFromCart}
+          updateQuantity={props.updateQuantity}
           onCartChange={props.onCartChange}
           cartController={props.cartController}
         />
