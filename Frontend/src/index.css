@@ -171,3 +171,14 @@ button:disabled {
 .modal.show .modal-dialog.slide-right {
   transform: translateX(0%) !important;
 }
+
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.4em;
+  height: 2.8em ;
+  flex-shrink: 0;
+}

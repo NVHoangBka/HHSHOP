@@ -14,8 +14,15 @@ class CartController {
     return this.cartService.getCart();
   }
 
-  async addToCart(productId, variantValue = "default", quantity = 1) {
-    return await this.cartService.addItem(productId, variantValue, quantity);
+  async addToCart(
+    productId,
+    variantValue = "default",
+    quantity = 1,
+    productData = null,
+  ) {
+    return await this.cartService.addItem(productId, variantValue, quantity, {
+      productData,
+    });
   }
 
   // Xóa 1 sản phẩm theo productId + variantValue

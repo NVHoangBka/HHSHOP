@@ -316,8 +316,8 @@ const Header = ({
         placement="end"
         style={{ zIndex: "3000" }}
       >
-        <Offcanvas.Body className="p-xl-0 d-flex flex-column">
-          <div className="flex-grow-1 overflow-auto">
+        <Offcanvas.Body className="p-xl-0 d-flex flex-column h-100">
+          <div className="h-100">
             <CartHeader
               isOpen={showCart}
               onClose={() => {

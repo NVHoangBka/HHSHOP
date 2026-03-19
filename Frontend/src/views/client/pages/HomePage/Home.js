@@ -156,10 +156,7 @@ const Home = ({
             <div className="product-flashsale-list flex-nowrap row overflow-auto overflow-md-visible p-3 justify-content-lg-center">
               {flashSaleProducts.length > 0 ? (
                 flashSaleProducts.slice(0, 6).map((product, index) => (
-                  <div
-                    className="col-6 col-sm-4 col-md-4 col-xl-2 col-lg-3"
-                    key={index}
-                  >
+                  <div className="col-xl-2 col-lg-3 col-md-4 col-6" key={index}>
                     <ProductItem
                       key={product.id}
                       product={product}

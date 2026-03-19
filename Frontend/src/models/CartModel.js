@@ -2,51 +2,87 @@
 
 export class CartItem {
   constructor(data) {
+    // productId: string ID (từ localStorage hoặc API)
     this.productId = data.productId?._id || data.productId;
     this.variantValue = data.variantValue || "default";
     this.quantity = Number(data.quantity) || 1;
 
-    // Thông tin sản phẩm (sau khi populate từ server)
-
+    // ==========================================
+    // CASE 1: productId là object (sau populate từ server)
+    // ==========================================
     if (data.productId && typeof data.productId === "object") {
       const product = data.productId;
-      this.product = product;
-      this.name = product.name?.vi || product.name || "Sản phẩm";
-      this.slug = product.slug?.vi || product.slug || "";
-      this.image = product.image || "";
+      this.fromProduct(product, this.variantValue);
+      return;
+    }
 
-      // Xác định giá, ảnh, stock theo variantValue
-      this.selectedVariant = null;
-      this.displayPrice = 0;
-      this.displayImage = this.image;
-      this.stock = 0;
+    // ==========================================
+    // CASE 2: productData được truyền riêng (khi addItem offline)
+    // ==========================================
+    if (data.productData) {
+      this.fromProduct(data.productData, this.variantValue);
+      return;
+    }
 
-      if (product.variants?.length > 0) {
-        this.selectedVariant = product.variants.find(
-          (v) => v.value === this.variantValue,
-        );
-        if (this.selectedVariant) {
-          this.displayPrice =
-            this.selectedVariant.discountPrice ||
-            this.selectedVariant.price ||
-            0;
-          this.displayImage = this.selectedVariant.image || this.image;
-          this.stock = this.selectedVariant.stock || 0;
-        }
-      } else {
-        this.displayPrice = product.discountPrice || product.price || 0;
-        this.stock = product.totalStock || 0;
+    // ==========================================
+    // CASE 3: Load từ localStorage (đã lưu displayInfo trước đó)
+    // ==========================================
+    this.name = this._normalizeTranslatable(data.name, "Sản phẩm");
+    this.slug = this._normalizeTranslatable(data.slug);
+    this.image = data.image || "";
+    this.displayPrice = data.displayPrice || 0;
+    this.displayImage = data.displayImage || data.image || "";
+    this.stock = data.stock || 0;
+    this.selectedVariant = null;
+  }
+
+  // Helper: populate từ Product object
+  fromProduct(product, variantValue) {
+    this.name = this._normalizeTranslatable(product.name, "Sản phẩm");
+    this.slug = this._normalizeTranslatable(product.slug);
+    this.image = product.image || "";
+    this.selectedVariant = null;
+    this.displayPrice = 0;
+    this.displayImage = this.image;
+    this.stock = 0;
+
+    if (product.variants?.length > 0) {
+      this.selectedVariant = product.variants.find(
+        (v) => v.value === this.variantValue,
+      );
+      if (this.selectedVariant) {
+        this.displayPrice =
+          this.selectedVariant.discountPrice || this.selectedVariant.price || 0;
+        this.displayImage = this.selectedVariant.image || this.image;
+        this.stock = this.selectedVariant.stock || 0;
       }
     } else {
-      // Item từ localStorage (chưa populate) — chỉ có giá trị cơ bản
-      this.name = data.name || "Sản phẩm";
-      this.slug = data.slug || "";
-      this.image = data.image || "";
-      this.displayPrice =
-        data.displayPrice || data.discountPrice || data.price || 0;
-      this.displayImage = data.displayImage || data.image || "";
-      this.stock = data.stock || 0;
+      this.displayPrice = product.discountPrice || product.price || 0;
+      this.stock = product.totalStock || 0;
     }
+  }
+
+  _normalizeTranslatable(value, fallback = "") {
+    if (!value) return { vi: fallback, en: "", cz: "" };
+    if (typeof value === "string") return { vi: value, en: "", cz: "" };
+    if (typeof value === "object") {
+      return {
+        vi: value.vi || fallback,
+        en: value.en || "",
+        cz: value.cz || "",
+      };
+    }
+    return { vi: fallback, en: "", cz: "" };
+  }
+
+  // Lấy tên theo ngôn ngữ
+  getName(lang = "vi") {
+    return this.name?.[lang] || this.name?.vi || "Sản phẩm";
+  }
+
+  // Lấy slug theo ngôn ngữ
+  getSlug(lang = "vi") {
+    return this.slug?.[lang] || this.slug?.vi || "";
   }
 
   get subtotal() {
@@ -88,8 +124,10 @@ export class CartModel {
       variantValue: item.variantValue,
       quantity: item.quantity,
       name: item.name,
-      image: item.displayImage,
+      slug: item.slug,
+      image: item.image,
       displayPrice: item.displayPrice,
+      displayImage: item.displayImage,
       stock: item.stock,
     }));
   }

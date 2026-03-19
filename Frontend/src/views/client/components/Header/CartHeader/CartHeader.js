@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -58,6 +58,7 @@ const CartHeader = ({ onClose, cartController, cart, onCartChange }) => {
         productId,
         variantValue,
       );
+
       onCartChange(updatedCart);
     } catch (err) {
       console.error("handleRemove error:", err);
@@ -83,12 +84,6 @@ const CartHeader = ({ onClose, cartController, cart, onCartChange }) => {
 
   const toggleShowVocher = () => {
     setShowVocher(!showVocher);
-  };
-
-  const productName = (product) => {
-    return (
-      product.name?.[currentLanguage] || product.name?.vi || "Chưa đặt tên"
-    );
   };
 
   return (
@@ -132,118 +127,117 @@ const CartHeader = ({ onClose, cartController, cart, onCartChange }) => {
               <div className="cart-top pt-1 overflow-y-auto ">
                 <div className="cart-table">
                   <div className="cart-items">
-                    {cartItems.map((item, index) =>
-                      // <div
-                      //   key={index}
-                      //   className="cart-item py-xl-3 py-2 border-bottom"
-                      // >
-                      //   <div className="cart-product-col d-flex justify-content-between align-items-start">
-                      //     <div className="d-flex">
-                      //       <Link
-                      //         className="cart-item__image"
-                      //         to={`/products/slug/${getTranslated(item.slug) || item.slug}`}
-                      //         title={productName(item)}
-                      //       >
-                      //         <img
-                      //           src={
-                      //             item.displayImage ||
-                      //             item.image ||
-                      //             "https://via.placeholder.com/60"
-                      //           }
-                      //           className="me-xl-2 rounded"
-                      //           alt={productName(item)}
-                      //           style={{
-                      //             width: "60px",
-                      //             height: "60px",
-                      //             objectFit: "cover",
-                      //           }}
-                      //         />
-                      //       </Link>
-                      //       <div className="ms-md-2">
-                      //         <p className="cart-item__name mb-0 fw-semibold small">
-                      //           <Link
-                      //             to={`/products/slug/${getTranslated(item.slug)}`}
-                      //             title={productName(item)}
-                      //             className="link text-decoration-none text-dark"
-                      //           >
-                      //             {productName(item)}
-                      //           </Link>
-                      //         </p>
-                      //         {item.variantValue &&
-                      //           item.variantValue !== "default" && (
-                      //             <span className="cart-item__variant text-muted fs-7">
-                      //               {item.variantValue}
-                      //             </span>
-                      //           )}
-                      //       </div>
-                      //     </div>
-                      //     <button
-                      //       className="btn btn-sm px-xl-2 rounded-circle text-muted"
-                      //       onClick={() =>
-                      //         handleRemove(item.productId, item.variantValue)
-                      //       }
-                      //     >
-                      //       <i className="bi bi-x-lg"></i>
-                      //     </button>
-                      //   </div>
+                    {cartItems.map((item, index) => (
+                      <div
+                        key={index}
+                        className="cart-item py-xl-3 py-2 border-bottom"
+                      >
+                        <div className="cart-product-col d-flex justify-content-between align-items-start">
+                          <div className="d-flex">
+                            <Link
+                              className="cart-item__image"
+                              to={`/products/slug/${getTranslated(item.slug) || item.slug}`}
+                              title={item.getName(currentLanguage)}
+                            >
+                              <img
+                                src={
+                                  item.displayImage ||
+                                  item.image ||
+                                  "https://via.placeholder.com/60"
+                                }
+                                className="me-2 rounded"
+                                alt={item.getName(currentLanguage)}
+                                style={{
+                                  width: "60px",
+                                  height: "60px",
+                                  objectFit: "cover",
+                                }}
+                              />
+                            </Link>
+                            <div className="ms-2">
+                              <p className="cart-item__name mb-0 fw-semibold small">
+                                <Link
+                                  to={`/products/slug/${getTranslated(item.slug)}`}
+                                  title={item.getName(currentLanguage)}
+                                  className="link text-decoration-none text-dark"
+                                >
+                                  {item.getName(currentLanguage)}
+                                </Link>
+                              </p>
+                              {item.variantValue &&
+                                item.variantValue !== "default" && (
+                                  <span className="cart-item__variant text-muted fs-7">
+                                    {item.variantValue}
+                                  </span>
+                                )}
+                            </div>
+                          </div>
+                          <button
+                            className="btn btn-sm px-xl-2 rounded-circle text-muted"
+                            onClick={() =>
+                              handleRemove(item.productId, item.variantValue)
+                            }
+                          >
+                            <i className="bi bi-x-lg"></i>
+                          </button>
+                        </div>
 
-                      //   <div className="px-xl-3 px-3 ms-xl-5 ms-5 d-flex justify-content-between cart-quantity-col">
-                      //     <div className="cart-unit-price-col">
-                      //       <div className="price text-danger fw-bold">
-                      //         {item.subtotal.toLocaleString("vi-VN")}₫
-                      //       </div>
-                      //     </div>
-                      //     <div
-                      //       className="input-group custom-number-input cart-item-quantity d-flex border rounded row"
-                      //       style={{ maxWidth: "100px", height: "28px" }}
-                      //     >
-                      //       <button
-                      //         type="button"
-                      //         name="minus"
-                      //         className="col-3 d-flex justify-content-center align-items-center btn-outline-secondary border-0"
-                      //         onClick={() =>
-                      //           handleDecrease(
-                      //             item.productId,
-                      //             item.variantValue,
-                      //           )
-                      //         }
-                      //       >
-                      //         <i className="bi bi-dash"></i>
-                      //       </button>
-                      //       <input
-                      //         type="number"
-                      //         className="form-quantity col-6 text-center no-spinner border-0"
-                      //         name="Lines"
-                      //         data-line-index="1"
-                      //         value={item.quantity}
-                      //         min="1"
-                      //         readOnly
-                      //       />
-                      //       <button
-                      //         type="button"
-                      //         name="plus"
-                      //         className="col-3 d-flex justify-content-center align-items-center btn-outline-secondary border-0"
-                      //         onClick={() =>
-                      //           handleIncrease(
-                      //             item.productId,
-                      //             item.variantValue,
-                      //           )
-                      //         }
-                      //       >
-                      //         <i className="bi bi-plus"></i>
-                      //       </button>
-                      //     </div>
-                      //   </div>
-                      // </div>
-                      console.log(item),
-                    )}
+                        <div className="px-4 ms-5 d-flex justify-content-between cart-quantity-col">
+                          <div className="cart-unit-price-col">
+                            <div className="price text-danger fw-bold">
+                              {item.subtotal.toLocaleString("vi-VN")}₫
+                            </div>
+                          </div>
+                          <div
+                            className="input-group custom-number-input cart-item-quantity d-flex border rounded row"
+                            style={{ maxWidth: "100px", height: "28px" }}
+                          >
+                            <button
+                              type="button"
+                              name="minus"
+                              className="col-3 d-flex justify-content-center align-items-center btn-outline-secondary border-0"
+                              onClick={() =>
+                                handleDecrease(
+                                  item.productId,
+                                  item.variantValue,
+                                )
+                              }
+                            >
+                              <i className="bi bi-dash"></i>
+                            </button>
+                            <input
+                              type="number"
+                              className="form-quantity col-6 text-center no-spinner border-0"
+                              name="Lines"
+                              data-line-index="1"
+                              value={item.quantity}
+                              min="1"
+                              readOnly
+                            />
+                            <button
+                              type="button"
+                              name="plus"
+                              className="col-3 d-flex justify-content-center align-items-center btn-outline-secondary border-0"
+                              onClick={() =>
+                                handleIncrease(
+                                  item.productId,
+                                  item.variantValue,
+                                )
+                              }
+                            >
+                              <i className="bi bi-plus"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
-              <div className="cart-bottom pt-xl-4 pt-4">
+              <div className="cart-bottom pt-xl-4 pt-3">
                 <div className="cart-summary">
                   <div className="cart-summary-info">
-                    <div className="cart-opener-group row align-items-center mb-3">
+                    <div className="cart-opener-group row align-items-center mb-md-3 mb-2">
                       {/* Xuất hóa đơn */}
                       <div className="cart-opener-item col-3">
                         <div
@@ -549,7 +543,7 @@ const CartHeader = ({ onClose, cartController, cart, onCartChange }) => {
                     </div>
 
                     <div className="border-top">
-                      <div className="cart-total py-xl-3 py-md-2 d-flex align-items-start justify-content-between w-100 ">
+                      <div className="cart-total py-lg-3 py-2 d-flex align-items-start justify-content-between w-100 ">
                         <p className="fw-semibold text-black text-uppercase">
                           {t("cart.total")}
                         </p>

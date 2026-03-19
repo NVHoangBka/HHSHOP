@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import QuickAddModal from "../../components/QuickAddModal";
 
 const ProductItem = ({ product, addToCart }) => {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ const ProductItem = ({ product, addToCart }) => {
     return obj?.[currentLanguage] || obj?.vi || obj?.en || obj?.cz || fallback;
   };
 
+  const [showModal, setShowModal] = useState(false);
   if (!product) {
     return (
       <div className="product-item p-3 border mx-2">
@@ -23,6 +25,14 @@ const ProductItem = ({ product, addToCart }) => {
   const { name, image, price, discountPrice, slug } = product;
 
   const ratingAverage = product.ratingAverage || 0;
+  const hasVariants = product.variants?.length > 0;
+
+  //Tính tổng tồn kho
+  const availableStock = hasVariants
+    ? product.variants?.reduce((sum, v) => sum + (v.stock || 0), 0)
+    : product.totalStock || 0;
+
+  const isOutOfStock = availableStock <= 0;
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -49,46 +59,71 @@ const ProductItem = ({ product, addToCart }) => {
     e.stopPropagation();
     if (!product.id) return;
 
-    const defaultVariant = product.variants?.[0]?.value || "default";
-    addToCart(product.id, defaultVariant, 1);
+    if (hasVariants) {
+      setShowModal(true);
+    } else {
+      addToCart(product.id, "default", 1, product);
+    }
   };
 
   return (
-    <div
-      className="product-item w-100 p-xl-3 p-lg-3 p-md-2 p-sm-1 p-2 border mx-xl-2 mx-lg-2 mx-1 bg-white h-100 rounded-4 cursor-pointer hover"
-      onClick={handleShowProductDetail}
-    >
-      <img
-        src={image}
-        className="img-fluid rounded-start w-100"
-        alt={getTranslated(name)}
-        style={{ height: "158px" }}
-      />
-      <p className="mt-xl-3 mt-lg-3 mt-md-2 mt-sm-1 mt-1 line-clamp-2 fs-body fw-semibold text-hover fixed-two-lines">
-        {getTranslated(name)}
-      </p>
-      <div className="more d-flex justify-content-between mx-xl-1 mx-lg-1 mx-md-1 mx-sm-1 mx-1 align-items-center">
-        <div className="price">
-          <p className="price-current m-xl-0 text-danger fw-bold">
-            {formatPrice(discountPrice || price)}
-          </p>
-          {discountPrice && (
-            <p className="price-old text-decoration-line-through m-0">
-              {formatPrice(price)}
+    <>
+      <div
+        className="product-item w-100 p-lg-3 p-md-2 p-2 border mx-lg-2 mx-1 bg-white h-100 rounded-4 cursor-pointer hover"
+        onClick={handleShowProductDetail}
+      >
+        <img
+          src={image}
+          className="img-fluid rounded-start w-100"
+          alt={getTranslated(name)}
+          style={{ height: "158px" }}
+        />
+        <p className="mt-lg-3 mt-md-2 mt-1 line-clamp-2 fs-body fw-semibold text-hover fixed-two-lines">
+          {getTranslated(name)}
+        </p>
+        <div className="more d-flex line-clamp-2 justify-content-between mx-1">
+          <div className="price">
+            <p className="price-current m-xl-0 text-danger fw-bold">
+              {formatPrice(discountPrice || price)}
             </p>
+            {discountPrice && (
+              <p className="price-old text-decoration-line-through m-0">
+                {formatPrice(price)}
+              </p>
+            )}
+          </div>
+
+          {isOutOfStock ? (
+            <button
+              className="btn btn-sm text-danger fw-bold border rounded-pill px-2 py-1"
+              style={{ fontSize: "11px", cursor: "not-allowed" }}
+              disabled
+              onClick={(e) => e.stopPropagation()}
+            >
+              {t("product.buttons.outOfStock") || "Hết hàng"}
+            </button>
+          ) : (
+            <button
+              className="text-danger border px-xl-2 py-xl-1 px-lg-2 py-lg-1 px-md-1 px-1 rounded-circle bg-warning-subtle hover"
+              onClick={handleAddToCart}
+              aria-label={`Add ${getTranslated(name)} to cart`}
+            >
+              <i className="bi bi-cart4 fs-4"></i>
+            </button>
           )}
         </div>
-        <button
-          className="text-danger border px-xl-2 py-xl-1 px-lg-2 py-lg-1 px-md-1 px-1 rounded-circle bg-warning-subtle hover"
-          onClick={handleAddToCart}
-          aria-label={`Add ${getTranslated(name)} to cart`}
-        >
-          <i className="bi bi-cart4 fs-4"></i>
-        </button>
+
+        <div className="rate">{renderStars(ratingAverage)}</div>
       </div>
 
-      <div className="rate">{renderStars(ratingAverage)}</div>
-    </div>
+      {showModal && (
+        <QuickAddModal
+          product={product}
+          addToCart={addToCart}
+          onClose={() => setShowModal(false)}
+        />
+      )}
+    </>
   );
 };
 

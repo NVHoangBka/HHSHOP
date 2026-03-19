@@ -61,12 +61,14 @@ const AppClient = () => {
     productId,
     variantValue = "default",
     quantity = 1,
+    productData = null,
   ) => {
     try {
       const updatedCart = await cartController.addToCart(
         productId,
         variantValue,
         quantity,
+        productData,
       );
       setCart(updatedCart);
       showToast("Đã thêm sản phẩm vào giỏ hàng", "success");
@@ -181,6 +183,7 @@ const AppClient = () => {
           onLogin={onLogin}
           onRegister={onRegister}
           onCartChange={onCartChange}
+          updateQuantity={updateQuantity}
           authController={authController}
           productController={productController}
           cartController={cartController}

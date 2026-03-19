@@ -54,7 +54,7 @@ const ProductDetail = ({ addToCart, productController }) => {
 
     const variantValue = selectedVariant?.value || "default";
 
-    addToCart(product.id, variantValue, quantity);
+    addToCart(product.id, variantValue, quantity, product);
   };
 
   const handleBuyNow = () => {
@@ -74,11 +74,11 @@ const ProductDetail = ({ addToCart, productController }) => {
         : product?.discountPrice || product?.price,
       cartImage: mainImage,
     };
-    // TRUYỀN RIÊNG DANH SÁCH CHỈ CÓ 1 MÓN NÀY → CHECKOUT SẼ ƯU TIÊN HIỂN THỊ
+
     navigate("/checkout", {
       state: {
-        checkoutItems: [buyNowItem], // ← Quan trọng: chỉ có món này
-        isQuickBuy: true, // ← Dấu hiệu để Checkout biết đang "Mua ngay"
+        checkoutItems: [buyNowItem],
+        isQuickBuy: true,
       },
     });
   };
