@@ -1,11 +1,11 @@
 // src/admin/pages/Products.jsx → FORM THÊM/SỬA SẢN PHẨM ĐỈNH CAO NHẤT 2025
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import tagController from "../../../controllers/TagController";
 import { useTranslation } from "react-i18next";
 import { formatPrice } from "../../../utils/format";
 
 const AdminProducts = ({ adminController }) => {
-  const [t] = useTranslation();
+  const { t } = useTranslation();
   const currentLanguage = localStorage.getItem("i18n_lang_admin") || "en";
 
   const [products, setProducts] = useState([]);
@@ -33,6 +33,8 @@ const AdminProducts = ({ adminController }) => {
   const [totalPages, setTotalPages] = useState(0);
   const [limit, setLimit] = useState(10); // backend mặc định 10
 
+  const objectUrlsRef = useRef([]);
+
   const [formData, setFormData] = useState({
     name: { vi: "", en: "", cz: "" },
     price: "",
@@ -59,13 +61,49 @@ const AdminProducts = ({ adminController }) => {
     variants: [],
   });
 
-  const pagination = {
-    page: currentPage,
-    limit,
-    search: searchTerm || undefined,
-  };
+  // ====================== LOAD DỮ LIỆU FILTER ======================
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [tagsRes, typesRes, categoriesRes, colorsRes, brandsRes] =
+          await Promise.all([
+            tagController.getAllTags(),
+            tagController.getAllTypes(),
+            adminController.getCategoriesAllAdmin(),
+            adminController.getColorsAllAdmin(),
+            adminController.getBrandsAllAdmin(),
+          ]);
 
-  const loadProducts = async () => {
+        if (tagsRes.success) {
+          const tagsProduct = tagsRes.tags.filter(
+            (tag) => tag.type === "product" || tag.type === "both",
+          );
+          setTagsProduct(tagsProduct);
+        }
+
+        if (typesRes.success) {
+          setTypes(typesRes.types);
+        }
+
+        if (categoriesRes.success) {
+          setCategories(categoriesRes.categories || []);
+        }
+        if (colorsRes.success) {
+          setColors(colorsRes.colors || []);
+        }
+        if (brandsRes.success) {
+          setBrands(brandsRes.brands || []);
+        }
+      } catch (error) {
+        console.error("Lỗi load dữ liệu:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // ====================== LOAD SẢN PHẨM ======================
+  const loadProducts = useCallback(async () => {
     try {
       setLoading(true);
       const result = await adminController.getProductsAllAdmin({
@@ -77,99 +115,25 @@ const AdminProducts = ({ adminController }) => {
         setProducts(result.products || []);
         setTotalProducts(result.paginationData?.totalProducts || 0);
         setTotalPages(result.paginationData?.totalPages || 0);
-        setCurrentPage(currentPage);
       }
     } catch (err) {
       showToast(t("admin.products.toast.errorLoadingProducts"), "danger");
     } finally {
       setLoading(false);
     }
-  };
-
-  const fetchTagsProduct = async () => {
-    try {
-      const result = await tagController.getAllTags();
-      if (result.success) {
-        const tags = result.tags;
-        const tagsProduct = tags.filter(
-          (tag) => tag.type === "product" || tag.type === "both",
-        );
-
-        setTagsProduct(tagsProduct);
-      }
-    } catch (error) {}
-  };
-
-  const fetchTypes = async () => {
-    try {
-      const result = await tagController.getAllTypes();
-      if (result.success) {
-        const types = result.types;
-
-        setTypes(types);
-      }
-    } catch (error) {}
-  };
-
-  const fetchCategories = async () => {
-    try {
-      const res = await adminController.getCategoriesAllAdmin();
-      if (res.success) {
-        setCategories(res.categories || []);
-      }
-    } catch (err) {
-      console.error("Lỗi load categories:", err);
-    }
-  };
-
-  const fetchColors = async () => {
-    try {
-      const res = await adminController.getColorsAllAdmin();
-      if (res.success) {
-        setColors(res.colors || []);
-      }
-    } catch (err) {
-      console.error("Lỗi load colors:", err);
-    }
-  };
-
-  const fetchBrands = async () => {
-    try {
-      const res = await adminController.getBrandsAllAdmin();
-
-      if (res.success) {
-        setBrands(res.brands || []);
-      }
-    } catch (error) {
-      console.error("Lỗi load brands:", error);
-    }
-  };
-
-  // Load lần đầu + khi search hoặc đổi trang
-  useEffect(() => {
-    setCurrentPage(1);
-    loadProducts();
-    fetchTagsProduct();
-    fetchTypes();
-    fetchCategories();
-    fetchColors();
-    fetchBrands();
-  }, [searchTerm]);
+  }, [searchTerm, currentPage]);
 
   useEffect(() => {
     loadProducts();
-    fetchTagsProduct();
-    fetchTypes();
-    fetchCategories();
-    fetchColors();
-    fetchBrands();
-  }, [currentPage]);
+  }, [loadProducts]);
 
+  // ====================== TOAST ======================
   const showToast = (msg, type = "success") => {
     setToast({ show: true, message: msg, type });
     setTimeout(() => setToast({ show: false, message: "", type: "" }), 3000);
   };
 
+  // ====================== PHÂN TRANG ======================
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages && page !== currentPage) {
       setCurrentPage(page);
@@ -177,10 +141,31 @@ const AdminProducts = ({ adminController }) => {
     }
   };
 
+  // === LỌC KHI BẤM ENTER ===
+  const handleSearchKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      setCurrentPage(1);
+      setSearchTerm(searchInput.trim());
+    }
+    if (e.key === "Escape") {
+      setSearchInput("");
+      setSearchTerm("");
+      setCurrentPage(1);
+    }
+  };
+
+  const clearSearch = () => {
+    setSearchInput("");
+    setSearchTerm("");
+  };
+
+  // ====================== MODAL ======================
   const openModal = (product = null) => {
     if (product) {
       setIsEditing(true);
       setCurrentId(product._id);
+
       // CHUYỂN ĐỔI GALLERY TỪ ARRAY → STRING (mỗi link 1 dòng)
       const galleryString = Array.isArray(product.gallery)
         ? product.gallery.join("\n")
@@ -260,6 +245,8 @@ const AdminProducts = ({ adminController }) => {
           ? product.highlightSections
           : [{ title: "", content: "", icon: "bi-star-fill", order: 0 }],
         variants: normalizedVariants,
+        imageFile: null,
+        galleryFiles: [],
       });
 
       loadAllSubCategories(selectedCategories);
@@ -294,6 +281,13 @@ const AdminProducts = ({ adminController }) => {
     setModalOpen(true);
   };
 
+  const closeModal = () => {
+    // Revoke tất cả object URLs khi đóng modal
+    objectUrlsRef.current.forEach((url) => URL.revokeObjectURL(url));
+    objectUrlsRef.current = [];
+    setModalOpen(false);
+  };
+
   // Load tất cả subCategories từ mảng category IDs đã chọn
   const loadAllSubCategories = async (catIds) => {
     if (!catIds || catIds.length === 0) {
@@ -326,6 +320,7 @@ const AdminProducts = ({ adminController }) => {
       : [...arr, value];
   };
 
+  // ====================== CRUD ======================
   const handleDelete = async (id) => {
     if (!window.confirm(t("admin.products.toast.confirmDelete"))) return;
     try {
@@ -341,44 +336,41 @@ const AdminProducts = ({ adminController }) => {
 
   const handleUploadSingle = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setFormData({ ...formData, imageFile: file });
-      // Preview local
-      const previewUrl = URL.createObjectURL(file);
-      setFormData((prev) => ({ ...prev, image: previewUrl }));
-    }
+    if (!file) return;
+
+    const previewUrl = URL.createObjectURL(file);
+    objectUrlsRef.current.push(previewUrl);
+    setFormData((prev) => ({ ...prev, imageFile: file, image: previewUrl }));
   };
-  // console.log(formData);
 
   const handleUploadMultiple = async (e) => {
     const files = Array.from(e.target.files);
-    if (files.length > 0) {
-      setFormData((prev) => ({
-        ...prev,
-        galleryFiles: [...prev.galleryFiles, ...files],
-      }));
-      // Preview local
-      const newPreviews = files.map((f) => URL.createObjectURL(f));
-      setFormData((prev) => ({
-        ...prev,
-        gallery: prev.gallery + "\n" + newPreviews.join("\n"),
-      }));
-    }
+    if (files.length === 0) return;
+
+    const newPreviews = files.map((f) => {
+      const url = URL.createObjectURL(f);
+      objectUrlsRef.current.push(url);
+      return url;
+    });
+
+    setFormData((prev) => ({
+      ...prev,
+      galleryFiles: [...prev.galleryFiles, ...files],
+      gallery: prev.gallery
+        ? prev.gallery + "\n" + newPreviews.join("\n")
+        : newPreviews.join("\n"),
+    }));
   };
 
   const handleUploadVariantImage = async (e, index) => {
     const file = e.target.files[0];
     if (!file) return;
-    setLoading(true);
-    try {
-      const url = await adminController.uploadSingle(file);
-      updateVariant(index, "image", url);
-      showToast(t("admin.products.toast.uploadSuccess"), "success");
-    } catch (err) {
-      showToast(t("admin.products.toast.uploadFailed"), "danger");
-    } finally {
-      setLoading(false);
-    }
+    const previewUrl = URL.createObjectURL(file);
+    objectUrlsRef.current.push(previewUrl);
+
+    // Lưu cả file lẫn preview vào variant
+    updateVariant(index, "imageFile", file); // file để upload sau
+    updateVariant(index, "image", previewUrl); // preview để hiển thị
   };
 
   const updateVariant = (index, field, value) => {
@@ -399,21 +391,12 @@ const AdminProducts = ({ adminController }) => {
     }));
   };
 
-  // === LỌC KHI BẤM ENTER ===
-  const handleSearchKeyDown = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      setSearchTerm(searchInput.trim());
-    }
-    if (e.key === "Escape") {
-      setSearchInput("");
-      setSearchTerm("");
-    }
-  };
-
-  const clearSearch = () => {
-    setSearchInput("");
-    setSearchTerm("");
+  const handleCategoryChange = async (catId) => {
+    setFormData((prev) => {
+      const updated = toggleArray(prev.categories, catId);
+      loadAllSubCategories(updated);
+      return { ...prev, categories: updated, subCategories: [] };
+    });
   };
 
   const getTranslated = (obj, fallback = "") => {
@@ -441,6 +424,27 @@ const AdminProducts = ({ adminController }) => {
       );
       galleryArray = [...galleryArray, ...newUrls];
     }
+
+    const variants = await Promise.all(
+      (formData.variants || []).map(async (v) => {
+        let imageUrl = v.image;
+
+        if (v.imageFile) {
+          // Chỉ upload lên server khi submit
+          imageUrl = await adminController.uploadSingle(v.imageFile);
+        }
+
+        return {
+          value: v.value,
+          price: Number(v.price),
+          discountPrice: v.discountPrice ? Number(v.discountPrice) : undefined,
+          stock: Number(v.stock),
+          image: imageUrl,
+          sku: v.sku || "",
+        };
+      }),
+    );
+
     const submitData = {
       ...formData,
       price: Number(formData.price),
@@ -460,25 +464,13 @@ const AdminProducts = ({ adminController }) => {
       colors: formData.colors,
       inStock: Boolean(formData.inStock),
       flashSale: Boolean(formData.flashSale),
-      variants:
-        formData.variants?.map((v) => ({
-          ...v,
-          price: Number(v.price),
-          discountPrice: v.discountPrice ? Number(v.discountPrice) : undefined,
-          stock: Number(v.stock),
-        })) || [],
+      variants,
     };
 
     try {
-      let result;
-      if (isEditing) {
-        result = await adminController.updateProductAdmin(
-          currentId,
-          submitData,
-        );
-      } else {
-        result = await adminController.createProductAdmin(submitData);
-      }
+      const result = isEditing
+        ? await adminController.updateProductAdmin(currentId, submitData)
+        : await adminController.createProductAdmin(submitData);
 
       if (result.success) {
         showToast(
@@ -487,7 +479,7 @@ const AdminProducts = ({ adminController }) => {
             : t("admin.products.toast.addSuccess"),
           "success",
         );
-        setModalOpen(false);
+        closeModal();
         // Reload danh sách
         loadProducts();
       }
@@ -496,25 +488,7 @@ const AdminProducts = ({ adminController }) => {
     }
   };
 
-  // Lọc chỉ theo tên sản phẩm (không phân biệt hoa thường)
-  const filteredProducts = products.filter((p) => {
-    if (!searchTerm) return true;
-    const searchLower = searchTerm.toLowerCase();
-    return getTranslated(p.name, "").toLowerCase().includes(searchLower);
-  });
-
-  if (loading) {
-    return (
-      <div className="text-center py-5">
-        <div
-          className="spinner-border text-primary"
-          style={{ width: "3rem", height: "3rem" }}
-        ></div>
-        <p className="mt-3 fs-5">{t("admin.products.loading")}</p>
-      </div>
-    );
-  }
-
+  // ====================== DỊCH TỰ ĐỘNG ======================
   const translateText = async (text, lang) => {
     if (!text) return "";
     try {
@@ -555,13 +529,24 @@ const AdminProducts = ({ adminController }) => {
     showToast("Đã dịch xong! Kiểm tra và chỉnh sửa nếu cần.", "success");
   };
 
-  const handleCategoryChange = async (catId) => {
-    setFormData((prev) => {
-      const updated = toggleArray(prev.categories, catId);
-      loadAllSubCategories(updated);
-      return { ...prev, categories: updated, subCategories: [] };
-    });
-  };
+  // Lọc chỉ theo tên sản phẩm (không phân biệt hoa thường)
+  const filteredProducts = products.filter((p) => {
+    if (!searchTerm) return true;
+    const searchLower = searchTerm.toLowerCase();
+    return getTranslated(p.name, "").toLowerCase().includes(searchLower);
+  });
+
+  if (loading) {
+    return (
+      <div className="text-center py-5">
+        <div
+          className="spinner-border text-primary"
+          style={{ width: "3rem", height: "3rem" }}
+        ></div>
+        <p className="mt-3 fs-5">{t("admin.products.loading")}</p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -622,7 +607,7 @@ const AdminProducts = ({ adminController }) => {
           </div>
         </div>
 
-        {/* Table */}
+        {/* Bảng sản phẩm */}
         <div className="card shadow border-0">
           <div className="card-body p-0">
             <div className="table-responsive">
@@ -688,7 +673,6 @@ const AdminProducts = ({ adminController }) => {
                               </span>
                               {p.variants.length > 1 && (
                                 <small className="d-block text-muted">
-                                  →{" "}
                                   {formatPrice(
                                     Math.min(
                                       ...p.variants.map(
@@ -799,10 +783,7 @@ const AdminProducts = ({ adminController }) => {
       {/* MODAL SIÊU ĐẸP – HIỆN GIỮA MÀN HÌNH */}
       {modalOpen && (
         <>
-          <div
-            className="modal-backdrop fade show"
-            onClick={() => setModalOpen(false)}
-          ></div>
+          <div className="modal-backdrop fade show" onClick={closeModal}></div>
           <div
             className="modal show d-block"
             style={{ background: "rgba(0,0,0,0.5)" }}
@@ -817,7 +798,7 @@ const AdminProducts = ({ adminController }) => {
                   </h5>
                   <button
                     className="btn-close btn-close-white"
-                    onClick={() => setModalOpen(false)}
+                    onClick={closeModal}
                   ></button>
                 </div>
 
@@ -860,6 +841,7 @@ const AdminProducts = ({ adminController }) => {
                       className="tab-content"
                       style={{ backgroundColor: "#ffffff" }}
                     >
+                      {/* TAB THÔNG TIN CƠ BẢN */}
                       <div
                         className="tab-pane fade show active"
                         id="basic"
@@ -1032,7 +1014,11 @@ const AdminProducts = ({ adminController }) => {
                                   type="button"
                                   className="btn btn-sm btn-outline-danger mt-2"
                                   onClick={() =>
-                                    setFormData({ ...formData, image: "" })
+                                    setFormData({
+                                      ...formData,
+                                      image: "",
+                                      imageFile: null,
+                                    })
                                   }
                                 >
                                   {t("admin.products.form.removeImage")}
@@ -1154,15 +1140,15 @@ const AdminProducts = ({ adminController }) => {
                             <textarea
                               className="form-control"
                               rows="5"
-                              value={formData.description}
+                              value={formData.description?.vi || ""}
                               onChange={(e) =>
-                                setFormData({
-                                  ...formData,
+                                setFormData((prev) => ({
+                                  ...prev,
                                   description: {
-                                    ...formData.description,
+                                    ...prev.description,
                                     vi: e.target.value,
                                   },
-                                })
+                                }))
                               }
                             />
                           </div>
@@ -1433,13 +1419,9 @@ const AdminProducts = ({ adminController }) => {
                           </div>
                         </div>
                       </div>
+
                       {/* TAB VARIANT */}
-                      <div
-                        className="tab-pane fade"
-                        id="variants"
-                        role="tabpanel"
-                        aria-labelledby="variants-tab"
-                      >
+                      <div className="tab-pane fade" id="variants">
                         <div className="mb-3">
                           <button
                             type="button"
@@ -1453,8 +1435,9 @@ const AdminProducts = ({ adminController }) => {
                                     value: "",
                                     price: "",
                                     discountPrice: "",
-                                    stock: 0,
                                     image: "",
+                                    imageFile: null,
+                                    stock: 0,
                                     sku: "",
                                   },
                                 ],
@@ -1464,9 +1447,9 @@ const AdminProducts = ({ adminController }) => {
                             + {t("admin.products.form.addClassification")}
                           </button>
                         </div>
-                        {formData.variants?.map((variant, idx) => (
+                        {formData.variants?.map((variant, index) => (
                           <div
-                            key={idx}
+                            key={index}
                             className="border rounded p-3 mb-3 bg-light"
                           >
                             <div className="row g-3">
@@ -1478,7 +1461,11 @@ const AdminProducts = ({ adminController }) => {
                                   className="form-control"
                                   value={variant.value || ""}
                                   onChange={(e) =>
-                                    updateVariant(idx, "value", e.target.value)
+                                    updateVariant(
+                                      index,
+                                      "value",
+                                      e.target.value,
+                                    )
                                   }
                                 />
                               </div>
@@ -1489,7 +1476,11 @@ const AdminProducts = ({ adminController }) => {
                                   className="form-control"
                                   value={variant.price}
                                   onChange={(e) =>
-                                    updateVariant(idx, "price", e.target.value)
+                                    updateVariant(
+                                      index,
+                                      "price",
+                                      e.target.value,
+                                    )
                                   }
                                 />
                               </div>
@@ -1503,7 +1494,7 @@ const AdminProducts = ({ adminController }) => {
                                   value={variant.discountPrice}
                                   onChange={(e) =>
                                     updateVariant(
-                                      idx,
+                                      index,
                                       "discountPrice",
                                       e.target.value,
                                     )
@@ -1518,7 +1509,7 @@ const AdminProducts = ({ adminController }) => {
                                   value={variant.stock}
                                   onChange={(e) =>
                                     updateVariant(
-                                      idx,
+                                      index,
                                       "stock",
                                       Number(e.target.value),
                                     )
@@ -1531,7 +1522,7 @@ const AdminProducts = ({ adminController }) => {
                                   type="file"
                                   className="form-control"
                                   onChange={(e) =>
-                                    handleUploadVariantImage(e, idx)
+                                    handleUploadVariantImage(e, index)
                                   }
                                 />
                               </div>
@@ -1539,7 +1530,7 @@ const AdminProducts = ({ adminController }) => {
                                 <button
                                   type="button"
                                   className="btn btn-danger btn-sm"
-                                  onClick={() => removeVariant(idx)}
+                                  onClick={() => removeVariant(index)}
                                 >
                                   X
                                 </button>
