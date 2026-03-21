@@ -5,12 +5,31 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 const AdminLogin = ({ onLoginAdmin }) => {
-  const [t] = useTranslation();
+  const [t, i18n] = useTranslation();
+
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    // Optional: lưu vào localStorage để nhớ lần sau
+    localStorage.setItem("i18n_lang_admin", lng);
+  };
+
+  const currentLang = i18n.language || "vi";
+
+  const languages = (i18n.options.supportedLngs || ["vi", "en", "cz"]).filter(
+    (lng) => lng !== "cimode",
+  );
+
+  const languageNames = {
+    vi: t("language.vi"),
+    en: t("language.en"),
+    cz: t("language.cz"),
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,10 +65,6 @@ const AdminLogin = ({ onLoginAdmin }) => {
             >
               {t("admin.login.title")}
             </h1>
-            <h4 className="text-dark fw-semibold">
-              {t("admin.login.description")}
-            </h4>
-            <p className="text-muted small">{t("admin.login.description")}</p>
           </div>
 
           <form onSubmit={handleSubmit}>
@@ -102,6 +117,30 @@ const AdminLogin = ({ onLoginAdmin }) => {
               )}
             </button>
           </form>
+        </div>
+
+        <div className="card-footer">
+          <div className="d-flex justify-content-center links">
+            {languages.map((language, index) => (
+              <div
+                key={index}
+                className={
+                  currentLang === language
+                    ? "py-xl-2 bg-secondary-subtle"
+                    : "py-xl-2"
+                }
+                onClick={() => {
+                  changeLanguage(language);
+                }}
+              >
+                <span
+                  className={`${currentLang === language ? "fw-bold" : ""} px-4`}
+                >
+                  {languageNames[language]}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
