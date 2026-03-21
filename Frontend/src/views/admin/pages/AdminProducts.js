@@ -24,18 +24,18 @@ const AdminProducts = ({ adminController }) => {
   const [currentId, setCurrentId] = useState(null);
 
   // TÌM KIẾM: CHỈ BẤM ENTER MỚI LỌC
-  const [searchInput, setSearchInput] = useState(""); // ô nhập liệu
-  const [searchTerm, setSearchTerm] = useState(""); // từ khoá tìm kiếm chính thức
+  const [searchInput, setSearchInput] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Phân trang
   const [currentPage, setCurrentPage] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [limit, setLimit] = useState(10); // backend mặc định 10
+  const [limit, setLimit] = useState(10);
 
   const objectUrlsRef = useRef([]);
 
-  const [formData, setFormData] = useState({
+  const emptyProduct = {
     name: { vi: "", en: "", cz: "" },
     price: "",
     discountPrice: "",
@@ -59,7 +59,9 @@ const AdminProducts = ({ adminController }) => {
       { title: "", content: "", icon: "bi-star-fill", order: 0 },
     ],
     variants: [],
-  });
+  };
+
+  const [formData, setFormData] = useState(emptyProduct);
 
   // ====================== LOAD DỮ LIỆU FILTER ======================
   useEffect(() => {
@@ -253,29 +255,7 @@ const AdminProducts = ({ adminController }) => {
     } else {
       setIsEditing(false);
       setCurrentId(null);
-      setFormData({
-        name: { vi: "", en: "", cz: "" },
-        price: "",
-        discountPrice: "",
-        image: "",
-        gallery: "",
-        shortDescription: "",
-        description: { vi: "", en: "", cz: "" },
-        categories: [],
-        subCategories: [],
-        types: [],
-        tags: [],
-        brand: "",
-        colors: [],
-        titles: [],
-        subTitles: [],
-        inStock: true,
-        flashSale: false,
-        highlightSections: [
-          { title: "", content: "", icon: "bi-star-fill", order: 0 },
-        ],
-        variants: [],
-      });
+      setFormData(emptyProduct);
       setSubCategories([]);
     }
     setModalOpen(true);
@@ -567,37 +547,37 @@ const AdminProducts = ({ adminController }) => {
         </div>
       )}
 
-      <div className="container-fluid py-4">
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <div>
-            <h2 className="fw-bold text-success text-uppercase">
-              {t("admin.products.title")}
-            </h2>
-          </div>
-          <div className="d-flex justify-content-between align-items-center">
-            <div
-              className="me-3 position-relative border rounded-pill py-1 bg-white py-2"
-              style={{ width: "300px" }}
-            >
+      <div className="container-fluid py-3">
+        <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-2 mb-3">
+          <h5 className="fw-bold text-success text-uppercase mb-0">
+            {t("admin.products.title")}
+          </h5>
+
+          <div className="d-flex align-items-center gap-2 w-100 w-sm-auto">
+            <div className="input-group flex-grow-1" style={{ maxWidth: 320 }}>
               <input
                 type="text"
-                className="input-group border-0 mx-1 px-3 fs-6 outline-0 no-focus"
+                className="form-control form-control-sm"
                 placeholder={t("admin.products.searchPlaceholder")}
                 value={searchInput}
-                style={{ maxWidth: "230px" }}
                 onChange={(e) => setSearchInput(e.target.value)}
                 onKeyDown={handleSearchKeyDown}
               />
-              <i className="bi bi-search position-absolute top-50 end-0 translate-middle fs-5"></i>
-
-              {searchInput && (
+              {searchInput ? (
                 <button
-                  type="button"
-                  className="btn-close position-absolute top-50 end-0 translate-middle-y py-0 px-3 me-4 fs-7"
+                  className="btn btn-outline-secondary btn-sm"
                   onClick={clearSearch}
-                ></button>
+                >
+                  <i className="bi bi-x" />
+                </button>
+              ) : (
+                <span className="input-group-text">
+                  <i className="bi bi-search" />
+                </span>
               )}
             </div>
+
+            {/* Add button */}
             <button
               className="btn btn-success shadow "
               onClick={() => openModal()}
@@ -612,15 +592,20 @@ const AdminProducts = ({ adminController }) => {
           <div className="card-body p-0">
             <div className="table-responsive">
               <table className="table table-hover mb-0 align-middle table-fixed">
-                <thead className="table-primary text-white">
+                <thead className="table-primary">
                   <tr>
                     <th className="text-center">
                       {t("admin.products.table.stt")}
                     </th>
-                    <th className="ps-4">{t("admin.products.table.image")}</th>
-                    <th className="col-6">{t("admin.products.table.info")}</th>
-                    <th>{t("admin.products.table.price")}</th>
-                    <th>{t("admin.products.table.stock")}</th>
+                    <th>{t("admin.products.table.image")}</th>
+                    <th>{t("admin.products.table.info")}</th>
+                    {/* Ẩn cột giá & tồn kho trên màn nhỏ */}
+                    <th className="d-none d-md-table-cell">
+                      {t("admin.products.table.price")}
+                    </th>
+                    <th className="d-none d-md-table-cell">
+                      {t("admin.products.table.stock")}
+                    </th>
                     <th className="text-center">
                       {t("admin.products.table.actions")}
                     </th>
@@ -629,10 +614,7 @@ const AdminProducts = ({ adminController }) => {
                 <tbody>
                   {filteredProducts.length === 0 ? (
                     <tr>
-                      <td
-                        colSpan="5"
-                        className="text-center py-5 text-muted fs-4"
-                      >
+                      <td colSpan="6" className="text-center py-5 text-muted">
                         {searchTerm
                           ? t("admin.products.noResults")
                           : t("admin.products.noProducts")}
@@ -641,96 +623,87 @@ const AdminProducts = ({ adminController }) => {
                   ) : (
                     filteredProducts.map((p, index) => (
                       <tr key={p._id}>
-                        <td className="fw-bold text-center">{index + 1}</td>
-                        <td className="ps-4">
+                        <td className="fw-bold text-center ps-3">
+                          {index + 1}
+                        </td>
+                        <td>
                           <img
                             src={p.image || "/placeholder.jpg"}
                             alt={getTranslated(p.name, "Chưa đặt tên")}
                             className="rounded"
                             style={{
-                              width: 70,
-                              height: 70,
+                              width: 56,
+                              height: 56,
                               objectFit: "cover",
                             }}
                             onError={(e) => (e.target.src = "/placeholder.jpg")}
                           />
                         </td>
                         <td>
-                          <p className="mb-1">
-                            <b>{t("admin.products.table.name")}: </b>
+                          <p className="mb-0 fw-semibold small">
                             {getTranslated(p.name, "Chưa đặt tên")}
                           </p>
-                          <span className="">
-                            <b>{t("admin.products.table.description")}: </b>
-                            {getTranslated(p.description, "")}
-                          </span>
+                          {/* Hiện giá + tồn kho ngay trong cột info trên mobile */}
+                          <div className="d-md-none mt-1">
+                            <span className="text-danger fw-bold small me-2">
+                              {formatPrice(p.discountPrice || p.price)}
+                            </span>
+                            <span
+                              className={`badge ${(p.totalStock || p.stock || 0) > 10 ? "bg-success" : (p.totalStock || p.stock || 0) > 0 ? "bg-warning" : "bg-danger"}`}
+                            >
+                              {p.totalStock || p.stock || 0}
+                            </span>
+                          </div>
                         </td>
-                        <td>
-                          {p.variants && p.variants.length > 0 ? (
-                            <div>
-                              <span className="text-danger fw-bold fs-5">
+                        <td className="d-none d-md-table-cell">
+                          {p.variants?.length > 0 ? (
+                            <>
+                              <span className="text-danger fw-bold">
                                 {formatPrice(p.price)}
                               </span>
-                              {p.variants.length > 1 && (
-                                <small className="d-block text-muted">
-                                  {formatPrice(
-                                    Math.min(
-                                      ...p.variants.map(
-                                        (v) => v.discountPrice || v.price,
-                                      ),
-                                    ),
-                                  )}
-                                  ({p.variants.length} loại)
-                                </small>
-                              )}
-                              <span className="badge bg-info text-dark ms-2">
-                                {p.variants.length} phân loại
+                              <span className="badge bg-info text-dark ms-1 small">
+                                {p.variants.length} loại
                               </span>
-                            </div>
+                            </>
                           ) : (
-                            <div>
-                              <del className="text-muted small">
-                                {formatPrice(p.price)}
-                              </del>
-                              <br />
-                              <span className="text-danger fw-bold fs-5">
-                                {formatPrice(p.discountPrice) ||
-                                  formatPrice(p.price)}
+                            <>
+                              {p.discountPrice && (
+                                <del className="text-muted small d-block">
+                                  {formatPrice(p.price)}
+                                </del>
+                              )}
+                              <span className="text-danger fw-bold">
+                                {formatPrice(p.discountPrice || p.price)}
                               </span>
-                            </div>
+                            </>
                           )}
                         </td>
-                        <td>
+                        <td className="d-none d-md-table-cell">
                           <span
-                            className={`badge ${
-                              (p.totalStock || p.stock || 0) > 10
-                                ? "bg-success"
-                                : (p.totalStock || p.stock || 0) > 0
-                                  ? "bg-warning"
-                                  : "bg-danger"
-                            } fs-6`}
+                            className={`badge ${(p.totalStock || p.stock || 0) > 10 ? "bg-success" : (p.totalStock || p.stock || 0) > 0 ? "bg-warning text-dark" : "bg-danger"}`}
                           >
                             {p.totalStock || p.stock || 0}{" "}
                             {t("admin.products.table.unit")}
                           </span>
-                          {p.variants?.length > 0 && (
-                            <small className="d-block text-muted mt-1">
-                              Tổng từ {p.variants.length} loại
-                            </small>
-                          )}
                         </td>
-                        <td className="text-center">
+                        <td className="text-center text-nowrap">
                           <button
-                            className="btn btn-sm btn-success me-2"
+                            className="btn btn-sm btn-outline-success me-1"
                             onClick={() => openModal(p)}
                           >
-                            {t("btn.edit")}
+                            <i className="bi bi-pencil d-md-none" />
+                            <span className="d-none d-md-inline">
+                              {t("btn.edit")}
+                            </span>
                           </button>
                           <button
-                            className="btn btn-sm btn-danger"
+                            className="btn btn-sm btn-outline-danger"
                             onClick={() => handleDelete(p._id)}
                           >
-                            {t("btn.delete")}
+                            <i className="bi bi-trash d-md-none" />
+                            <span className="d-none d-md-inline">
+                              {t("btn.delete")}
+                            </span>
                           </button>
                         </td>
                       </tr>
@@ -744,38 +717,42 @@ const AdminProducts = ({ adminController }) => {
 
         {/* PHÂN TRANG ĐẸP */}
         {totalPages > 1 && (
-          <nav aria-label="Page navigation" className="mt-5">
-            <div className="pagination d-flex justify-content-center">
-              <button
-                className="btn bg-white mx-1"
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
+          <nav className="mt-4 d-flex justify-content-center">
+            <ul className="pagination pagination-sm flex-wrap mb-0">
+              <li
+                className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
               >
-                <i className="bi bi-chevron-left"></i>
-              </button>
-
-              {[...Array(totalPages)].map((_, index) => (
                 <button
-                  key={index}
-                  onClick={() => handlePageChange(index + 1)}
-                  className={`btn bg-white mx-1 ${
-                    currentPage === index + 1
-                      ? "btn-outline-danger text-danger"
-                      : "text-black"
-                  }`}
+                  className="page-link"
+                  onClick={() => handlePageChange(currentPage - 1)}
                 >
-                  {index + 1}
+                  <i className="bi bi-chevron-left" />
                 </button>
+              </li>
+              {[...Array(totalPages)].map((_, i) => (
+                <li
+                  key={i}
+                  className={`page-item ${currentPage === i + 1 ? "active" : ""}`}
+                >
+                  <button
+                    className="page-link"
+                    onClick={() => handlePageChange(i + 1)}
+                  >
+                    {i + 1}
+                  </button>
+                </li>
               ))}
-
-              <button
-                className="btn bg-white mx-1"
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
+              <li
+                className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}
               >
-                <i className="bi bi-chevron-right"></i>
-              </button>
-            </div>
+                <button
+                  className="page-link"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                >
+                  <i className="bi bi-chevron-right" />
+                </button>
+              </li>
+            </ul>
           </nav>
         )}
       </div>
@@ -784,97 +761,81 @@ const AdminProducts = ({ adminController }) => {
       {modalOpen && (
         <>
           <div className="modal-backdrop fade show" onClick={closeModal}></div>
-          <div
-            className="modal show d-block"
-            style={{ background: "rgba(0,0,0,0.5)" }}
-          >
-            <div className="modal-dialog modal-dialog-centered modal-xl">
+          <div className="modal show d-block" style={{ overflowY: "auto" }}>
+            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
               <div className="modal-content border-0 shadow-lg">
-                <div className="modal-header bg-success text-white">
-                  <h5 className="modal-title fw-bold">
+                <div className="modal-header bg-success text-white py-2">
+                  <h6 className="modal-title fw-bold mb-0">
                     {isEditing
                       ? t("admin.products.editProduct")
                       : t("admin.products.addProduct")}
-                  </h5>
+                  </h6>
                   <button
                     className="btn-close btn-close-white"
                     onClick={closeModal}
-                  ></button>
+                  />
                 </div>
 
                 <form onSubmit={handleSubmit}>
-                  <div
-                    className="modal-body px-5"
-                    style={{ maxHeight: "70vh", overflowY: "auto" }}
-                  >
-                    <ul className="nav nav-tabs mb-4" role="tablist">
-                      <li className="nav-item" role="presentation">
+                  <div className="modal-body px-3 px-md-4">
+                    {/* Tabs */}
+                    <ul className="nav nav-tabs mb-3" role="tablist">
+                      <li className="nav-item">
                         <button
-                          className="nav-link btn active"
-                          id="basic-tab"
+                          className="nav-link active"
                           data-bs-toggle="tab"
                           data-bs-target="#basic"
                           type="button"
                           role="tab"
-                          aria-controls="basic"
-                          aria-selected="true"
                         >
                           Thông tin cơ bản
                         </button>
                       </li>
-                      <li className="nav-item" role="presentation">
+                      <li className="nav-item">
                         <button
                           className="nav-link"
-                          id="variants-tab"
                           data-bs-toggle="tab"
                           data-bs-target="#variants"
                           type="button"
                           role="tab"
-                          aria-controls="variants"
-                          aria-selected="false"
                         >
-                          Phân loại sản phẩm ({formData.variants?.length || 0})
+                          Phân loại ({formData.variants?.length || 0})
                         </button>
                       </li>
                     </ul>
-                    <div
-                      className="tab-content"
-                      style={{ backgroundColor: "#ffffff" }}
-                    >
+
+                    <div className="tab-content">
                       {/* TAB THÔNG TIN CƠ BẢN */}
                       <div
                         className="tab-pane fade show active"
                         id="basic"
                         role="tabpanel"
-                        aria-labelledby="basic-tab"
                       >
                         <div className="row g-3">
                           {/* TÊN + GIÁ */}
                           <div className="col-12">
-                            <div className="d-flex">
-                              <div className="mb-4 col-xl-10">
-                                <label className="form-label fw-bold text-danger">
-                                  {t("admin.products.form.name")} *
-                                </label>
-                                <input
-                                  type="text"
-                                  className="form-control form-control-lg"
-                                  value={formData.name?.vi || ""}
-                                  onChange={(e) =>
-                                    setFormData({
-                                      ...formData,
-                                      name: {
-                                        ...formData.name,
-                                        vi: e.target.value,
-                                      },
-                                    })
-                                  }
-                                  required
-                                />
-                              </div>
+                            <label className="form-label fw-bold text-danger">
+                              {t("admin.products.form.name")} *
+                            </label>
+                            <div className="d-flex gap-2">
+                              <input
+                                type="text"
+                                className="form-control"
+                                value={formData.name?.vi || ""}
+                                onChange={(e) =>
+                                  setFormData({
+                                    ...formData,
+                                    name: {
+                                      ...formData.name,
+                                      vi: e.target.value,
+                                    },
+                                  })
+                                }
+                                required
+                              />
                               <button
                                 type="button"
-                                className="btn btn-primary mb-4 ms-3 align-self-end"
+                                className="btn btn-primary btn-sm text-nowrap"
                                 onClick={autoTranslateAll}
                               >
                                 {t("admin.products.form.autoTranslate")}
@@ -882,14 +843,14 @@ const AdminProducts = ({ adminController }) => {
                             </div>
                           </div>
 
-                          {/* Giá */}
-                          <div className="col-md-4">
-                            <label className="form-label fw-bold">
+                          {/* Giá + Giá KM + Thương hiệu */}
+                          <div className="col-6 col-md-4">
+                            <label className="form-label fw-bold small">
                               {t("admin.products.form.price")} (₫) *
                             </label>
                             <input
                               type="number"
-                              className="form-control"
+                              className="form-control form-control-sm"
                               value={formData.price}
                               onChange={(e) =>
                                 setFormData({
@@ -902,13 +863,13 @@ const AdminProducts = ({ adminController }) => {
                           </div>
 
                           {/**Giá khuyến mãi */}
-                          <div className="col-md-4">
-                            <label className="form-label fw-bold">
+                          <div className="col-6 col-md-4">
+                            <label className="form-label fw-bold small">
                               {t("admin.products.form.priceSale")} (₫)
                             </label>
                             <input
                               type="number"
-                              className="form-control"
+                              className="form-control form-control-sm"
                               value={formData.discountPrice}
                               onChange={(e) =>
                                 setFormData({
@@ -923,12 +884,12 @@ const AdminProducts = ({ adminController }) => {
                           </div>
 
                           {/* Thương hiệu*/}
-                          <div className="col-4">
-                            <label className="form-label fw-bold">
+                          <div className="col-12 col-md-4">
+                            <label className="form-label fw-bold small">
                               {t("admin.products.form.brand")}
                             </label>
                             <select
-                              className="form-select"
+                              className="form-select form-select-sm"
                               value={formData.brand}
                               onChange={(e) =>
                                 setFormData({
@@ -949,13 +910,13 @@ const AdminProducts = ({ adminController }) => {
                           </div>
 
                           {/* ẢNH CHÍNH */}
-                          <div className="col-12 mb-4">
-                            <label className="form-label fw-bold text-danger">
+                          <div className="col-12">
+                            <label className="form-label fw-bold text-danger small">
                               {t("admin.products.form.image")} *
                             </label>
 
                             {/* Input dán link */}
-                            <div className="input-group mb-2">
+                            <div className="input-group input-group-sm mb-2">
                               <input
                                 type="url"
                                 className="form-control"
@@ -979,57 +940,44 @@ const AdminProducts = ({ adminController }) => {
                             <input
                               type="file"
                               accept="image/*"
-                              className="form-control"
+                              className="form-control form-control-sm"
                               onChange={handleUploadSingle}
                             />
 
                             {/* Preview ảnh chính */}
                             {formData.image && (
-                              <div className="mt-3 text-center">
+                              <div className="mt-2 text-center">
                                 <img
                                   src={formData.image}
                                   alt="Preview"
                                   className="rounded shadow border"
-                                  style={{
-                                    maxHeight: "320px",
-                                    maxWidth: "100%",
-                                  }}
-                                  onError={(e) => {
-                                    e.target.src = "/placeholder.jpg";
-                                    e.target.alt = t(
-                                      "admin.products.form.imageLoadError",
-                                    );
-                                  }}
-                                />
-                                <div className="mt-2">
-                                  <small className="text-muted">
-                                    {t("admin.products.form.imagePreview")}:
-                                  </small>
-                                  <br />
-                                  <code className="bg-light p-1 rounded">
-                                    {formData.image}
-                                  </code>
-                                </div>
-                                <button
-                                  type="button"
-                                  className="btn btn-sm btn-outline-danger mt-2"
-                                  onClick={() =>
-                                    setFormData({
-                                      ...formData,
-                                      image: "",
-                                      imageFile: null,
-                                    })
+                                  style={{ maxHeight: 200, maxWidth: "100%" }}
+                                  onError={(e) =>
+                                    (e.target.src = "/placeholder.jpg")
                                   }
-                                >
-                                  {t("admin.products.form.removeImage")}
-                                </button>
+                                />
+                                <div className="mt-1">
+                                  <button
+                                    type="button"
+                                    className="btn btn-sm btn-outline-danger"
+                                    onClick={() =>
+                                      setFormData({
+                                        ...formData,
+                                        image: "",
+                                        imageFile: null,
+                                      })
+                                    }
+                                  >
+                                    {t("admin.products.form.removeImage")}
+                                  </button>
+                                </div>
                               </div>
                             )}
                           </div>
 
                           {/* GALLERY – CẢ DÁN NHIỀU LINK + UPLOAD NHIỀU ẢNH */}
                           <div className="col-12">
-                            <label className="form-label fw-bold">
+                            <label className="form-label fw-bold small">
                               Gallery (
                               {formData.gallery
                                 ? formData.gallery.split("\n").filter(Boolean)
@@ -1040,8 +988,8 @@ const AdminProducts = ({ adminController }) => {
 
                             {/* Dán nhiều link (mỗi link 1 dòng) */}
                             <textarea
-                              className="form-control mb-3"
-                              rows="4"
+                              className="form-control form-control-sm mb-2"
+                              rows="3"
                               placeholder={t(
                                 "admin.products.form.galleryPlaceholder",
                               )}
@@ -1059,13 +1007,13 @@ const AdminProducts = ({ adminController }) => {
                               type="file"
                               accept="image/*"
                               multiple
-                              className="form-control mb-3"
+                              className="form-control form-control-sm mb-2"
                               onChange={handleUploadMultiple}
                             />
 
                             {/* Preview Gallery đẹp lung linh */}
                             {formData.gallery && (
-                              <div className="row g-3">
+                              <div className="row g-2">
                                 {formData.gallery
                                   .split("\n")
                                   .map((s) => s.trim())
@@ -1080,7 +1028,8 @@ const AdminProducts = ({ adminController }) => {
                                         alt={`Gallery ${i + 1}`}
                                         className="img-fluid rounded shadow"
                                         style={{
-                                          height: "180px",
+                                          height: 140,
+                                          width: "100%",
                                           objectFit: "cover",
                                         }}
                                         onError={(e) =>
@@ -1089,11 +1038,12 @@ const AdminProducts = ({ adminController }) => {
                                       />
                                       <button
                                         type="button"
-                                        className="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle"
+                                        className="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle d-flex align-items-center justify-content-center"
                                         style={{
-                                          width: "30px",
-                                          height: "30px",
+                                          width: 26,
+                                          height: 26,
                                           padding: 0,
+                                          fontSize: 14,
                                         }}
                                         onClick={() => {
                                           const lines = formData.gallery
@@ -1115,13 +1065,13 @@ const AdminProducts = ({ adminController }) => {
                             )}
                           </div>
 
-                          {/* MÔ TẢ */}
+                          {/* Mô tả ngắn */}
                           <div className="col-12">
-                            <label className="form-label fw-bold">
+                            <label className="form-label fw-bold small">
                               {t("admin.products.form.shortDescription")}
                             </label>
                             <textarea
-                              className="form-control"
+                              className="form-control form-control-sm"
                               rows="2"
                               value={formData.shortDescription}
                               onChange={(e) =>
@@ -1133,13 +1083,14 @@ const AdminProducts = ({ adminController }) => {
                             />
                           </div>
 
-                          <div className="col-12 mb-2">
-                            <label className="form-label fw-bold">
+                          {/* Mô tả đầy đủ */}
+                          <div className="col-12">
+                            <label className="form-label fw-bold small">
                               {t("admin.products.form.description")}
                             </label>
                             <textarea
-                              className="form-control"
-                              rows="5"
+                              className="form-control form-control-sm"
+                              rows="4"
                               value={formData.description?.vi || ""}
                               onChange={(e) =>
                                 setFormData((prev) => ({
@@ -1154,26 +1105,23 @@ const AdminProducts = ({ adminController }) => {
                           </div>
 
                           {/* DANH MỤC CHÍNH */}
-                          <div className="col-md-6">
-                            <label className="form-label fw-bold">
+                          <div className="col-12 col-md-6">
+                            <label className="form-label fw-bold small">
                               {t("admin.products.form.category")} *
                             </label>
                             {categories.length === 0 ? (
-                              <div className="text-muted small fst-italic">
+                              <p className="text-muted small fst-italic">
                                 {t("admin.products.form.noCategory")}
-                              </div>
+                              </p>
                             ) : (
                               <div
-                                className="border rounded p-3 bg-light"
-                                style={{
-                                  maxHeight: "220px",
-                                  overflowY: "auto",
-                                }}
+                                className="border rounded p-2 bg-light"
+                                style={{ maxHeight: 200, overflowY: "auto" }}
                               >
                                 {categories.map((cat) => (
                                   <div
                                     key={cat._id}
-                                    className="form-check mb-2"
+                                    className="form-check mb-1"
                                   >
                                     <input
                                       className="form-check-input"
@@ -1187,7 +1135,7 @@ const AdminProducts = ({ adminController }) => {
                                       }
                                     />
                                     <label
-                                      className="form-check-label"
+                                      className="form-check-label small"
                                       htmlFor={`cat-${cat._id}`}
                                     >
                                       {getTranslated(cat.name)}
@@ -1199,32 +1147,29 @@ const AdminProducts = ({ adminController }) => {
                           </div>
 
                           {/* DANH MỤC CON - CHECKBOX */}
-                          <div className="col-md-6">
-                            <label className="form-label fw-bold">
-                              {t("admin.products.form.subCategory")}{" "}
+                          <div className="col-12 col-md-6">
+                            <label className="form-label fw-bold small">
+                              {t("admin.products.form.subCategory")}
                               {formData.subCategories?.length > 0 &&
-                                `(${formData.subCategories.length} đã chọn)`}
+                                ` (${formData.subCategories.length} đã chọn)`}
                             </label>
                             {subCategories.length === 0 ? (
-                              <div className="text-muted small fst-italic">
-                                {formData.category
+                              <p className="text-muted small fst-italic">
+                                {formData.categories.length
                                   ? t("admin.products.form.noSubCategory")
                                   : t(
                                       "admin.products.form.selectCategoryFirst",
                                     )}
-                              </div>
+                              </p>
                             ) : (
                               <div
-                                className="border rounded p-3 bg-light"
-                                style={{
-                                  maxHeight: "220px",
-                                  overflowY: "auto",
-                                }}
+                                className="border rounded p-2 bg-light"
+                                style={{ maxHeight: 200, overflowY: "auto" }}
                               >
                                 {subCategories.map((sub) => (
                                   <div
                                     key={sub._id}
-                                    className="form-check mb-2"
+                                    className="form-check mb-1"
                                   >
                                     <input
                                       className="form-check-input"
@@ -1233,7 +1178,7 @@ const AdminProducts = ({ adminController }) => {
                                       checked={formData.subCategories.includes(
                                         sub._id,
                                       )}
-                                      onChange={(e) => {
+                                      onChange={(e) =>
                                         setFormData((prev) => ({
                                           ...prev,
                                           subCategories: e.target.checked
@@ -1241,11 +1186,11 @@ const AdminProducts = ({ adminController }) => {
                                             : prev.subCategories.filter(
                                                 (id) => id !== sub._id,
                                               ),
-                                        }));
-                                      }}
+                                        }))
+                                      }
                                     />
                                     <label
-                                      className="form-check-label"
+                                      className="form-check-label small"
                                       htmlFor={`subcat-${sub._id}`}
                                     >
                                       {getTranslated(sub.name)}
@@ -1257,131 +1202,133 @@ const AdminProducts = ({ adminController }) => {
                           </div>
 
                           {/* MÀU SẮC */}
-                          <div className="col-12 mb-2">
-                            <label className="form-label fw-bold">
+                          <div className="col-12">
+                            <label className="form-label fw-bold small">
                               {t("admin.products.form.color")}
                             </label>
-                            <div className="d-flex flex-wrap px-3 py-2 rounded border align-items-center">
+                            <div className="border rounded p-2">
                               {colors.length === 0 ? (
-                                <div className="text-muted small fst-italic">
+                                <span className="text-muted small fst-italic">
                                   Đang tải danh sách màu...
-                                </div>
+                                </span>
                               ) : (
-                                colors.map((color, index) => (
-                                  <div
-                                    key={index}
-                                    className="col-3 form-check mb-2"
-                                  >
-                                    <input
-                                      className="form-check-input"
-                                      type="checkbox"
-                                      id={`color-${color._id}`}
-                                      checked={formData.colors.includes(
-                                        color._id,
-                                      )}
-                                      onChange={() => {
-                                        setFormData((prev) => ({
-                                          ...prev,
-                                          colors: toggleArray(
-                                            prev.colors,
-                                            color._id,
-                                          ),
-                                        }));
-                                      }}
-                                    />
-                                    <label
-                                      className="form-check-label text-capitalize"
-                                      htmlFor={`color-${color._id}`}
+                                <div className="row g-1">
+                                  {colors.map((color) => (
+                                    <div
+                                      key={color._id}
+                                      className="col-6 col-sm-4 col-md-3 form-check ps-4"
                                     >
-                                      {getTranslated(color.name)}
-                                    </label>
-                                  </div>
-                                ))
+                                      <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        id={`color-${color._id}`}
+                                        checked={formData.colors.includes(
+                                          color._id,
+                                        )}
+                                        onChange={() =>
+                                          setFormData((prev) => ({
+                                            ...prev,
+                                            colors: toggleArray(
+                                              prev.colors,
+                                              color._id,
+                                            ),
+                                          }))
+                                        }
+                                      />
+                                      <label
+                                        className="form-check-label small text-capitalize"
+                                        htmlFor={`color-${color._id}`}
+                                      >
+                                        {getTranslated(color.name)}
+                                      </label>
+                                    </div>
+                                  ))}
+                                </div>
                               )}
                             </div>
                           </div>
 
                           {/* TAGS */}
-                          <div className="col-12 ">
-                            <label className="form-label fw-bold">
+                          <div className="col-12">
+                            <label className="form-label fw-bold small">
                               {t("admin.products.form.tags")}
                             </label>
-                            <div className="d-flex flex-wrap px-3 py-2 rounded border align-items-center">
-                              {tagsProduct.map((tag) => (
-                                <div
-                                  key={tag._id}
-                                  className="col-3 form-check "
-                                >
-                                  <input
-                                    className="form-check-input"
-                                    type="checkbox"
-                                    checked={formData.tags.includes(tag._id)}
-                                    onChange={(e) => {
-                                      if (e.target.checked) {
+                            <div className="border rounded p-2">
+                              <div className="row g-1">
+                                {tagsProduct.map((tag) => (
+                                  <div
+                                    key={tag._id}
+                                    className="col-6 col-sm-4 col-md-3 form-check ps-4"
+                                  >
+                                    <input
+                                      className="form-check-input"
+                                      type="checkbox"
+                                      checked={formData.tags.includes(tag._id)}
+                                      onChange={(e) =>
                                         setFormData({
                                           ...formData,
-                                          tags: [...formData.tags, tag._id],
-                                        });
-                                      } else {
-                                        setFormData({
-                                          ...formData,
-                                          tags: formData.tags.filter(
-                                            (t) => t !== tag._id,
-                                          ),
-                                        });
+                                          tags: e.target.checked
+                                            ? [...formData.tags, tag._id]
+                                            : formData.tags.filter(
+                                                (id) => id !== tag._id,
+                                              ),
+                                        })
                                       }
-                                    }}
-                                  />
-                                  <span>{tag.name}</span>
-                                </div>
-                              ))}
+                                    />
+                                    <span className="form-check-label small">
+                                      {tag.name}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
                           </div>
 
                           {/* TYPES */}
-                          <div className="col-12 ">
-                            <label className="form-label fw-bold">
+                          <div className="col-12">
+                            <label className="form-label fw-bold small">
                               {t("admin.products.form.type")}
                             </label>
-                            <div className="d-flex flex-wrap px-3 py-2 rounded border align-items-center">
-                              {types.map((type) => (
-                                <div
-                                  key={type._id}
-                                  className="col-3 form-check "
-                                >
-                                  <input
-                                    className="form-check-input"
-                                    type="checkbox"
-                                    checked={formData.types.includes(type._id)}
-                                    onChange={(e) => {
-                                      if (e.target.checked) {
+                            <div className="border rounded p-2">
+                              <div className="row g-1">
+                                {types.map((type) => (
+                                  <div
+                                    key={type._id}
+                                    className="col-6 col-sm-4 col-md-3 form-check ps-4"
+                                  >
+                                    <input
+                                      className="form-check-input"
+                                      type="checkbox"
+                                      checked={formData.types.includes(
+                                        type._id,
+                                      )}
+                                      onChange={(e) =>
                                         setFormData({
                                           ...formData,
-                                          types: [...formData.types, type._id],
-                                        });
-                                      } else {
-                                        setFormData({
-                                          ...formData,
-                                          types: formData.types.filter(
-                                            (t) => t !== type._id,
-                                          ),
-                                        });
+                                          types: e.target.checked
+                                            ? [...formData.types, type._id]
+                                            : formData.types.filter(
+                                                (id) => id !== type._id,
+                                              ),
+                                        })
                                       }
-                                    }}
-                                  />
-                                  <span>{getTranslated(type.name)}</span>
-                                </div>
-                              ))}
+                                    />
+                                    <span className="form-check-label small">
+                                      {getTranslated(type.name)}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
                           </div>
 
-                          {/* CÁC TRƯỜNG KHÁC */}
-                          <div className="col-md-6">
-                            <label className="form-label fw-bold">
+                          {/* Tình trạng + Flash sale */}
+                          <div className="col-12 col-sm-6">
+                            <label className="form-label fw-bold small">
                               {t("admin.products.form.isStock")}
                             </label>
                             <select
-                              className="form-select"
+                              className="form-select form-select-sm"
                               value={formData.inStock}
                               onChange={(e) =>
                                 setFormData({
@@ -1399,8 +1346,8 @@ const AdminProducts = ({ adminController }) => {
                             </select>
                           </div>
 
-                          <div className="col-12">
-                            <div className="form-check form-switch">
+                          <div className="col-12 col-sm-6 d-flex align-items-end">
+                            <div className="form-check form-switch mb-1">
                               <input
                                 className="form-check-input"
                                 type="checkbox"
@@ -1412,7 +1359,7 @@ const AdminProducts = ({ adminController }) => {
                                   })
                                 }
                               />
-                              <label className="form-check-label fw-bold text-danger">
+                              <label className="form-check-label fw-bold text-danger small">
                                 {t("admin.products.form.flashSale")}
                               </label>
                             </div>
@@ -1421,44 +1368,47 @@ const AdminProducts = ({ adminController }) => {
                       </div>
 
                       {/* TAB VARIANT */}
-                      <div className="tab-pane fade" id="variants">
-                        <div className="mb-3">
-                          <button
-                            type="button"
-                            className="btn btn-outline-primary btn-sm"
-                            onClick={() => {
-                              setFormData((prev) => ({
-                                ...prev,
-                                variants: [
-                                  ...(prev.variants || []),
-                                  {
-                                    value: "",
-                                    price: "",
-                                    discountPrice: "",
-                                    image: "",
-                                    imageFile: null,
-                                    stock: 0,
-                                    sku: "",
-                                  },
-                                ],
-                              }));
-                            }}
-                          >
-                            + {t("admin.products.form.addClassification")}
-                          </button>
-                        </div>
+                      <div
+                        className="tab-pane fade"
+                        id="variants"
+                        role="tabpanel"
+                      >
+                        <button
+                          type="button"
+                          className="btn btn-outline-primary btn-sm mb-3"
+                          onClick={() =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              variants: [
+                                ...(prev.variants || []),
+                                {
+                                  value: "",
+                                  price: "",
+                                  discountPrice: "",
+                                  image: "",
+                                  imageFile: null,
+                                  stock: 0,
+                                  sku: "",
+                                },
+                              ],
+                            }))
+                          }
+                        >
+                          + {t("admin.products.form.addClassification")}
+                        </button>
+
                         {formData.variants?.map((variant, index) => (
                           <div
                             key={index}
                             className="border rounded p-3 mb-3 bg-light"
                           >
-                            <div className="row g-3">
-                              <div className="col-md-3">
-                                <label>
+                            <div className="row g-2">
+                              <div className="col-12 col-sm-6 col-md-3">
+                                <label className="form-label small mb-1">
                                   {t("admin.products.form.nameClassification")}
                                 </label>
                                 <input
-                                  className="form-control"
+                                  className="form-control form-control-sm"
                                   value={variant.value || ""}
                                   onChange={(e) =>
                                     updateVariant(
@@ -1469,11 +1419,14 @@ const AdminProducts = ({ adminController }) => {
                                   }
                                 />
                               </div>
-                              <div className="col-md-2">
-                                <label>{t("admin.products.form.price")}</label>
+
+                              <div className="col-6 col-md-2">
+                                <label className="form-label small mb-1">
+                                  {t("admin.products.form.price")}
+                                </label>
                                 <input
                                   type="number"
-                                  className="form-control"
+                                  className="form-control form-control-sm"
                                   value={variant.price}
                                   onChange={(e) =>
                                     updateVariant(
@@ -1484,13 +1437,14 @@ const AdminProducts = ({ adminController }) => {
                                   }
                                 />
                               </div>
-                              <div className="col-md-2">
-                                <label>
+
+                              <div className="col-6 col-md-2">
+                                <label className="form-label small mb-1">
                                   {t("admin.products.form.priceSale")}
                                 </label>
                                 <input
                                   type="number"
-                                  className="form-control"
+                                  className="form-control form-control-sm"
                                   value={variant.discountPrice}
                                   onChange={(e) =>
                                     updateVariant(
@@ -1501,11 +1455,14 @@ const AdminProducts = ({ adminController }) => {
                                   }
                                 />
                               </div>
-                              <div className="col-md-2">
-                                <label>{t("admin.products.table.stock")}</label>
+
+                              <div className="col-6 col-md-2">
+                                <label className="form-label small mb-1">
+                                  {t("admin.products.table.stock")}
+                                </label>
                                 <input
                                   type="number"
-                                  className="form-control"
+                                  className="form-control form-control-sm"
                                   value={variant.stock}
                                   onChange={(e) =>
                                     updateVariant(
@@ -1516,23 +1473,27 @@ const AdminProducts = ({ adminController }) => {
                                   }
                                 />
                               </div>
-                              <div className="col-md-2">
-                                <label>{t("admin.products.form.image")}</label>
+
+                              <div className="col-12 col-sm-6 col-md-2">
+                                <label className="form-label small mb-1">
+                                  {t("admin.products.form.image")}
+                                </label>
                                 <input
                                   type="file"
-                                  className="form-control"
+                                  className="form-control form-control-sm"
                                   onChange={(e) =>
                                     handleUploadVariantImage(e, index)
                                   }
                                 />
                               </div>
-                              <div className="col-md-1 d-flex align-items-end">
+
+                              <div className="col-6 col-md-1 d-flex align-items-end">
                                 <button
                                   type="button"
-                                  className="btn btn-danger btn-sm"
+                                  className="btn btn-danger btn-sm w-100"
                                   onClick={() => removeVariant(index)}
                                 >
-                                  X
+                                  <i className="bi bi-trash" />
                                 </button>
                               </div>
                             </div>
@@ -1540,7 +1501,7 @@ const AdminProducts = ({ adminController }) => {
                               <img
                                 src={variant.image}
                                 className="mt-2 rounded"
-                                style={{ maxHeight: "100px" }}
+                                style={{ maxHeight: 80 }}
                                 alt=""
                               />
                             )}
@@ -1550,18 +1511,22 @@ const AdminProducts = ({ adminController }) => {
                     </div>
                   </div>
 
-                  <div className="modal-footer">
+                  <div className="modal-footer py-2">
                     <button
                       type="button"
-                      className="btn btn-secondary fw-semibold"
+                      className="btn btn-secondary btn-sm"
                       onClick={() => setModalOpen(false)}
                     >
                       {t("btn.cancel")}
                     </button>
                     <button
                       type="submit"
-                      className="btn btn-success fw-semibold"
+                      className="btn btn-success btn-sm"
+                      disabled={loading}
                     >
+                      {loading ? (
+                        <span className="spinner-border spinner-border-sm me-1" />
+                      ) : null}
                       {isEditing ? t("btn.update") : t("btn.add")}
                     </button>
                   </div>

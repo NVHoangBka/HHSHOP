@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 const AdminDashboard = ({ adminController }) => {
-  const [t, i18n] = useTranslation();
+  const [t] = useTranslation();
   const [pendingOrders, setPendingOrders] = useState([]);
   const [stats, setStats] = useState({
     totalOrders: 0,
@@ -14,7 +14,6 @@ const AdminDashboard = ({ adminController }) => {
     todayOrders: 0,
   });
   const [pendingPaymentOrders, setPendingPaymentOrders] = useState([]);
-
   const [pendingPaymentOrdersNew, setPendingPaymentOrderNew] = useState({
     ordersId: "",
     totalAmount: 0,
@@ -31,13 +30,11 @@ const AdminDashboard = ({ adminController }) => {
         if (result.success) {
           const orders = result.orders || [];
           setPendingOrders(
-            orders.filter(
-              (order) =>
-                order.status === "pending" ||
-                order.status === "confirmed" ||
-                order.status === "preparing" ||
-                order.status === "shipped"
-            )
+            orders.filter((order) =>
+              ["pending", "confirmed", "preparing", "shipped"].includes(
+                order.status,
+              ),
+            ),
           );
           handleSetStatsOrder(orders);
           handleSetPaymentOrder(orders);
@@ -46,194 +43,168 @@ const AdminDashboard = ({ adminController }) => {
         console.error("Error fetching orders:", error);
       }
     };
-
     fetchStats();
   }, [adminController]);
 
   const handleSetStatsOrder = (orders) => {
     const totalOrders = orders.length;
     const countSuccessOrders = orders.filter(
-      (order) => order.status === "delivered"
+      (o) => o.status === "delivered",
     ).length;
-    const countPendingOrders = orders.filter(
-      (order) =>
-        order.status === "pending" ||
-        order.status === "confirmed" ||
-        order.status === "preparing" ||
-        order.status === "shipped"
+    const countPendingOrders = orders.filter((o) =>
+      ["pending", "confirmed", "preparing", "shipped"].includes(o.status),
     ).length;
+    const today = new Date();
     const todayOrders = orders
-      .filter((order) => {
-        const orderDate = new Date(order.createdAt);
-        const today = new Date();
+      .filter((o) => {
+        const d = new Date(o.createdAt);
         return (
-          orderDate.getDate() === today.getDate() &&
-          orderDate.getMonth() === today.getMonth() &&
-          orderDate.getFullYear() === today.getFullYear()
+          d.getDate() === today.getDate() &&
+          d.getMonth() === today.getMonth() &&
+          d.getFullYear() === today.getFullYear()
         );
       })
-      .reduce((sum, order) => sum + order.subTotal, 0);
-
-    const totalRevenue = orders.reduce((sum, order) => sum + order.subTotal, 0);
-
+      .reduce((sum, o) => sum + o.subTotal, 0);
+    const totalRevenue = orders.reduce((sum, o) => sum + o.subTotal, 0);
     setStats({
       totalOrders,
-      countSuccessOrders: countSuccessOrders || 0,
-      countPendingOrders: countPendingOrders || 0,
+      countSuccessOrders,
+      countPendingOrders,
       todayOrders,
       totalRevenue,
     });
   };
 
   const handleSetPaymentOrder = (orders) => {
-    const pendingPaymentOrders = orders.filter(
-      (order) => order.paymentStatus === "pending"
-    );
-
-    setPendingPaymentOrders(pendingPaymentOrders);
-
-    const subTotalPendingPayment = pendingPaymentOrders
-      .reduce((sum, order) => sum + order.subTotal, 0)
-      .toLocaleString("vi-VN");
-
-    const totalAmountPendingPayment = pendingPaymentOrders
-      .reduce((sum, order) => sum + order.totalAmount, 0)
-      .toLocaleString("vi-VN");
-
+    const pending = orders.filter((o) => o.paymentStatus === "pending");
+    setPendingPaymentOrders(pending);
     setPendingPaymentOrderNew({
-      ordersId: pendingPaymentOrders.map((order) => order.orderId),
-      totalAmount: totalAmountPendingPayment,
-      subTotal: subTotalPendingPayment,
-      paymentMethod: pendingPaymentOrders.map((order) => order.paymentMethod),
-      paymentStatus: pendingPaymentOrders.map((order) => order.paymentStatus),
-      createdAt: pendingPaymentOrders.map((order) => order.createdAt),
+      ordersId: pending.map((o) => o.orderId),
+      totalAmount: pending
+        .reduce((sum, o) => sum + o.totalAmount, 0)
+        .toLocaleString("vi-VN"),
+      subTotal: pending
+        .reduce((sum, o) => sum + o.subTotal, 0)
+        .toLocaleString("vi-VN"),
+      paymentMethod: pending.map((o) => o.paymentMethod),
+      paymentStatus: pending.map((o) => o.paymentStatus),
+      createdAt: pending.map((o) => o.createdAt),
     });
   };
 
   const getStatusText = (status) => {
-    switch (status) {
-      case "pending":
-        return t("admin.orders.status.pending");
-      case "confirmed":
-        return t("admin.orders.status.confirmed");
-      case "preparing":
-        return t("admin.orders.status.preparing");
-      case "shipped":
-        return t("admin.orders.status.shipped");
-      case "delivered":
-        return t("admin.orders.status.delivered");
-      case "canceled":
-        return t("admin.orders.status.canceled");
-      case "returned":
-        return t("admin.orders.status.returned");
-      default:
-        return "Không xác định";
-    }
+    const map = {
+      pending: t("admin.orders.status.pending"),
+      confirmed: t("admin.orders.status.confirmed"),
+      preparing: t("admin.orders.status.preparing"),
+      shipped: t("admin.orders.status.shipped"),
+      delivered: t("admin.orders.status.delivered"),
+      canceled: t("admin.orders.status.canceled"),
+      returned: t("admin.orders.status.returned"),
+    };
+    return map[status] || "Không xác định";
   };
 
   const getStatusClass = (status) => {
-    switch (status) {
-      case "pending":
-        return "btn-smail bg-warning-subtle";
-      case "confirmed":
-        return "btn-smail bg-info-subtle";
-      case "preparing":
-        return "btn-smail bg-primary-subtle";
-      case "shipped":
-        return "btn-smail bg-secondary-subtle";
-      case "delivered":
-        return "btn-smail bg-success-subtle";
-      case "canceled":
-        return "btn-smail bg-danger-subtle";
-      case "returned":
-        return "btn-smail bg-dark-subtle";
-      default:
-        return "btn-smail bg-light text-dark-subtle";
-    }
+    const map = {
+      pending: "bg-warning-subtle",
+      confirmed: "bg-info-subtle",
+      preparing: "bg-primary-subtle",
+      shipped: "bg-secondary-subtle",
+      delivered: "bg-success-subtle",
+      canceled: "bg-danger-subtle",
+      returned: "bg-dark-subtle",
+    };
+    return map[status] || "bg-light text-dark-subtle";
   };
 
-  return (
-    <div className="container-fluid py-4">
-      <h2 className="mb-4 fw-bold text-success">ADMIN PANEL - HHSHOP</h2>
+  const statCards = [
+    {
+      label: t("admin.orders.total"),
+      value: stats.totalOrders,
+      bg: "bg-success",
+      suffix: "",
+    },
+    {
+      label: t("admin.orders.status.delivered"),
+      value: stats.countSuccessOrders,
+      bg: "bg-success",
+      suffix: "",
+    },
+    {
+      label: t("admin.orders.status.pending"),
+      value: stats.countPendingOrders,
+      bg: "bg-warning",
+      suffix: "",
+    },
+    {
+      label: t("admin.orders.totalRevenue"),
+      value: stats.totalRevenue.toLocaleString("vi-VN"),
+      bg: "bg-primary",
+      suffix: "₫",
+    },
+    {
+      label: t("admin.orders.todayRevenue"),
+      value: stats.todayOrders.toLocaleString("vi-VN"),
+      bg: "bg-danger",
+      suffix: "₫",
+    },
+  ];
 
-      <div className="row">
-        <div className="col-6">
-          <div className="row">
-            <div className="col">
-              <div className="card border-0 shadow-lg text-white bg-success">
-                <div className="card-body">
-                  <h5>{t("admin.orders.total")}</h5>
-                  <h2 className="fw-bold">{stats.totalOrders}</h2>
-                </div>
-              </div>
-            </div>
-            <div className="col">
-              <div className="card border-0 shadow-lg text-white bg-success">
-                <div className="card-body">
-                  <h5>{t("admin.orders.status.delivered")}</h5>
-                  <h2 className="fw-bold">{stats.countSuccessOrders}</h2>
-                </div>
-              </div>
-            </div>
-            <div className="col">
-              <div className="card border-0 shadow-lg text-white bg-warning">
-                <div className="card-body">
-                  <h5>{t("admin.orders.status.pending")}</h5>
-                  <h2 className="fw-bold">{stats.countPendingOrders}</h2>
-                </div>
+  return (
+    <div className="container-fluid py-3 py-md-4">
+      <h2 className="mb-4 fw-bold text-success fs-4 fs-md-2">
+        ADMIN PANEL - HHSHOP
+      </h2>
+
+      {/* ── Stat Cards ── */}
+      <div className="row g-3">
+        {statCards.map((card, i) => (
+          <div key={i} className="col-6 col-sm-4 col-lg">
+            <div
+              className={`card border-0 shadow-sm text-white h-100 ${card.bg}`}
+            >
+              <div className="card-body p-3">
+                <p className="card-title small mb-1 opacity-75 lh-sm">
+                  {card.label}
+                </p>
+                <h4 className="fw-bold mb-0 text-truncate">
+                  {card.value}
+                  {card.suffix}
+                </h4>
               </div>
             </div>
           </div>
-        </div>
-        <div className="col-6">
-          <div className="row">
-            <div className="col">
-              <div className="card border-0 shadow-lg text-white bg-primary">
-                <div className="card-body">
-                  <h5>{t("admin.orders.totalRevenue")}</h5>
-                  <h2 className="fw-bold">
-                    {stats.totalRevenue.toLocaleString("vi-VN")}₫
-                  </h2>
-                </div>
-              </div>
-            </div>
-            <div className="col">
-              <div className="card border-0 shadow-lg text-white bg-danger">
-                <div className="card-body">
-                  <h5>{t("admin.orders.todayRevenue")}</h5>
-                  <h2 className="fw-bold">
-                    {stats.todayOrders.toLocaleString("vi-VN")}₫
-                  </h2>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
 
-      <div className="row mt-5">
-        <div className="col-md-6">
-          <div className="card shadow-lg">
+      {/* ── Tables ── */}
+      <div className="row g-3 mt-2 mt-md-4">
+        {/* Pending Orders */}
+        <div className="col-12 col-lg-6">
+          <div className="card shadow-sm h-100">
             <div className="card-header bg-success text-white">
-              <h5 className="mb-0 text-uppercase">
+              <h6 className="mb-0 text-uppercase fw-bold">
                 {t("admin.orders.status.pending")}
-              </h5>
+              </h6>
             </div>
-            <div
-              className="card-body d-flex justify-content-between flex-column"
-              style={{ minHeight: "350px" }}
-            >
-              <div className="mb-2">
+            <div className="card-body d-flex flex-column p-3">
+              <p className="mb-3 small">
                 <strong>{t("admin.orders.status.pendingCount")}: </strong>
-                <b className="fst-italic">{stats.countPendingOrders || 0}</b>
-              </div>
-              <div className="mb-5">
-                <p className="mb-2 fw-bold">
-                  {t("admin.orders.status.pendingList")}
-                </p>
-                <table className="table border">
-                  <thead className="table-success ">
-                    <tr className="text-center">
+                <span className="fst-italic">
+                  {stats.countPendingOrders || 0}
+                </span>
+              </p>
+
+              <p className="mb-2 fw-bold small">
+                {t("admin.orders.status.pendingList")}
+              </p>
+
+              {/* Scrollable table wrapper on small screens */}
+              <div className="table-responsive flex-grow-1 mb-3">
+                <table className="table table-sm table-bordered align-middle mb-0">
+                  <thead className="table-success">
+                    <tr className="text-center small">
                       <th>{t("admin.orders.orderId")}</th>
                       <th>{t("admin.orders.status.title")}</th>
                       <th>{t("admin.orders.totalAmount")}</th>
@@ -242,27 +213,32 @@ const AdminDashboard = ({ adminController }) => {
                   </thead>
                   <tbody>
                     {stats.countPendingOrders > 0 ? (
-                      pendingOrders.map((order) => {
-                        return (
-                          <tr key={order._id} className="text-center">
-                            <td>{order.orderId}</td>
-                            <td className={getStatusClass(order.status)}>
+                      pendingOrders.map((order) => (
+                        <tr key={order._id} className="text-center small">
+                          <td className="text-nowrap">{order.orderId}</td>
+                          <td>
+                            <span
+                              className={`badge rounded-pill ${getStatusClass(order.status)} text-dark`}
+                            >
                               {getStatusText(order.status)}
-                            </td>
-                            <td>
-                              {order.totalAmount.toLocaleString("vi-VN")}₫
-                            </td>
-                            <td>
-                              {new Date(order.createdAt).toLocaleDateString(
-                                "vi-VN"
-                              )}
-                            </td>
-                          </tr>
-                        );
-                      })
+                            </span>
+                          </td>
+                          <td className="text-nowrap">
+                            {order.totalAmount.toLocaleString("vi-VN")}₫
+                          </td>
+                          <td className="text-nowrap">
+                            {new Date(order.createdAt).toLocaleDateString(
+                              "vi-VN",
+                            )}
+                          </td>
+                        </tr>
+                      ))
                     ) : (
                       <tr>
-                        <td colSpan="4" className="text-center">
+                        <td
+                          colSpan="4"
+                          className="text-center text-muted small py-3"
+                        >
                           {t("admin.orders.noOrders")}
                         </td>
                       </tr>
@@ -270,47 +246,51 @@ const AdminDashboard = ({ adminController }) => {
                   </tbody>
                 </table>
               </div>
+
               <Link
                 to="/admin/orders"
-                className="btn btn-outline-success w-100"
+                className="btn btn-outline-success btn-sm w-100 mt-auto"
               >
                 {t("admin.orders.status.viewAllPendingOrders")} →
               </Link>
             </div>
           </div>
         </div>
-        <div className="col-md-6">
-          <div className="card shadow-lg">
+
+        {/* Pending Payments */}
+        <div className="col-12 col-lg-6">
+          <div className="card shadow-sm h-100">
             <div className="card-header bg-danger text-white">
-              <h5 className="mb-0 text-uppercase">
+              <h6 className="mb-0 text-uppercase fw-bold">
                 {t("admin.orders.paymentStatus.pendingPayment")}
-              </h5>
+              </h6>
             </div>
-            <div
-              className="card-body d-flex justify-content-between flex-column"
-              style={{ minHeight: "350px" }}
-            >
-              <div className="mb-2">
+            <div className="card-body d-flex flex-column p-3">
+              <p className="mb-1 small">
                 <strong>
                   {t("admin.orders.paymentStatus.pendingCount")}:{" "}
                 </strong>
-                <b className="fst-italic">{pendingPaymentOrders.length || 0}</b>
-              </div>
-              <div className="mb-2">
+                <span className="fst-italic">
+                  {pendingPaymentOrders.length || 0}
+                </span>
+              </p>
+              <p className="mb-3 small">
                 <strong>
                   {t("admin.orders.paymentStatus.pendingTotal")}:{" "}
                 </strong>
-                <b className="fst-italic">
+                <span className="fst-italic">
                   {pendingPaymentOrdersNew.totalAmount || 0} VNĐ
-                </b>
-              </div>
-              <div className="mb-5">
-                <p className="mb-2 fw-bold">
-                  {t("admin.orders.paymentStatus.pendingList")}
-                </p>
-                <table className="table ">
+                </span>
+              </p>
+
+              <p className="mb-2 fw-bold small">
+                {t("admin.orders.paymentStatus.pendingList")}
+              </p>
+
+              <div className="table-responsive flex-grow-1 mb-3">
+                <table className="table table-sm table-bordered align-middle mb-0">
                   <thead className="table-success">
-                    <tr>
+                    <tr className="small">
                       <th>{t("admin.orders.orderId")}</th>
                       <th>{t("admin.orders.paymentMethods.title")}</th>
                       <th>{t("admin.orders.totalAmount")}</th>
@@ -318,28 +298,42 @@ const AdminDashboard = ({ adminController }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {pendingPaymentOrders.map((order) => (
-                      <tr key={order._id}>
-                        <td>{order.orderId}</td>
-                        <td>
-                          {order.paymentMethod === "COD"
-                            ? t("admin.orders.paymentMethods.cod")
-                            : t("admin.orders.paymentMethods.bankTransfer")}
-                        </td>
-                        <td>{order.totalAmount.toLocaleString("vi-VN")} ₫</td>
-                        <td>
-                          {new Date(order.createdAt).toLocaleDateString(
-                            "vi-VN"
-                          )}
+                    {pendingPaymentOrders.length > 0 ? (
+                      pendingPaymentOrders.map((order) => (
+                        <tr key={order._id} className="small">
+                          <td className="text-nowrap">{order.orderId}</td>
+                          <td>
+                            {order.paymentMethod === "COD"
+                              ? t("admin.orders.paymentMethods.cod")
+                              : t("admin.orders.paymentMethods.bankTransfer")}
+                          </td>
+                          <td className="text-nowrap">
+                            {order.totalAmount.toLocaleString("vi-VN")} ₫
+                          </td>
+                          <td className="text-nowrap">
+                            {new Date(order.createdAt).toLocaleDateString(
+                              "vi-VN",
+                            )}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan="4"
+                          className="text-center text-muted small py-3"
+                        >
+                          {t("admin.orders.noOrders")}
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
               </div>
+
               <Link
                 to="/admin/payments"
-                className="btn btn-outline-danger w-100"
+                className="btn btn-outline-danger btn-sm w-100 mt-auto"
               >
                 {t("admin.orders.paymentStatus.viewAllQRPayments")} →
               </Link>
